@@ -294,7 +294,6 @@ public class StartActivity extends AppCompatActivity {
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
-
         }
     }
 
@@ -319,13 +318,6 @@ public class StartActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     private void get_method() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
 
         }
@@ -398,7 +390,6 @@ public class StartActivity extends AppCompatActivity {
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_WRITE_SDCARD);
-
                     }
                 } else {
                     show_error_box(context.getResources().getString(R.string.Please_allow_these_permissions_in_order_to_use_application), context.getResources().getString(R.string.Permissions));
@@ -407,7 +398,6 @@ public class StartActivity extends AppCompatActivity {
             case REQUEST_STORAGE_WRITE_SDCARD:
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
                         Startbutton();
                     }
                 } else {
@@ -424,7 +414,6 @@ public class StartActivity extends AppCompatActivity {
             get_method();
             //DisplayGPS();
         }
-
 
         TelephonyManager telephonyManager = null;
         telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -444,16 +433,13 @@ public class StartActivity extends AppCompatActivity {
             String serial = Build.getSerial();
             serial = serial.substring(1, serial.length() - 1);
             System.out.println("++++++++++++++++++++++++++++++" + serial);
-
         }
-
     }
 
     private class MyLocationListener implements LocationListener {
 
         @Override
         public void onLocationChanged(Location loc) {
-
 
             longitude = String.valueOf(loc.getLongitude());
             System.out.println("-------------------" + longitude);

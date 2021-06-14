@@ -266,7 +266,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
     private void ConsentformURL(String consentrequest) {
@@ -343,6 +343,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         Mdealer = 1;
         Intent dealer = new Intent(getApplicationContext(), DealerDetailsActivity.class);
         dealer.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        dealer.putExtra("OBJ",  memberModel);
         startActivityForResult(dealer, 2);
     }
 
@@ -385,7 +386,6 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
-
                 if (!isError.equals("00")) {
                     show_error_box(msg, context.getResources().getString(R.string.Member_EKYC) + isError, 0);
                 } else {
@@ -589,12 +589,14 @@ public class MemberDetailsActivity extends AppCompatActivity {
                             context.getResources().getString(R.string.PindCode) + Ekyc.eKYCPindCode+ "\n" +
                             context.getResources().getString(R.string.Gender) + Ekyc.eKYCGeneder+ "\n" +
                             context.getResources().getString(R.string.Date) +  currentDateTimeString + "\n";
-                    show_error_box(msg + details, isError,3 );
+                    show_error_box(msg + details, isError, 3);
                 } else {
                     if (flow.equals("D")) {
                         DealerAuth();
+                        return;
                     } else if (flow.equals("M")) {
                         ManualAuth();
+                        return;
                     }
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
                     String details = "\n"+context.getResources().getString(R.string.MemberName) + Ekyc.eKYCMemberName + "\n" +
@@ -602,8 +604,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
                             context.getResources().getString(R.string.PindCode) + Ekyc.eKYCPindCode+ "\n" +
                             context.getResources().getString(R.string.Gender) + Ekyc.eKYCGeneder+ "\n" +
                             context.getResources().getString(R.string.Date) +  currentDateTimeString + "\n";
-                    show_error_box(msg + details, isError,3 );
-                    show_error_box(msg, context.getResources().getString(R.string.Member_EKYC) + isError, 0);
+                    show_error_box(msg + details, isError,0);
+                    //show_error_box(msg, context.getResources().getString(R.string.Member_EKYC) + isError, 0);
                 }
             }
         });

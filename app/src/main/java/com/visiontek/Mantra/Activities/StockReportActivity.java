@@ -78,10 +78,8 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                 Toast.makeText(context, context.getResources().getString(R.string.ConnectUSB), Toast.LENGTH_LONG).show();
                 print.setEnabled(true);
                 synchronized (this) {
-
                 }
             }
-
         }
     };
 

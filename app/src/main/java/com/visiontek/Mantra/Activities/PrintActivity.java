@@ -245,7 +245,6 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void dialog(final String[] str, final int i) {
-
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(context.getResources().getString(R.string.Printing));
         alertDialogBuilder.setTitle(context.getResources().getString(R.string.Transaction));

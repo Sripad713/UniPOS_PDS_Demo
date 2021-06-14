@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.visiontek.Mantra.Adapters.CustomAdapter;
 import com.visiontek.Mantra.Models.DATAModels.DataModel;
 import com.visiontek.Mantra.Models.DealerDetailsModel.GetUserDetails.DealerModel;
+import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.MemberModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Json_Parsing;
 import com.visiontek.Mantra.Utils.Util;
@@ -71,6 +72,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
     CheckBox checkBox;
     TextView rd;
     Context context;
+    MemberModel memberModel;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +94,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
             show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service),0);
             rd.setTextColor(context.getResources().getColor(R.color.black));
         }
-
+        memberModel = (MemberModel) getIntent().getSerializableExtra("OBJ");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -348,8 +350,11 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 } else {
                     if (Mdealer == 1) {
                         Mdealer = 0;
+                        Intent ration = new Intent(context, RationDetailsActivity.class);
+                        ration.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        ration.putExtra("OBJ", memberModel);
+                        startActivity(ration);
                         finish();
-                        return;
                     } else {
                         if (dealerModel.fusionflag == 1) {
                             dealerModel.fusionflag = 0;
@@ -500,7 +505,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
 
         dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
 
