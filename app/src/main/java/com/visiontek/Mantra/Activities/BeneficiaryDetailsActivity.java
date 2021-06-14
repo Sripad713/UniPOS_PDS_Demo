@@ -39,6 +39,7 @@ import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.mantra.mTerminal100.printer.Prints;
 import com.visiontek.Mantra.Adapters.CustomAdapter4;
+import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetURLDetails.BeneficiaryAuth;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetURLDetails.BeneficiaryDetails;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetUserDetails.BeneficiaryModel;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.UIDSeeding.GetURLDetails.UIDAuth;
@@ -97,7 +98,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     ProgressDialog pd = null;
     String details;
     TextView Ben_cardnum;
-
+    BeneficiaryAuth beneficiaryAuth;
     BeneficiaryModel beneficiaryModel=new BeneficiaryModel();
     BeneficiaryDetails beneficiaryDetails;
     private BeneficiaryDetailsActivity mActivity;
@@ -336,7 +337,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         dialog.show();
     }
 
-    UIDAuth uidAuth;
+
     private void hitURL1(String BenAuth) {
 
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Beneficiary_Verification), context.getResources().getString(R.string.Processing), true, false);
@@ -353,12 +354,12 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
                     show_error_box(msg, context.getResources().getString(R.string.Member_Details) + error, 0);
                 } else {
-                    uidAuth= (UIDAuth) object;
+                    beneficiaryAuth = (BeneficiaryAuth) object;
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                    details = "\n" + context.getResources().getString(R.string.MemberName) + uidAuth.eKYCMemberName + "\n" +
-                            context.getResources().getString(R.string.DOB) +uidAuth.eKYCDOB+ "\n" +
-                            context.getResources().getString(R.string.PindCode) + uidAuth.eKYCPindCode + "\n" +
-                            context.getResources().getString(R.string.Gender) + uidAuth.eKYCGeneder+ "\n" +
+                    details = "\n" + context.getResources().getString(R.string.MemberName) + beneficiaryAuth.eKYCMemberName + "\n" +
+                            context.getResources().getString(R.string.DOB) +beneficiaryAuth.eKYCDOB+ "\n" +
+                            context.getResources().getString(R.string.PindCode) + beneficiaryAuth.eKYCPindCode + "\n" +
+                            context.getResources().getString(R.string.Gender) + beneficiaryAuth.eKYCGeneder+ "\n" +
                             context.getResources().getString(R.string.Date) + currentDateTimeString + "\n";
 
                     if (Util.batterylevel(context)) {
@@ -555,8 +556,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             str2 = context.getResources().getString(R.string.Date) +" : "+ currentDateTimeString +
                     context.getResources().getString(R.string.Time) + " : " + currentDateTimeString +" \n" +
                     context.getResources().getString(R.string.FPS_ID) + " : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                    + context.getResources().getString(R.string.NAME) + " : " + uidAuth.eKYCMemberName + "\n\n"
-                    + context.getResources().getString(R.string.Gender) + " : " + uidAuth.eKYCGeneder+ "\n"
+                    + context.getResources().getString(R.string.NAME) + " : " + beneficiaryAuth.eKYCMemberName + "\n\n"
+                    + context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder+ "\n"
                     + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
                     + context.getResources().getString(R.string.Status) + " : " + "Success" + "\n";
 
@@ -574,8 +575,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             str2 = context.getResources().getString(R.string.Date) +" : "+ currentDateTimeString +
                     context.getResources().getString(R.string.Time) + " : " +currentDateTimeString+ " \n" +
                     context.getResources().getString(R.string.FPS_ID) + " : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                    + context.getResources().getString(R.string.NAME) + " : "+ uidAuth.eKYCMemberName + "\n\n"
-                    + context.getResources().getString(R.string.Gender) + " : " + uidAuth.eKYCGeneder+"\n"
+                    + context.getResources().getString(R.string.NAME) + " : "+ beneficiaryAuth.eKYCMemberName + "\n\n"
+                    + context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder+"\n"
                     + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
                     + context.getResources().getString(R.string.Status) + " : " + "Success" +"\n";
 
