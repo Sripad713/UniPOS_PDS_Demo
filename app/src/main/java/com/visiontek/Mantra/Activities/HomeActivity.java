@@ -125,6 +125,9 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(networkConnected(context))
                 {
+
+                    /*i = new Intent(context, ReceiveGoodsActivity.class);
+                   startActivity(i);*/
                     FrameJsonforReceiveGoods();
                 }
                 else {

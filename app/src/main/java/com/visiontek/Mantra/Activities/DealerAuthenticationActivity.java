@@ -274,7 +274,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
                     "                <deviceId>" + DEVICEID + "</deviceId>\n" +
                     "                <dispatchId>" + receiveGoodsModel.cid + "</dispatchId>\n" +
                     "                <do_ro_no>" + receiveGoodsModel. orderno + "</do_ro_no>\n" +
-                    "                <noOfComm>0</noOfComm>\n" +
+                    "                <noOfComm>"+receiveGoodsModel.tcCommDetails.size()+"</noOfComm>\n" +
                     "                <route_off_auth>" + refno + "</route_off_auth>\n" +
                     "                <route_uid>" + dealerModel.DUid + "</route_uid>\n" +
                     "                <shopNo>" +dealerConstants. stateBean.statefpsId + "</shopNo>\n" +

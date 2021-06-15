@@ -192,8 +192,8 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     String date = sdf1.format(new Date()).substring(6, 16);
                     int drBeansize =saleDetails.drBean.size();
                     for (int i = 0; i < drBeansize; i++) {
-                        app = saleDetails.drBean.get(i).comm_name + "          " +
-                                saleDetails.drBean.get(i).schemeName+ "         " +
+                        app = saleDetails.drBean.get(i).comm_name + "     " +
+                                saleDetails.drBean.get(i).schemeName+ "  " +
                                 saleDetails.drBean.get(i).sale+ "\n";
                         add.append(app);
 
@@ -344,13 +344,13 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     show_error_box(msg, context.getResources().getString(R.string.Dealer_Details) + isError);
 
                 } else {
+                    System.out.println("==============");
                     saleDetails= (SaleDetails) object;
                     data = new ArrayList<>();
                     int drBeansize =saleDetails.drBean.size();
                     for (int i = 0; i < drBeansize; i++) {
                         String sch = saleDetails.drBean.get(i).schemeName.trim();
                         switch (sch) {
-
                             case "AAY":
                                 data.add(new DataModel3(saleDetails.drBean.get(i).comm_name,
                                         saleDetails.drBean.get(i).total_cards, "0.0", "0.0", saleDetails.drBean.get(i).sale));
@@ -359,7 +359,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                                 data.add(new DataModel3(saleDetails.drBean.get(i).comm_name, "0.0",
                                         saleDetails.drBean.get(i).total_cards, "0.0", saleDetails.drBean.get(i).sale));
                                 break;
-                            case "PHH":
+                            case "PHH-CGFSA":
                                 data.add(new DataModel3(saleDetails.drBean.get(i).comm_name, "0.0", "0.0",
                                         saleDetails.drBean.get(i).total_cards, saleDetails.drBean.get(i).sale));
                                 break;

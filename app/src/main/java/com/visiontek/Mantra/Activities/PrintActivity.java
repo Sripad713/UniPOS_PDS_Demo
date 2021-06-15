@@ -264,6 +264,10 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                                 mp.start();
                             }
                             es.submit(new TaskPrint(mTerminal100API,str,mActivity,context,i));
+                            Intent home = new Intent(context, HomeActivity.class);
+                            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(home);
+                            finish();
                         }else {
                             show_error_box(context.getResources().getString(R.string.Battery_Msg),context.getResources().getString(R.string.Battery),1);
                         }

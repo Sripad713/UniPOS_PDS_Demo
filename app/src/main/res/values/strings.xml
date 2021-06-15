@@ -347,14 +347,14 @@
     <string name="Invalid_Password">Invalid Password</string>
     <string name="MenuList">Menu List: </string>
     <string name="Uploading_Stock">Uploading Stock</string>
-    <string name="PROGRAMMATICAL_ERROR_IN_GETTING_FILE_SIZE">PROGRAMMATICAL ERROR IN GETTING FILE SIZE</string>
+    <string name="ERROR_IN_GETTING_FILE">ERROR IN GETTING FILE</string>
     <string name="APK">APK</string>
     <string name="Download_in_progress">Download in progress</string>
     <string name="Download_Cancelled">Download Cancelled</string>
     <string name="Download_Failed">Download Failed</string>
     <string name="Unable_to_Download">Unable to Download!</string>
     <string name="Download_Completed">Download Completed</string>
-    <string name="PROGRAMMATICAL_ERROR_IN_DOWNLOAD">PROGRAMMATICAL ERROR IN DOWNLOAD</string>
+    <string name="ERROR_IN_DOWNLOAD">ERROR IN DOWNLOAD</string>
     <string name="Something_went_Wrong_Please_Try_Again">Something went Wrong Please Try Again..</string>
     <string name="No_Storage_Space_to_Download_this_File">No Storage Space to Download this File</string>
     <string name="Connection_Problem_or_Server_Down">Connection Problem or Server Down</string>
@@ -371,7 +371,7 @@
     <string name="Invalid_Quantity">Invalid Quantity</string>
     <string name="Department_of_FoodCivil_Supplies">    Department of Food,Civil Supplies and </string>
     <string name="Consumer_Affairs">Consumer Affairs</string>
-    <string name="Inspection_Receipt">      Inspection Receipt</string>
+    <string name="Receipt">Receipt</string>
     <string name="Inspected_By">Inspected By</string>
     <string name="Designation">Designation</string>
     <string name="Status">STATUS</string>

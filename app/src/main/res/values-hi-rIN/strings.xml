@@ -305,14 +305,14 @@
     <string name="Invalid_Password">अवैध पासवर्ड</string>
     <string name="MenuList">मेनू सूची: </string>
     <string name="Uploading_Stock">स्टॉक अपलोड करना</string>
-    <string name="PROGRAMMATICAL_ERROR_IN_GETTING_FILE_SIZE">विशिष्ट आकार देने में व्यावसायिक त्रुटि</string>
+    <string name="ERROR_IN_GETTING_FILE">विशिष्ट आकार देने में व्यावसायिक त्रुटि</string>
     <string name="APK">APK</string>
     <string name="Download_in_progress">डाउनलोड जारी है</string>
     <string name="Download_Cancelled">डाउनलोड रद्द किया गया</string>
     <string name="Download_Failed">डाउनलोड विफल</string>
     <string name="Unable_to_Download">डाउनलोड करने में असमर्थ!</string>
     <string name="Download_Completed">डाउनलोड सम्पन्न हुआ</string>
-    <string name="PROGRAMMATICAL_ERROR_IN_DOWNLOAD">डाउनलोड में व्यावसायिक त्रुटि</string>
+    <string name="ERROR_IN_DOWNLOAD">डाउनलोड में व्यावसायिक त्रुटि</string>
     <string name="Something_went_Wrong_Please_Try_Again">कुछ गलत हो गया, कृपया फिर से प्रयास करें..</string>
     <string name="No_Storage_Space_to_Download_this_File">कोई संग्रहण स्थान इस फ़ाइल को डाउनलोड करने के लिए नहीं</string>
     <string name="Connection_Problem_or_Server_Down">कनेक्शन समस्या या सर्वर डाउन</string>
@@ -330,7 +330,8 @@
     <string name="Invalid_Quantity">अमान्य मात्रा</string>
     <string name="Department_of_FoodCivil_Supplies">  Department of Food,Civil Supplies and   </string>
     <string name="Consumer_Affairs">Consumer Affairs</string>
-    <string name="Inspection_Receipt">रसीद की जंच करे</string>
+
+    <string name="Receipt">Receipt</string>
     <string name="Inspected_By">चेक करके</string>
     <string name="Designation">स्थिति</string>
     <string name="Status">स्थिति</string>

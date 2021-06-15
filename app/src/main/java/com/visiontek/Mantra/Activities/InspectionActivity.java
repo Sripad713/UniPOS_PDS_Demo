@@ -48,7 +48,6 @@ import com.visiontek.Mantra.Models.InspectionModel.InspectionDetails;
 import com.visiontek.Mantra.Models.RDModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
-import com.visiontek.Mantra.Utils.DatabaseHelper;
 import com.visiontek.Mantra.Utils.Json_Parsing;
 import com.visiontek.Mantra.Utils.TaskPrint;
 import com.visiontek.Mantra.Utils.Util;
@@ -109,7 +108,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     Button next, back;
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
-    String Ivendor, Iname,Itrans;
+    String Ivendor, Iname, Itrans;
     String com;
     String approval;
     String Iref;
@@ -141,8 +140,9 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     };
 
 
-    RDModel rdModel=new RDModel();
+    RDModel rdModel = new RDModel();
     InspectionDetails inspectionDetails;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,19 +174,25 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        inspectionDetails= (InspectionDetails) getIntent().getSerializableExtra("OBJ");
+        inspectionDetails = (InspectionDetails) getIntent().getSerializableExtra("OBJ");
         data = new ArrayList<>();
-        int commDetailssize=inspectionDetails.commDetails.size();
+        int commDetailssize = inspectionDetails.commDetails.size();
         for (int i = 0; i < commDetailssize; i++) {
-            inspectionDetails.commDetails.get(i).entered="0.0";
-            inspectionDetails.commDetails.get(i).variation="0.0";
+            inspectionDetails.commDetails.get(i).entered = "0.0";
+            inspectionDetails.commDetails.get(i).variation = "0.0";
 
             data.add(new DataModel2(inspectionDetails.commDetails.get(i).commNameEn,
                     inspectionDetails.commDetails.get(i).closingBalance,
                     inspectionDetails.commDetails.get(i).entered,
                     inspectionDetails.commDetails.get(i).variation));
         }
-
+        mTerminal100API = new MTerminal100API();
+        mTerminal100API.initPrinterAPI(this, this);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+            probe();
+        } else {
+            finish();
+        }
         Display();
         next = findViewById(R.id.inspection_next);
         next.setOnClickListener(new View.OnClickListener() {
@@ -235,11 +241,11 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
                     show_error_box(msg, "Member Details: " + error, 0);
                 } else {
-                    InspectionAuth inspectionAuth= (InspectionAuth) object;
+                    InspectionAuth inspectionAuth = (InspectionAuth) object;
 
-                    Ivendor=inspectionAuth.inspectorDesignation;
-                    Iname=inspectionAuth.inspectorName;
-                    Itrans=inspectionAuth.auth_transaction_code;
+                    Ivendor = inspectionAuth.inspectorDesignation;
+                    Iname = inspectionAuth.inspectorName;
+                    Itrans = inspectionAuth.auth_transaction_code;
                     com = addComm();
                     if (!com.equals("1")) {
                         String Inspectionpush = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -249,9 +255,9 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                                 "    <SOAP-ENV:Body>\n" +
                                 "        <ns1:inspPushCBData>\n" +
                                 "            <fpsId>" + dealerConstants.fpsCommonInfo.fpsId + "</fpsId>\n" +
-                                "            <fpsSessionId>" +dealerConstants. fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
+                                "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
                                 "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
-                                "            <password>" +dealerConstants. fpsURLInfo.token + "</password>\n" +
+                                "            <password>" + dealerConstants.fpsURLInfo.token + "</password>\n" +
                                 "            <approvalStatus>" + approval + "</approvalStatus>\n" +
                                 com +
                                 "            <inspUid>" + Enter_UID + "</inspUid>\n" +
@@ -302,7 +308,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         dialog.setContentView(R.layout.consent);
         Button confirm = (Button) dialog.findViewById(R.id.agree);
         Button back = (Button) dialog.findViewById(R.id.cancel);
-        TextView tv=(TextView)dialog.findViewById(R.id.consent);
+        TextView tv = (TextView) dialog.findViewById(R.id.consent);
         tv.setText(concent);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,8 +353,8 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     }
 
     private void app(String ok) {
-        int size=inspectionDetails.approvals.size();
-        for (int i = 0; i <size; i++) {
+        int size = inspectionDetails.approvals.size();
+        for (int i = 0; i < size; i++) {
             if (inspectionDetails.approvals.get(i).approveValue.equals(ok)) {
                 approval = inspectionDetails.approvals.get(i).approveKey;
             }
@@ -409,14 +415,14 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     private String addComm() {
         StringBuilder add = new StringBuilder();
         String str;
-        int commsize=inspectionDetails.commDetails.size();
+        int commsize = inspectionDetails.commDetails.size();
         if (commsize > 0) {
             for (int i = 0; i < commsize; i++) {
                 str = "<inspCBUpdate>\n" +
                         "                <closingBalance>" + inspectionDetails.commDetails.get(i).closingBalance + "</closingBalance>\n" +
-                        "                <commCode>" + inspectionDetails.commDetails.get(i).commCode+ "</commCode>\n" +
+                        "                <commCode>" + inspectionDetails.commDetails.get(i).commCode + "</commCode>\n" +
                         "                <observedClosingBalance>" + inspectionDetails.commDetails.get(i).entered + "</observedClosingBalance>\n" +
-                        "                <variation>" + inspectionDetails.commDetails.get(i).variation+ "</variation>\n" +
+                        "                <variation>" + inspectionDetails.commDetails.get(i).variation + "</variation>\n" +
                         "</inspCBUpdate>\n";
                 add.append(str);
             }
@@ -463,7 +469,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                                         "   \"terminalId\" : " + "\"" + DEVICEID + "\"" + ",\n" +
                                         "   \"timeStamp\" : " + "\"" + currentDateTimeString + "\"" + ",\n" +
                                         /*"   \"token\" : " + "\"" + fpsURLInfo.token() + "\"" + ",\n" +*/
-                                        "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
+                                        "   \"token\" : " + "\"9f943748d8c1ff6ded5145c59d0b2ae7\"" + "\n" +
                                         "}";
                                 Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
                                 ConsentformURL(consentrequest);
@@ -560,20 +566,20 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 "    <SOAP-ENV:Body>\n" +
                 "        <ns2:getAuthenticateNICAuaInspectionRD2>\n" +
                 "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
-                "            <stateCode>" +dealerConstants. stateBean.stateCode + "</stateCode>\n" +
-                "            <Shop_no>" +dealerConstants. stateBean.statefpsId + "</Shop_no>\n" +
+                "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
+                "            <Shop_no>" + dealerConstants.stateBean.statefpsId + "</Shop_no>\n" +
                 "            <User_Id>" + dealerConstants.fpsCommonInfo.fpsId + "</User_Id>\n" +
                 "            <uidNumber>" + Aadhaar + "</uidNumber>\n" +
                 "            <udc>" + DEVICEID + "</udc>\n" +
                 "            <authMode>V</authMode>\n" +
                 "            <auth_packet>\n" +
-                "                <ns1:certificateIdentifier>" +rdModel. ci + "</ns1:certificateIdentifier>\n" +
+                "                <ns1:certificateIdentifier>" + rdModel.ci + "</ns1:certificateIdentifier>\n" +
                 "                <ns1:dataType>X</ns1:dataType>\n" +
                 "                <ns1:dc>" + rdModel.dc + "</ns1:dc>\n" +
-                "                <ns1:dpId>" +rdModel. dpId + "</ns1:dpId>\n" +
+                "                <ns1:dpId>" + rdModel.dpId + "</ns1:dpId>\n" +
                 "                <ns1:encHmac>" + rdModel.hmac + "</ns1:encHmac>\n" +
                 "                <ns1:mc>" + rdModel.mc + "</ns1:mc>\n" +
-                "                <ns1:mid>" +rdModel. mi + "</ns1:mid>\n" +
+                "                <ns1:mid>" + rdModel.mi + "</ns1:mid>\n" +
                 "                <ns1:rdId>" + rdModel.rdsId + "</ns1:rdId>\n" +
                 "                <ns1:rdVer>" + rdModel.rdsVer + "</ns1:rdVer>\n" +
                 "                <ns1:secure_pid>" + rdModel.pid + "</ns1:secure_pid>\n" +
@@ -650,12 +656,12 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                         AFTERDATA = String.valueOf(var);
                         DATA = String.valueOf(textdata);
 
-                        inspectionDetails.commDetails.get(p).entered= DATA;
-                        inspectionDetails.commDetails.get(p).variation= AFTERDATA;
+                        inspectionDetails.commDetails.get(p).entered = DATA;
+                        inspectionDetails.commDetails.get(p).variation = AFTERDATA;
 
                         data.clear();
-                        int size= inspectionDetails.commDetails.size();
-                        for (int i = 0; i <size; i++) {
+                        int size = inspectionDetails.commDetails.size();
+                        for (int i = 0; i < size; i++) {
                             data.add(new DataModel2(inspectionDetails.commDetails.get(i).commNameEn,
                                     inspectionDetails.commDetails.get(i).closingBalance,
                                     inspectionDetails.commDetails.get(i).entered,
@@ -718,17 +724,17 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 rdModel.ftype = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("fType").getTextContent();
                 rdModel.nmpoint = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("nmPoints").getTextContent();
                 rdModel.pid = doc.getElementsByTagName("Data").item(0).getTextContent();
-                rdModel. skey = doc.getElementsByTagName("Skey").item(0).getTextContent();
-                rdModel. ci = doc.getElementsByTagName("Skey").item(0).getAttributes().getNamedItem("ci").getTextContent();
-                rdModel. hmac = doc.getElementsByTagName("Hmac").item(0).getTextContent();
-                rdModel. type = doc.getElementsByTagName("Data").item(0).getAttributes().getNamedItem("type").getTextContent();
+                rdModel.skey = doc.getElementsByTagName("Skey").item(0).getTextContent();
+                rdModel.ci = doc.getElementsByTagName("Skey").item(0).getAttributes().getNamedItem("ci").getTextContent();
+                rdModel.hmac = doc.getElementsByTagName("Hmac").item(0).getTextContent();
+                rdModel.type = doc.getElementsByTagName("Data").item(0).getAttributes().getNamedItem("type").getTextContent();
                 rdModel.dpId = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("dpId").getTextContent();
-                rdModel. rdsId = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("rdsId").getTextContent();
-                rdModel. rdsVer = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("rdsVer").getTextContent();
+                rdModel.rdsId = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("rdsId").getTextContent();
+                rdModel.rdsVer = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("rdsVer").getTextContent();
                 rdModel.dc = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("dc").getTextContent();
                 rdModel.mi = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("mi").getTextContent();
-                rdModel. mc = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("mc").getTextContent();
-                rdModel. skey = rdModel.skey.replaceAll(" ", "\n");
+                rdModel.mc = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("mc").getTextContent();
+                rdModel.skey = rdModel.skey.replaceAll(" ", "\n");
 
             }
         } catch (Exception e) {
@@ -747,10 +753,11 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
                 new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         if (i == 1) {
-                            // print();
+                            print();
                         }
                     }
                 });
@@ -758,28 +765,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-
-
-
-   /* private void refresh(int p) {
-        data.clear();
-        for (int i = 0; i < commNameEn.size(); i++) {
-            if (!check( i)) {
-                data.add(new DataModel2(commNameEn.get(i), closingBalance.get(i), "ENTER", "--"));
-            }
-        }
-        Display();
-    }*/
-
-   /* private boolean check(int i) {
-        for (int j = 0; j < entered.size(); j++) {
-            if (i == place.get(j)) {
-                data.add(new DataModel2(commNameEn.get(i), closingBalance.get(i), entered.get(j), variation.get(j)));
-                return true;
-            }
-        }
-        return false;
-    }*/
 
     private void image(String content, String name, int align) {
         try {
@@ -813,11 +798,11 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
         StringBuilder add = new StringBuilder();
         String app;
-        int size=inspectionDetails.commDetails.size();
+        int size = inspectionDetails.commDetails.size();
         for (int i = 0; i < size; i++) {
-            app = inspectionDetails.commDetails.get(i).commNameEn+ "    " +
+            app = inspectionDetails.commDetails.get(i).commNameEn + "    " +
                     inspectionDetails.commDetails.get(i).closingBalance + "    " +
-                    inspectionDetails.commDetails.get(i).entered+ "    " +
+                    inspectionDetails.commDetails.get(i).entered + "    " +
                     inspectionDetails.commDetails.get(i).variation;
             add.append(app);
 
@@ -825,21 +810,22 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         String str1, str2, str3, str4, str5;
         String[] str = new String[4];
         if (L.equals("hi")) {
-            str1 = context.getResources().getString(R.string.Inspection_Receipt) + "\n";
+            str1 = context.getResources().getString(R.string.Inspection) + "\n"+
+                    context.getResources().getString(R.string.Receipt) + "\n";
             image(str1, "header.bmp", 1);
-            str2 =    context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
+            str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
                     + context.getResources().getString(R.string.TransactionID) + Iref + "\n\n"
-                     + context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
+                    + context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
                     + context.getResources().getString(R.string.Designation) + Ivendor + "\n";
             str3 = context.getResources().getString(R.string.Date) + currentDateTimeString + "\n\n"
                     + context.getResources().getString(R.string.Status) + approval + " \n"
                     + context.getResources().getString(R.string.Commidity_CB_Obsevn_Varitn) + "\n";
 
             str4 = add + "";
-                    image(str2 + str3 + str4 , "body.bmp", 0);
+            image(str2 + str3 + str4, "body.bmp", 0);
             str5 = context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n";
 
-                    image(str5, "tail.bmp", 1);
+            image(str5, "tail.bmp", 1);
             str[0] = "1";
             str[1] = "1";
             str[2] = "1";
@@ -847,23 +833,21 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             checkandprint(str, 1);
         } else {
 
-            str1 = context.getResources().getString(R.string.Inspection_Receipt) + "\n"
-                    + "------------------------------------\n";
-            str2 =     context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
+            str1 = context.getResources().getString(R.string.Inspection) + "\n"+
+                    context.getResources().getString(R.string.Receipt) + "\n";
+            str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
                     + context.getResources().getString(R.string.TransactionID) + Iref + "\n\n"
-           +context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
+                    + context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
                     + context.getResources().getString(R.string.Designation) + Ivendor + "\n";
             str3 = context.getResources().getString(R.string.Date) + currentDateTimeString + "\n\n"
                     + context.getResources().getString(R.string.Status) + approval + " \n"
-                    + context.getResources().getString(R.string.Commidity_CB_Obsevn_Varitn) + "\n"
-                    + "----------------------------\n";
-            str4 = add
-                    + "-----------------------------\n";
+                    + context.getResources().getString(R.string.Commidity_CB_Obsevn_Varitn) + "\n";
+            str4 = String.valueOf(add);
             str5 = context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n";
 
             str[0] = "1";
             str[1] = str1;
-            str[2] = str2+str3+str4;
+            str[2] = str2 + str3 + str4;
             str[3] = str5;
             checkandprint(str, 0);
 

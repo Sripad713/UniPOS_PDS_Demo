@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tool"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Consent_Form"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textSize="@dimen/TextsizeT"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/consent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/button"
+            android:textSize="@dimen/TextsizeH"
+            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/LayoutP"
+            android:weightSum="2"
+            tools:ignore="MissingConstraints">
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="@dimen/ButtonW"
+                android:layout_height="@dimen/ButtonH"
+                android:layout_margin="@dimen/ButtonM"
+                android:layout_weight="1"
+                android:background="@color/opaque_red"
+                android:text="@string/Cancel"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/TextsizeB"/>
+            <Button
+                android:id="@+id/agree"
+                android:layout_width="@dimen/ButtonW"
+                android:layout_height="@dimen/ButtonH"
+                android:layout_margin="@dimen/ButtonM"
+                android:layout_weight="1"
+                android:background="@color/ok"
+                android:text="@string/Agree"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/TextsizeB"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

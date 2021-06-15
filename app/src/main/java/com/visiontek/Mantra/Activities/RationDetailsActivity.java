@@ -67,9 +67,10 @@ import static com.visiontek.Mantra.Utils.Util.toast;
 
 public class RationDetailsActivity extends AppCompatActivity {
     private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    public static int MESSAGE_FROM_SERIAL_PORT = 0;
     Spinner options;
-    int choice;
+    public static int MESSAGE_FROM_SERIAL_PORT = 0;
+    public static double TOTALAMOUNT;
+    public int choice;
     private BluetoothSocket btSocket = null;
     private BluetoothAdapter mBluetoothAdapter;
     private UsbService usbService;
@@ -78,16 +79,13 @@ public class RationDetailsActivity extends AppCompatActivity {
     StringBuilder storeUSBdata = new StringBuilder();
     StringBuilder storeBTdata = new StringBuilder();
     Handler bluetoothIn;
-//--------------------------------------------------------------------------------
-    Button confirm, back;
+    //--------------------------------------------------------------------------------
+    Button confirm, back,get;
     Context context;
     ProgressDialog pd = null;
     TextView rd;
     MemberModel memberModel;
-   // RationDetailsModel rationDetailsModel = new RationDetailsModel();
-    public static double TOTALAMOUNT;
-
-
+    // RationDetailsModel rationDetailsModel = new RationDetailsModel();
     public String
             reasonName,
             reasonid,
@@ -101,6 +99,7 @@ public class RationDetailsActivity extends AppCompatActivity {
 
         confirm = findViewById(R.id.confirm);
         back = findViewById(R.id.ration_back);
+        get=findViewById(R.id.getweight);
 
         mHandler = new MyHandler(this);
         pd = new ProgressDialog(context);
@@ -251,7 +250,11 @@ public class RationDetailsActivity extends AppCompatActivity {
         int commDetailssize = memberConstants.commDetails.size();
         for (int i = 0; i < commDetailssize; i++) {
             if (value==0) {
-                memberConstants.commDetails.get(i).requiredQty = memberConstants.commDetails.get(i).balQty;
+                if (memberConstants.commDetails.get(i).weighing.equals("N")) {
+                    memberConstants.commDetails.get(i).requiredQty = memberConstants.commDetails.get(i).balQty;
+                }else {
+                    memberConstants.commDetails.get(i).requiredQty="0.0";
+                }
             }
             modeldata.add(new DataModel1(memberConstants.commDetails.get(i).commName +
                     "\n(" + memberConstants.commDetails.get(i).totQty + ")",

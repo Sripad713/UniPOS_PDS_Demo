@@ -103,6 +103,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         last = findViewById(R.id.cash_pds_lastreciept);
         get_details = findViewById(R.id.cash_pds_getdetails);
 
+
         radioGroup = findViewById(R.id.groupradio);
 
         mActivity = this;
@@ -449,6 +450,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 case R.id.radio_rc_no:
                     if (mp!=null) {
                         releaseMediaPlayer(context,mp);
+
                     }
                     if(L.equals( "hi")) {
                        mp=mp.create(context, R.raw.c200043);

@@ -173,10 +173,10 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     private boolean check() {
         tcCommDetails tcCommDetails;
         int size=receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.size();
-       float val = 0;
+      // float val = 0;
         for (int i=0;i<size;i++){
-            val= Float.parseFloat(receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).enteredvalue);
-            if (val>0.0){
+            /*val= Float.parseFloat(receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).enteredvalue);
+            //if (val>0.0){*/
                 tcCommDetails =new tcCommDetails();
                 tcCommDetails.enteredvalue=
                         receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).enteredvalue;
@@ -194,17 +194,17 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
                         receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).schemeName;
                 receiveGoodsModel.tcCommDetails.add(tcCommDetails);
 
-            }
+          //  }
         }
-        for (int i=0;i<size;i++){
+      /*  for (int i=0;i<size;i++){
             System.out.println("==========="+val);
             val= Float.parseFloat(receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).enteredvalue);
             if (val>0.0){
                 System.out.println("="+val);
                 return true;
             }
-        }
-        return false;
+        }*/
+        return true;
     }
 
 
@@ -271,7 +271,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         if (i == 1) {
-                           //    print();
+                             // print();
                         }
                     }
                 });

@@ -305,6 +305,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                             Intent ration = new Intent(context, RationDetailsActivity.class);
                             ration.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             ration.putExtra("OBJ", memberModel);
+                            ration.putExtra("REF", Ekyc.zdistrTxnId);
                             startActivity(ration);
                             finish();
                         }
@@ -569,7 +570,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         }
 
     }
-
+    Ekyc Ekyc;
     private void hiteKyc(String memeKyc) {
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member), context.getResources().getString(R.string.Authenticating_EKYC), true, false);
         XML_Parsing request = new XML_Parsing(MemberDetailsActivity.this, memeKyc, 8);
@@ -580,7 +581,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
-                Ekyc Ekyc= (Ekyc) object;
+                Ekyc= (Ekyc) object;
+
                 if (isError.equals("E00") && flow.equals("F")) {
 
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());

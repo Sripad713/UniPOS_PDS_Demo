@@ -63,13 +63,25 @@ public class Json_Parsing {
         RequestBody body = null;
         body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), frame);
         System.out.println("BOdy.." + body);
-        String url;
+        String url = null;
 
         System.out.println("@@ Type: " +type);
         if (type==2 || type==3){
             System.out.println("----------------------------------------------------------23");
-            url= dealerConstants.fpsURLInfo.wsdlOffline+"reasonConsent";
+            url = dealerConstants.fpsURLInfo.wsdlOffline + "reasonConsent";
             System.out.println(url);
+           /* if (!dealerConstants.fpsURLInfo.wsdlOffline.isEmpty()&& !dealerConstants.fpsURLInfo.wsdlOffline.equals(null)) {
+            }
+            else {
+                try {
+                    code="1";
+                    msg="Requesting on Empty URL Tag";
+                    callback();
+                    return;
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }*/
         }else {
             url="http://epos.nic.in/ePosCommonServiceCTG/eposCommon/getFpsStockDetails";
         }
@@ -227,7 +239,7 @@ public class Json_Parsing {
         tcCommDetails tcCommDetails=null;
         try {
             JSONObject reader= new JSONObject(myResponse);
-
+            System.out.println(myResponse);
             msg = reader.getString("respMessage");
             code = reader.getString("respCode");
             if (code.equals("00")) {

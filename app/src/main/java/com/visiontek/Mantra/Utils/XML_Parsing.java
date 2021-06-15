@@ -2362,6 +2362,7 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
                 if (eventType == XmlPullParser.START_TAG) {
                     if (xpp.getName().equals("drBean")) {
                         drBean=new drBean();
+                        System.out.println("Object created drBean");
                     }
 
                     if (xpp.getName().equals("commNamell")) {
