@@ -37,16 +37,22 @@ import com.visiontek.Mantra.Utils.DatabaseHelper;
 import com.visiontek.Mantra.Utils.TelephonyInfo;
 import com.visiontek.Mantra.Utils.Util;
 import com.visiontek.Mantra.Utils.XML_Parsing;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 public class StartActivity extends AppCompatActivity {
-    private static final int READ_PHONE_STATE = 1;
+    private static final int REQUEST_READ_PHONE_STATE = 1;
     private static final int REQUEST_ACCESS_COARSE_LOCATION = 2;
     private static final int REQUEST_STORAGE_WRITE_SDCARD = 3;
+    private static final int REQUEST_ACCESS_FINE_LOCATION = 4;
     static String L;
     static MediaPlayer mp;
     Context context;
@@ -59,9 +65,10 @@ public class StartActivity extends AppCompatActivity {
     TelephonyManager telephonyManager;
     SubscriptionManager subscriptionManager;
     List<SubscriptionInfo> subscriptionInfoList;
-    String longitude;
-    String latitude;
+    static String longitude;
+    static String latitude;
     DatabaseHelper db;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,44 +77,44 @@ public class StartActivity extends AppCompatActivity {
         checkLanguage();
         setContentView(R.layout.activity_start);
 
-        TextView rd = findViewById(R.id.rd);
-        start = findViewById(R.id.button_start);
-        quit = findViewById(R.id.button_quit);
-        settings = findViewById(R.id.button_settings);
-        pd = new ProgressDialog(context);
-        boolean  rd_fps= RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
-        if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            rd.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service));
-        }
-
-        mp = mp.create(context,R.raw.c100041);
+        mp = mp.create(context, R.raw.c100041);
         mp.start();
 
         PS = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, READ_PHONE_STATE);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_PHONE_STATE);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_ACCESS_FINE_LOCATION );
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
+        if (rd_fps) {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+        } else {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
+            return;
+        }
+
+        initilisation();
+
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter.enable();
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Util.networkConnected(context)) {
-                    if (mp!=null) {
-                        releaseMediaPlayer(context,mp);
+                    if (mp != null) {
+                        releaseMediaPlayer(context, mp);
                     }
                     if (L.equals("hi")) {
                         mp = mp.create(context, R.raw.c200175);
                         mp.start();
-                    }else {
+                    } else {
                         mp = mp.create(context, R.raw.c100175);
                         mp.start();
                     }
                     FramexmlforDealerDetails();
                 } else {
-                    show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection));
+                    show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                 }
             }
         });
@@ -122,14 +129,46 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent settings = new Intent(context, SettingActivity.class);
-                startActivityForResult(settings,1);
+                startActivityForResult(settings, 1);
             }
         });
     }
 
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("V" + appversion);
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+        toolbarFpsid.setText("DEVICE ID");
+        toolbarFpsidValue.setText(DEVICEID);
+        toolbarActivity.setText("START");
+        DisplayGPS();
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
+    }
+
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        start = findViewById(R.id.button_start);
+        quit = findViewById(R.id.button_quit);
+        settings = findViewById(R.id.button_settings);
+        toolbarInitilisation();
+    }
+
     private void checkLanguage() {
         db = new DatabaseHelper(context);
-        L=db.get_L("Language");
+        L = db.get_L("Language");
         if (L != null && !L.isEmpty()) {
             setLocal(L);
         }
@@ -163,7 +202,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void hitURLforDealer(String dealers) {
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer_Details), context.getResources().getString(R.string.Fetching_Dealers), true, false);
+        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer_Details), context.getResources().getString(R.string.Please_wait), true, false);
         XML_Parsing request = new XML_Parsing(StartActivity.this, dealers, 1);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
@@ -172,31 +211,38 @@ public class StartActivity extends AppCompatActivity {
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
-                if (isError == null || isError.isEmpty()){
-                    show_error_box("Invalid Out put from Server","No Response");
+                if (isError == null || isError.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
                 if (!isError.equals("00")) {
-                    show_error_box(msg, context.getResources().getString(R.string.Dealer_Details)+": " + isError);
+                    show_error_box(msg,  isError, 0);
                 } else {
                     Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
+                    //show_error_box(msg,  isError,1);
+
                 }
             }
         });
         request.execute();
     }
 
-    private void show_error_box(String msg, String title) {
+    private void show_error_box(String msg, String title, final int i) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setMessage(dealerConstants.fpsCommonInfo.flasMessage1);
+        alertDialogBuilder.setTitle(msg);
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
+                        if (i==1){
+                            Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(i);
+                        }
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -229,25 +275,24 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==1){
+        if (requestCode == 1) {
             recreate();
         }
     }
+
     public void setLocal(String lang) {
         if (lang != null) {
             Locale locale = new Locale(lang);
-            System.out.println("++++++++++++++++++++++++++++++++SET" + lang);
             Locale.setDefault(locale);
             Configuration con = new Configuration();
             con.locale = locale;
             getBaseContext().getResources().updateConfiguration(con, getBaseContext().getResources().getDisplayMetrics());
         }
     }
-    private boolean getLocation() {
 
+    private boolean getLocation() {
         int locationMode = 0;
         String locationProviders;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             try {
                 locationMode = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
@@ -256,9 +301,7 @@ public class StartActivity extends AppCompatActivity {
                 e.printStackTrace();
                 return false;
             }
-
             return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-
         } else {
             locationProviders = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
             return !TextUtils.isEmpty(locationProviders);
@@ -284,7 +327,7 @@ public class StartActivity extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
 
     }
@@ -377,13 +420,11 @@ public class StartActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case READ_PHONE_STATE:
+            case REQUEST_READ_PHONE_STATE:
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_COARSE_LOCATION);
                     }
-                } else {
-                    show_error_box(context.getResources().getString(R.string.Please_allow_these_permissions_in_order_to_use_application), context.getResources().getString(R.string.Permissions));
                 }
                 break;
             case REQUEST_ACCESS_COARSE_LOCATION:
@@ -391,18 +432,22 @@ public class StartActivity extends AppCompatActivity {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_WRITE_SDCARD);
                     }
-                } else {
-                    show_error_box(context.getResources().getString(R.string.Please_allow_these_permissions_in_order_to_use_application), context.getResources().getString(R.string.Permissions));
                 }
                 break;
             case REQUEST_STORAGE_WRITE_SDCARD:
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
+                    }
+                }
+                break;
+            case REQUEST_ACCESS_FINE_LOCATION:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         Startbutton();
                     }
-                } else {
-                    show_error_box(context.getResources().getString(R.string.Please_allow_these_permissions_in_order_to_use_application), context.getResources().getString(R.string.Permissions));
                 }
+
                 break;
             default:
                 break;
@@ -412,7 +457,7 @@ public class StartActivity extends AppCompatActivity {
     private void Startbutton() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             get_method();
-            //DisplayGPS();
+            DisplayGPS();
         }
 
         TelephonyManager telephonyManager = null;
@@ -445,9 +490,6 @@ public class StartActivity extends AppCompatActivity {
             System.out.println("-------------------" + longitude);
             latitude = String.valueOf(loc.getLatitude());
             System.out.println("-------------------" + latitude);
-
-            locationManager.removeUpdates(this);
-            locationManager = null;
         }
 
         @Override

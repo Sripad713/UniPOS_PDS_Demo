@@ -53,14 +53,15 @@ public class CustomAdapter4 extends RecyclerView.Adapter<CustomAdapter4.MyViewHo
 
         textViewName.setText(dataSet.get(listPosition).getName());
         textViewUid.setText(dataSet.get(listPosition).getUid());
-        System.out.println("DONEEEEEEEEEEEEEEEE");
         textViewStatus.setText(dataSet.get(listPosition).getStatus());
 
         if (model.isSelected) {
-            lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            lin.setBackground(context.getResources().getDrawable(R.drawable.bgreen));
+            //lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
 
         } else {
-            lin.setBackgroundColor(context.getResources().getColor(R.color.background));
+            lin.setBackground(context.getResources().getDrawable(R.drawable.white));
+            //lin.setBackgroundColor(context.getResources().getColor(R.color.background));
 
         }
 
@@ -108,85 +109,3 @@ public class CustomAdapter4 extends RecyclerView.Adapter<CustomAdapter4.MyViewHo
     }
 }
 
-
-
-
-
-
-
-
-
-
-  /* if (type1==1) {
-            lin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (type == 0) {
-                        dclick = true;
-                        DName = dname.get(listPosition);
-                        DUid = duid.get(listPosition);
-                        Dtype = dtype.get(listPosition);
-                        DAtype = dauthtype.get(listPosition);
-                        switch (DAtype) {
-                            case "I":
-                                dIRIS = true;
-                                dfCount = "0";
-                                diCount = "1";
-                                toast(context, "IRIS login");
-                                break;
-                            case "F":
-                                dfCount = "1";
-                                diCount = "0";
-                                toast(context, "Biometric  login");
-                                break;
-                            case "P":
-                                toast(context, "Password login");
-                                break;
-                        }
-                        System.out.println("***DealerAUTH*** =" + DAtype);
-                        System.out.println("***DealerName*** =" + DName);
-                        System.out.println("***DealerUID*** =" + DUid);
-                        System.out.println("***DealerUID*** =" + Dtype);
-
-                    } else {
-                        mclick = true;
-                        MName = mname.get(listPosition);
-                        MUid = muid.get(listPosition);
-                        Mmemid = mmemid.get(listPosition);
-                        Mfinger = mfinger.get(listPosition);
-                        Miris = miris.get(listPosition);
-                        if (Mfinger.equals("Y")) {
-                            mBIO = true;
-                        *//*scanfp.setEnabled(true);
-                        scanfp.setVisibility(View.VISIBLE);*//*
-                        } else {
-                        *//*scanfp.setEnabled(false);
-                        scanfp.setVisibility(View.INVISIBLE);*//*
-                            toast(context, "Iris for Authentication");
-                        }
-                        if (Miris.equals("Y")) {
-                            mIRIS = true;
-                        *//*Iris.setEnabled(true);
-                        Iris.setVisibility(View.VISIBLE);*//*
-                        } else {
-                        *//*Iris.setEnabled(false);
-                        Iris.setVisibility(View.INVISIBLE);*//*
-                            toast(context, "ScanFP for Authentication");
-                        }
-                        System.out.println("***Member Name*** =" + MName);
-                        System.out.println("***Member UID*** =" + MUid);
-                        System.out.println("***Memeber ID*** =" + Mmemid);
-                        System.out.println("***Memeber FP*** =" + Mfinger);
-                        System.out.println("***Memeber IRIS*** =" + Miris);
-                    }
-                    for (int i = 0; i < dataSet.size(); i++) {
-                        System.out.println("++++++++++++++++++++3");
-                        dataSet.get(i).isSelected = false;
-                    }
-                    System.out.println("++++++++++++++++++++4");
-                    model.isSelected = true;
-                    notifyDataSetChanged();
-
-                }
-            });
-        }*/

@@ -17,9 +17,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.DatabaseHelper;
+import com.visiontek.Mantra.Utils.Util;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 
 
@@ -32,37 +40,35 @@ public class DeviceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device);
-
         context = DeviceActivity.this;
-
-        TextView rd = findViewById(R.id.rd);
-        boolean  rd_fps;
-        rd_fps = RDservice(context);
         db = new DatabaseHelper(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
         if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service));
-            rd.setTextColor(context.getResources().getColor(R.color.black));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
+                    context.getResources().getString(R.string.RD_Service));
+            return;
         }
-       /* setlang=findViewById(R.id.set);
-        setlang.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                function(opt);
-            }
-        });*/
+
+        initilisation();
+
         function1();
 
-        back=findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+    }
+
+    private void initilisation() {
+        back=findViewById(R.id.back);
+        toolbarInitilisation();
     }
 
     private void function1() {
@@ -133,5 +139,30 @@ public class DeviceActivity extends AppCompatActivity {
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
 
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("Version : " + appversion);
+
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("DEVICE");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
+    }
 }

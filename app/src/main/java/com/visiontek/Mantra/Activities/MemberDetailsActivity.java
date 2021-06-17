@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +58,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 
@@ -89,24 +92,19 @@ public class MemberDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_member__details);
 
         context = MemberDetailsActivity.this;
-        pd = new ProgressDialog(context);
-        scanfp = findViewById(R.id.member_scanFP);
-        back = findViewById(R.id.member_back);
-        checkBox = findViewById(R.id.mcheck);
 
-        rd = findViewById(R.id.rd);
-
-        boolean  rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
         if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service),0);
-            rd.setTextColor(context.getResources().getColor(R.color.black));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
+                    context.getResources().getString(R.string.RD_Service),0);
+            return;
         }
 
+        initilisation();
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -232,6 +230,14 @@ public class MemberDetailsActivity extends AppCompatActivity {
             }
         }, 1);
         recyclerView.setAdapter(adapter);
+    }
+
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        scanfp = findViewById(R.id.member_scanFP);
+        back = findViewById(R.id.member_back);
+        checkBox = findViewById(R.id.mcheck);
+        toolbarInitilisation();
     }
 
     private void ConsentDialog(String concent) {
@@ -782,7 +788,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
                 } else {
                     memberModel.EKYC = 0;
-                    toast(context, context.getResources().getString(R.string.Please_enter_a_valid_Value));
+                    show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_UID),0);
                 }
             }
         });
@@ -878,5 +884,31 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
     public interface OnClickListener {
         void onClick_d(int p);
+    }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("V" + appversion);
+
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("MEMBER");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
     }
 }

@@ -49,6 +49,7 @@ import com.visiontek.Mantra.Utils.Util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
@@ -57,6 +58,8 @@ import java.util.UUID;
 
 import static com.visiontek.Mantra.Activities.DeviceListActivity.address;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
@@ -95,31 +98,22 @@ public class RationDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ration_details);
         context = RationDetailsActivity.this;
-        pd = new ProgressDialog(context);
 
-        confirm = findViewById(R.id.confirm);
-        back = findViewById(R.id.ration_back);
-        get=findViewById(R.id.getweight);
-
-        mHandler = new MyHandler(this);
-        pd = new ProgressDialog(context);
         MESSAGE_FROM_SERIAL_PORT = 0;
 
-        rd = findViewById(R.id.rd);
-        memberModel = (MemberModel) getIntent().getSerializableExtra("OBJ");
-        Ref = getIntent().getStringExtra("REF");
-        boolean rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+       /* TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
         if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service));
-            rd.setTextColor(context.getResources().getColor(R.color.black));
-        }
-
-
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
+                    context.getResources().getString(R.string.RD_Service));
+            return;
+        }*/
+        Ref = getIntent().getStringExtra("REF");
+        memberModel = (MemberModel) getIntent().getSerializableExtra("OBJ");
+        initilisation();
         Display(0);
 
         confirm.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +129,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                 dialog();
             }
         });
-        options=findViewById(R.id.options);
+
 
         String[] items = new String[]{"Select", "Bluetooth", "USB"};
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
@@ -153,6 +147,17 @@ public class RationDetailsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        options=findViewById(R.id.options);
+        confirm = findViewById(R.id.confirm);
+        back = findViewById(R.id.ration_back);
+        get=findViewById(R.id.getweight);
+
+        mHandler = new MyHandler(this);
+        toolbarInitilisation();
     }
 
     private void dialog() {
@@ -260,8 +265,8 @@ public class RationDetailsActivity extends AppCompatActivity {
                     "\n(" + memberConstants.commDetails.get(i).totQty + ")",
                     memberConstants.commDetails.get(i).balQty,
                     memberConstants.commDetails.get(i).price,
-                    memberConstants.commDetails.get(i).requiredQty,
-                    memberConstants.commDetails.get(i).closingBal));
+                    memberConstants.commDetails.get(i).closingBal,
+                    memberConstants.commDetails.get(i).requiredQty));
         }
         adapter = new CustomAdapter1(context, modeldata, new OnClickListener() {
             @Override
@@ -522,7 +527,7 @@ public class RationDetailsActivity extends AppCompatActivity {
             } else {
                 mp = mp.create(context, R.raw.c100189);
                 mp.start();
-                toast(context, context.getResources().getString(R.string.Invalid_Inputs));
+                show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Inputs));
             }
         }
     }
@@ -763,6 +768,31 @@ public class RationDetailsActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("V." + appversion);
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("COMMODITIES");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
     }
 }
 

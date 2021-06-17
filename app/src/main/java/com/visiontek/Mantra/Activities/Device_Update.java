@@ -28,7 +28,12 @@ import com.visiontek.Mantra.Utils.MyFTPClientFunctions;
 import com.visiontek.Mantra.Utils.Util;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 
 
@@ -55,21 +60,20 @@ public class Device_Update extends AppCompatActivity {
 
         setContentView(R.layout.activity_device__update);
         context = Device_Update.this;
-        gprs = findViewById(R.id.gprs);
-        usb = findViewById(R.id.usb);
 
-        TextView rd = findViewById(R.id.rd);
-        boolean rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
         if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service));
-
-            rd.setTextColor(context.getResources().getColor(R.color.black));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
+                    context.getResources().getString(R.string.RD_Service));
+            return;
         }
+
+        initilisation();
         Device_Download_path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/");
         Destination = Device_Download_path + FTP_file;
         usb.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +93,12 @@ public class Device_Update extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void initilisation() {
+        gprs = findViewById(R.id.gprs);
+        usb = findViewById(R.id.usb);
+        toolbarInitilisation();
     }
 
     private void filesize() {
@@ -212,5 +222,31 @@ public class Device_Update extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
 
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("Version : " + appversion);
+
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("DeviceID");
+        toolbarFpsidValue.setText(DEVICEID);
+
+        toolbarActivity.setText(context.getResources().getText(R.string.Start));
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
+    }
 }

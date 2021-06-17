@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginVertical="10dp"
+    android:layout_marginVertical="5dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -11,13 +11,14 @@
         android:clickable="true"
         android:foreground="@drawable/custom_ripple"
         android:focusable="true"
+        android:background="@drawable/white"
         android:layout_height="match_parent">
         <LinearLayout
             android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:weightSum="4"
-            android:padding="@dimen/LayoutP"
+            android:padding="@dimen/Layoutcard"
             android:background="@color/ik_blue_white"
             android:orientation="horizontal"
             tools:ignore="MissingConstraints">
@@ -27,9 +28,8 @@
                 android:id="@+id/total"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/LayoutP"
                 android:layout_weight="1"
-                android:textColor="@color/black"
+                android:textColor="@color/blackblack"
                 android:textSize="@dimen/TextsizeV"
                 android:gravity="center_horizontal" />
             <TextView
@@ -38,9 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:padding="@dimen/LayoutP"
                 android:textSize="@dimen/TextsizeV"
-                android:textColor="@color/black"
+                android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
             <TextView
                 android:id="@+id/rate"
@@ -48,9 +47,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:padding="@dimen/LayoutP"
                 android:textSize="@dimen/TextsizeV"
-                android:textColor="@color/black"
+                android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
 
             <TextView
@@ -59,9 +57,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:padding="@dimen/LayoutP"
                 android:textSize="@dimen/TextsizeV"
-                android:textColor="@color/black"
+                android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

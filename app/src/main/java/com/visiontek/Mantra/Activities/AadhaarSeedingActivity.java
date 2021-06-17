@@ -29,14 +29,19 @@ import com.visiontek.Mantra.Utils.XML_Parsing;
 import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 
+import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
@@ -51,6 +56,7 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
     Context context;
     RadioButton radiorc, radioaadhaar;
     EditText id;
+    TextView cardno;
     int select;
     ProgressDialog pd = null;
     RadioGroup radioGroup;
@@ -59,24 +65,19 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_u_i_d__seeding);
-
         context = AadhaarSeedingActivity.this;
-        TextView rd = findViewById(R.id.rd);
-        boolean rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
         if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
             show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service));
-            rd.setTextColor(context.getResources().getColor(R.color.black));
+            return;
         }
-        pd = new ProgressDialog(context);
-        details = findViewById(R.id.button_ok);
-        back = findViewById(R.id.button_back);
-        id = findViewById(R.id.et_id);
-        radioGroup = findViewById(R.id.groupradio);
+        initilisation();
+
         details.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +103,16 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
         });
     }
 
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        details = findViewById(R.id.button_ok);
+        back = findViewById(R.id.button_back);
+        cardno = findViewById(R.id.cardno);
+        id = findViewById(R.id.id);
+        radioGroup = findViewById(R.id.groupradio);
+        toolbarInitilisation();
+    }
+
     public void onRadioButtonClicked(View v) {
         radiorc = findViewById(R.id.radio_rc_no);
         radioaadhaar = findViewById(R.id.radio_aadhaar);
@@ -109,6 +120,7 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
         if (checked) {
             switch (v.getId()) {
                 case R.id.radio_rc_no:
+                    cardno.setText("RC No :");
                     select = 1;
                     radiorc.setTypeface(null, Typeface.BOLD_ITALIC);
                     radioaadhaar.setTypeface(null, Typeface.NORMAL);
@@ -129,6 +141,7 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
                     break;
 
                 case R.id.radio_aadhaar:
+                    cardno.setText("Aadhaar No :");
                     select = 2;
                     radiorc.setTypeface(null, Typeface.NORMAL);
                     radioaadhaar.setTypeface(null, Typeface.BOLD_ITALIC);
@@ -193,6 +206,7 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
                 mp = mp.create(context, R.raw.c100047);
                 mp.start();
                 show_error_box(context.getResources().getString(R.string.Please_Enter_Valid_Number), context.getResources().getString(R.string.Invalid_UID));
+                return;
             }
         } else {
 
@@ -271,6 +285,32 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("Version : " + appversion);
+
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("UID SEEDING");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
     }
 
 }

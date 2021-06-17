@@ -13,8 +13,10 @@ import android.graphics.Typeface;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 
+import android.icu.lang.UCharacter;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,6 +40,9 @@ import com.visiontek.Mantra.Utils.XML_Parsing;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
@@ -49,7 +54,10 @@ import javax.crypto.NoSuchPaddingException;
 
 import static com.visiontek.Mantra.Activities.DealerDetailsActivity.dealername;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
+import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
@@ -63,7 +71,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
     public String Cash_ID;
     public static String ACTION_USB_PERMISSION;
     int select;
-    String st;
 
     RadioGroup radioGroup;
     Context context;
@@ -71,56 +78,32 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
     Button home, last, get_details;
     RadioButton radiorc, radioaadhaar;
     ProgressDialog pd = null;
-    TextView rd;
 
     private CashPDSActivity mActivity;
     private final ExecutorService es = Executors.newScheduledThreadPool(30);
     private MTerminal100API mTerminal100API;
-    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action)) {
-                probe();
-                // btnConnect.performClick();
-                Toast.makeText(context, context.getResources().getString(R.string.ConnectUSB), Toast.LENGTH_LONG).show();
-                last.setEnabled(true);
-                synchronized (this) {
-                }
-            }
-        }
-    };
+    TextView cardno;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cash__p_d_s);
         context = CashPDSActivity.this;
-        pd = new ProgressDialog(context);
-
-        id = findViewById(R.id.id);
-        home = findViewById(R.id.cash_pds_home);
-        last = findViewById(R.id.cash_pds_lastreciept);
-        get_details = findViewById(R.id.cash_pds_getdetails);
-
-
-        radioGroup = findViewById(R.id.groupradio);
-
         mActivity = this;
         ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
 
-        rd = findViewById(R.id.rd);
-
-        boolean  rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
         if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service));
-            rd.setTextColor(context.getResources().getColor(R.color.black));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
+                    context.getResources().getString(R.string.RD_Service));
+            return;
         }
+
+        initilisation();
 
         get_details.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +152,19 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         } else {
             finish();
         }
+    }
+
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        id = findViewById(R.id.id);
+        id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        home = findViewById(R.id.cash_pds_home);
+        last = findViewById(R.id.cash_pds_lastreciept);
+        get_details = findViewById(R.id.cash_pds_getdetails);
+        radioGroup = findViewById(R.id.groupradio);
+        cardno = findViewById(R.id.cardno);
+        toolbarInitilisation();
+
     }
 
     private void hitURL_LastRecipt(String lastRecipt) {
@@ -357,6 +353,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     mp.start();
                 }
                 show_error_box(context.getResources().getString(R.string.Please_Enter_Valid_Number), context.getResources().getString(R.string.Invalid_UID));
+                return;
             }
         } else {
             members = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
@@ -448,6 +445,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         if (checked) {
             switch (v.getId()) {
                 case R.id.radio_rc_no:
+                    cardno.setText("RC No :");
                     if (mp!=null) {
                         releaseMediaPlayer(context,mp);
 
@@ -468,6 +466,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     break;
 
                 case R.id.radio_aadhaar:
+                    cardno.setText("Aadhar No :");
                     select = 2;
                     radiorc.setTypeface(null, Typeface.NORMAL);
                     radioaadhaar.setTypeface(null, Typeface.BOLD_ITALIC);
@@ -598,8 +597,20 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 mActivity.last.setEnabled(bIsOpened);
             }
         });
-
     }
+
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                probe();
+                last.setEnabled(true);
+                synchronized (this) {
+                }
+            }
+        }
+    };
 
     private void probe() {
         final UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -607,7 +618,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
         if (deviceList.size() > 0) {
             while (deviceIterator.hasNext()) {
-// Here is if not while, indicating that I only want to support a device
                 final UsbDevice device = deviceIterator.next();
                 if ((device.getProductId() == 22304) && (device.getVendorId() == 1155)) {
                     // TODO Auto-generated method stub
@@ -618,26 +628,46 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         IntentFilter filter = new IntentFilter();
                         filter.addAction(ACTION_USB_PERMISSION);
                         context.registerReceiver(mUsbReceiver, filter);
-                        Toast.makeText(getApplicationContext(),
-                                context.getResources().getString(R.string.Permission_denied), Toast.LENGTH_LONG)
-                                .show();
+                        Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.Permission_denied), Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.Connecting), Toast.LENGTH_SHORT).show();
-
                         last.setEnabled(false);
                         es.submit(new Runnable() {
                             @Override
-                            public void run() {
-                                mTerminal100API.printerOpenTask(mUsbManager, device, context);
+                            public void run() { mTerminal100API.printerOpenTask(mUsbManager, device, context);
                             }
                         });
                     }
-                    //  });
                 } else {
-                    //  Toast.makeText(ConnectUSBActivity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
+                      Toast.makeText(context, "Connection Failed", Toast.LENGTH_SHORT).show();
                 }
             }
         }
+    }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("V" + appversion);
+
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("CASH PDS");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
     }
 }
 

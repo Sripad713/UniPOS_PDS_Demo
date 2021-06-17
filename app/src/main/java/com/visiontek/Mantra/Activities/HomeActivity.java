@@ -23,9 +23,13 @@ import com.visiontek.Mantra.Utils.Util;
 import com.visiontek.Mantra.Utils.XML_Parsing;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 
@@ -51,31 +55,18 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         context = HomeActivity.this;
 
-        pd = new ProgressDialog(context);
-        logout = findViewById(R.id.logout);
-        issue = findViewById(R.id.issue);
-        inspection = findViewById(R.id.inspection);
-        aadhar = findViewById(R.id.aadhaar_services);
-        receive = findViewById(R.id.receive_goods);
-        reports = findViewById(R.id.reports);
-        others = findViewById(R.id.others);
-
-        rd = findViewById(R.id.rd);
-
-
-        boolean  rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
         if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
-
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service), 0);
-            rd.setTextColor(context.getResources().getColor(R.color.black));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
+                    context.getResources().getString(R.string.RD_Service),0);
+            return;
         }
 
-
+        initilisation();
         if (diableMenu(context, 10)) {
             inspection.setVisibility(View.INVISIBLE);
             inspection.setEnabled(false);
@@ -125,9 +116,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(networkConnected(context))
                 {
-
-                    /*i = new Intent(context, ReceiveGoodsActivity.class);
-                   startActivity(i);*/
                     FrameJsonforReceiveGoods();
                 }
                 else {
@@ -174,6 +162,18 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        logout = findViewById(R.id.logout);
+        issue = findViewById(R.id.issue);
+        inspection = findViewById(R.id.inspection);
+        aadhar = findViewById(R.id.aadhaar_services);
+        receive = findViewById(R.id.receive_goods);
+        reports = findViewById(R.id.reports);
+        others = findViewById(R.id.others);
+        toolbarInitilisation();
     }
 
     private void logout(String logoutrequest) {
@@ -325,5 +325,31 @@ public class HomeActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("V" + appversion);
+
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("HOME");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
     }
 }

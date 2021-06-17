@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,7 +37,6 @@ import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
 import com.visiontek.Mantra.Utils.Json_Parsing;
 import com.visiontek.Mantra.Utils.Util;
-import com.visiontek.Mantra.Utils.XML_Parsing;
 
 import org.w3c.dom.Document;
 
@@ -46,6 +44,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,6 +55,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 
@@ -89,27 +90,18 @@ public class UIDDetailsActivity extends AppCompatActivity {
         context = UIDDetailsActivity.this;
 
         uidDetails = (UIDDetails) getIntent().getSerializableExtra("OBJ");
-        TextView rd = findViewById(R.id.rd);
-        boolean  rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
         if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service));
-            rd.setTextColor(context.getResources().getColor(R.color.black));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
+            return;
         }
-        pd = new ProgressDialog(context);
 
+        initilisation();
 
-
-        UID_details_cardnum = findViewById(R.id.UID_details_cardnum);
-        UID_details_cardnum.setText(uidDetails.rationCardId);
-        Ekyc = findViewById(R.id.UID_details_Ekyc);
-        back = findViewById(R.id.UID_details_back);
-
-        checkBox=findViewById(R.id.check);
 
         Ekyc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +112,8 @@ public class UIDDetailsActivity extends AppCompatActivity {
                             if (uidModel.bfd_1.equals("Y")) {
                                 ConsentDialog(ConsentForm(context));
                             } else {
-                                show_error_box(context.getResources().getString(R.string.Member_is_already_Verified), context.getResources().getString(R.string.Already_Verified));
+                                show_error_box(context.getResources().getString(R.string.Member_is_already_Verified),
+                                        context.getResources().getString(R.string.Already_Verified),0);
                             }
                         } else {
                             String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
@@ -143,7 +136,7 @@ public class UIDDetailsActivity extends AppCompatActivity {
                             ConsentformURL(consentrequest);
                         }
                     }else {
-                        show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection));
+                        show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
                     }
 
 
@@ -199,6 +192,20 @@ public class UIDDetailsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+
+
+
+        UID_details_cardnum = findViewById(R.id.UID_details_cardnum);
+        UID_details_cardnum.setText(uidDetails.rationCardId);
+        Ekyc = findViewById(R.id.UID_details_Ekyc);
+        back = findViewById(R.id.UID_details_back);
+
+        checkBox=findViewById(R.id.check);
+        toolbarInitilisation();
+    }
+
     private void ConsentDialog(String concent) {
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -240,9 +247,9 @@ public class UIDDetailsActivity extends AppCompatActivity {
                     pd.dismiss();
                 }
                 if (!code.equals("00")) {
-                    show_error_box(msg,  code);
+                    show_error_box(msg,  code, 0);
                 } else {
-                    show_error_box(msg,  code);
+                    show_error_box(msg,  code, 0);
                 }
             }
 
@@ -314,7 +321,9 @@ public class UIDDetailsActivity extends AppCompatActivity {
                 }
                 if (!error.equals("E00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                    show_error_box(msg, context.getResources().getString(R.string.Member_Details) + error);
+                    show_error_box(msg,
+                            context.getResources().getString(R.string.Member_Details) + error,
+                            1);
                 } else {
                     UIDAuth uidAuth= (UIDAuth) object;
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
@@ -323,7 +332,9 @@ public class UIDDetailsActivity extends AppCompatActivity {
                             context.getResources().getString(R.string.PindCode) +uidAuth.eKYCPindCode + "\n" +
                             context.getResources().getString(R.string.Gender) + uidAuth.eKYCGeneder + "\n" +
                             context.getResources().getString(R.string.Date) + currentDateTimeString + "\n";
-                    show_error_box(msg + details, context.getResources().getString(R.string.UID_Seeding) + error);
+                    show_error_box(msg + details,
+                            context.getResources().getString(R.string.UID_Seeding) + error,
+                            1);
 
                 }
             }
@@ -386,7 +397,7 @@ public class UIDDetailsActivity extends AppCompatActivity {
                     System.out.println("PID DATA = " + piddata);
                     prep_Mlogin();
                 } else {
-                    show_error_box(uidModel.rdModel.errinfo, context.getResources().getString(R.string.PID_Exception));
+                    show_error_box(uidModel.rdModel.errinfo, context.getResources().getString(R.string.PID_Exception), 0);
                     System.out.println("ERROR PID DATA = " + piddata);
                 }
             }
@@ -454,11 +465,11 @@ public class UIDDetailsActivity extends AppCompatActivity {
             }
             hitURL1(UIDAuth);
         } else {
-            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection));
+            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
         }
     }
 
-    private void show_error_box(String msg, String title) {
+    private void show_error_box(String msg, String title, final int i) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
         alertDialogBuilder.setTitle(title);
@@ -467,7 +478,9 @@ public class UIDDetailsActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-
+                        if (i==1){
+                            finish();
+                        }
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -517,6 +530,31 @@ public class UIDDetailsActivity extends AppCompatActivity {
         }
         return 0;
     }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
 
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("Version : " + appversion);
+
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("UID");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
+    }
 
 }

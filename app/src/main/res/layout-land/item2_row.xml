@@ -11,13 +11,14 @@
         android:clickable="true"
         android:foreground="@drawable/custom_ripple"
         android:focusable="true"
+        android:background="@drawable/white"
         android:layout_height="match_parent">
         <LinearLayout
             android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:weightSum="2"
-            android:padding="@dimen/LayoutP"
+            android:padding="@dimen/Layoutcard"
             android:background="@color/ik_blue_white"
             android:orientation="horizontal"
             tools:ignore="MissingConstraints">
@@ -28,17 +29,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:textSize="@dimen/TextsizeV"
+                android:textSize="25sp"
                 android:textAlignment="center"
-                android:textColor="@color/black" />
+                android:textColor="@color/blackblack" />
             <TextView
                 android:textAlignment="center"
                 android:id="@+id/txtType"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textSize="@dimen/TextsizeV"
-                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

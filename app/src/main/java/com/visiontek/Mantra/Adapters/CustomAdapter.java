@@ -79,10 +79,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         textViewVersion.setText(dataSet.get(listPosition).getType());
 
         if (model.isSelected) {
-            lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+           lin.setBackground(context.getResources().getDrawable(R.drawable.bgreen));
+            //lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
 
         } else {
-            lin.setBackgroundColor(context.getResources().getColor(R.color.background));
+            lin.setBackground(context.getResources().getDrawable(R.drawable.white));
+            //lin.setBackgroundColor(context.getResources().getColor(R.color.background));
 
         }
 

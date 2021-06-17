@@ -59,6 +59,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,6 +75,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
@@ -146,26 +149,23 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_inspection);
         context = InspectionActivity.this;
-
-        TextView rd = findViewById(R.id.rd);
-        checkBox = findViewById(R.id.check);
-        boolean rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
-        if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
-            rd.setTextColor(context.getResources().getColor(R.color.black));
-        }
-        pd = new ProgressDialog(context);
-
         mActivity = this;
         ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
+
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
+        if (rd_fps) {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+        } else {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
+                    context.getResources().getString(R.string.RD_Service),0);
+            return;
+        }
+
+        initilisation();
 
         radioGroup = findViewById(R.id.groupradio);
         recyclerView = findViewById(R.id.my_recycler_view);
@@ -194,7 +194,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             finish();
         }
         Display();
-        next = findViewById(R.id.inspection_next);
+
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -203,7 +203,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             }
         });
 
-        back = findViewById(R.id.inspection_back);
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -211,13 +211,14 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             }
         });
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            probe();
-        } else {
-            finish();
-        }
+    }
 
-
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        checkBox = findViewById(R.id.check);
+        next = findViewById(R.id.inspection_next);
+        back = findViewById(R.id.inspection_back);
+        toolbarInitilisation();
     }
 
 
@@ -398,14 +399,68 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 }
                 if (!error.equals("00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                    show_error_box(msg, context.getResources().getString(R.string.Commodities_Error) + error, 0);
+                    show_error_box(msg, context.getResources().getString(R.string.Commodities_Error) + error,
+                            1);
                 } else {
                     Iref = ref;
-                    if (Util.batterylevel(context)) {
-                        show_error_box(msg, context.getResources().getString(R.string.Transaction_Success_Do_you_want_to_Print_Receipt), 1);
-                    } else {
-                        show_error_box(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery), 0);
+                    String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+                    StringBuilder add = new StringBuilder();
+                    String app;
+                    int size = inspectionDetails.commDetails.size();
+                    for (int i = 0; i < size; i++) {
+                        app = inspectionDetails.commDetails.get(i).commNameEn + "    " +
+                                inspectionDetails.commDetails.get(i).closingBalance + "    " +
+                                inspectionDetails.commDetails.get(i).entered + "    " +
+                                inspectionDetails.commDetails.get(i).variation;
+                        add.append(app);
+
                     }
+                    String str1, str2, str3, str4, str5;
+                    String[] str = new String[4];
+                    if (L.equals("hi")) {
+                        str1 = context.getResources().getString(R.string.Inspection) + "\n"+
+                                context.getResources().getString(R.string.Receipt) + "\n";
+                        image(str1, "header.bmp", 1);
+                        str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
+                                + context.getResources().getString(R.string.TransactionID) + Iref + "\n\n"
+                                + context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
+                                + context.getResources().getString(R.string.Designation) + Ivendor + "\n";
+                        str3 = context.getResources().getString(R.string.Date) + currentDateTimeString + "\n\n"
+                                + context.getResources().getString(R.string.Status) + approval + " \n"
+                                + context.getResources().getString(R.string.Commidity_CB_Obsevn_Varitn) + "\n";
+
+                        str4 = add + "";
+                        image(str2 + str3 + str4, "body.bmp", 0);
+                        str5 = context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n";
+
+                        image(str5, "tail.bmp", 1);
+                        str[0] = "1";
+                        str[1] = "1";
+                        str[2] = "1";
+                        str[3] = "1";
+                        checkandprint(str, 1);
+                    } else {
+
+                        str1 = context.getResources().getString(R.string.Inspection) + "\n"+
+                                context.getResources().getString(R.string.Receipt) + "\n";
+                        str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
+                                + context.getResources().getString(R.string.TransactionID) + Iref + "\n\n"
+                                + context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
+                                + context.getResources().getString(R.string.Designation) + Ivendor + "\n";
+                        str3 = context.getResources().getString(R.string.Date) + currentDateTimeString + "\n\n"
+                                + context.getResources().getString(R.string.Status) + approval + " \n"
+                                + context.getResources().getString(R.string.Commidity_CB_Obsevn_Varitn) + "\n";
+                        str4 = String.valueOf(add);
+                        str5 = context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n";
+
+                        str[0] = "1";
+                        str[1] = str1;
+                        str[2] = str2 + str3 + str4;
+                        str[3] = str5;
+                        checkandprint(str, 0);
+
+                    }
+
                 }
             }
         });
@@ -487,9 +542,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     } catch (NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     }
-                    // connectRDservice();
-
-
                 } else {
                     if (mp != null) {
                         releaseMediaPlayer(context, mp);
@@ -500,7 +552,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                         mp.start();
                     }
                     show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_UID), 0);
-
                 }
             }
         });
@@ -639,7 +690,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         alert.setMessage(context.getResources().getString(R.string.Please_Enter_the_required_quantity));
         alert.setTitle(context.getResources().getString(R.string.Enter_Quantity));
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        edittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        edittext.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         InputFilter[] FilterArray = new InputFilter[1];
         FilterArray[0] = new InputFilter.LengthFilter(12);
         edittext.setFilters(FilterArray);
@@ -757,7 +808,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         if (i == 1) {
-                            print();
+                         finish();
                         }
                     }
                 });
@@ -787,71 +838,36 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 mp.start();
             }
             es.submit(new TaskPrint(mTerminal100API, str, mActivity, context, i));
-
+            finish();
         } else {
-            show_error_box(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery), 0);
+            printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery),str,i);
         }
     }
+    private void printbox(String msg, String title, final String[] str, final int type) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(msg);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        checkandprint(str,type);
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void print() {
-        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-        StringBuilder add = new StringBuilder();
-        String app;
-        int size = inspectionDetails.commDetails.size();
-        for (int i = 0; i < size; i++) {
-            app = inspectionDetails.commDetails.get(i).commNameEn + "    " +
-                    inspectionDetails.commDetails.get(i).closingBalance + "    " +
-                    inspectionDetails.commDetails.get(i).entered + "    " +
-                    inspectionDetails.commDetails.get(i).variation;
-            add.append(app);
+                    }
+                });
+        alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.Cancel),
+                new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
 
-        }
-        String str1, str2, str3, str4, str5;
-        String[] str = new String[4];
-        if (L.equals("hi")) {
-            str1 = context.getResources().getString(R.string.Inspection) + "\n"+
-                    context.getResources().getString(R.string.Receipt) + "\n";
-            image(str1, "header.bmp", 1);
-            str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                    + context.getResources().getString(R.string.TransactionID) + Iref + "\n\n"
-                    + context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
-                    + context.getResources().getString(R.string.Designation) + Ivendor + "\n";
-            str3 = context.getResources().getString(R.string.Date) + currentDateTimeString + "\n\n"
-                    + context.getResources().getString(R.string.Status) + approval + " \n"
-                    + context.getResources().getString(R.string.Commidity_CB_Obsevn_Varitn) + "\n";
 
-            str4 = add + "";
-            image(str2 + str3 + str4, "body.bmp", 0);
-            str5 = context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n";
-
-            image(str5, "tail.bmp", 1);
-            str[0] = "1";
-            str[1] = "1";
-            str[2] = "1";
-            str[3] = "1";
-            checkandprint(str, 1);
-        } else {
-
-            str1 = context.getResources().getString(R.string.Inspection) + "\n"+
-                    context.getResources().getString(R.string.Receipt) + "\n";
-            str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                    + context.getResources().getString(R.string.TransactionID) + Iref + "\n\n"
-                    + context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
-                    + context.getResources().getString(R.string.Designation) + Ivendor + "\n";
-            str3 = context.getResources().getString(R.string.Date) + currentDateTimeString + "\n\n"
-                    + context.getResources().getString(R.string.Status) + approval + " \n"
-                    + context.getResources().getString(R.string.Commidity_CB_Obsevn_Varitn) + "\n";
-            str4 = String.valueOf(add);
-            str5 = context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n";
-
-            str[0] = "1";
-            str[1] = str1;
-            str[2] = str2 + str3 + str4;
-            str[3] = str5;
-            checkandprint(str, 0);
-
-        }
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
 
@@ -952,5 +968,30 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         void onClick_d(int p);
     }
 
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
 
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("Version : " + appversion);
+
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("INSPECTION");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
+    }
 }

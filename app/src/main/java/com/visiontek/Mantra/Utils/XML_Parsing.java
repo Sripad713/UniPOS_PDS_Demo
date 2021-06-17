@@ -304,183 +304,11 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
 
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_TAG) {
-                    if (xpp.getName().equals("availedFps")) {
-                        lastReceiptComm=new LastReceiptComm();
-                        eventType = xpp.next();
-                        if (eventType == XmlPullParser.TEXT) {
-                            lastReceiptComm.availedFps = (xpp.getText());
-                            System.out.println("availedFps 1 =================" + xpp.getText());
-                        }
-                    }
-
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("bal_qty")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. bal_qty=(xpp.getText());
-                                System.out.println("bal_qty 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("carry_over")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. carry_over=(xpp.getText());
-                                System.out.println("carry_over 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("commIndividualAmount")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. commIndividualAmount=(xpp.getText());
-                                System.out.println("commIndividualAmount 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("comm_name")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. comm_name=(xpp.getText());
-                                System.out.println("comm_name 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("comm_name_ll")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. comm_name_ll=(xpp.getText());
-                                System.out.println("comm_name_ll 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("member_name")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. member_name=(xpp.getText());
-                                System.out.println("member_name 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("member_name_ll")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. member_name_ll=(xpp.getText());
-                                System.out.println("member_name_ll 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("rcId")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. rcId=(xpp.getText());
-                                System.out.println("rcId 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("reciept_id")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. reciept_id=(xpp.getText());
-                                System.out.println("reciept_id 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("retail_price")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. retail_price=(xpp.getText());
-                                System.out.println("retail_price 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("scheme_desc_en")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. scheme_desc_en=(xpp.getText());
-                                System.out.println("scheme_desc_en 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("scheme_desc_ll")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. scheme_desc_ll=(xpp.getText());
-                                System.out.println("scheme_desc_ll 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("tot_amount")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. tot_amount=(xpp.getText());
-                                System.out.println("tot_amount 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("total_quantity")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. total_quantity=(xpp.getText());
-                                System.out.println("total_quantity 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("transaction_time")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. transaction_time=(xpp.getText());
-                                System.out.println("transaction_time 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("uid_refer_no")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceiptComm. uid_refer_no=(xpp.getText());
-                                System.out.println("uid_refer_no 2 =================" + xpp.getText());
-                                lastReceipt.lastReceiptComm.add(lastReceiptComm);
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("rcId")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceipt.rcId=(xpp.getText());
-                                System.out.println("rcId 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("retail_price")) {
-                            eventType = xpp.next();
-                            if (eventType == XmlPullParser.TEXT) {
-                                lastReceipt.retail_price=(xpp.getText());
-                                System.out.println("retail_price 2 =================" + xpp.getText());
-                            }
-                        }
-                    }
                     if (eventType == XmlPullParser.START_TAG) {
                         if (xpp.getName().equals("respCode")) {
                             eventType = xpp.next();
                             if (eventType == XmlPullParser.TEXT) {
-                               code=(xpp.getText());
+                                code=(xpp.getText());
                                 System.out.println("respCode 2 =================" + xpp.getText());
                             }
                         }
@@ -491,6 +319,198 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
                             if (eventType == XmlPullParser.TEXT) {
                                 msg=(xpp.getText());
                                 System.out.println("respMessage 2 =================" + xpp.getText());
+                            }
+                        }
+                    }
+                    if (code.equals("00")) {
+                        if (xpp.getName().equals("availedFps")) {
+                            lastReceiptComm = new LastReceiptComm();
+                            eventType = xpp.next();
+                            if (eventType == XmlPullParser.TEXT) {
+                                lastReceiptComm.availedFps = (xpp.getText());
+                                System.out.println("availedFps 1 =================" + xpp.getText());
+                            }
+                        }
+
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("bal_qty")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.bal_qty = (xpp.getText());
+                                    System.out.println("bal_qty 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("carry_over")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.carry_over = (xpp.getText());
+                                    System.out.println("carry_over 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("commIndividualAmount")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.commIndividualAmount = (xpp.getText());
+                                    System.out.println("commIndividualAmount 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("comm_name")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.comm_name = (xpp.getText());
+                                    System.out.println("comm_name 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("comm_name_ll")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.comm_name_ll = (xpp.getText());
+                                    System.out.println("comm_name_ll 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("member_name")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.member_name = (xpp.getText());
+                                    System.out.println("member_name 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("member_name_ll")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.member_name_ll = (xpp.getText());
+                                    System.out.println("member_name_ll 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("rcId")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.rcId = (xpp.getText());
+                                    System.out.println("rcId 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("reciept_id")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.reciept_id = (xpp.getText());
+                                    System.out.println("reciept_id 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("retail_price")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.retail_price = (xpp.getText());
+                                    System.out.println("retail_price 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("scheme_desc_en")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.scheme_desc_en = (xpp.getText());
+                                    System.out.println("scheme_desc_en 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("scheme_desc_ll")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.scheme_desc_ll = (xpp.getText());
+                                    System.out.println("scheme_desc_ll 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("tot_amount")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.tot_amount = (xpp.getText());
+                                    System.out.println("tot_amount 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("total_quantity")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.total_quantity = (xpp.getText());
+                                    System.out.println("total_quantity 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("transaction_time")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.transaction_time = (xpp.getText());
+                                    System.out.println("transaction_time 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("uid_refer_no")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceiptComm.uid_refer_no = (xpp.getText());
+                                    System.out.println("uid_refer_no 2 =================" + xpp.getText());
+                                    lastReceipt.lastReceiptComm.add(lastReceiptComm);
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("rcId")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceipt.rcId = (xpp.getText());
+                                    System.out.println("rcId 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("retail_price")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    lastReceipt.retail_price = (xpp.getText());
+                                    System.out.println("retail_price 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("respCode")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    code = (xpp.getText());
+                                    System.out.println("respCode 2 =================" + xpp.getText());
+                                }
+                            }
+                        }
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("respMessage")) {
+                                eventType = xpp.next();
+                                if (eventType == XmlPullParser.TEXT) {
+                                    msg = (xpp.getText());
+                                    System.out.println("respMessage 2 =================" + xpp.getText());
+                                }
                             }
                         }
                     }

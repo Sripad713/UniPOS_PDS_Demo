@@ -43,7 +43,7 @@ public class Json_Parsing {
 
     private OnResultListener onResultListener;
     Context context;
-    public Json_Parsing(Context context, String frame, int type) {
+    public Json_Parsing(Context context, String frame, int type)  {
         Parsing(frame, type);
     }
 
@@ -51,40 +51,40 @@ public class Json_Parsing {
         this.onResultListener = onResultListener;
     }
 
-    public void Parsing(String frame, final int type) {
-        System.out.println("@@ Parsing Data..." + frame);
-        OkHttpClient okHttpClient;
-        okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .build();
+    public void Parsing(String frame, final int type)  {
+        try {
 
-        RequestBody body = null;
-        body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), frame);
-        System.out.println("BOdy.." + body);
-        String url = null;
 
-        System.out.println("@@ Type: " +type);
-        if (type==2 || type==3){
-            System.out.println("----------------------------------------------------------23");
-            url = dealerConstants.fpsURLInfo.wsdlOffline + "reasonConsent";
-            System.out.println(url);
-           /* if (!dealerConstants.fpsURLInfo.wsdlOffline.isEmpty()&& !dealerConstants.fpsURLInfo.wsdlOffline.equals(null)) {
-            }
-            else {
-                try {
-                    code="1";
-                    msg="Requesting on Empty URL Tag";
-                    callback();
-                    return;
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+            System.out.println("@@ Parsing Data..." + frame);
+            OkHttpClient okHttpClient;
+            okHttpClient = new OkHttpClient.Builder()
+                    .connectTimeout(10, TimeUnit.SECONDS)
+                    .writeTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .build();
+
+            RequestBody body = null;
+            body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), frame);
+            System.out.println("BOdy.." + body);
+            String url = null;
+
+            System.out.println("@@ Type: " + type);
+            if (type == 2 || type == 3) {
+                System.out.println("----------------------------------------------------------");
+                if (!dealerConstants.fpsURLInfo.wsdlOffline.isEmpty() && !dealerConstants.fpsURLInfo.wsdlOffline.equals(null)
+                        && !dealerConstants.fpsURLInfo.wsdlOffline.equals("NA")) {
+                    url = dealerConstants.fpsURLInfo.wsdlOffline + "reasonConsent";
+                    System.out.println(url);
+                } else {
+
+                        code = "1";
+                        msg = "Requesting on Empty URL Tag";
+
+
                 }
-            }*/
-        }else {
-            url="http://epos.nic.in/ePosCommonServiceCTG/eposCommon/getFpsStockDetails";
-        }
+            } else {
+                url = "http://epos.nic.in/ePosCommonServiceCTG/eposCommon/getFpsStockDetails";
+            }
        /* if (type==17 || type==18){
 
             System.out.println(url);
@@ -96,58 +96,74 @@ public class Json_Parsing {
             url="http://epos.nic.in/ePosCommonServiceCTG/eposCommon/getFpsStockDetails";
         }*/
 
-        final Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
+            final Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
 
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                final String myResponse = e.toString();
-                System.out.println("@@ Failure Response...." + myResponse);
-                JSONObject reader;
-                try {
-                    reader = new JSONObject(myResponse);
-                    msg = reader.getString("respMessage");
-                    code = reader.getString("respCode");
-                } catch (JSONException jsonException) {
-                    jsonException.printStackTrace();
-                }
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            callback();
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        }
+            okHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    final String myResponse = e.toString();
+                    System.out.println("@@ Failure Response...." + myResponse);
+                    JSONObject reader;
+                    try {
+                        reader = new JSONObject(myResponse);
+                        msg = reader.getString("respMessage");
+                        code = reader.getString("respCode");
+                    } catch (JSONException jsonException) {
+                        jsonException.printStackTrace();
                     }
-                });
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                callback();
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+                        }
+                    });
 
-                System.out.println("error " + e);
-            }
+                    System.out.println("error " + e);
+                }
 
+                @Override
+                public void onResponse(@NotNull okhttp3.Call call, @NotNull Response response) throws IOException {
+
+                    myResponse = response.body().string();
+
+                    if (type == 1) {
+                        Util.generateNoteOnSD(context, "RecivegoodsRes.txt", myResponse);
+                        object = parse_recivegoods(myResponse);
+                    } else if (type == 2) {
+                        Util.generateNoteOnSD(context, "CancelRequestRes.txt", myResponse);
+                        parse_cancelReq(myResponse);
+                    } else if (type == 3) {
+                        Util.generateNoteOnSD(context, "ConsentFormRes.txt", myResponse);
+                        parse_consentform(myResponse);
+                    } else if (type == 4) {
+                        Util.generateNoteOnSD(context, "LogoutRes.txt", myResponse);
+                        parse_logout(myResponse);
+                    }
+                }
+
+            });
+        }catch (Exception e) {
+                e.printStackTrace();
+                code = "1";
+                msg = String.valueOf(e);
+
+        }
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
-            public void onResponse(@NotNull okhttp3.Call call, @NotNull Response response) throws IOException {
-
-                myResponse = response.body().string();
-
-                if (type == 1) {
-                    Util.generateNoteOnSD(context, "RecivegoodsRes.txt", myResponse);
-                    object =parse_recivegoods(myResponse);
-                }else if(type==2){
-                    Util.generateNoteOnSD(context, "CancelRequestRes.txt", myResponse);
-                    parse_cancelReq(myResponse);
-                }else if (type==3){
-                    Util.generateNoteOnSD(context, "ConsentFormRes.txt", myResponse);
-                    parse_consentform(myResponse);
-                }else if (type==4){
-                    Util.generateNoteOnSD(context, "LogoutRes.txt", myResponse);
-                    parse_logout(myResponse);
+            public void run() {
+                try {
+                    callback();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
                 }
             }
-
         });
     }
 
@@ -159,22 +175,11 @@ public class Json_Parsing {
 
             msg = reader.getString("respMessage");
             code = reader.getString("respCode");
-            /*if (code.equals("00")) {
 
-            }*/
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    callback();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-            }
-        });
+
 
     }
 
@@ -185,23 +190,11 @@ public class Json_Parsing {
 
             msg = reader.getString("respMessage");
             code = reader.getString("respCode");
-            /*if (code.equals("00")) {
 
-            }*/
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    callback();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-            }
-        });
 
     }
 
@@ -219,16 +212,7 @@ public class Json_Parsing {
             e.printStackTrace();
         }
 
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    callback();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-            }
-        });
+
     }
 
 
@@ -272,16 +256,7 @@ public class Json_Parsing {
                     receiveGoodsDetails.infoTCDetails.add(infoTCDetails);
                 }
             }
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        callback();
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
-                }
-            });
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

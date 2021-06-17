@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,89 +10,326 @@
         android:id="@+id/tool"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
-
-        <TextView
-            android:id="@+id/rd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/RD"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/TextsizeT"
-            android:textStyle="bold" />
-        <TextView
-            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:textSize="@dimen/TextsizeT"
-            android:textStyle="bold"
-            android:text="@string/AADHAAR_SERVICES"/>
-    </androidx.appcompat.widget.Toolbar>
-
-    <LinearLayout
-        android:id="@+id/innerlayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="@dimen/LayoutMH"
-        android:layout_marginVertical="@dimen/LayoutMV"
-        android:orientation="vertical">
+        android:background="@drawable/black">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/LayoutMH"
-            android:orientation="vertical"
-            android:weightSum="2">
+            android:background="@drawable/black"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/black"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/image"
+                    android:layout_height="@dimen/image"
+                    android:background="@drawable/black"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/chhattisghar" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/black"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:id="@+id/toolbarVersion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/black"
+                        android:gravity="left"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/TextsizeT"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/black"
+                        android:gravity="center"
+                        android:text="@string/CHHATISGARHPDS"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/TextsizeT"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/toolbarRD"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/black"
+                        android:gravity="right"
+                        android:text="@string/RD"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/TextsizeT"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            tools:ignore="NestedWeights">
+
+                            <TextView
+                                android:id="@+id/toolbarDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:text="DATE"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/toolbarFpsid"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:text="FPS ID"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/toolbarDateValue"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH" />
+
+                            <TextView
+                                android:id="@+id/toolbarFpsidValue"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/toolbarActivity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/TextsizeH"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:text="Toll Free "
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/TextsizeH"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            tools:ignore="NestedWeights">
+
+                            <TextView
+                                android:id="@+id/toolbarLatitude"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:text="LATITUDE"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/toolbarLongitude"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:text="LONGITUDE"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/toolbarLatitudeValue"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH" />
+
+                            <TextView
+                                android:id="@+id/toolbarLongitudeValue"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/innerlayout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:weightSum="4">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_uid_seeding"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_margin="25dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/button"
+                android:text="@string/UID_SEEDing"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold"
-                android:text="@string/UID_SEEDing"/>
-
-            <Button
-                android:layout_marginVertical="@dimen/LayoutMV"
-                android:id="@+id/btn_beneficiaryverification"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_margin="25dp"
-                android:layout_weight="1"
-                android:background="@color/button"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold"
-                android:text="@string/BENEficiary_VERIfication"
-                />
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="@dimen/LayoutMV"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_beneficiaryverification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/LayoutMV"
+                android:background="@color/button"
+                android:text="@string/BENEficiary_VERIfication"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeB"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_back"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/cancel"
+                android:text="@string/Back"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold"
-                android:text="@string/Back"/>
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/black"
+            android:gravity="bottom">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/black"
+                android:gravity="center"
+                android:text="Powered by NIC"
+                android:textColor="@color/black"
+                android:textSize="@dimen/TextsizeH"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

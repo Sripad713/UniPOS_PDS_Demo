@@ -35,10 +35,16 @@ import com.visiontek.Mantra.Utils.DatabaseHelper;
 import com.visiontek.Mantra.Utils.Util;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
+import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
@@ -63,23 +69,21 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_receive__goods);
 
         context = ReceiveGoodsActivity.this;
-        TextView rd = findViewById(R.id.rd);
-        boolean  rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
-        if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service),0);
-            rd.setTextColor(context.getResources().getColor(R.color.black));
-        }
-        pd = new ProgressDialog(context);
-        receiveGoodsDetails = (ReceiveGoodsDetails) getIntent().getSerializableExtra("OBJ");
-        trucknumber = findViewById(R.id.tv_truckno);
-        scapfp = findViewById(R.id.next);
-        back = findViewById(R.id.back);
 
+        receiveGoodsDetails = (ReceiveGoodsDetails) getIntent().getSerializableExtra("OBJ");
+
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
+        if (rd_fps) {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+        } else {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
+                    context.getResources().getString(R.string.RD_Service),0);
+            return;
+        }
+
+        initilisation();
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         recyclerView = findViewById(R.id.my_recycler_view);
@@ -88,7 +92,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         modeldata = new ArrayList<>();
-        options = findViewById(R.id.truckchit);
+
 
         ArrayList<String> trucklist=new ArrayList<>();
         int size=receiveGoodsDetails.infoTCDetails.size();
@@ -170,6 +174,16 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        trucknumber = findViewById(R.id.tv_truckno);
+        scapfp = findViewById(R.id.next);
+        back = findViewById(R.id.back);
+        options = findViewById(R.id.truckchit);
+        toolbarInitilisation();
+    }
+
     private boolean check() {
         tcCommDetails tcCommDetails;
         int size=receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.size();
@@ -235,7 +249,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         final EditText edittext = new EditText(context);
         alert.setMessage(context.getResources().getString(R.string.Please_Enter_the_required_quantity));
         alert.setTitle(context.getResources().getString(R.string.Enter_Quantity));
-        edittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        edittext.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         InputFilter[] FilterArray = new InputFilter[1];
         FilterArray[0] = new InputFilter.LengthFilter(12);
         edittext.setFilters(FilterArray);
@@ -244,7 +258,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 receiveGoodsModel.YouEditTextValue = edittext.getText().toString();
                 if (!receiveGoodsModel.YouEditTextValue.isEmpty()) {
-                    receiveGoodsModel.textdata = Float.parseFloat(receiveGoodsModel.YouEditTextValue);
+                    receiveGoodsModel.textdata = Double.parseDouble((receiveGoodsModel.YouEditTextValue));
                     receiveGoodsModel.AFTERDATA = String.valueOf(receiveGoodsModel.textdata);
                     receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(p).enteredvalue=receiveGoodsModel.AFTERDATA;
                     modeldata.clear();
@@ -282,5 +296,31 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
     public interface OnClickListener {
         void onClick_d(int p);
+    }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("Version : " + appversion);
+
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("RECEIVE GOODS");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
     }
 }

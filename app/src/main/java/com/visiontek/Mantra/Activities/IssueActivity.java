@@ -16,6 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.diableMenu;
 
@@ -31,24 +38,18 @@ public class IssueActivity extends AppCompatActivity {
         setContentView(R.layout.activity_issue);
         context = IssueActivity.this;
 
-        cash = findViewById(R.id.btn_cash_pds);
-        cashless = findViewById(R.id.btn_cashless_pds);
-        impds = findViewById(R.id.btn_impds);
-        back = findViewById(R.id.btn_back);
-        pd = new ProgressDialog(context);
-
-        rd = findViewById(R.id.rd);
-
-        boolean  rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
         if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service));
-            rd.setTextColor(context.getResources().getColor(R.color.black));
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
+                    context.getResources().getString(R.string.RD_Service));
+            return;
         }
+
+        initilisation();
 
 
         if (diableMenu(context, 9)) {
@@ -90,6 +91,15 @@ public class IssueActivity extends AppCompatActivity {
         });
     }
 
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        cash = findViewById(R.id.btn_cash_pds);
+        cashless = findViewById(R.id.btn_cashless_pds);
+        impds = findViewById(R.id.btn_impds);
+        back = findViewById(R.id.btn_back);
+        toolbarInitilisation();
+    }
+
     private void show_error_box(String msg, String title) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
@@ -103,5 +113,31 @@ public class IssueActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("V" + appversion);
+
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("Fps ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("ISSUE");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
     }
 }

@@ -9,7 +9,8 @@
     <color name="ok">#176A1F</color>
     <color name="cancel">#FF0000</color>
     <color name="button">#009688</color>
-    <color name="black">#000000</color>
+    <color name="black">#FFFFFF</color>
+    <color name="blackblack">#000000</color>
     <color name="rd">#444</color>
     <color name="background">#d9e8ed</color>
     <color name="white">#FFFFFF</color>

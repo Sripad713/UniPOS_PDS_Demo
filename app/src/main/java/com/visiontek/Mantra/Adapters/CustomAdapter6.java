@@ -35,7 +35,7 @@ public class CustomAdapter6 extends RecyclerView.Adapter<CustomAdapter6.MyViewHo
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item4_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row4, parent, false);
 
         //view.setOnClickListener(Dealer_Details.myOnClickListener);
 

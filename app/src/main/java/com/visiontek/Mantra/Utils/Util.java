@@ -3,6 +3,7 @@ package com.visiontek.Mantra.Utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -314,6 +315,20 @@ public class Util {
         return image;
     }
 
+
+    public static String getAppVersionFromPkgName(Context context) {
+        String version;
+        try {
+
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pInfo = pm.getPackageInfo("com.visiontek.Mantra", 0);
+            version = pInfo.versionName;
+            return version;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
     //***************************************************************************
 
 

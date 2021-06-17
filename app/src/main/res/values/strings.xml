@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">CHHATTISGARH PDS</string>
 
-
-    <dimen name="TextsizeT">35dp</dimen>
-
+    <dimen name="image">100dp</dimen>
+    <dimen name="TextsizeT">30dp</dimen>
+    <dimen name="TextsizeTv">15dp</dimen>
     <!--Layout-->
     <dimen name="LayoutW">20dp</dimen>
     <dimen name="LayoutH">20dp</dimen>
@@ -14,7 +14,7 @@
     <dimen name="LayoutMT">100dp</dimen>
     <dimen name="LayoutP">10dp</dimen>
 
-
+    <dimen name="Layoutcard">5dp</dimen>
 
 
 
@@ -77,8 +77,8 @@
     //cash_pds
     <string name="CASH_PDS">CASH PDS</string>
     <string name="RC_No">RC No</string>
-    <string name="Aadhaar">Aadhaar</string>
-    <string name="Card_No">Card No.</string>
+    <string name="Aadhaar">Aadhaar No</string>
+    <string name="Card_No">RC No.</string>
     <string name="Get_Details">Get Details</string>
     <string name="Home">Home</string>
     <string name="Last_Reciept">Last Reciept</string>
@@ -106,7 +106,7 @@
 
     //commodities
     <string name="COMMODITIES">COMMODITIES</string>
-    <string name="TotQty">TotQty</string>
+    <string name="CName">CName</string>
     <string name="BalQty">BalQty</string>
     <string name="Rate">Rate</string>
     <string name="issueQty">IssueQty</string>
@@ -115,7 +115,7 @@
     <string name="Confirm">Confirm</string>
 
     //print
-    <string name="CommTot">Comm(Tot)</string>
+    <string name="CommTot">Comm</string>
     <string name="PrevBal">PrevBal</string>
     <string name="AllocQty">AllocQty</string>
     <string name="Price">Price</string>

@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ReceiveGoodsModel implements Serializable {
-    public String  length,
+    public String
+            length,
             fps,
             month,
             year,
@@ -15,7 +16,7 @@ public class ReceiveGoodsModel implements Serializable {
     public int select;
     public String YouEditTextValue;
     public String AFTERDATA;
-    public Float textdata;
+    public double textdata;
 
     public ArrayList<tcCommDetails> tcCommDetails=new ArrayList<>();
 

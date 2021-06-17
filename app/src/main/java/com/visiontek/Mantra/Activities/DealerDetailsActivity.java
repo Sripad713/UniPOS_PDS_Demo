@@ -44,6 +44,7 @@ import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +54,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import static com.visiontek.Mantra.Activities.MemberDetailsActivity.Mdealer;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 
@@ -70,7 +73,6 @@ public class DealerDetailsActivity extends AppCompatActivity {
     Button scanfp, back;
     ProgressDialog pd = null;
     CheckBox checkBox;
-    TextView rd;
     Context context;
     MemberModel memberModel;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -79,23 +81,21 @@ public class DealerDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dealer__details);
         context = DealerDetailsActivity.this;
-        pd = new ProgressDialog(context);
-        scanfp = findViewById(R.id.dealer_scanFP);
-        back = findViewById(R.id.dealer_back);
-        checkBox = findViewById(R.id.check);
-        rd = findViewById(R.id.rd);
-        boolean rd_fps;
-        rd_fps = RDservice(context);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
-        if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service),0);
-            rd.setTextColor(context.getResources().getColor(R.color.black));
-        }
         memberModel = (MemberModel) getIntent().getSerializableExtra("OBJ");
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        /*TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
+        if (rd_fps) {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+        } else {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
+                    context.getResources().getString(R.string.RD_Service),0);
+            return;
+        }*/
+
+        initilisation();
+
         RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
@@ -210,6 +210,14 @@ public class DealerDetailsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        scanfp = findViewById(R.id.dealer_scanFP);
+        back = findViewById(R.id.dealer_back);
+        checkBox = findViewById(R.id.check);
+        toolbarInitilisation();
+    }
+
     private void ConsentformURL(String consentrequest) {
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Consent_Form), true, false);
         Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
@@ -221,7 +229,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                     pd.dismiss();
                 }
                 if (code == null || code.isEmpty()){
-                    show_error_box("Invalid Out put from Server","No Response",0);
+                    show_error_box("Invalid Response from server","No Response",0);
                     return;
                 }
                 if (!code.equals("00")) {
@@ -307,7 +315,8 @@ public class DealerDetailsActivity extends AppCompatActivity {
     }
 
     private void hitURLDealerAuthentication(String dealerlogin) {
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating), true, false);
+        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
+                context.getResources().getString(R.string.Authenticating), true, false);
         XML_Parsing request = new XML_Parsing(DealerDetailsActivity.this, dealerlogin, 2);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
@@ -317,7 +326,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                     pd.dismiss();
                 }
                 if (isError == null || isError.isEmpty()){
-                    show_error_box("Invalid Out put from Server","No Response",0);
+                    show_error_box("Invalid Response from server","No Response",0);
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -413,7 +422,8 @@ public class DealerDetailsActivity extends AppCompatActivity {
     }
 
     private void hitURLfusion(String fusion) {
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating), true, false);
+        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
+                context.getResources().getString(R.string.Authenticating), true, false);
         XML_Parsing request = new XML_Parsing(DealerDetailsActivity.this, fusion, 2);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
@@ -428,7 +438,8 @@ public class DealerDetailsActivity extends AppCompatActivity {
     }
 
     private void hitURLMENU(String menu) {
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait), context.getResources().getString(R.string.Downloading_Menus), true, false);
+        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
+                context.getResources().getString(R.string.Downloading_Menus), true, false);
         XML_Parsing request = new XML_Parsing(DealerDetailsActivity.this, menu, 7);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
@@ -750,6 +761,27 @@ public class DealerDetailsActivity extends AppCompatActivity {
 
     public interface OnClickListener {
         void onClick_d(int p);
+    }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("V" + appversion);
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("DEALER");
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
     }
 }
 

@@ -61,7 +61,7 @@
 
     //commodities
     <string name="COMMODITIES">वस्तु</string>
-    <string name="TotQty">समग्र गुणवत्ता</string>
+    <string name="CName">समग्र गुणवत्ता</string>
     <string name="BalQty">संतुलन की गुणवत्ता</string>
     <string name="Rate">मूल्यांकन करें</string>
     <string name="issueQty">गुणवत्ता जारी करें</string>

@@ -38,7 +38,9 @@ import com.visiontek.Mantra.Utils.Util;
 import com.visiontek.Mantra.Utils.XML_Parsing;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
@@ -48,10 +50,14 @@ import static com.visiontek.Mantra.Activities.RationDetailsActivity.TOTALAMOUNT;
 
 
 import static com.visiontek.Mantra.Activities.StartActivity.L;
+import static com.visiontek.Mantra.Activities.StartActivity.latitude;
+import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 
+import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
+import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 
@@ -66,19 +72,6 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
     TextView total;
     private final ExecutorService es = Executors.newScheduledThreadPool(30);
     private MTerminal100API mTerminal100API;
-    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action)) {
-                probe();
-                // btnConnect.performClick();
-                print.setEnabled(true);
-                synchronized (this) {
-                }
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,12 +81,17 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         mActivity = this;
         ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
 
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
+        boolean rd_fps = RDservice(context);
+        if (rd_fps) {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+        } else {
+            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service),1);
+            return;
+        }
 
-        pd = new ProgressDialog(context);
-        print = findViewById(R.id.print);
-        total = findViewById(R.id.totalamount);
+        initilisation();
 
         Intent intent = getIntent();
         final String ration = intent.getStringExtra("key");
@@ -126,6 +124,13 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
     }
 
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        print = findViewById(R.id.print);
+        total = findViewById(R.id.totalamount);
+        toolbarInitilisation();
+    }
+
     private void hitURL(String ration) {
         if (mp!=null) {
             releaseMediaPlayer(context,mp);
@@ -146,8 +151,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                     pd.dismiss();
                 }
                 if (!isError.equals("00")) {
-                    System.out.println("SESSION TIMED OUT");
-                    show_error_box(msg, "Commodity : " + isError, 0);
+                    show_error_box(msg, "Commodity : " + isError, 1);
                 } else {
                     Print printReceipt= (Print) object;
                     String app;
@@ -197,7 +201,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                         str[1] = "1";
                         str[2] = "1";
                         str[3] = "1";
-                        dialog(str,1);
+                        checkandprint(str, 1);
                     }else {
                         str1 = context.getResources().getString(R.string.Chhattisgarh) + "\n"
                                 + context.getResources().getString(R.string.Department) + "\n"
@@ -227,7 +231,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                         str[1] = str1;
                         str[2] = str2 + str3 + str4;
                         str[3] = str5;
-                        dialog(str,0);
+                        checkandprint(str, 0);
                     }
                 }
             }
@@ -239,43 +243,59 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             Util.image(content,name,align);
         } catch (IOException e) {
             e.printStackTrace();
-            show_error_box(e.toString(),"Image formation Error", 0);
         }
     }
 
+
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void dialog(final String[] str, final int i) {
+    private void checkandprint(String[] str, int i) {
+        if (Util.batterylevel(context)|| Util.adapter(context)) {
+            if (mp!=null) {
+                releaseMediaPlayer(context,mp);
+            }
+            if (L.equals("hi")) {
+            } else {
+                mp = mp.create(context, R.raw.c100191);
+                mp.start();
+            }
+            es.submit(new TaskPrint(mTerminal100API,str,mActivity,context,i));
+            Intent home = new Intent(context, HomeActivity.class);
+            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(home);
+            finish();
+        }else {
+            printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery),str,i);
+        }
+    }
+
+    private void printbox(String msg, String title, final String[] str, final int type) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(context.getResources().getString(R.string.Printing));
-        alertDialogBuilder.setTitle(context.getResources().getString(R.string.Transaction));
+        alertDialogBuilder.setMessage(msg);
+        alertDialogBuilder.setTitle(title);
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
                 new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        checkandprint(str,type);
+
+                    }
+                });
+        alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.Cancel),
+                new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
 
-                        if (Util.batterylevel(context)|| Util.adapter(context)) {
-                            if (mp!=null) {
-                                releaseMediaPlayer(context,mp);
-                            }
-                            if (L.equals("hi")) {
-                            } else {
-                                mp = mp.create(context, R.raw.c100191);
-                                mp.start();
-                            }
-                            es.submit(new TaskPrint(mTerminal100API,str,mActivity,context,i));
-                            Intent home = new Intent(context, HomeActivity.class);
-                            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(home);
-                            finish();
-                        }else {
-                            show_error_box(context.getResources().getString(R.string.Battery_Msg),context.getResources().getString(R.string.Battery),1);
-                        }
+
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
 
     private void probe() {
         final UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -388,6 +408,20 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             }
         });
     }
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                probe();
+                // btnConnect.performClick();
+                print.setEnabled(true);
+                synchronized (this) {
+                }
+            }
+        }
+    };
+
 
     @Override
     public void OnPrint(final int bPrintResult, final boolean bIsOpened) {
@@ -439,5 +473,30 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
         String t= String.valueOf(TOTALAMOUNT);
         total.setText(t);
+    }
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("V" + appversion);
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("PRINT");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
     }
 }

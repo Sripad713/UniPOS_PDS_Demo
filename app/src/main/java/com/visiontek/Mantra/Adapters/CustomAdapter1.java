@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -72,10 +73,12 @@ public class CustomAdapter1 extends RecyclerView.Adapter<CustomAdapter1.MyViewHo
         LinearLayout lin = holder.linearLayout;
 
         if (data1.isSelected) {
-            lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            lin.setBackground(context.getResources().getDrawable(R.drawable.bgreen));
+            //lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
 
         } else {
-            lin.setBackgroundColor(context.getResources().getColor(R.color.background));
+            lin.setBackground(context.getResources().getDrawable(R.drawable.white));
+            //lin.setBackgroundColor(context.getResources().getColor(R.color.background));
 
         }
 
