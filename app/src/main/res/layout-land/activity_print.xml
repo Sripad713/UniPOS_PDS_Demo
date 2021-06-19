@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool"
         android:layout_width="match_parent"
@@ -32,9 +33,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:background="@drawable/black"
                 android:orientation="vertical">
 
@@ -246,135 +247,173 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginVertical="@dimen/LayoutMV"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="4"
-            android:background="@color/colorPrimary"
-            android:orientation="horizontal">
-            <TextView
-                android:background="@drawable/bblack"
-                android:textAlignment="center"
-                android:id="@+id/total"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/TextsizeP"
-                android:text="@string/CommTot"
-                android:layout_weight="1"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:gravity="center_horizontal" />
-            <TextView
-                android:background="@drawable/bblack"
-                android:textAlignment="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/TextsizeP"
-                android:text="@string/PrevBal"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:gravity="center_horizontal" />
-            <TextView
-                android:background="@drawable/bblack"
-                android:textAlignment="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/TextsizeP"
-                android:textSize="@dimen/TextsizeB"
-                android:text="@string/AllocQty"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:gravity="center_horizontal" />
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/LayoutMV">
 
-            <TextView
-                android:background="@drawable/bblack"
-                android:textAlignment="center"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/TextsizeP"
-                android:textSize="@dimen/TextsizeB"
-                android:text="@string/Price"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:gravity="center_horizontal" />
+                android:background="@color/colorPrimary"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <TextView
+                    android:id="@+id/total"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bblack"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/TextsizeP"
+                    android:text="@string/CommTot"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bblack"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/TextsizeP"
+                    android:text="@string/PrevBal"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bblack"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/TextsizeP"
+                    android:text="@string/AllocQty"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bblack"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/TextsizeP"
+                    android:text="@string/Price"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="200dp">
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="200dp">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/my_recycler_view"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </ScrollView>
-    </LinearLayout>
+                android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/my_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </ScrollView>
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:background="@color/greydark"
-            android:orientation="horizontal">
+            android:layout_marginHorizontal="20dp">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:background="@color/greydark"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:text="@string/Total"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold" />
+
+                <TextView
+
+                    android:id="@+id/totalamount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
+            android:orientation="horizontal"
+            tools:ignore="MissingConstraints">
+
+            <Button
+                android:id="@+id/print"
+                android:layout_width="8dp"
+                android:layout_height="80dp"
+                android:layout_margin="15dp"
                 android:layout_weight="1"
-                android:text="@string/Total"
-                android:textAlignment="center"
+                android:background="@color/ok"
+                android:gravity="center"
+                android:text="@string/Print"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:gravity="right"
-                android:id="@+id/totalamount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:text=""
-                android:textSize="@dimen/TextsizeB" />
-
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="2"
-        android:orientation="horizontal"
-        tools:ignore="MissingConstraints">
+        android:layout_gravity="bottom"
+        android:layout_marginVertical="@dimen/LayoutMV"
+        android:gravity="bottom"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/print"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/ButtonH"
-            android:layout_margin="10dp"
-            android:textColor="@color/white"
-            android:background="@color/ok"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:text="@string/Print"
-            android:textSize="@dimen/TextsizeB"/>
+            android:layout_height="wrap_content"
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:text="Powered by NIC"
+            android:textColor="@color/black"
+            android:textSize="@dimen/TextsizeH"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

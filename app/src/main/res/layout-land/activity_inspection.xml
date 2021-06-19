@@ -279,7 +279,7 @@
                     android:text="@string/COMMODITY"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/TextsizeB"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -292,7 +292,7 @@
                     android:text="@string/CB"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/TextsizeB"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -305,7 +305,7 @@
                     android:text="@string/OBSERVATION"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/TextsizeB"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -318,14 +318,14 @@
                     android:text="@string/VARIATION"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/TextsizeB"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="250dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -394,31 +394,49 @@
 
             <Button
                 android:id="@+id/inspection_back"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/ButtonM"
                 android:layout_weight="1"
                 android:background="@color/opaque_red"
                 android:text="@string/Back"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
 
             <Button
                 android:id="@+id/inspection_next"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/ButtonM"
                 android:layout_weight="1"
                 android:background="@color/ok"
                 android:text="@string/Next"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
 
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginVertical="@dimen/LayoutMV"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:text="Powered by NIC"
+            android:textColor="@color/black"
+            android:textSize="@dimen/TextsizeH"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

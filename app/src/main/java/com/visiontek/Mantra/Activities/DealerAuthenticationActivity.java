@@ -78,8 +78,6 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
 
         context = DealerAuthenticationActivity.this;
 
-
-
         receiveGoodsModel = (ReceiveGoodsModel) getIntent().getSerializableExtra("OBJ");
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
@@ -224,6 +222,10 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
+                if (code == null || code.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
                 if (!code.equals("00")) {
                     show_error_box(msg,  code,0);
                 } else {
@@ -312,6 +314,10 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
             public void onCompleted(String error, String msg, String ref, String flow, Object object) {
                 if (pd.isShowing()) {
                     pd.dismiss();
+                }
+                if (error == null || error.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
                 }
                 if (!error.equals("00")) {
                     show_error_box(msg, context.getResources().getString(R.string.Uploading_Stock) + error, 2);

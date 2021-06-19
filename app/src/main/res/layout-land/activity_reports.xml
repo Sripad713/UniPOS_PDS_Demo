@@ -250,62 +250,106 @@
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
+
     <LinearLayout
-        android:gravity="center"
         android:id="@+id/innerlayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:weightSum="2">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:weightSum="2">
+            android:layout_weight="1"
+            android:gravity="center"
+            android:weightSum="2"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_dailysales_report"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="25dp"
                 android:layout_weight="1"
-                android:background="@color/button"
-                android:text="@string/Daily_Sales_Report"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
+                android:gravity="center"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/btn_dailysales_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/button"
+                    android:text="@string/Daily_Sales_Report"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/TextsizeB"/>
 
-            <Button
-                android:id="@+id/btn_stock_report"
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="25dp"
                 android:layout_weight="1"
-                android:background="@color/button"
-                android:text="@string/Stock_Report"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
+                android:gravity="center"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btn_stock_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/button"
+                    android:text="@string/Stock_Report"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/TextsizeB"/>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="top"
+            android:weightSum="2"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_back"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:layout_weight="1"
-                android:background="@color/cancel"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold"
-                android:text="@string/Back"/>
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/cancel"
+                    android:gravity="center"
+                    android:layout_gravity="top"
+                    android:text="@string/Back"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:gravity="bottom"
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/black">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/black"
+                    android:gravity="center"
+                    android:text="Powered by NIC"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/TextsizeH"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

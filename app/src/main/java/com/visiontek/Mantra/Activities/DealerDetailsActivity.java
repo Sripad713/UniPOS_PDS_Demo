@@ -83,7 +83,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
         context = DealerDetailsActivity.this;
         memberModel = (MemberModel) getIntent().getSerializableExtra("OBJ");
 
-        /*TextView toolbarRD = findViewById(R.id.toolbarRD);
+        TextView toolbarRD = findViewById(R.id.toolbarRD);
         boolean rd_fps = RDservice(context);
         if (rd_fps) {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
@@ -92,7 +92,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
             show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
                     context.getResources().getString(R.string.RD_Service),0);
             return;
-        }*/
+        }
 
         initilisation();
 

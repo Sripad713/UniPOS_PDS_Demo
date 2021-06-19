@@ -252,10 +252,7 @@
         android:layout_marginHorizontal="@dimen/LayoutMH"
         android:layout_marginVertical="@dimen/LayoutMV"
         android:orientation="vertical">
-
-
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -309,7 +306,6 @@
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold"
                     />
-
                 <TextView
                     android:background="@drawable/bblack"
                     android:layout_width="match_parent"
@@ -321,7 +317,6 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeV"
                     android:textStyle="bold" />
-
                 <TextView
                     android:background="@drawable/bblack"
                     android:layout_width="match_parent"
@@ -333,19 +328,14 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold" />
-
             </LinearLayout>
         </LinearLayout>
-
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp">
-
+            android:layout_height="250dp">
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/my_recycler_view"
                     android:layout_width="match_parent"
@@ -356,54 +346,79 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:textAlignment="center">
+            android:weightSum="3"
+            android:baselineAligned="false">
 
-            <CheckBox
-                android:id="@+id/check"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/Consent_Form"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/TextsizeH"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:orientation="vertical">
 
-        <LinearLayout
+                <Button
+                    android:id="@+id/Ben_details_back"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/cancel"
+                    android:text="@string/Back"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    tools:ignore="ButtonStyle" />
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_weight="1">
+
+                <CheckBox
+                    android:id="@+id/check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checked="true"
+                    android:text="@string/Consent_Form"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/Ben_details_Ekyc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/ok"
+                    android:text="@string/EKYC"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    tools:ignore="ButtonStyle" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_gravity="bottom">
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            tools:ignore="MissingConstraints">
-
-            <Button
-                android:id="@+id/Ben_details_back"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
-                android:background="@color/opaque_red"
-                android:text="@string/Back"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
-
-
-            <Button
-                android:id="@+id/Ben_details_Ekyc"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
-                android:background="@color/ok"
-                android:text="@string/EKYC"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
-        </LinearLayout>
-
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:text="Powered by NIC"
+            android:textColor="@color/black"
+            android:textSize="@dimen/TextsizeH"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

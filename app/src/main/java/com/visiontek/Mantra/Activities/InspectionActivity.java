@@ -238,6 +238,11 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
+
+                if (error == null || error.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
                 if (!error.equals("00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
                     show_error_box(msg, "Member Details: " + error, 0);
@@ -396,6 +401,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             public void onCompleted(String error, String msg, String ref, String flow, Object object) {
                 if (pd.isShowing()) {
                     pd.dismiss();
+                }
+                if (error == null || error.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
                 }
                 if (!error.equals("00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
@@ -685,52 +694,57 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     }*/
 
     private void EnterComm(final int p) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        final EditText edittext = new EditText(context);
-        alert.setMessage(context.getResources().getString(R.string.Please_Enter_the_required_quantity));
-        alert.setTitle(context.getResources().getString(R.string.Enter_Quantity));
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        edittext.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(12);
-        edittext.setFilters(FilterArray);
-        alert.setView(edittext);
-        alert.setPositiveButton(context.getResources().getString(R.string.Ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                Check = edittext.getText().toString();
-                textdata = Float.parseFloat(Check);
-                cb = Float.parseFloat(inspectionDetails.commDetails.get(p).closingBalance);
-                if (!Check.isEmpty() && textdata < cb && textdata > 0) {
-                    var = (Float) (cb - textdata);
-                    if (var > 0 && var < cb) {
-                        System.out.println("----------------0");
-                        AFTERDATA = String.valueOf(var);
-                        DATA = String.valueOf(textdata);
+        try {
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            final EditText edittext = new EditText(context);
+            alert.setMessage(context.getResources().getString(R.string.Please_Enter_the_required_quantity));
+            alert.setTitle(context.getResources().getString(R.string.Enter_Quantity));
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            edittext.setInputType(InputType.TYPE_CLASS_NUMBER);
+            InputFilter[] FilterArray = new InputFilter[1];
+            FilterArray[0] = new InputFilter.LengthFilter(12);
+            edittext.setFilters(FilterArray);
+            alert.setView(edittext);
+            alert.setPositiveButton(context.getResources().getString(R.string.Ok), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    Check = edittext.getText().toString();
+                    textdata = Float.parseFloat(Check);
+                    cb = Float.parseFloat(inspectionDetails.commDetails.get(p).closingBalance);
+                    if (!Check.isEmpty() && textdata < cb && textdata > 0) {
+                        var = (Float) (cb - textdata);
+                        if (var > 0 && var < cb) {
+                            System.out.println("----------------0");
+                            AFTERDATA = String.valueOf(var);
+                            DATA = String.valueOf(textdata);
 
-                        inspectionDetails.commDetails.get(p).entered = DATA;
-                        inspectionDetails.commDetails.get(p).variation = AFTERDATA;
+                            inspectionDetails.commDetails.get(p).entered = DATA;
+                            inspectionDetails.commDetails.get(p).variation = AFTERDATA;
 
-                        data.clear();
-                        int size = inspectionDetails.commDetails.size();
-                        for (int i = 0; i < size; i++) {
-                            data.add(new DataModel2(inspectionDetails.commDetails.get(i).commNameEn,
-                                    inspectionDetails.commDetails.get(i).closingBalance,
-                                    inspectionDetails.commDetails.get(i).entered,
-                                    inspectionDetails.commDetails.get(i).variation));
+                            data.clear();
+                            int size = inspectionDetails.commDetails.size();
+                            for (int i = 0; i < size; i++) {
+                                data.add(new DataModel2(inspectionDetails.commDetails.get(i).commNameEn,
+                                        inspectionDetails.commDetails.get(i).closingBalance,
+                                        inspectionDetails.commDetails.get(i).entered,
+                                        inspectionDetails.commDetails.get(i).variation));
 
+                            }
+                            Display();
                         }
-                        Display();
+                    } else {
+                        show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
                     }
-                } else {
-                    show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
                 }
-            }
-        });
-        alert.setNegativeButton(context.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            }
-        });
-        alert.show();
+            });
+            alert.setNegativeButton(context.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                }
+            });
+            alert.show();
+        }catch (Exception e){
+            show_error_box("Please enter a valid value", context.getResources().getString(R.string.Invalid_Quantity), 0);
+
+        }
     }
 
     @SuppressLint("SetTextI18n")

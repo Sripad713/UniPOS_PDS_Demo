@@ -76,6 +76,7 @@ public class StartActivity extends AppCompatActivity {
         context = StartActivity.this;
         checkLanguage();
         setContentView(R.layout.activity_start);
+        try {
 
         mp = mp.create(context, R.raw.c100041);
         mp.start();
@@ -132,6 +133,9 @@ public class StartActivity extends AppCompatActivity {
                 startActivityForResult(settings, 1);
             }
         });
+        }catch (Exception e){
+            show_error_box(e.toString(),"Start"  , 0);
+        }
     }
 
     private void toolbarInitilisation() {
@@ -231,7 +235,7 @@ public class StartActivity extends AppCompatActivity {
 
     private void show_error_box(String msg, String title, final int i) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(dealerConstants.fpsCommonInfo.flasMessage1);
+        alertDialogBuilder.setMessage(title);
         alertDialogBuilder.setTitle(msg);
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),

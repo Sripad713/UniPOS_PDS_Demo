@@ -249,7 +249,8 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         final EditText edittext = new EditText(context);
         alert.setMessage(context.getResources().getString(R.string.Please_Enter_the_required_quantity));
         alert.setTitle(context.getResources().getString(R.string.Enter_Quantity));
-        edittext.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+        edittext.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
         InputFilter[] FilterArray = new InputFilter[1];
         FilterArray[0] = new InputFilter.LengthFilter(12);
         edittext.setFilters(FilterArray);

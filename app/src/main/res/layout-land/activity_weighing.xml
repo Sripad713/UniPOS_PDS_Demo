@@ -2,27 +2,119 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tool"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ik_blue_white"
+            android:orientation="horizontal"
+            android:padding="@dimen/Layoutcard"
+            android:weightSum="4"
+            tools:ignore="MissingConstraints">
 
-        <TextView
-            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/COMMODITY_WEIGHING"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:textSize="@dimen/TextsizeT"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:text="@string/CName"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeV" />
 
-    </androidx.appcompat.widget.Toolbar>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:text="@string/BalQty"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:text="@string/Rate"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:text="@string/ClBal"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeV" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ik_blue_white"
+            android:orientation="horizontal"
+            android:padding="@dimen/Layoutcard"
+            android:weightSum="4"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:background="@drawable/white"
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/blackblack"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:background="@drawable/white"
+                android:id="@+id/bal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/blackblack"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:background="@drawable/white"
+                android:id="@+id/rate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/blackblack"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:background="@drawable/white"
+                android:id="@+id/close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/blackblack"
+                android:textSize="@dimen/TextsizeV" />
+        </LinearLayout>
     <TextView
         android:id="@+id/weight_status"
         android:layout_width="match_parent"
@@ -46,16 +138,16 @@
             android:padding="@dimen/LayoutP"
             android:weightSum="2">
 
-
-        <TextView
-            android:id="@+id/weigh"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:textAlignment="center"
-            android:text="000.000"
-            android:textSize="@dimen/TextsizeB" />
+            <TextView
+                android:id="@+id/weigh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="000.000"
+                android:ems="10"
+                android:textAlignment="center"
+                android:textSize="@dimen/TextsizeB" />
             <Button
                 android:id="@+id/weighing_get"
                 android:layout_width="match_parent"
@@ -65,7 +157,7 @@
                 android:text="@string/Get"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
+                android:textSize="30sp"/>
         </LinearLayout>
         <LinearLayout
             android:layout_marginTop="20dp"
@@ -78,26 +170,26 @@
 
             <Button
                 android:id="@+id/weight_back"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_margin="@dimen/LayoutMV"
                 android:background="@color/opaque_red"
                 android:text="@string/Back"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
+                android:textSize="30sp"/>
             <Button
                 android:id="@+id/weight_confirm"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_margin="@dimen/LayoutMV"
                 android:background="@color/ok"
                 android:text="@string/Confirm"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
+                android:textSize="30sp"/>
         </LinearLayout>
     </LinearLayout>
 

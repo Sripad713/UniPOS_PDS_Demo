@@ -186,8 +186,8 @@ public class HomeActivity extends AppCompatActivity {
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
-                if (error == null || error.isEmpty()){
-                    show_error_box("Invalid Out put from Server","No Response",0);
+                if (error == null || error.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
                 if (!error.equals("00")) {
@@ -290,8 +290,8 @@ public class HomeActivity extends AppCompatActivity {
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
-                if (error == null || error.isEmpty()){
-                    show_error_box("Invalid Out put from Server","No Response",0);
+                if (error == null || error.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
                 if (!error.equals("00")) {

@@ -57,6 +57,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
+import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
@@ -150,6 +151,10 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
+                if (isError == null || isError.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
                 if (!isError.equals("00")) {
                     show_error_box(msg, "Commodity : " + isError, 1);
                 } else {
@@ -158,11 +163,12 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                     StringBuilder add = new StringBuilder();
                     int printReceiptsize= printReceipt.printBeans.size();
                     for (int i = 0; i <printReceiptsize ; i++) {
-                        app = "  " + printReceipt.printBeans.get(i).comm_name
-                                + "\n" + printReceipt.printBeans.get(i).total_quantity+ "  " + "  "
-                                + printReceipt.printBeans.get(i).carry_over + "  " + "  "
-                                + printReceipt.printBeans.get(i).retail_price + "  " + "  "
-                                + printReceipt.printBeans.get(i).commIndividualAmount + "  " + "\n";
+
+                        app =  String.format("%-10s%-10s%-8s%-8s\n",
+                                printReceipt.printBeans.get(i).comm_name,
+                                printReceipt.printBeans.get(i).carry_over ,
+                                printReceipt.printBeans.get(i).retail_price ,
+                                printReceipt.printBeans.get(i).commIndividualAmount);
                         add.append(app);
                     }
 
@@ -210,10 +216,14 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                         str2 = "\n________________________________\n"
                                 + context.getResources().getString(R.string.FPS_Owner_Name) + "  :" + dealername + "\n"
                                 + context.getResources().getString(R.string.FPS_No) + "          :" + dealerConstants.stateBean.statefpsId + "\n"
-                                + context.getResources().getString(R.string.Name_of_Consumer) + ":" + printReceipt.printBeans.get(0).comm_name + "\n"
-                                + context.getResources().getString(R.string.Card_No) + "        :" + printReceipt.rcId  + "\n"
-                                + context.getResources().getString(R.string.TransactionID) + "   :" + printReceipt.receiptId + "\n"
-                                + context.getResources().getString(R.string.Date) + "            :" + date + "\n"
+                                + context.getResources().getString(R.string.Name_of_Consumer) + ":" + printReceipt.printBeans.get(0).member_name+ "\n"
+                                + context.getResources().getString(R.string.Card_No) + "          :" + printReceipt.rcId  + "\n"
+                                + context.getResources().getString(R.string.TransactionID) + ":" + printReceipt.receiptId + "\n"
+                                + context.getResources().getString(R.string.Date) + ":" + date + "\n"
+                                + context.getResources().getString(R.string.AllotmentMonth)+"  :"+
+                                menuConstants.fpsPofflineToken.allocationMonth+"\n"
+                                +context.getResources().getString(R.string.AllotmentYear)+"    :"+
+                                menuConstants.fpsPofflineToken.allocationYear+"\n"
                                 + context.getResources().getString(R.string.commodity) + " " + context.getResources().getString(R.string.lifted) + "   " + context.getResources().getString(R.string.rate) + "    " + context.getResources().getString(R.string.price) + "\n"
                                 + "________________________________\n";
 
@@ -246,8 +256,6 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         }
     }
 
-
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkandprint(String[] str, int i) {
         if (Util.batterylevel(context)|| Util.adapter(context)) {
@@ -260,7 +268,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                 mp.start();
             }
             es.submit(new TaskPrint(mTerminal100API,str,mActivity,context,i));
-            Intent home = new Intent(context, HomeActivity.class);
+            Intent home = new Intent(context, CashPDSActivity.class);
             home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(home);
             finish();

@@ -167,9 +167,12 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     String date = sdf1.format(new Date()).substring(6, 16);
                     int drBeansize =saleDetails.drBean.size();
                     for (int i = 0; i < drBeansize; i++) {
-                        app = saleDetails.drBean.get(i).comm_name + "     " +
+                        app = String.format("%-13s%-13s%-14s\n",saleDetails.drBean.get(i).comm_name,
+                                saleDetails.drBean.get(i).schemeName,
+                                saleDetails.drBean.get(i).sale);
+                      /*  app = saleDetails.drBean.get(i).comm_name + "     " +
                                 saleDetails.drBean.get(i).schemeName+ "  " +
-                                saleDetails.drBean.get(i).sale+ "\n";
+                                saleDetails.drBean.get(i).sale+ "\n";*/
                         add.append(app);
 
                     }
@@ -322,6 +325,10 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
             public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
                 if (pd.isShowing()) {
                     pd.dismiss();
+                }
+                if (isError == null || isError.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response");
+                    return;
                 }
 
                 if (!isError.equals("00")) {

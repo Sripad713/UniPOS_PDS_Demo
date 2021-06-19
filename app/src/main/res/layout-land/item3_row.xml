@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:textSize="@dimen/TextsizeV"
+                android:textSize="25dp"
                 android:textAlignment="center"
                 android:textColor="@color/blackblack" />
             <TextView
@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textSize="@dimen/TextsizeV"
+                android:textSize="25dp"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
             <TextView
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textSize="@dimen/TextsizeV"
+                android:textSize="25dp"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
         </LinearLayout>

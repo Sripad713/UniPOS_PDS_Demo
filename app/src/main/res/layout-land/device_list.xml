@@ -18,7 +18,7 @@ android:orientation="vertical"
         android:paddingLeft="5dp"
     />
     <ListView android:id="@+id/paired_devices"
-        android:background="#E76363"
+        android:background="@color/ik_blue_white"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

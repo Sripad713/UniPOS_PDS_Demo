@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -121,6 +123,14 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.radio_rc_no:
                     cardno.setText("RC No :");
+                    if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
+                        id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                    }else {
+                        id.setInputType(InputType. TYPE_CLASS_NUMBER);
+                    }
+                    InputFilter[] FilterArray = new InputFilter[1];
+                    FilterArray[0] = new InputFilter.LengthFilter(Integer.parseInt(dealerConstants.fpsURLInfo.cardEntryLength));
+                    id.setFilters(FilterArray);
                     select = 1;
                     radiorc.setTypeface(null, Typeface.BOLD_ITALIC);
                     radioaadhaar.setTypeface(null, Typeface.NORMAL);
@@ -142,6 +152,14 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
 
                 case R.id.radio_aadhaar:
                     cardno.setText("Aadhaar No :");
+                    if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
+                        id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                    }else {
+                        id.setInputType(InputType. TYPE_NUMBER_VARIATION_PASSWORD | InputType. TYPE_CLASS_NUMBER );
+                    }
+                    InputFilter[] FilterArray1 = new InputFilter[1];
+                    FilterArray1[0] = new InputFilter.LengthFilter(12);
+                    id.setFilters(FilterArray1);
                     select = 2;
                     radiorc.setTypeface(null, Typeface.NORMAL);
                     radioaadhaar.setTypeface(null, Typeface.BOLD_ITALIC);
@@ -255,6 +273,10 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
             public void onCompleted(String error, String msg, String ref, String flow, Object object) {
                 if (pd.isShowing()) {
                     pd.dismiss();
+                }
+                if (error == null || error.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response");
+                    return;
                 }
                 if (!error.equals("00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");

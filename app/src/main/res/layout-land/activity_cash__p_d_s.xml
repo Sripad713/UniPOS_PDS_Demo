@@ -251,9 +251,10 @@
     </androidx.appcompat.widget.Toolbar>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:weightSum="2"
+        android:layout_weight="1"
         android:layout_marginHorizontal="@dimen/LayoutMH">
 
         <LinearLayout
@@ -267,9 +268,10 @@
             android:orientation="vertical">
 
             <RadioGroup
+                android:layout_gravity="bottom"
+                android:gravity="bottom"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:layout_gravity="center"
+
                 android:id="@+id/groupradio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -302,6 +304,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_gravity="bottom"
+                android:gravity="bottom"
                 android:layout_weight="1">
                 <LinearLayout
                     android:id="@+id/ration"
@@ -334,6 +338,14 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -378,5 +390,22 @@
                 android:textSize="@dimen/TextsizeB"
                 android:textStyle="bold" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="bottom"
+            android:layout_gravity="bottom">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/black"
+                android:gravity="center"
+                android:text="Powered by NIC"
+                android:textColor="@color/black"
+                android:textSize="@dimen/TextsizeH"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

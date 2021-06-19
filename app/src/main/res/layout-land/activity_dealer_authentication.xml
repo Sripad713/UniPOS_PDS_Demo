@@ -249,109 +249,137 @@
     </androidx.appcompat.widget.Toolbar>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="@dimen/LayoutMH"
-        android:layout_marginVertical="@dimen/LayoutMV"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:orientation="horizontal"
-            android:padding="@dimen/LayoutP"
-            android:weightSum="2">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:text="@string/NAME"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:text="@string/TYPE"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp">
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/my_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </ScrollView>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:textAlignment="center">
-
-            <CheckBox
-                android:id="@+id/check"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/Consent_Form"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/TextsizeH"
-                android:textStyle="bold" />
-        </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/LayoutMH"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:layout_marginVertical="@dimen/LayoutMV"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/dealer_back"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
-                android:background="@color/cancel"
-                android:text="@string/Back"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold"
-                tools:ignore="ButtonStyle" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/LayoutMV"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-            <Button
-                android:id="@+id/dealer_scanFP"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
-                android:background="@color/ok"
-                android:text="@string/Scan_FP"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold"
-                tools:ignore="ButtonStyle" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:background="@drawable/bblack"
+                    android:text="@string/NAME"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:background="@drawable/bblack"
+                    android:text="@string/TYPE"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/my_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </ScrollView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/dealer_back"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/cancel"
+                        android:text="@string/Back"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        tools:ignore="ButtonStyle" />
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+
+                    <CheckBox
+                        android:id="@+id/check"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:checked="true"
+                        android:text="@string/Consent_Form"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <Button
+                        android:id="@+id/dealer_scanFP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/ok"
+                        android:text="@string/Scan_FP"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        tools:ignore="ButtonStyle" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_gravity="bottom">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:text="Powered by NIC"
+            android:textColor="@color/black"
+            android:textSize="@dimen/TextsizeH"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

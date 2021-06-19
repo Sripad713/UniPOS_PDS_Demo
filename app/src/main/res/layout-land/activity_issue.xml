@@ -254,7 +254,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginHorizontal="@dimen/LayoutMH"
-        android:layout_marginTop="@dimen/LayoutMT">
+        android:layout_marginTop="50dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -313,7 +313,7 @@
             <Button
                 android:id="@+id/btn_back"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/opaque_red"
                 android:text="@string/Back"
@@ -321,5 +321,22 @@
                 android:textSize="@dimen/TextsizeB"/>
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginVertical="@dimen/LayoutMV"
+        android:gravity="bottom"
+        android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:text="Powered by NIC"
+            android:textColor="@color/black"
+            android:textSize="@dimen/TextsizeH"
+            android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>

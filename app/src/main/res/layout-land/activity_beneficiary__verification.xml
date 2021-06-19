@@ -251,10 +251,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="302dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/LayoutMH"
         android:layout_marginVertical="20dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="3">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -342,6 +343,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <Button
@@ -371,5 +373,21 @@
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_gravity="bottom">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:text="Powered by NIC"
+            android:textColor="@color/black"
+            android:textSize="@dimen/TextsizeH"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

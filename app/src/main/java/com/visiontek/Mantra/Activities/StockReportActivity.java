@@ -127,11 +127,13 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                    StringBuilder add = new StringBuilder();
                    int astockBeansize= stockDetails.astockBean.size();
                    for (int i = 0; i < astockBeansize; i++) {
-                       app = stockDetails.astockBean.get(i).comm_name + "  " +
-                               stockDetails.astockBean.get(i).scheme_desc_en + "  " +
-                               stockDetails.astockBean.get(i).total_quantity+ "  " +
-                               stockDetails.astockBean.get(i).issued_qty+ "   " +
-                               stockDetails.astockBean.get(i).closing_balance + "\n";
+
+                       app = String.format("%-8s%-8s%-8s%-8s%-8s\n",
+                               stockDetails.astockBean.get(i).comm_name,
+                               stockDetails.astockBean.get(i).scheme_desc_en ,
+                               stockDetails.astockBean.get(i).total_quantity,
+                               stockDetails.astockBean.get(i).issued_qty,
+                               stockDetails.astockBean.get(i).closing_balance);
                        add.append(app);
                    }
 
@@ -306,6 +308,10 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
             public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
                 if (pd.isShowing()) {
                     pd.dismiss();
+                }
+                if (isError == null || isError.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response");
+                    return;
                 }
                 if (!isError.equals("00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");

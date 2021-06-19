@@ -1,84 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@color/white"
+    android:orientation="horizontal">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tool"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
-
-        <TextView
-            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/COMMODITY_WEIGHT"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:textSize="@dimen/TextsizeT"
-            android:textStyle="bold" />
-    </androidx.appcompat.widget.Toolbar>
-    <TextView
-        android:id="@+id/weight_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text=""
-        android:textAlignment="center"
-        android:textColor="@color/button"
-        android:textSize="@dimen/TextsizeB"
-        android:textStyle="bold" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
         android:orientation="vertical">
-    <EditText
-        android:id="@+id/weights"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/Please_Enter_the_required_Weight"
-        android:inputType="numberDecimal"
-        android:textSize="@dimen/TextsizeB"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/ik_blue_white"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:padding="@dimen/LayoutP"
-            android:weightSum="2"
+            android:padding="@dimen/Layoutcard"
+            android:weightSum="4"
             tools:ignore="MissingConstraints">
 
-            <Button
-                android:id="@+id/weight_back"
-                android:layout_width="150dp"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/opaque_red"
-                android:text="@string/Back"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:text="@string/CName"
+                android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
-            <Button
-                android:id="@+id/weight_confirm"
-                android:layout_width="150dp"
-                android:layout_height="100dp"
-                android:layout_margin="@dimen/ButtonM"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/ok"
-                android:text="@string/Confirm"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:text="@string/BalQty"
+                android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
-        </LinearLayout>
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:text="@string/Rate"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:text="@string/ClBal"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeV" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/linear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ik_blue_white"
+            android:orientation="horizontal"
+            android:padding="@dimen/Layoutcard"
+            android:weightSum="4"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:background="@drawable/white"
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/blackblack"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:background="@drawable/white"
+                android:id="@+id/bal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/blackblack"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:background="@drawable/white"
+                android:id="@+id/rate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/blackblack"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:background="@drawable/white"
+                android:id="@+id/close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/blackblack"
+                android:textSize="@dimen/TextsizeV" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/weight_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/button"
+            android:textSize="@dimen/TextsizeB"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+
+            <EditText
+                android:id="@+id/weights"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="15"
+                android:hint="@string/Please_Enter_the_required_Weight"
+                android:inputType="numberDecimal"
+                android:textSize="@dimen/TextsizeB" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                tools:ignore="MissingConstraints">
+
+                <Button
+                    android:id="@+id/weight_back"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/opaque_red"
+                    android:text="@string/Back"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/weight_confirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/ok"
+                    android:text="@string/Confirm"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,14 +1,21 @@
 package com.visiontek.Mantra.Utils;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
+
+import androidx.core.app.ActivityCompat;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.FileOutputStream;
+
+import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class MyFTPClientFunctions {
 
@@ -41,8 +48,8 @@ public class MyFTPClientFunctions {
         return status;
     }
 
-    public boolean Ffinding(String hname, String uname, String pword, String dir_path, String file) {
-        boolean find = false;
+    public String Ffinding(String hname, String uname, String pword, String dir_path) {
+        String name = "NOFILE";
         boolean state = ftpConnect(hname, uname, pword, 21);
         if (state) {
             try {
@@ -50,23 +57,20 @@ public class MyFTPClientFunctions {
                 mFTPClient.setSoTimeout(45000);
                 FTPFile[] ftpFiles = mFTPClient.listFiles(dir_path);
                 for (FTPFile ftpFile : ftpFiles) {
-                    String name = ftpFile.getName();
-                    if (file.equals(name)) {
-                        /*fsize = ftpFile.getSize();
-                        fdate = String.valueOf(ftpFile);*/
-                        return true;
-                    }
+                    name = ftpFile.getName();
                 }
             } catch (Exception e) {
-                return find;
+                return "EXCEPTION";
             }
         }
-        return find;
+        return name;
     }
 
     public boolean ftpDownload(String srcFilePath, String desFilePath) {
         boolean status = false;
         try {
+            System.out.println("@@Destination file path: "+desFilePath);
+
             mFTPClient.setDataTimeout(30000);
             mFTPClient.setSoTimeout(15000);
             mFTPClient.setBufferSize(1024 * 1024);
@@ -79,6 +83,8 @@ public class MyFTPClientFunctions {
         }
         return status;
     }
+
+
     public void ftpDisconnect() {
         if (mFTPClient.isConnected()) {
             try {

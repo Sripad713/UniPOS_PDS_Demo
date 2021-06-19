@@ -1,5 +1,6 @@
 package com.visiontek.Mantra.Activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -7,6 +8,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import com.visiontek.Mantra.BuildConfig;
@@ -30,7 +34,9 @@ import com.visiontek.Mantra.Utils.Util;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
+import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
@@ -38,7 +44,7 @@ import static com.visiontek.Mantra.Utils.Util.RDservice;
 
 
 public class Device_Update extends AppCompatActivity {
-
+    float appVersion = 0;
     Button usb, gprs;
     Context context;
     String something;
@@ -46,14 +52,12 @@ public class Device_Update extends AppCompatActivity {
     ProgressDialog pd;
     String
             fHostName = "115.111.229.10",
-            fUserName = "NEPDS",
-            fPassword = "mktg",
-            Source = "/" + fUserName + "/",
-            FTP_file = "MantraPDS.apk",
-            Download = Source + FTP_file,
-            Destination,
+            fUserName = "rnd",
+            fPassword = "rnd123",
+            Source = "/" + fUserName + "/apk/",
+            FTP_file = "",
+            Download = "",
             Device_Download_path;
-    AlertDialog falert;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +65,14 @@ public class Device_Update extends AppCompatActivity {
         setContentView(R.layout.activity_device__update);
         context = Device_Update.this;
 
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            String version = pInfo.versionName;
+            System.out.println("@@Version: "+version);
+            appVersion = Float.parseFloat(version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
         boolean rd_fps = RDservice(context);
@@ -74,14 +86,19 @@ public class Device_Update extends AppCompatActivity {
         }
 
         initilisation();
-        Device_Download_path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/");
-        Destination = Device_Download_path + FTP_file;
+        isStoragePermissionGranted();
+
+        Device_Download_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +"/"+FTP_file;
+        System.out.println("@@Device download path: "+Device_Download_path);
+
         usb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 show_error_box(context.getResources().getString(R.string.Connect_your_device_to_the_usb_Port), context.getResources().getString(R.string.USB_Connection));
             }
         });
+
+
         gprs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,16 +123,27 @@ public class Device_Update extends AppCompatActivity {
             pd = ProgressDialog.show(context, "", context.getResources().getString(R.string.Processing), false, false);
             new Thread(new Runnable() {
                 public void run() {
-                    boolean find = (ftpclient.Ffinding(fHostName, fUserName, fPassword, Source, FTP_file));
-                    if (find) {
-                        handler.sendEmptyMessage(2);
-                    } else {
+                    FTP_file = (ftpclient.Ffinding(fHostName, fUserName, fPassword, Source));
+                    if (FTP_file.equalsIgnoreCase("NOFILE") || (FTP_file.equalsIgnoreCase("EXCEPTION"))) {
                         something="File Not Found";
                         handler.sendEmptyMessage(4);
+                    } else {
+                        float version = Float.parseFloat(FTP_file.substring(10,13));
+                        System.out.println("@@Downloaded version");
+                        if(version > appVersion)
+                        {
+                            System.out.println("@@Proceed to install");
+                            Download = Source + FTP_file;
+                            Device_Download_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +"/"+FTP_file;
+                            handler.sendEmptyMessage(2);
+                        }else{
+                            System.out.println("@@No need to install");
+                            something = "No updates";
+                            handler.sendEmptyMessage(5);
+                        }
                     }
                 }
             }).start();
-
         } catch (Exception e) {
             something = context.getResources().getString(R.string.ERROR_IN_GETTING_FILE);
             handler.sendEmptyMessage(4);
@@ -127,7 +155,7 @@ public class Device_Update extends AppCompatActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    boolean download = ftpclient.ftpDownload(Download, Destination);
+                    boolean download = ftpclient.ftpDownload(Download, Device_Download_path);
                     if (download) {
                         handler.sendEmptyMessage(3);
                     } else {
@@ -142,6 +170,25 @@ public class Device_Update extends AppCompatActivity {
         }
     }
 
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                System.out.println("@@Permission granted");
+                return true;
+            } else {
+                System.out.println("@@Permission revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else {
+            System.out.println("@@Permission granted");
+            return true;
+        }
+    }
+
+
     private void install() {
         boolean isNonPlayAppAllowed = false;
         try {
@@ -154,19 +201,19 @@ public class Device_Update extends AppCompatActivity {
             startActivity(new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS));
         }
 
-        File file = new File("/sdcard/Download/", FTP_file); // assume refers to "sdcard/myapp_folder/myapp.apk"
-        Uri fileUri = Uri.fromFile(file); //for Build.VERSION.SDK_INT <= 2
-        if (Build.VERSION.SDK_INT >= 24) {
-
-            fileUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        File apkFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +"/"+FTP_file);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri uri = FileProvider.getUriForFile(this,
+                    BuildConfig.APPLICATION_ID + ".provider", apkFile);
+            intent.setDataAndType(uri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
         }
-        System.out.println(fileUri);
-        Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
-        intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
-        intent.setDataAndType(fileUri, "application/vnd.android.package-archive");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //dont forget add this line
-        context.startActivity(intent);
 
+        startActivity(intent);
     }
 
     @SuppressLint("HandlerLeak")
@@ -184,19 +231,9 @@ public class Device_Update extends AppCompatActivity {
             } else if (msg.what == 3) {
                 install();
             }  else if (msg.what == 4) {
-                System.out.println(something);
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage(context.getResources().getString(R.string.Something_went_Wrong_Please_Try_Again))
-                        .setCancelable(false)
-                        .setNegativeButton(context.getResources().getString(R.string.Ok), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-
-                            }
-                        });
-                falert = builder.create();
-                falert.setTitle(something);
-                falert.show();
-                falert.setCancelable(false);
+                show_error_box(something,context.getResources().getString(R.string.Something_went_Wrong_Please_Try_Again));
+            } else if (msg.what == 5) {
+                show_error_box(something,"No Update Found");
             } else {
                 something = context.getResources().getString(R.string.UNKNOWN_ERROR);
                 System.out.println(something);
@@ -205,7 +242,6 @@ public class Device_Update extends AppCompatActivity {
 
         }
     };
-
     private void show_error_box(String msg, String title) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
@@ -221,7 +257,9 @@ public class Device_Update extends AppCompatActivity {
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+
     }
+
     private void toolbarInitilisation() {
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -34,9 +33,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:background="@drawable/black"
                 android:orientation="vertical">
 
@@ -70,11 +69,11 @@
                         android:textStyle="bold" />
 
                     <Spinner
-                        android:layout_weight="1"
                         android:id="@+id/options"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center"
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -247,7 +246,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginVertical="@dimen/LayoutMV">
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="@dimen/LayoutMV"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -257,137 +258,151 @@
             android:weightSum="5">
 
             <TextView
-                android:background="@drawable/bblack"
                 android:id="@+id/total"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/bblack"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
                 android:text="@string/CName"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:background="@drawable/bblack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/bblack"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
                 android:text="@string/BalQty"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:background="@drawable/bblack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/bblack"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
                 android:text="@string/Rate"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:background="@drawable/bblack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/bblack"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
                 android:text="@string/ClBal"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:background="@drawable/bblack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/bblack"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
                 android:text="@string/issueQty"
                 android:textAlignment="center"
                 android:textColor="@color/white"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginVertical="5dp">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/my_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </ScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            tools:ignore="MissingConstraints">
+
+            <Button
+                android:id="@+id/ration_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/opaque_red"
+                android:text="@string/Back"
+                android:textColor="@color/white"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+           <!-- <Button
+                android:id="@+id/getweight"
+                android:layout_width="@dimen/ButtonW"
+                android:layout_height="@dimen/ButtonH"
+                android:layout_margin="@dimen/ButtonM"
+                android:layout_weight="1"
+                android:background="@color/ok"
+                android:text="@string/Get"
+                android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeB"
+                android:textStyle="bold" />-->
+
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/ok"
+                android:text="@string/Confirm"
+                android:textColor="@color/white"
+                android:textSize="30dp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_marginVertical="5dp"
-        android:layout_height="200dp">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/my_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </ScrollView>
-    </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        tools:ignore="MissingConstraints">
+        android:layout_gravity="bottom"
+        android:layout_marginVertical="@dimen/LayoutMV"
+        android:gravity="bottom"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/ration_back"
-            android:layout_width="@dimen/ButtonW"
-            android:layout_height="@dimen/ButtonH"
-            android:layout_margin="@dimen/ButtonM"
-            android:layout_weight="1"
-            android:background="@color/opaque_red"
-            android:text="@string/Back"
-            android:textColor="@color/white"
-            android:textSize="@dimen/TextsizeB"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/getweight"
-            android:layout_width="@dimen/ButtonW"
-            android:layout_height="@dimen/ButtonH"
-            android:layout_margin="@dimen/ButtonM"
-            android:layout_weight="1"
-            android:background="@color/ok"
-            android:text="@string/Get"
-            android:textColor="@color/white"
-            android:textSize="@dimen/TextsizeB"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/confirm"
-            android:layout_width="@dimen/ButtonW"
-            android:layout_height="@dimen/ButtonH"
-            android:layout_margin="@dimen/ButtonM"
-            android:layout_weight="1"
-            android:background="@color/ok"
-            android:text="@string/Confirm"
-            android:textColor="@color/white"
-            android:textSize="@dimen/TextsizeB"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:text="Powered by NIC"
+            android:textColor="@color/black"
+            android:textSize="@dimen/TextsizeH"
             android:textStyle="bold" />
     </LinearLayout>
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/display"/>
-
 </LinearLayout>

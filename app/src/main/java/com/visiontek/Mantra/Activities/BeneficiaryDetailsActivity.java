@@ -220,6 +220,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
+                if (code == null || code.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
                 if (!code.equals("00")) {
                     show_error_box(msg, code, 0);
                 } else {
@@ -351,6 +355,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             public void onCompleted(String error, String msg, String ref, String flow, Object object) {
                 if (pd.isShowing()) {
                     pd.dismiss();
+                }
+                if (error == null || error.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
                 }
                 if (!error.equals("E00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");

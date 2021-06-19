@@ -32,7 +32,7 @@
                 android:gravity="center_horizontal"
                 android:textAlignment="center"
                 android:textColor="@color/blackblack"
-                android:textSize="@dimen/TextsizeV" />
+                android:textSize="25sp" />
 
             <TextView
                 android:id="@+id/B"
@@ -42,7 +42,7 @@
                 android:gravity="center_horizontal"
                 android:textAlignment="center"
                 android:textColor="@color/blackblack"
-                android:textSize="@dimen/TextsizeV" />
+                android:textSize="25sp" />
 
             <TextView
                 android:id="@+id/C"
@@ -52,7 +52,7 @@
                 android:gravity="center_horizontal"
                 android:textAlignment="center"
                 android:textColor="@color/blackblack"
-                android:textSize="@dimen/TextsizeV" />
+                android:textSize="25sp"/>
 
             <TextView
                 android:id="@+id/D"
@@ -62,10 +62,10 @@
                 android:gravity="center_horizontal"
                 android:textAlignment="center"
                 android:textColor="@color/blackblack"
-                android:textSize="@dimen/TextsizeV" />
+                android:textSize="25sp"/>
 
             <TextView
-                android:background="@drawable/white"
+                android:background="@drawable/wblack"
                 android:id="@+id/E"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -73,7 +73,7 @@
                 android:gravity="center_horizontal"
                 android:textAlignment="center"
                 android:textColor="@color/blackblack"
-                android:textSize="@dimen/TextsizeV" />
+                android:textSize="25sp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

@@ -302,7 +302,7 @@
     <string name="TransactionID">TransactionID</string>
     <string name="Transaction">Transaction Successful</string>
     <string name="Printing">Printing, Please Wait</string>
-    <string name="Date">Date :</string>
+    <string name="Date">Date</string>
     <string name="AllotmentMonth">AllotmentMonth</string>
     <string name="AllotmentYear">AllotmentYear</string>
     <string name="Commodity_Lifted_Rate_Price">Commodity    Lifted      Rate    Price</string>

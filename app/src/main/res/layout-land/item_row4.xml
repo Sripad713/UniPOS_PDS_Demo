@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/blackblack"
-                android:textSize="@dimen/TextsizeV"
+                android:textSize="25dp"
                 android:gravity="center_horizontal" />
             <TextView
                 android:id="@+id/bal"
@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="@dimen/TextsizeV"
+                android:textSize="25dp"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="@dimen/TextsizeV"
+                android:textSize="25dp"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
 
@@ -58,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="@dimen/TextsizeV"
+                android:textSize="25dp"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
         </LinearLayout>

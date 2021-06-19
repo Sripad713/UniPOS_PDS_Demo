@@ -253,7 +253,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="10dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -263,8 +263,8 @@
             <Button
 
                 android:id="@+id/issue"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/ButtonM"
                 android:layout_weight="1"
                 android:background="@color/button"
@@ -274,8 +274,8 @@
                 android:textSize="@dimen/TextsizeB"/>
             <Button
                 android:id="@+id/inspection"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/ButtonM"
                 android:layout_weight="1"
                 android:background="@color/button"
@@ -284,7 +284,6 @@
                 android:text="@string/Inspection"
                 android:textSize="@dimen/TextsizeB"/>
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -293,8 +292,8 @@
 
             <Button
                 android:id="@+id/aadhaar_services"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/ButtonM"
                 android:layout_weight="1"
                 android:background="@color/button"
@@ -305,8 +304,8 @@
 
             <Button
                 android:id="@+id/receive_goods"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/ButtonM"
                 android:layout_weight="1"
                 android:background="@color/button"
@@ -322,8 +321,8 @@
             android:weightSum="2">
             <Button
                 android:id="@+id/reports"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/ButtonM"
                 android:layout_weight="1"
                 android:background="@color/button"
@@ -333,8 +332,8 @@
                 android:textSize="@dimen/TextsizeB"/>
             <Button
                 android:id="@+id/others"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/ButtonM"
                 android:layout_weight="1"
                 android:background="@color/button"
@@ -350,10 +349,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/ButtonM"
-
         android:background="@color/cancel"
         android:textStyle="bold"
         android:text="@string/Logout"
         android:textColor="@color/white"
         android:textSize="@dimen/TextsizeB"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginVertical="@dimen/LayoutMV"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:text="Powered by NIC"
+            android:textColor="@color/black"
+            android:textSize="@dimen/TextsizeH"
+            android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>

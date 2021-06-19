@@ -301,7 +301,7 @@
                 android:text="@string/NAME"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeH"
+                android:textSize="30dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -313,7 +313,7 @@
                 android:text="@string/UID"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -325,7 +325,7 @@
                 android:text="@string/Status"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30dp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -333,7 +333,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="250dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -349,52 +349,80 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:textAlignment="center">
+            android:weightSum="3"
+            android:baselineAligned="false">
 
-            <CheckBox
-                android:id="@+id/check"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/Consent_Form"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/TextsizeH"
-                android:textStyle="bold"/>
-        </LinearLayout>
+                android:orientation="vertical">
 
-        <LinearLayout
+                <Button
+                    android:id="@+id/Uid_details_back"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/cancel"
+                    android:text="@string/Back"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    tools:ignore="ButtonStyle" />
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_weight="1">
+
+                <CheckBox
+                    android:id="@+id/check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checked="true"
+                    android:text="@string/Consent_Form"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/Uid_details_Ekyc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/ok"
+                    android:text="@string/EKYC"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    tools:ignore="ButtonStyle" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:gravity="bottom"
+        android:layout_marginVertical="15dp"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/black">
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            tools:ignore="MissingConstraints">
-
-            <Button
-                android:id="@+id/UID_details_back"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
-                android:background="@color/opaque_red"
-                android:text="@string/Back"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
-
-
-            <Button
-                android:id="@+id/UID_details_Ekyc"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
-                android:background="@color/ok"
-                android:text="@string/EKYC"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/TextsizeB"/>
-        </LinearLayout>
+            android:layout_gravity="bottom"
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:text="Powered by NIC"
+            android:textColor="@color/black"
+            android:textSize="@dimen/TextsizeH"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

@@ -133,9 +133,20 @@ public class Json_Parsing {
 
                     myResponse = response.body().string();
 
+                    System.out.println("OUTPUT"+myResponse);
                     if (type == 1) {
                         Util.generateNoteOnSD(context, "RecivegoodsRes.txt", myResponse);
                         object = parse_recivegoods(myResponse);
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    callback();
+                                } catch (SQLException throwables) {
+                                    throwables.printStackTrace();
+                                }
+                            }
+                        });
                     } else if (type == 2) {
                         Util.generateNoteOnSD(context, "CancelRequestRes.txt", myResponse);
                         parse_cancelReq(myResponse);
@@ -153,8 +164,37 @@ public class Json_Parsing {
                 e.printStackTrace();
                 code = "1";
                 msg = String.valueOf(e);
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        callback();
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+                }
+            });
 
         }
+
+    }
+
+    private void parse_consentform(String myResponse) {
+
+        try {
+            JSONObject reader;
+            reader = new JSONObject(myResponse);
+
+            msg = reader.getString("respMessage");
+            code = reader.getString("respCode");
+            System.out.println(code);
+
+        } catch (JSONException e) {
+            code="1";
+            msg="Parsing Error";
+            e.printStackTrace();
+        }
+
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -167,22 +207,6 @@ public class Json_Parsing {
         });
     }
 
-    private void parse_consentform(String myResponse) {
-
-        try {
-            JSONObject reader;
-            reader = new JSONObject(myResponse);
-
-            msg = reader.getString("respMessage");
-            code = reader.getString("respCode");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
     private void parse_logout(String myResponse) {
         try {
             JSONObject reader;
@@ -192,27 +216,44 @@ public class Json_Parsing {
             code = reader.getString("respCode");
 
         } catch (JSONException e) {
+            code="1";
+            msg="Parsing Error";
             e.printStackTrace();
         }
-
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    callback();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        });
 
     }
 
     private void parse_cancelReq(String myResponse) {
         try {
-            JSONObject reader;
-            reader = new JSONObject(myResponse);
-
+            JSONObject reader= new JSONObject(myResponse);
             msg = reader.getString("respMessage");
             code = reader.getString("respCode");
-            /*if (code.equals("00")) {
-
-            }*/
         } catch (JSONException e) {
+            code="1";
+            msg="Parsing Error";
+            System.out.println("----------------------");
             e.printStackTrace();
         }
-
-
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    callback();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        });
     }
 
 
@@ -258,6 +299,8 @@ public class Json_Parsing {
             }
 
         } catch (JSONException e) {
+            code="1";
+            msg="Parsing Error";
             e.printStackTrace();
         }
 

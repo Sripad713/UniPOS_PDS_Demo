@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class fpsURLInfo implements Serializable {
     public String
+            cardEntryLength,
             authURL,
             ceritificatePath,
             commonCommodityFlag,
@@ -26,6 +27,7 @@ public class fpsURLInfo implements Serializable {
             pmsURL,
             pmsWadh,
             token,
+            virtualKeyPadType,
             utilURL,
             wsdlOffline,
             wsdlURLAuth,

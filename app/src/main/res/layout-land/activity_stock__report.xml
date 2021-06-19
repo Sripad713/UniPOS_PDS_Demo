@@ -378,4 +378,21 @@
                 android:textSize="@dimen/TextsizeB"/>
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:gravity="bottom"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/black">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:text="Powered by NIC"
+            android:textColor="@color/black"
+            android:textSize="@dimen/TextsizeH"
+            android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>

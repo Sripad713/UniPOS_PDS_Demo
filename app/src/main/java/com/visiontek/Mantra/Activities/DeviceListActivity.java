@@ -89,17 +89,9 @@ Context context;
         setContentView(R.layout.device_list);
         context = DeviceListActivity.this;
 
-        TextView rd = findViewById(R.id.rd);
-        boolean  rd_fps;
-        rd_fps = RDservice(context);
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothAdapter.enable();
-        if (rd_fps) {
-            rd.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),context.getResources().getString(R.string.RD_Service));
-            rd.setTextColor(context.getResources().getColor(R.color.black));
-        }
+
         if (shouldAskPermissions()) {
             askPermissions();
         }

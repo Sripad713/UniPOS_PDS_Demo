@@ -16,6 +16,7 @@ import android.hardware.usb.UsbManager;
 import android.icu.lang.UCharacter;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -157,7 +158,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
     private void initilisation() {
         pd = new ProgressDialog(context);
         id = findViewById(R.id.id);
-        id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         home = findViewById(R.id.cash_pds_home);
         last = findViewById(R.id.cash_pds_lastreciept);
         get_details = findViewById(R.id.cash_pds_getdetails);
@@ -188,8 +188,8 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     pd.dismiss();
                 }
 
-                if (isError == null || isError.isEmpty()){
-                    show_error_box("Invalid Out put from Server","No Response");
+                if (isError == null || isError.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response");
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -201,16 +201,17 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     StringBuilder add = new StringBuilder();
                     int lastReceiptCommsize=lastReceipt.lastReceiptComm.size();
                     for (int i = 0; i < lastReceiptCommsize; i++) {
-                        app = lastReceipt.lastReceiptComm.get(i).comm_name + "  " + "  " +
-                                lastReceipt.lastReceiptComm.get(i).carry_over + "  " + "  " +
-                                lastReceipt.lastReceiptComm.get(i).retail_price + "  " + "  " +
-                                lastReceipt.lastReceiptComm.get(i).commIndividualAmount + "  " + "\n";
+
+                        app =  String.format("%-10s%-10s%-8s%-8s\n",
+                                lastReceipt.lastReceiptComm.get(i).comm_name ,
+                                lastReceipt.lastReceiptComm.get(i).carry_over ,
+                                lastReceipt.lastReceiptComm.get(i).retail_price ,
+                                lastReceipt.lastReceiptComm.get(i).commIndividualAmount);
                         add.append(app);
                     }
-                    System.out.println(lastReceipt.lastReceiptComm.get(0).transaction_time);
                     String date = lastReceipt.lastReceiptComm.get(0).transaction_time.substring(0, 19);
-                    String month = lastReceipt.lastReceiptComm.get(0).transaction_time.substring(0, 19);
-                    String year = lastReceipt.lastReceiptComm.get(0).transaction_time.substring(0, 19);
+                    String month = menuConstants.fpsPofflineToken.allocationMonth;
+                    String year = menuConstants.fpsPofflineToken.allocationYear;
 
                     String str1,str2,str3,str4,str5;
                     String[] str = new String[4];
@@ -221,7 +222,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                                 + context.getResources().getString(R.string.FPS_No) +" : "+ dealerConstants.fpsCommonInfo.fpsId+ "\n"
                                 + context.getResources().getString(R.string.Availed_FPS_No) + " : "+lastReceipt.lastReceiptComm.get(0).availedFps +"\n"
                                 + context.getResources().getString(R.string.Name_of_Consumer)+" : " +lastReceipt.lastReceiptComm.get(0).member_name  + "\n"
-                                + context.getResources().getString(R.string.Card_No)+" :" + lastReceipt.rcId + "\n"
+                                + context.getResources().getString(R.string.Card_No)+" :" + lastReceipt.lastReceiptComm.get(0).rcId + "\n"
                                 + context.getResources().getString(R.string.TransactionID) +" :"+ lastReceipt.lastReceiptComm.get(0).reciept_id + "\n"
                                 +context.getResources().getString(R.string.Date)+" :" + date + "\n"
                                 + context.getResources().getString(R.string.AllotmentMonth)+ " : "+month +"\n"
@@ -406,8 +407,8 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
-                if (isError == null || isError.isEmpty()){
-                    show_error_box("Invalid Out put from Server","No Response");
+                if (isError == null || isError.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response");
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -446,6 +447,16 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
             switch (v.getId()) {
                 case R.id.radio_rc_no:
                     cardno.setText("RC No :");
+                    if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
+                        id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                    }else {
+                        id.setInputType(InputType. TYPE_CLASS_NUMBER);
+                    }
+                    InputFilter[] FilterArray = new InputFilter[1];
+                    FilterArray[0] = new InputFilter.LengthFilter(Integer.parseInt(dealerConstants.fpsURLInfo.cardEntryLength));
+                    id.setFilters(FilterArray);
+
+                  //  id.set(Integer.parseInt(dealerConstants.fpsURLInfo.cardEntryLength));
                     if (mp!=null) {
                         releaseMediaPlayer(context,mp);
 
@@ -467,6 +478,15 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
 
                 case R.id.radio_aadhaar:
                     cardno.setText("Aadhar No :");
+
+                    if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
+                        id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                    }else {
+                        id.setInputType(InputType. TYPE_NUMBER_VARIATION_PASSWORD | InputType. TYPE_CLASS_NUMBER );
+                    }
+                    InputFilter[] FilterArray1 = new InputFilter[1];
+                    FilterArray1[0] = new InputFilter.LengthFilter(12);
+                    id.setFilters(FilterArray1);
                     select = 2;
                     radiorc.setTypeface(null, Typeface.NORMAL);
                     radioaadhaar.setTypeface(null, Typeface.BOLD_ITALIC);
@@ -525,6 +545,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     mp.start();
                 }
                 show_error_box(context.getResources().getString(R.string.Please_Enter_Valid_Number), context.getResources().getString(R.string.Invalid_UID));
+                return;
             }
         } else {
             lastRecipt = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +

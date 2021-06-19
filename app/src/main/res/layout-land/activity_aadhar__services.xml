@@ -251,85 +251,102 @@
 
     <LinearLayout
         android:id="@+id/innerlayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
-        android:weightSum="4">
-
+        android:weightSum="2">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:weightSum="2"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_uid_seeding"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/button"
-                android:text="@string/UID_SEEDing"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:gravity="center"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/btn_uid_seeding"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/button"
+                    android:text="@string/UID_SEEDing"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_beneficiaryverification"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/LayoutMV"
-                android:background="@color/button"
-                android:text="@string/BENEficiary_VERIfication"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/cancel"
-                android:text="@string/Back"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold" />
+                android:gravity="center"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btn_beneficiaryverification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/LayoutMV"
+                    android:background="@color/button"
+                    android:text="@string/BENEficiary_VERIfication"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@drawable/black"
-            android:gravity="bottom">
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="top"
+            android:weightSum="2"
+            android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="@drawable/black"
                 android:gravity="center"
-                android:text="Powered by NIC"
-                android:textColor="@color/black"
-                android:textSize="@dimen/TextsizeH"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/cancel"
+                    android:gravity="center"
+                    android:layout_gravity="top"
+                    android:text="@string/Back"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/black">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/black"
+                    android:gravity="center"
+                    android:text="Powered by NIC"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/TextsizeH"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

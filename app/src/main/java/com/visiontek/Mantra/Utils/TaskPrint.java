@@ -62,7 +62,7 @@ public class TaskPrint implements Runnable {
             }
             if (!text[1].equals("0")) {
                 System.out.println("**************************1" + text[1]);
-                int p = print(1, 1, text[1], 1);
+                int p = print(0, 0, text[1], 1);
                 if (p != 0) return p;
             }
             if (!text[2].equals("0")) {
@@ -105,13 +105,11 @@ public class TaskPrint implements Runnable {
     }
 
     private int print(int i, int i1, String s, int i2) {
-        System.out.println("------------------------------");
         mTerminal100API.setAlign(i2);
         return mTerminal100API.printString(i, i1, s, 0, FontStyleUnderline2DotThick, FontTypeStandardASCII);
     }
 
     private int printBmp(int width, Bitmap bmYellowmen, int align) {
-        System.out.println("------------------------------Image");
         mTerminal100API.setAlign(align);
         return mTerminal100API.PrintImageBitmap(width, 0, bmYellowmen, 0);
     }
