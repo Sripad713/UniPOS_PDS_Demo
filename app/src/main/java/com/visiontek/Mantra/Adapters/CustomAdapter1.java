@@ -29,7 +29,6 @@ public class CustomAdapter1 extends RecyclerView.Adapter<CustomAdapter1.MyViewHo
     private final List<DataModel1> dataSet;
     private RationDetailsActivity.OnClickListener onClickListener;
     private ReceiveGoodsActivity.OnClickListener onClick;
-    private DealerAuthenticationActivity.OnClickListener Click;
     private final Context context;
 
 
@@ -56,8 +55,7 @@ public class CustomAdapter1 extends RecyclerView.Adapter<CustomAdapter1.MyViewHo
     @NotNull
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_row5, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row5, parent, false);
         return new MyViewHolder(view);
     }
 

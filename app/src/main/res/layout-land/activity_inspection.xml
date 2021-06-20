@@ -159,7 +159,15 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
-
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:text="AEPDS "
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/TextsizeH"
+                            android:textStyle="bold" />
                         <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
@@ -170,15 +178,6 @@
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:text="Toll Free "
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
-                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -325,7 +324,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp">
+            android:layout_height="200dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -339,20 +338,25 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_marginVertical="10dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <RadioGroup
                 android:id="@+id/groupradio"
-                android:layout_width="fill_parent"
+                android:layout_width="400dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="3">
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:weightSum="2">
 
                 <RadioButton
                     android:id="@+id/ok"
+                    android:gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -361,6 +365,8 @@
                     android:textSize="@dimen/TextsizeV" />
 
                 <RadioButton
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:id="@+id/seized"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -368,75 +374,113 @@
                     android:text="@string/Seized"
                     android:textSize="@dimen/TextsizeV" />
 
-                <CheckBox
-                    android:id="@+id/check"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:layout_weight="1"
-                    android:text="@string/Consent_Form"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/TextsizeH"
-                    android:textStyle="bold" />
-
-
             </RadioGroup>
         </LinearLayout>
 
-
-
         <LinearLayout
+            android:layout_marginVertical="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2"
+            android:weightSum="3"
             tools:ignore="MissingConstraints">
-
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
             <Button
                 android:id="@+id/inspection_back"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
                 android:background="@color/opaque_red"
                 android:text="@string/Back"
                 android:textColor="@color/white"
                 android:textSize="30sp"
                 android:textStyle="bold" />
-
-
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <CheckBox
+                    android:id="@+id/check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checked="true"
+                    android:text="@string/Consent_Form"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
             <Button
                 android:id="@+id/inspection_next"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
+
                 android:background="@color/ok"
                 android:text="@string/Next"
                 android:textColor="@color/white"
                 android:textSize="30sp"
                 android:textStyle="bold" />
-
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginVertical="@dimen/LayoutMV"
+        android:layout_weight="1"
         android:gravity="bottom"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/black"
-            android:gravity="center"
-            android:text="Powered by NIC"
-            android:textColor="@color/black"
-            android:textSize="@dimen/TextsizeH"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="bottom"
+            android:weightSum="2">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:textAlignment="textEnd"
+                    android:background="@drawable/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:text="Powered by"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/TextsizeH"
+                    android:textStyle="bold"
+                    tools:ignore="RtlCompat" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@drawable/wblack"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/nic3" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

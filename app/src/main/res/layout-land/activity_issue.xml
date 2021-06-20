@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Activities.IssueActivity">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool"
         android:layout_width="match_parent"
@@ -34,9 +34,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:background="@drawable/black"
                 android:orientation="vertical">
 
@@ -160,21 +160,21 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
                             android:gravity="center"
+                            android:text="AEPDS "
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
                             android:gravity="center"
-                            android:text="Toll Free "
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
@@ -248,95 +248,150 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
+
     <LinearLayout
-        android:id="@+id/innerlayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginHorizontal="@dimen/LayoutMH"
-        android:layout_marginTop="50dp">
+        android:weightSum="2">
+
 
         <LinearLayout
+            android:id="@+id/innerlayout"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
-            <Button
-                android:id="@+id/btn_cash_pds"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
-                android:background="@color/button"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:text="@string/Cash_PDS"
-                android:textSize="@dimen/TextsizeB"/>
-            <Button
-                android:visibility="invisible"
-                android:id="@+id/btn_cashless_pds"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
-                android:background="@color/button"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:text="@string/Cashless_PDS"
-                android:textSize="@dimen/TextsizeB"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            android:weightSum="2">
-            <Button
-                android:visibility="invisible"
-                android:id="@+id/btn_impds"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
-                android:layout_weight="1"
-                android:background="@color/button"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:text="@string/IMPDS"
-                android:textSize="@dimen/TextsizeB"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginLeft="10dp"
-            android:weightSum="2">
-            <Button
-                android:id="@+id/btn_back"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/opaque_red"
-                android:text="@string/Back"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"/>
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginVertical="@dimen/LayoutMV"
-        android:gravity="bottom"
-        android:orientation="vertical">
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-        <TextView
+                <Button
+                    android:id="@+id/btn_cash_pds"
+                    android:layout_width="@dimen/ButtonW"
+                    android:layout_height="@dimen/ButtonH"
+                    android:layout_margin="@dimen/ButtonM"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:text="@string/Cash_PDS"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_cashless_pds"
+                    android:layout_width="@dimen/ButtonW"
+                    android:layout_height="@dimen/ButtonH"
+                    android:layout_margin="@dimen/ButtonM"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:text="@string/Cashless_PDS"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btn_impds"
+                    android:layout_width="@dimen/ButtonW"
+                    android:layout_height="@dimen/ButtonH"
+                    android:layout_margin="@dimen/ButtonM"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:text="@string/IMPDS"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/black"
-            android:gravity="center"
-            android:text="Powered by NIC"
-            android:textColor="@color/black"
-            android:textSize="@dimen/TextsizeH"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:orientation="horizontal"
+                android:layout_gravity="left"
+                android:gravity="center"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_back"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/opaque_red"
+                    android:text="@string/Back"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="bottom"
+                    android:weightSum="2">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_weight="1">
+                        <TextView
+                            android:textAlignment="textEnd"
+                            android:background="@drawable/black"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:text="Powered by"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/TextsizeH"
+                            android:textStyle="bold"
+                            tools:ignore="RtlCompat" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:background="@drawable/wblack"
+                            android:contentDescription="TODO"
+                            android:src="@drawable/nic3" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

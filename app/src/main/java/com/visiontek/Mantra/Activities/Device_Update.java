@@ -40,6 +40,7 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 
 
@@ -102,10 +103,14 @@ public class Device_Update extends AppCompatActivity {
         gprs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Util.networkConnected(context)) {
-                    filesize();
-                } else {
-                    show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection));
+                if (dealerConstants.fpsCommonInfo.versionUpdateRequired.equals("Y")) {
+                    if (Util.networkConnected(context)) {
+                        filesize();
+                    } else {
+                        show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection));
+                    }
+                }else {
+                    show_error_box("No Updated Apk Found","Update Version");
                 }
             }
         });

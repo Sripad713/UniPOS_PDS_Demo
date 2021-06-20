@@ -40,7 +40,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.visiontek.Mantra.Adapters.CustomAdapter1;
 import com.visiontek.Mantra.Models.DATAModels.DataModel1;
 import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.MemberModel;
-import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.RationDetailsModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Json_Parsing;
 import com.visiontek.Mantra.Utils.UsbService;
@@ -64,9 +63,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
-import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
-import static com.visiontek.Mantra.Utils.Util.toast;
 
 public class RationDetailsActivity extends AppCompatActivity {
     private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -223,13 +220,13 @@ public class RationDetailsActivity extends AppCompatActivity {
                     pd.dismiss();
                 }
                 if (code == null || code.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response");
+                    show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
                 if (!code.equals("00")) {
-                    // show_error_box(msg, context.getResources().getString(R.string.Commodities_Error) + code);
+                     show_error_box(msg,  code,1);
                 } else {
-                    finish();
+                    show_error_box(msg,  code,1);
                 }
             }
 
@@ -304,7 +301,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                                     checkBTState();
                                 }
                             } else {
-                                show_error_box(context.getResources().getString(R.string.Enable_Bluetooth_and_pair_your_Device_Manually), context.getResources().getString(R.string.Bluetooth));
+                                show_error_box(context.getResources().getString(R.string.Enable_Bluetooth_and_pair_your_Device_Manually), context.getResources().getString(R.string.Bluetooth), 0);
                             }
                         }
                     }
@@ -313,17 +310,17 @@ public class RationDetailsActivity extends AppCompatActivity {
 
         } else {
             dialog.setContentView(R.layout.activity_weight);
-            weight = dialog.findViewById(R.id.weights);
+            weight = dialog.findViewById(R.id.enter);
 
         }
         weightstatus = dialog.findViewById(R.id.weight_status);
-        Button confirm = (Button) dialog.findViewById(R.id.weight_confirm);
-        Button back = (Button) dialog.findViewById(R.id.weight_back);
+        Button confirm = (Button) dialog.findViewById(R.id.confirm);
+        Button back = (Button) dialog.findViewById(R.id.back);
 
-        TextView name=(TextView) dialog.findViewById(R.id.name);
-        TextView bal=(TextView) dialog.findViewById(R.id.bal);
-        TextView rate=(TextView) dialog.findViewById(R.id.rate);
-        TextView close=(TextView) dialog.findViewById(R.id.close);
+        TextView name=(TextView) dialog.findViewById(R.id.a);
+        TextView bal=(TextView) dialog.findViewById(R.id.b);
+        TextView rate=(TextView) dialog.findViewById(R.id.c);
+        TextView close=(TextView) dialog.findViewById(R.id.d);
 
         name.setText(memberConstants.commDetails.get(position).commName);
         bal.setText(memberConstants.commDetails.get(position).balQty);
@@ -390,20 +387,20 @@ public class RationDetailsActivity extends AppCompatActivity {
                     Display(1);
                 } else if (calculated == 2) {
                     show_error_box(context.getResources().getString(R.string.Please_Issue_Commodity_upto_Bal_Qty_only),
-                            context.getResources().getString(R.string.Not_a_Valid_Weight));
+                            context.getResources().getString(R.string.Not_a_Valid_Weight), 0);
                 } else if (calculated == 3) {
                     show_error_box("Please Enter the "+memberConstants.commDetails.get(position).commName+
-                            " Qty greater than or Equal to "+memberConstants.commDetails.get(position).minQty, context.getResources().getString(R.string.Not_a_Valid_Weight));
+                            " Qty greater than or Equal to "+memberConstants.commDetails.get(position).minQty, context.getResources().getString(R.string.Not_a_Valid_Weight), 0);
                 } else {
                     show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value),
-                            context.getResources().getString(R.string.Not_a_Valid_Weight));
+                            context.getResources().getString(R.string.Not_a_Valid_Weight), 0);
                 }
             } else {
                 show_error_box("Issue Qty should be Multiple by Minimum Qty -"
-                                +memberConstants.commDetails.get(position).minQty, context.getResources().getString(R.string.Enter_valid_weight));
+                                +memberConstants.commDetails.get(position).minQty, context.getResources().getString(R.string.Enter_valid_weight), 0);
             }
         } else {
-            show_error_box(context.getResources().getString(R.string.Please_Enter_the_Weight), context.getResources().getString(R.string.Enter_valid_weight));
+            show_error_box(context.getResources().getString(R.string.Please_Enter_the_Weight), context.getResources().getString(R.string.Enter_valid_weight), 0);
         }
     }
 
@@ -532,7 +529,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                 Util.generateNoteOnSD(context, "RationReq.txt", ration);
                 hitURL(ration);
             } else {
-                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection));
+                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
             }
         } else {
             if (mp != null) {
@@ -543,7 +540,7 @@ public class RationDetailsActivity extends AppCompatActivity {
             } else {
                 mp = mp.create(context, R.raw.c100189);
                 mp.start();
-                show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Inputs));
+                show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Inputs), 0);
             }
         }
     }
@@ -599,7 +596,7 @@ public class RationDetailsActivity extends AppCompatActivity {
 
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
         if (pairedDevices == null || pairedDevices.size() == 0) {
-            show_error_box(context.getResources().getString(R.string.No_Paired_Devices), context.getResources().getString(R.string.Bluetooth));
+            show_error_box(context.getResources().getString(R.string.No_Paired_Devices), context.getResources().getString(R.string.Bluetooth), 0);
         } else {
             ArrayList<BluetoothDevice> list = new ArrayList<BluetoothDevice>(pairedDevices);
             Intent intent = new Intent(this, DeviceListActivity.class);
@@ -711,7 +708,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         };
     }
 
-    private void show_error_box(String msg, String title) {
+    private void show_error_box(String msg, String title,final int i) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
         alertDialogBuilder.setTitle(title);
@@ -722,6 +719,9 @@ public class RationDetailsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface arg0, int arg1) {
                         if (pd.isShowing()) {
                             pd.dismiss();
+                        }
+                        if (i==1){
+                            finish();
                         }
                     }
                 });

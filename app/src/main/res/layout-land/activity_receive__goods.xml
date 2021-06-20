@@ -157,7 +157,15 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
-
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:text="AEPDS "
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/TextsizeH"
+                            android:textStyle="bold" />
                         <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
@@ -168,15 +176,6 @@
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:text="Toll Free "
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
-                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -264,7 +263,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:background="@color/ik_blue_white"
+            android:background="@drawable/white"
             android:gravity="center_horizontal"
             android:inputType="text"
             android:singleLine="true"
@@ -279,10 +278,10 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@drawable/wblack"
             android:text="@string/Truck_No"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="@color/blackblack"
             android:textSize="@dimen/TextsizeH"
             android:textStyle="bold" />
 
@@ -365,7 +364,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp">
+        android:layout_height="200dp">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -383,7 +382,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="2"
+        android:weightSum="3"
         tools:ignore="MissingConstraints">
 
         <Button
@@ -397,6 +396,10 @@
             android:textColor="@color/white"
             android:textSize="@dimen/TextsizeB"
             android:textStyle="bold" />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/next"
@@ -412,20 +415,49 @@
     </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:gravity="bottom"
-        android:layout_gravity="bottom"
-        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/black">
-        <TextView
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@drawable/black"
-            android:gravity="center"
-            android:text="Powered by NIC"
-            android:textColor="@color/black"
-            android:textSize="@dimen/TextsizeH"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="bottom"
+            android:weightSum="2">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:textAlignment="textEnd"
+                    android:background="@drawable/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:text="Powered by"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/TextsizeH"
+                    android:textStyle="bold"
+                    tools:ignore="RtlCompat" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@drawable/wblack"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/nic3" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

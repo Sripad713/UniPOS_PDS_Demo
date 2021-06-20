@@ -160,21 +160,21 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
                             android:gravity="center"
+                            android:text="AEPDS "
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
                             android:gravity="center"
-                            android:text="Toll Free "
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
@@ -248,17 +248,23 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+       android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginHorizontal="@dimen/LayoutMH"
             android:layout_marginTop="50dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <Button
@@ -278,50 +284,77 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="2">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/LayoutMH"
+                android:layout_marginVertical="50dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/button_quit"
+                    android:layout_width="@dimen/ButtonW"
+                    android:layout_height="@dimen/ButtonH"
+                    android:layout_margin="@dimen/ButtonM"
+                    android:layout_weight="1"
+                    android:background="@color/cancel"
+                    android:text="@string/Quit"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold"
+                    tools:ignore="ButtonStyle" />
+
+                <Button
+                    android:id="@+id/button_settings"
+                    android:layout_width="@dimen/ButtonW"
+                    android:layout_height="@dimen/ButtonH"
+                    android:layout_margin="@dimen/ButtonM"
+                    android:layout_weight="1"
+                    android:background="@color/cancel"
+                    android:text="@string/Settings"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold"
+                    tools:ignore="ButtonStyle" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/LayoutMH"
-            android:layout_marginVertical="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/black"
+            android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <Button
-                android:id="@+id/button_quit"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/cancel"
-                android:text="@string/Quit"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold"
-                tools:ignore="ButtonStyle" />
+                android:gravity="end"
+                android:text="Powered by"
+                android:textColor="@color/black"
+                android:textSize="@dimen/TextsizeH"
+                android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/button_settings"
-                android:layout_width="@dimen/ButtonW"
-                android:layout_height="@dimen/ButtonH"
-                android:layout_margin="@dimen/ButtonM"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:background="@color/cancel"
-                android:text="@string/Settings"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold"
-                tools:ignore="ButtonStyle" />
+                android:background="@drawable/wblack"
+                android:contentDescription="TODO"
+                android:src="@drawable/nic3" />
         </LinearLayout>
     </LinearLayout>
-
-    <TextView
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/black"
-        android:gravity="center"
-        android:text="Powered by NIC"
-        android:textColor="@color/black"
-        android:textSize="@dimen/TextsizeH"
-        android:textStyle="bold" />
-
+</LinearLayout>
 </LinearLayout>

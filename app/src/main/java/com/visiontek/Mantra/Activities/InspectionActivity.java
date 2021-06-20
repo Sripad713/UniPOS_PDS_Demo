@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -106,7 +105,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     String DATA;
     Float textdata;
     float cb;
-    Float var;
+    float var;
     String AFTERDATA;
     Button next, back;
     RecyclerView.Adapter adapter;
@@ -119,7 +118,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
     CheckBox checkBox;
     String Enter_UID;
-    String Check;
+
     private InspectionActivity mActivity;
     private final ExecutorService es = Executors.newScheduledThreadPool(30);
     private MTerminal100API mTerminal100API;
@@ -153,20 +152,16 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         context = InspectionActivity.this;
         mActivity = this;
         ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
-
         TextView toolbarRD = findViewById(R.id.toolbarRD);
         boolean rd_fps = RDservice(context);
         if (rd_fps) {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
-                    context.getResources().getString(R.string.RD_Service),0);
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
             return;
         }
-
         initilisation();
-
         radioGroup = findViewById(R.id.groupradio);
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -206,8 +201,25 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                finish();
+            public void onClick(View v) {
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
+                alertDialogBuilder.setCancelable(false);
+                alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                finish();
+                            }
+                        });
+                alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                            }
+                        });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
             }
         });
 
@@ -285,27 +297,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         request.execute();
 
     }
-
-/*
-    private boolean edited_com(int val) {
-
-        if (place.size() > 0) {
-            for (int i = 0; i < place.size(); i++) {
-                if (val == place.get(i)) {
-
-                    str = "<inspCBUpdate>\n" +
-                            "                <closingBalance>" + updatedcb.get(i) + "</closingBalance>\n" +
-                            "                <commCode>" + updatedcode.get(i) + "</commCode>\n" +
-                            "                <observedClosingBalance>" + entered.get(i) + "</observedClosingBalance>\n" +
-                            "                <variation>" + variation.get(i) + "</variation>\n" +
-                            "</inspCBUpdate>\n";
-                    add.append(str);
-                }
-            }
-        }
-        return false;
-    }
-*/
 
     private void ConsentDialog(String concent) {
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
@@ -408,8 +399,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 }
                 if (!error.equals("00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                    show_error_box(msg, context.getResources().getString(R.string.Commodities_Error) + error,
-                            1);
+                    show_error_box(msg, context.getResources().getString(R.string.Commodities_Error) + error, 0);
                 } else {
                     Iref = ref;
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
@@ -427,7 +417,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     String str1, str2, str3, str4, str5;
                     String[] str = new String[4];
                     if (L.equals("hi")) {
-                        str1 = context.getResources().getString(R.string.Inspection) + "\n"+
+                        str1 = context.getResources().getString(R.string.Inspection) + "\n" +
                                 context.getResources().getString(R.string.Receipt) + "\n";
                         image(str1, "header.bmp", 1);
                         str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
@@ -450,7 +440,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                         checkandprint(str, 1);
                     } else {
 
-                        str1 = context.getResources().getString(R.string.Inspection) + "\n"+
+                        str1 = context.getResources().getString(R.string.Inspection) + "\n" +
                                 context.getResources().getString(R.string.Receipt) + "\n";
                         str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
                                 + context.getResources().getString(R.string.TransactionID) + Iref + "\n\n"
@@ -497,47 +487,32 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     }
 
     private void Enter_UID() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        final EditText edittext = new EditText(context);
-        alert.setMessage(context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID));
-        alert.setTitle(context.getResources().getString(R.string.Enter_UID));
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        edittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(12);
-        edittext.setFilters(FilterArray);
-        alert.setView(edittext);
-        alert.setPositiveButton(context.getResources().getString(R.string.Ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                Enter_UID = edittext.getText().toString();
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.uid);
+        Button back = (Button) dialog.findViewById(R.id.back);
+        Button confirm = (Button) dialog.findViewById(R.id.confirm);
+        TextView tv = (TextView) dialog.findViewById(R.id.status);
+        final EditText enter = (EditText) dialog.findViewById(R.id.enter);
+        tv.setText("Please Enter Inspector UID");
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Enter_UID = enter.getText().toString();
                 if (Enter_UID.length() == 12 && validateVerhoeff(Enter_UID)) {
                     try {
                         Aadhaar = encrypt(Enter_UID, menuConstants.skey);
 
                         if (Util.networkConnected(context)) {
                             if (checkBox.isChecked()) {
-
                                 ConsentDialog(ConsentForm(context));
-                            } else {
-                                String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                                currentDateTimeString = "23032021163452";
-                                String consentrequest = "{\n" +
-                                        "   \"fpsId\" : " + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
-                                        "   \"modeOfService\" : \"D\",\n" +
-                                        "   \"moduleType\" : \"C\",\n" +
-                                        "   \"rcId\" : " + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
-                                        "   \"requestId\" : \"0\",\n" +
-                                        "   \"requestValue\" : \"N\",\n" +
-                                        "   \"sessionId\" : " + "\"" + dealerConstants.fpsCommonInfo.fpsSessionId + "\"" + ",\n" +
-                                        "   \"stateCode\" : " + "\"" + dealerConstants.stateBean.stateCode + "\"" + ",\n" +
-                                        "   \"terminalId\" : " + "\"" + DEVICEID + "\"" + ",\n" +
-                                        "   \"timeStamp\" : " + "\"" + currentDateTimeString + "\"" + ",\n" +
-                                        /*"   \"token\" : " + "\"" + fpsURLInfo.token() + "\"" + ",\n" +*/
-                                        "   \"token\" : " + "\"9f943748d8c1ff6ded5145c59d0b2ae7\"" + "\n" +
-                                        "}";
-                                Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
-                                ConsentformURL(consentrequest);
+                            }  else {
+                                show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
                             }
+                        } else {
+                            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                         }
 
                     } catch (BadPaddingException e) {
@@ -562,14 +537,64 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     }
                     show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_UID), 0);
                 }
+
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+       /* AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        final EditText edittext = new EditText(context);
+        alert.setMessage(context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID));
+        alert.setTitle(context.getResources().getString(R.string.Enter_UID));
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        edittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        InputFilter[] FilterArray = new InputFilter[1];
+        FilterArray[0] = new InputFilter.LengthFilter(12);
+        edittext.setFilters(FilterArray);
+        alert.setView(edittext);
+        alert.setPositiveButton(context.getResources().getString(R.string.Ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
             }
         });
         alert.setNegativeButton(context.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
             }
         });
-        alert.show();
+        alert.show();*/
 
+    }
+
+
+    private void prep_consent() {
+        System.out.println("@@ In dealer details else case");
+        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+        //currentDateTimeString="26032021114610";
+        String consentrequest="{\n" +
+                "   \"fpsId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
+                "   \"modeOfService\" : \"D\",\n" +
+                "   \"moduleType\" : \"C\",\n" +
+                "   \"rcId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
+                "   \"requestId\" : \"0\",\n" +
+                "   \"requestValue\" : \"N\",\n" +
+                "   \"sessionId\" : "+"\""+dealerConstants.fpsCommonInfo.fpsSessionId+"\""+",\n" +
+                "   \"stateCode\" : "+"\""+dealerConstants.stateBean.stateCode+"\""+",\n" +
+                "   \"terminalId\" : "+"\""+DEVICEID+"\""+",\n" +
+                "   \"timeStamp\" : "+"\""+currentDateTimeString+"\""+",\n" +
+                /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
+                "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
+                "}";
+        Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
+        ConsentformURL(consentrequest);
     }
 
     private void connectRDservice() {
@@ -693,9 +718,73 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         return false;
     }*/
 
-    private void EnterComm(final int p) {
+    private void EnterComm(final int position) {
         try {
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setContentView(R.layout.inspection);
+            final EditText observation = dialog.findViewById(R.id.enter);
+            Button confirm = (Button) dialog.findViewById(R.id.confirm);
+            Button back = (Button) dialog.findViewById(R.id.back);
+
+            TextView name = (TextView) dialog.findViewById(R.id.a);
+            TextView bal = (TextView) dialog.findViewById(R.id.b);
+            TextView obs = (TextView) dialog.findViewById(R.id.c);
+            TextView vari = (TextView) dialog.findViewById(R.id.d);
+
+            TextView status = (TextView) dialog.findViewById(R.id.status);
+            status.setText("Please Enter Observation ");
+
+            name.setText(inspectionDetails.commDetails.get(position).commNameEn);
+            bal.setText(inspectionDetails.commDetails.get(position).closingBalance);
+            obs.setText(inspectionDetails.commDetails.get(position).entered);
+            vari.setText(inspectionDetails.commDetails.get(position).variation);
+            confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    String Check = observation.getText().toString();
+                    textdata = Float.parseFloat(Check);
+                    cb = Float.parseFloat(inspectionDetails.commDetails.get(position).closingBalance);
+                    if (!Check.isEmpty() && textdata < cb && textdata > 0) {
+                        var = (Float) (cb - textdata);
+                        if (var > 0 && var < cb) {
+                            System.out.println("----------------0");
+                            AFTERDATA = String.valueOf(var);
+                            DATA = String.valueOf(textdata);
+
+                            inspectionDetails.commDetails.get(position).entered = DATA;
+                            inspectionDetails.commDetails.get(position).variation = AFTERDATA;
+
+                            data.clear();
+                            int size = inspectionDetails.commDetails.size();
+                            for (int i = 0; i < size; i++) {
+                                data.add(new DataModel2(inspectionDetails.commDetails.get(i).commNameEn,
+                                        inspectionDetails.commDetails.get(i).closingBalance,
+                                        inspectionDetails.commDetails.get(i).entered,
+                                        inspectionDetails.commDetails.get(i).variation));
+
+                            }
+                            Display();
+                        }
+                    } else {
+                        show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
+                    }
+                }
+            });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            dialog.show();
+            /*AlertDialog.Builder alert = new AlertDialog.Builder(context);
             final EditText edittext = new EditText(context);
             alert.setMessage(context.getResources().getString(R.string.Please_Enter_the_required_quantity));
             alert.setTitle(context.getResources().getString(R.string.Enter_Quantity));
@@ -740,8 +829,8 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 public void onClick(DialogInterface dialog, int whichButton) {
                 }
             });
-            alert.show();
-        }catch (Exception e){
+            alert.show();*/
+        } catch (Exception e) {
             show_error_box("Please enter a valid value", context.getResources().getString(R.string.Invalid_Quantity), 0);
 
         }
@@ -821,9 +910,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        if (i == 1) {
-                         finish();
+                        if (i==2){
+                            prep_consent();
                         }
+
                     }
                 });
 
@@ -854,9 +944,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             es.submit(new TaskPrint(mTerminal100API, str, mActivity, context, i));
             finish();
         } else {
-            printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery),str,i);
+            printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery), str, i);
         }
     }
+
     private void printbox(String msg, String title, final String[] str, final int type) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
@@ -867,7 +958,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        checkandprint(str,type);
+                        checkandprint(str, type);
 
                     }
                 });

@@ -34,6 +34,7 @@ import androidx.core.content.ContextCompat;
 
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.DatabaseHelper;
+import com.visiontek.Mantra.Utils.FileLoggingTree;
 import com.visiontek.Mantra.Utils.TelephonyInfo;
 import com.visiontek.Mantra.Utils.Util;
 import com.visiontek.Mantra.Utils.XML_Parsing;
@@ -42,6 +43,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import timber.log.Timber;
 
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
@@ -76,6 +79,7 @@ public class StartActivity extends AppCompatActivity {
         context = StartActivity.this;
         checkLanguage();
         setContentView(R.layout.activity_start);
+        Timber.plant(new FileLoggingTree());
         try {
 
         mp = mp.create(context, R.raw.c100041);
@@ -135,6 +139,7 @@ public class StartActivity extends AppCompatActivity {
         });
         }catch (Exception e){
             show_error_box(e.toString(),"Start"  , 0);
+
         }
     }
 

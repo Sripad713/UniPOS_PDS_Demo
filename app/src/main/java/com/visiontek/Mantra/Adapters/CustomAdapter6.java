@@ -27,7 +27,6 @@ public class CustomAdapter6 extends RecyclerView.Adapter<CustomAdapter6.MyViewHo
         this.context = context;
         this.dataSet = data;
         this.onClickListener = onClickListener;
-        System.out.println("Custommm");
 
     }
 
@@ -36,9 +35,6 @@ public class CustomAdapter6 extends RecyclerView.Adapter<CustomAdapter6.MyViewHo
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row4, parent, false);
-
-        //view.setOnClickListener(Dealer_Details.myOnClickListener);
-
         return new MyViewHolder(view);
 
     }
@@ -48,27 +44,22 @@ public class CustomAdapter6 extends RecyclerView.Adapter<CustomAdapter6.MyViewHo
 
         final DataModel2 model = dataSet.get(listPosition);
 
-        TextView textViewName = MyViewHolder.textViewName;
-        TextView textViewVersion = MyViewHolder.textBalance;
-        TextView editTextView = MyViewHolder.textObservation;
-        TextView textViewVariation = MyViewHolder.textVariation;
-
-        System.out.println(dataSet);
-        textViewName.setText(dataSet.get(listPosition).getTot());
-        textViewVersion.setText(dataSet.get(listPosition).getBal());
-        editTextView.setText(dataSet.get(listPosition).getReq());
-        textViewVariation.setText(dataSet.get(listPosition).getRate());
+        holder.textViewName.setText(dataSet.get(listPosition).getTot());
+        holder.textBalance.setText(dataSet.get(listPosition).getBal());
+        holder.textObservation.setText(dataSet.get(listPosition).getReq());
+        holder.textVariation.setText(dataSet.get(listPosition).getRate());
 
         LinearLayout lin = holder.linearLayout;
 
         if (model.isSelected) {
-            lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            lin.setBackground(context.getResources().getDrawable(R.drawable.bgreen));
+            //lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
 
         } else {
-            lin.setBackgroundColor(context.getResources().getColor(R.color.background));
+            lin.setBackground(context.getResources().getDrawable(R.drawable.white));
+            //lin.setBackgroundColor(context.getResources().getColor(R.color.background));
 
         }
-
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,31 +76,27 @@ public class CustomAdapter6 extends RecyclerView.Adapter<CustomAdapter6.MyViewHo
         });
 
     }
-
     @Override
     public int getItemCount() {
-        return (dataSet == null) ? 0 : dataSet.size();
+        return dataSet.size();
     }
-
-    /* public CustomAdapter1(Context context, ArrayList<DataModel1> data, Inspection.OnEditTextChanged onEditTextChanged) {
-     }
- */
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        static TextView textViewName;
-        static TextView textBalance;
-        static TextView textObservation;
-        static TextView textVariation;
+        TextView textViewName;
+        TextView textBalance;
+        TextView textObservation;
+        TextView textVariation;
         LinearLayout linearLayout;
 
 
         MyViewHolder(View itemView) {
             super(itemView);
             this.linearLayout = itemView.findViewById(R.id.linear);
-            textViewName = itemView.findViewById(R.id.total);
-            textBalance = itemView.findViewById(R.id.bal);
-            textObservation = itemView.findViewById(R.id.rate);
-            textVariation = itemView.findViewById(R.id.close);
+
+            this.textViewName = itemView.findViewById(R.id.total);
+            this.textBalance = itemView.findViewById(R.id.bal);
+            this.textObservation = itemView.findViewById(R.id.rate);
+            this.textVariation = itemView.findViewById(R.id.close);
 
         }
     }

@@ -101,7 +101,7 @@ public class UIDDetailsActivity extends AppCompatActivity {
         }
 
         initilisation();
-
+        uidModel.click=false;
 
         Ekyc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,33 +112,14 @@ public class UIDDetailsActivity extends AppCompatActivity {
                             if (uidModel.bfd_1.equals("Y")) {
                                 ConsentDialog(ConsentForm(context));
                             } else {
-                                show_error_box(context.getResources().getString(R.string.Member_is_already_Verified),
-                                        context.getResources().getString(R.string.Already_Verified),0);
+                                show_error_box(context.getResources().getString(R.string.Member_is_already_Verified), context.getResources().getString(R.string.Already_Verified),0);
                             }
-                        } else {
-                            String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                            currentDateTimeString = "23032021163452";
-                            String consentrequest = "{\n" +
-                                    "   \"fpsId\" : " + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
-                                    "   \"modeOfService\" : \"D\",\n" +
-                                    "   \"moduleType\" : \"C\",\n" +
-                                    "   \"rcId\" : " + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
-                                    "   \"requestId\" : \"0\",\n" +
-                                    "   \"requestValue\" : \"N\",\n" +
-                                    "   \"sessionId\" : " + "\"" + dealerConstants.fpsCommonInfo.fpsSessionId + "\"" + ",\n" +
-                                    "   \"stateCode\" : " + "\"" + dealerConstants.stateBean.stateCode + "\"" + ",\n" +
-                                    "   \"terminalId\" : " + "\"" + DEVICEID + "\"" + ",\n" +
-                                    "   \"timeStamp\" : " + "\"" + currentDateTimeString + "\"" + ",\n" +
-                                   /* "   \"token\" : " + "\"" + fpsURLInfo.token() + "\"" + ",\n" +*/
-                                    "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
-                                    "}";
-                            Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
-                            ConsentformURL(consentrequest);
+                        }  else {
+                            show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
                         }
-                    }else {
-                        show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
+                    } else {
+                        show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                     }
-
 
                 } else {
                     if (mp != null) {
@@ -155,10 +136,28 @@ public class UIDDetailsActivity extends AppCompatActivity {
             }
         });
 
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
+                alertDialogBuilder.setCancelable(false);
+                alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                finish();
+                            }
+                        });
+                alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                            }
+                        });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
             }
         });
 
@@ -262,19 +261,20 @@ public class UIDDetailsActivity extends AppCompatActivity {
     }
 
     private void AadhaarDialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        final EditText edittext = new EditText(context);
-        alert.setMessage(context.getResources().getString(R.string.Please_Enter_Member_UID_Number));
-        alert.setTitle(context.getResources().getString(R.string.UID_Number));
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        edittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(12);
-        edittext.setFilters(FilterArray);
-        alert.setView(edittext);
-        alert.setPositiveButton(context.getResources().getString(R.string.Ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                uidModel.Enter_UID = edittext.getText().toString();
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.uid);
+        Button back = (Button) dialog.findViewById(R.id.back);
+        Button confirm = (Button) dialog.findViewById(R.id.confirm);
+        TextView tv = (TextView) dialog.findViewById(R.id.status);
+        final EditText enter = (EditText) dialog.findViewById(R.id.enter);
+        tv.setText("Please Enter UID");
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                uidModel.Enter_UID = enter.getText().toString();
                 if (uidModel.Enter_UID.length() == 12 && validateVerhoeff(uidModel.Enter_UID)) {
                     try {
                         uidModel.UID_Details_Aadhaar = encrypt(uidModel.Enter_UID,menuConstants.skey);
@@ -304,11 +304,17 @@ public class UIDDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-        alert.setNegativeButton(context.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
-        alert.show();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
 
     }
 
@@ -488,11 +494,36 @@ public class UIDDetailsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface arg0, int arg1) {
                         if (i==1){
                             finish();
+                        }else if (i==2){
+                            prep_consent();
                         }
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+
+    private void prep_consent() {
+        System.out.println("@@ In dealer details else case");
+        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+        //currentDateTimeString="26032021114610";
+        String consentrequest="{\n" +
+                "   \"fpsId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
+                "   \"modeOfService\" : \"D\",\n" +
+                "   \"moduleType\" : \"C\",\n" +
+                "   \"rcId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
+                "   \"requestId\" : \"0\",\n" +
+                "   \"requestValue\" : \"N\",\n" +
+                "   \"sessionId\" : "+"\""+dealerConstants.fpsCommonInfo.fpsSessionId+"\""+",\n" +
+                "   \"stateCode\" : "+"\""+dealerConstants.stateBean.stateCode+"\""+",\n" +
+                "   \"terminalId\" : "+"\""+DEVICEID+"\""+",\n" +
+                "   \"timeStamp\" : "+"\""+currentDateTimeString+"\""+",\n" +
+                /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
+                "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
+                "}";
+        Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
+        ConsentformURL(consentrequest);
     }
 
     @SuppressLint("SetTextI18n")

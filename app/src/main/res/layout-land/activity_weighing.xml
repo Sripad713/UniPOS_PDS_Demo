@@ -61,60 +61,60 @@
                 android:textSize="@dimen/TextsizeV" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/linear"
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ik_blue_white"
+        android:orientation="horizontal"
+        android:padding="@dimen/Layoutcard"
+        android:weightSum="4"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:background="@drawable/white"
+            android:id="@+id/a"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/ik_blue_white"
-            android:orientation="horizontal"
-            android:padding="@dimen/Layoutcard"
-            android:weightSum="4"
-            tools:ignore="MissingConstraints">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textColor="@color/blackblack"
+            android:textSize="@dimen/TextsizeV" />
 
-            <TextView
-                android:background="@drawable/white"
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:textAlignment="center"
-                android:textColor="@color/blackblack"
-                android:textSize="@dimen/TextsizeV" />
+        <TextView
+            android:background="@drawable/white"
+            android:id="@+id/b"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textColor="@color/blackblack"
+            android:textSize="@dimen/TextsizeV" />
 
-            <TextView
-                android:background="@drawable/white"
-                android:id="@+id/bal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:textAlignment="center"
-                android:textColor="@color/blackblack"
-                android:textSize="@dimen/TextsizeV" />
+        <TextView
+            android:background="@drawable/white"
+            android:id="@+id/c"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textColor="@color/blackblack"
+            android:textSize="@dimen/TextsizeV" />
 
-            <TextView
-                android:background="@drawable/white"
-                android:id="@+id/rate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:textAlignment="center"
-                android:textColor="@color/blackblack"
-                android:textSize="@dimen/TextsizeV" />
-
-            <TextView
-                android:background="@drawable/white"
-                android:id="@+id/close"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:textAlignment="center"
-                android:textColor="@color/blackblack"
-                android:textSize="@dimen/TextsizeV" />
-        </LinearLayout>
+        <TextView
+            android:background="@drawable/white"
+            android:id="@+id/d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textColor="@color/blackblack"
+            android:textSize="@dimen/TextsizeV" />
+    </LinearLayout>
     <TextView
         android:id="@+id/weight_status"
         android:layout_width="match_parent"
@@ -160,36 +160,36 @@
                 android:textSize="30sp"/>
         </LinearLayout>
         <LinearLayout
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
-            android:padding="@dimen/LayoutP"
             android:weightSum="2"
             tools:ignore="MissingConstraints">
 
             <Button
-                android:id="@+id/weight_back"
+                android:id="@+id/back"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/LayoutMV"
                 android:background="@color/opaque_red"
                 android:text="@string/Back"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="30sp"/>
+                android:textSize="@dimen/TextsizeB"
+                android:textStyle="bold" />
+
             <Button
-                android:id="@+id/weight_confirm"
+                android:id="@+id/confirm"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/LayoutMV"
                 android:background="@color/ok"
                 android:text="@string/Confirm"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="30sp"/>
+                android:textSize="@dimen/TextsizeB"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 

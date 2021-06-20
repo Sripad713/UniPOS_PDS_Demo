@@ -159,6 +159,15 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:text="AEPDS "
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/TextsizeH"
+                            android:textStyle="bold" />
+                        <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -168,15 +177,6 @@
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:text="Toll Free "
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
-                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -331,6 +331,7 @@
                         tools:ignore="ButtonStyle" />
                 </LinearLayout>
                 <LinearLayout
+                    android:layout_gravity="center"
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -370,18 +371,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="bottom"
-        android:layout_gravity="bottom">
+        android:background="@drawable/black"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_gravity="center"
+        android:gravity="center">
         <TextView
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/black"
-            android:gravity="center"
-            android:text="Powered by NIC"
+            android:gravity="end"
+            android:text="Powered by"
             android:textColor="@color/black"
             android:textSize="@dimen/TextsizeH"
             android:textStyle="bold" />
+        <ImageView
+            android:background="@drawable/wblack"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:contentDescription="TODO"
+            android:src="@drawable/nic3" />
     </LinearLayout>
 
 </LinearLayout>

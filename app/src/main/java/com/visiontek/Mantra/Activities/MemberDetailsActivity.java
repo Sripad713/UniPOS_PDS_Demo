@@ -127,24 +127,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                         if (checkBox.isChecked()) {
                             ConsentDialog(ConsentForm(context));
                         } else {
-                            String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                            currentDateTimeString="23032021163452";
-                            String consentrequest="{\n" +
-                                    "   \"fpsId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
-                                    "   \"modeOfService\" : \"D\",\n" +
-                                    "   \"moduleType\" : \"C\",\n" +
-                                    "   \"rcId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
-                                    "   \"requestId\" : \"0\",\n" +
-                                    "   \"requestValue\" : \"N\",\n" +
-                                    "   \"sessionId\" : "+"\""+dealerConstants.fpsCommonInfo.fpsSessionId+"\""+",\n" +
-                                    "   \"stateCode\" : "+"\""+dealerConstants.stateBean.stateCode+"\""+",\n" +
-                                    "   \"terminalId\" : "+"\""+DEVICEID+"\""+",\n" +
-                                    "   \"timeStamp\" : "+"\""+currentDateTimeString+"\""+",\n" +
-                                   /* "   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
-                                    "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
-                                    "}";
-                            Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
-                            ConsentformURL(consentrequest);
+                            show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
                         }
                     } else {
                         show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
@@ -240,6 +223,30 @@ public class MemberDetailsActivity extends AppCompatActivity {
         toolbarInitilisation();
     }
 
+
+    private void prep_consent() {
+        System.out.println("@@ In dealer details else case");
+        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+        //currentDateTimeString="26032021114610";
+        String consentrequest="{\n" +
+                "   \"fpsId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
+                "   \"modeOfService\" : \"D\",\n" +
+                "   \"moduleType\" : \"C\",\n" +
+                "   \"rcId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
+                "   \"requestId\" : \"0\",\n" +
+                "   \"requestValue\" : \"N\",\n" +
+                "   \"sessionId\" : "+"\""+dealerConstants.fpsCommonInfo.fpsSessionId+"\""+",\n" +
+                "   \"stateCode\" : "+"\""+dealerConstants.stateBean.stateCode+"\""+",\n" +
+                "   \"terminalId\" : "+"\""+DEVICEID+"\""+",\n" +
+                "   \"timeStamp\" : "+"\""+currentDateTimeString+"\""+",\n" +
+                /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
+                "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
+                "}";
+        Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
+        ConsentformURL(consentrequest);
+    }
+
+
     private void ConsentDialog(String concent) {
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -318,6 +325,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
                             ration.putExtra("REF", Ekyc.zdistrTxnId);
                             startActivity(ration);
                             finish();
+                        }else if (type==4){
+                            prep_consent();
                         }
 
                     }
@@ -776,20 +785,20 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
     private void AadhaarDialog() {
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        final EditText edittext = new EditText(context);
-        alert.setMessage(context.getResources().getString(R.string.Please_Enter_Member_UID_Number));
-
-        edittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(12);
-        edittext.setFilters(FilterArray);
-        alert.setCancelable(false);
-        alert.setTitle(context.getResources().getString(R.string.UID_Number));
-        alert.setView(edittext);
-        alert.setPositiveButton(context.getResources().getString(R.string.Ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                memberModel.Enter_UID = edittext.getText().toString();
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.uid);
+        Button back = (Button) dialog.findViewById(R.id.back);
+        Button confirm = (Button) dialog.findViewById(R.id.confirm);
+        TextView tv = (TextView) dialog.findViewById(R.id.status);
+        final EditText enter = (EditText) dialog.findViewById(R.id.enter);
+        tv.setText("Please Enter Member UID");
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                memberModel.Enter_UID = enter.getText().toString();
                 if (memberModel.Enter_UID.length() == 12 && validateVerhoeff(memberModel.Enter_UID)) {
                     try {
                         memberModel.Aadhaar = encrypt(memberModel.Enter_UID, menuConstants.skey);
@@ -812,12 +821,17 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-        alert.setNegativeButton(context.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                memberModel.EKYC = 0;
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
-        alert.show();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
 
     }
 

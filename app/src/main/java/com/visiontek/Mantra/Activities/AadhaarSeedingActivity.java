@@ -171,10 +171,6 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
         }
     }
 
-
-    stateBean stateBean = new stateBean();
-    fpsURLInfo fpsURLInfo = new fpsURLInfo();
-
     private void UidSeeding() {
         String uidseeding = null;
 

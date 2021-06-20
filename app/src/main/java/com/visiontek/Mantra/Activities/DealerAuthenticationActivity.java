@@ -145,26 +145,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
-                alertDialogBuilder.setCancelable(false);
-                alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                finish();
-                            }
-                        });
-                alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-
+                finish();
             }
         });
         ArrayList<DataModel> data = new ArrayList<>();

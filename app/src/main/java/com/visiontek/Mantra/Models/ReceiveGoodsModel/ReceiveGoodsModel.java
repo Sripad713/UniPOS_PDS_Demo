@@ -14,7 +14,7 @@ public class ReceiveGoodsModel implements Serializable {
             orderno,
             truckno;
     public int select;
-    public String YouEditTextValue;
+    public String received;
     public String AFTERDATA;
     public double textdata;
 

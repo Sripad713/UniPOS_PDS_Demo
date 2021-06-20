@@ -1,6 +1,7 @@
 package com.visiontek.Mantra.Activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -78,8 +80,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
-                    context.getResources().getString(R.string.RD_Service),0);
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service),0);
             return;
         }
 
@@ -244,24 +245,38 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private void EnterComm(final int p) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        final EditText edittext = new EditText(context);
-        alert.setMessage(context.getResources().getString(R.string.Please_Enter_the_required_quantity));
-        alert.setTitle(context.getResources().getString(R.string.Enter_Quantity));
+    private void EnterComm(final int position) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.receivegoods);
+        final EditText received = dialog.findViewById(R.id.enter);
+        Button confirm = (Button) dialog.findViewById(R.id.confirm);
+        Button back = (Button) dialog.findViewById(R.id.back);
 
-        edittext.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
-        InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(12);
-        edittext.setFilters(FilterArray);
-        alert.setView(edittext);
-        alert.setPositiveButton(context.getResources().getString(R.string.Ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                receiveGoodsModel.YouEditTextValue = edittext.getText().toString();
-                if (!receiveGoodsModel.YouEditTextValue.isEmpty()) {
-                    receiveGoodsModel.textdata = Double.parseDouble((receiveGoodsModel.YouEditTextValue));
+        TextView name=(TextView) dialog.findViewById(R.id.a);
+        TextView scheme=(TextView) dialog.findViewById(R.id.b);
+        TextView allot=(TextView) dialog.findViewById(R.id.c);
+        TextView dispatch=(TextView) dialog.findViewById(R.id.d);
+        TextView status = (TextView) dialog.findViewById(R.id.status);
+        status.setText("Please Enter Received Qty ");
+        name.setText( receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select)
+                .tcCommDetails.get(position).commName);
+        scheme.setText( receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select)
+                .tcCommDetails.get(position).schemeName);
+        allot.setText( receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select)
+                .tcCommDetails.get(position).allotment);
+        dispatch.setText(receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select)
+                .tcCommDetails.get(position).releasedQuantity );
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                receiveGoodsModel.received = received.getText().toString();
+                if (!receiveGoodsModel.received.isEmpty()) {
+                    receiveGoodsModel.textdata = Double.parseDouble((receiveGoodsModel.received));
                     receiveGoodsModel.AFTERDATA = String.valueOf(receiveGoodsModel.textdata);
-                    receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(p).enteredvalue=receiveGoodsModel.AFTERDATA;
+                    receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(position).enteredvalue=receiveGoodsModel.AFTERDATA;
                     modeldata.clear();
                     DisplayTruck(receiveGoodsModel.select);
                 } else {
@@ -269,11 +284,17 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
                 }
             }
         });
-        alert.setNegativeButton(context.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
-        alert.show();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
     }
 
     private void show_error_box(String msg, String title, final int i) {

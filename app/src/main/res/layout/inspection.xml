@@ -38,29 +38,29 @@
                 android:layout_weight="1"
                 android:background="@drawable/bblack"
                 android:gravity="center_horizontal"
-                android:text="@string/BalQty"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeV" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/bblack"
-                android:gravity="center_horizontal"
-                android:text="@string/Rate"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeV" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/bblack"
-                android:gravity="center_horizontal"
                 android:text="@string/ClBal"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:text="Observation"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeV" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:text="Variation"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeV" />
@@ -122,11 +122,11 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/weight_status"
+            android:id="@+id/status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="Please Enter Issue Qty"
+            android:text=""
             android:textAlignment="center"
             android:textColor="@color/button"
             android:textSize="@dimen/TextsizeB"

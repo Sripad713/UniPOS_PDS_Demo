@@ -15,9 +15,7 @@ public class UIDModel implements Serializable {
             member_fusion,
             uid,
             w_uid_status,
-    //-----------------------
-    MEMBER_AUTH_TYPE,
-    //-----------------------
+
     err_code = "1",
     //-----------------------
     fCount = "0",
@@ -32,19 +30,9 @@ public class UIDModel implements Serializable {
     public int RD_SERVICE = 0;
 
     public int
-            wadhflag,
-            FIRflag,
-            Fusionflag,
-            fusionflag,
             EKYC;
 
     public boolean click = false;
-
-    public boolean
-            mMan,
-            mBIO,
-            mDeal;
-
     public RDModel rdModel=new RDModel();
 
 }

@@ -59,8 +59,8 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... param) {
-        String url;
-        url = "http://epos.nic.in/ePosServiceCTG/jdCommoneposServiceRes?wsdl";
+        String url = "http://epos.nic.in/ePosServiceJDN2_3/jdCommoneposServiceRes?wsdl";
+        //String url = "http://epos.nic.in/ePosServiceCTG/jdCommoneposServiceRes?wsdl";
         runRequest(url);
         return null;
     }
