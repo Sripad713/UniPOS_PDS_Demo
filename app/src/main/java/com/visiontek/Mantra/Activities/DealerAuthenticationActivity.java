@@ -4,14 +4,19 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +33,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mantra.mTerminal100.MTerminal100API;
+import com.mantra.mTerminal100.printer.PrinterCallBack;
+import com.mantra.mTerminal100.printer.Prints;
 import com.visiontek.Mantra.Adapters.CustomAdapter;
 import com.visiontek.Mantra.Models.DATAModels.DataModel;
 import com.visiontek.Mantra.Models.DealerDetailsModel.GetUserDetails.DealerModel;
@@ -35,17 +43,23 @@ import com.visiontek.Mantra.Models.ReceiveGoodsModel.ReceiveGoodsModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
 import com.visiontek.Mantra.Utils.Json_Parsing;
+import com.visiontek.Mantra.Utils.TaskPrint;
 import com.visiontek.Mantra.Utils.Util;
 import com.visiontek.Mantra.Utils.XML_Parsing;
 
 import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -59,13 +73,18 @@ import static com.visiontek.Mantra.Utils.Util.ConsentForm;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
-public class DealerAuthenticationActivity extends AppCompatActivity {
+public class DealerAuthenticationActivity extends AppCompatActivity implements PrinterCallBack {
+
+    public String ACTION_USB_PERMISSION;
+    private DealerAuthenticationActivity mActivity;
+    private final ExecutorService es = Executors.newScheduledThreadPool(30);
+    private MTerminal100API mTerminal100API;
+
     DealerModel dealerModel=new DealerModel();
     RecyclerView.Adapter adapter;
     Button scanfp, back;
     ProgressDialog pd = null;
-    CheckBox checkBox;
-    TextView rd;
+
     Context context;
     String MEMBER_AUTH_TYPE;
     String refno;
@@ -77,7 +96,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dealer_authentication);
 
         context = DealerAuthenticationActivity.this;
-
+        mActivity = this;
+        ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
         receiveGoodsModel = (ReceiveGoodsModel) getIntent().getSerializableExtra("OBJ");
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
@@ -86,8 +106,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
-                    context.getResources().getString(R.string.RD_Service),0);
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service),0);
             return;
         }
 
@@ -106,32 +125,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (dealerModel.click) {
                     if (Util.networkConnected(context)) {
-                        if (checkBox.isChecked()) {
-
-                            ConsentDialog(ConsentForm(context));
-
-                        } else {
-                            String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                            currentDateTimeString="23032021163452";
-                            String consentrequest="{\n" +
-                                    "   \"fpsId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
-                                    "   \"modeOfService\" : \"D\",\n" +
-                                    "   \"moduleType\" : \"C\",\n" +
-                                    "   \"rcId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
-                                    "   \"requestId\" : \"0\",\n" +
-                                    "   \"requestValue\" : \"N\",\n" +
-                                    "   \"sessionId\" : "+"\""+dealerConstants.fpsCommonInfo.fpsSessionId+"\""+",\n" +
-                                    "   \"stateCode\" : "+"\""+dealerConstants.stateBean.stateCode+"\""+",\n" +
-                                    "   \"terminalId\" : "+"\""+DEVICEID+"\""+",\n" +
-                                    "   \"timeStamp\" : "+"\""+currentDateTimeString+"\""+",\n" +
-                                    /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+",\n" +*/
-                                    "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
-                                    "}";
-                            Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
-                            ConsentformURL(consentrequest);
-
-                            //show_error_box(context.getResources().getString(R.string.Please_check_Consent_Form), context.getResources().getString(R.string.Consent_Form), 0);
-                        }
+                        ConsentDialog(ConsentForm(context));
                     } else {
 
                         show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
@@ -183,13 +177,22 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
         }, 1);
         recyclerView.setAdapter(adapter);
 
+        mTerminal100API = new MTerminal100API();
+        mTerminal100API.initPrinterAPI(this, this);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+            probe();
+        } else {
+            finish();
+        }
+
     }
 
     private void initilisation() {
         pd = new ProgressDialog(context);
         scanfp = findViewById(R.id.dealer_scanFP);
         back = findViewById(R.id.dealer_back);
-        checkBox = findViewById(R.id.check);
+
         toolbarInitilisation();
     }
 
@@ -279,6 +282,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
                     "        </ns1:stockInfoUpdate>\n" +
                     "    </SOAP-ENV:Body>\n" +
                     "</SOAP-ENV:Envelope>";
+            System.out.println(stockupdate);
             Util.generateNoteOnSD(context, "StockUploadDetailsReq.txt", stockupdate);
             hitUploading(stockupdate);
 
@@ -303,9 +307,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
                 if (!error.equals("00")) {
                     show_error_box(msg, context.getResources().getString(R.string.Uploading_Stock) + error, 2);
                 } else {
-                    show_error_box(msg,
-                            context.getResources().getString(R.string.Uploading_Stock) + error,
-                            2);
+                    show_error_box(msg, context.getResources().getString(R.string.Uploading_Stock) + error, 3);
                 }
             }
 
@@ -319,6 +321,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
         String str;
 
         int size=receiveGoodsModel.tcCommDetails.size();
+        System.out.println("++++++++++"+size);
         if ( size> 0) {
             for (int i = 0; i < size; i++) {
                 str = "                <stockNewBean>\n" +
@@ -348,11 +351,16 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
         Button back = (Button) dialog.findViewById(R.id.cancel);
         TextView tv=(TextView)dialog.findViewById(R.id.consent);
         tv.setText(concent);
+        final CheckBox checkBox =(CheckBox) dialog.findViewById(R.id.check);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                callScanFP();
+                if (checkBox.isChecked()) {
+                    dialog.dismiss();
+                    callScanFP();
+                } else {
+                    show_error_box(context.getResources().getString(R.string.Please_check_Consent_Form), context.getResources().getString(R.string.Consent_Form), 4);
+                }
 
             }
         });
@@ -376,6 +384,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
                 new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         if (i == 1) {
@@ -385,12 +394,138 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
                             home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(home);
                             finish();
+                        }else if (i==3){
+                            print();
+                        }else  if (i==4){
+                            prep_consent();
                         }
                     }
                 });
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    private void prep_consent() {
+        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+        currentDateTimeString="23032021163452";
+        String consentrequest="{\n" +
+                "   \"fpsId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
+                "   \"modeOfService\" : \"D\",\n" +
+                "   \"moduleType\" : \"C\",\n" +
+                "   \"rcId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
+                "   \"requestId\" : \"0\",\n" +
+                "   \"requestValue\" : \"N\",\n" +
+                "   \"sessionId\" : "+"\""+dealerConstants.fpsCommonInfo.fpsSessionId+"\""+",\n" +
+                "   \"stateCode\" : "+"\""+dealerConstants.stateBean.stateCode+"\""+",\n" +
+                "   \"terminalId\" : "+"\""+DEVICEID+"\""+",\n" +
+                "   \"timeStamp\" : "+"\""+currentDateTimeString+"\""+",\n" +
+                /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+",\n" +*/
+                "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
+                "}";
+        Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
+        ConsentformURL(consentrequest);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void print() {
+        /*String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());*/
+        SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String time = sdf1.format(new Date()).substring(0, 5);
+        String date = sdf1.format(new Date()).substring(6, 16);
+        StringBuilder add = new StringBuilder();
+        String app;
+        int size = receiveGoodsModel.tcCommDetails.size();
+        for (int i = 0; i < size; i++) {
+
+            app =  String.format("%-10s%-10s%-10s%-10s\n",
+                    receiveGoodsModel.tcCommDetails.get(i).commName,
+                    receiveGoodsModel.tcCommDetails.get(i).schemeName,
+                    receiveGoodsModel.tcCommDetails.get(i).releasedQuantity,
+                    receiveGoodsModel.tcCommDetails.get(i).enteredvalue);
+            add.append(app);
+
+        }
+        String str1,str2,str3,str4,str5;
+        String[] str = new String[4];
+        if (L.equals("hi")){
+
+            str1 = context.getResources().getString(R.string.DAY_REPORT);
+            image(str1,"header.bmp",1);
+            str2=context.getResources().getString(R.string.Date)+" : " + date +"\n"+ context.getResources().getString(R.string.Time)+" :" + time + "\n"
+                    +context.getResources().getString(R.string.Day_Report_Date)+" : " + date + "\n"
+                    +context.getResources().getString(R.string.FPS_ID)+" : "+ dealerConstants.stateBean.statefpsId + "\n";
+
+            str3 =context.getResources().getString(R.string.commodity)+"      "+context.getResources().getString(R.string.scheme)+"       "+context.getResources().getString(R.string.sale);
+
+            str4 = String.valueOf(add);
+            image(str2+str3+str4,"body.bmp",0);
+
+            str5 = context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
+                    + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n";
+
+            image(str5,"tail.bmp",1);
+            str[0]="1";
+            str[1]="1";
+            str[2]="1";
+            str[3]="1";
+            checkandprint(str,1);
+        }else {
+
+            str1 =  context.getResources().getString(R.string.DAY_REPORT)+"\n\n";
+            str2=    context.getResources().getString(R.string.Date)+"           : " + date +"\n"+
+                     context.getResources().getString(R.string.Time)+"           :" + time + "\n"+
+                     "Truck Chit No   : " +  receiveGoodsModel.chit + "\n"+
+                     "RO              : "+time + "\n"+
+                     "Truck No        : "+receiveGoodsModel.truckno + "\n"+
+                     "-------------------------------\n";
+            str3 = String.format("%-10s%-10s%-10s%-10s\n",
+                    "ItemName",
+                    "Sch",
+                    "Dispt",
+                    "Recv")
+                    + "-------------------------------\n";
+            str4 = String.valueOf(add);
+
+            str5 = "\n"+context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
+                    + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n\n\n";
+            str[0]="1";
+            str[1]=str1;
+            str[2]=str2+str3+str4;
+            str[3]=str5;
+            checkandprint(str,0);
+
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void checkandprint(String[] str, int i) {
+        if (Util.batterylevel(context)|| Util.adapter(context)) {
+            if (mp!=null) {
+                releaseMediaPlayer(context,mp);
+            }
+            if(L.equals("hi")){}else {
+                mp = mp.create(context, R.raw.c100191);
+                mp.start();
+            }
+            es.submit(new TaskPrint(mTerminal100API,str,mActivity,context,i));
+            Intent home=new Intent(context,HomeActivity.class);
+            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(home);
+            finish();
+
+        }else {
+            show_error_box(context.getResources().getString(R.string.Battery_Msg),
+                    context.getResources().getString(R.string.Battery),0);
+        }
+    }
+    private void image(String content, String name,int align) {
+        try {
+            Util.image(content,name,align);
+        } catch (IOException e) {
+            e.printStackTrace();
+            show_error_box(e.toString(),"Image formation Error",0);
+        }
     }
 
     private void callScanFP() {
@@ -581,6 +716,107 @@ public class DealerAuthenticationActivity extends AppCompatActivity {
         return 0;
     }
 
+
+
+    @Override
+    public void OnOpen() {
+        // btnConnect.setEnabled(false);
+        Toast.makeText(context, context.getResources().getString(R.string.CONNECTED), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void OnOpenFailed() {
+
+        if (mp != null) {
+            releaseMediaPlayer(context, mp);
+        }
+        //btnConnect.setEnabled(true);
+        if (L.equals("hi")) {
+        } else {
+            mp = mp.create(context, R.raw.c100078);
+            mp.start();
+            Toast.makeText(context, context.getResources().getString(R.string.Connection_Failed), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void OnClose() {
+        // btnConnect.setEnabled(true);
+        if (mUsbReceiver != null) {
+            context.unregisterReceiver(mUsbReceiver);
+        }
+
+        // If Close is caused because the printer is turned off. Then you need to re-enumerate it here.
+        probe();
+    }
+
+    @Override
+    public void OnPrint(final int bPrintResult, final boolean bIsOpened) {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(context.getApplicationContext(), (bPrintResult == 0) ? getResources().getString(R.string.printsuccess) : getResources().getString(R.string.printfailed) + " " + Prints.ResultCodeToString(bPrintResult), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+    }
+
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                probe();
+                // btnConnect.performClick();
+                Toast.makeText(context, context.getResources().getString(R.string.ConnectUSB), Toast.LENGTH_LONG).show();
+                synchronized (this) {
+                }
+            }
+        }
+    };
+
+
+    private void probe() {
+        final UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
+        HashMap<String, UsbDevice> deviceList = mUsbManager.getDeviceList();
+        Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+        if (deviceList.size() > 0) {
+
+            while (deviceIterator.hasNext()) {
+// Here is if not while, indicating that I only want to support a device
+                final UsbDevice device = deviceIterator.next();
+                if ((device.getProductId() == 22304) && (device.getVendorId() == 1155)) {
+                    // TODO Auto-generated method stub
+                    PendingIntent mPermissionIntent = PendingIntent
+                            .getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                    if (!mUsbManager.hasPermission(device)) {
+                        mUsbManager.requestPermission(device, mPermissionIntent);
+                        IntentFilter filter = new IntentFilter();
+                        filter.addAction(
+                                ACTION_USB_PERMISSION);
+                        context.registerReceiver(mUsbReceiver, filter);
+                        Toast.makeText(getApplicationContext(),
+                                context.getResources().getString(R.string.Permission_denied), Toast.LENGTH_LONG)
+                                .show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.Connecting), Toast.LENGTH_SHORT).show();
+                        es.submit(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTerminal100API.printerOpenTask(mUsbManager, device, context);
+                            }
+                        });
+                    }
+                    //  });
+                } else {
+                    //  Toast.makeText(ConnectUSBActivity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
 
     public interface OnClickListener {
         void onClick_d(int p);

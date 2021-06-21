@@ -28,16 +28,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/white"
                 android:gravity="center_horizontal"
                 android:textSize="25sp"
                 android:textAlignment="center"
                 android:textColor="@color/blackblack" />
+
             <TextView
                 android:textAlignment="center"
                 android:id="@+id/txtType"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="@drawable/white"
                 android:textSize="25sp"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />

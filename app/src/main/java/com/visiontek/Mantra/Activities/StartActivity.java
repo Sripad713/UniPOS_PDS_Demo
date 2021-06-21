@@ -161,7 +161,7 @@ public class StartActivity extends AppCompatActivity {
         System.out.println(date);
         toolbarFpsid.setText("DEVICE ID");
         toolbarFpsidValue.setText(DEVICEID);
-        toolbarActivity.setText("START");
+        toolbarActivity.setText("LOGIN");
         DisplayGPS();
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
@@ -488,6 +488,23 @@ public class StartActivity extends AppCompatActivity {
             serial = serial.substring(1, serial.length() - 1);
             System.out.println("++++++++++++++++++++++++++++++" + serial);
         }
+        //statecode(dealerConstants.stateBean.stateCode);
+    }
+
+    private void statecode(String st) {
+        switch (st) {
+            case "22":
+                break;
+            case "13":
+                break;
+            case "14":
+                break;
+            case "15":
+                break;
+            case "25":
+                break;
+        }
+
     }
 
     private class MyLocationListener implements LocationListener {
@@ -515,6 +532,10 @@ public class StartActivity extends AppCompatActivity {
         public void onStatusChanged(String provider, int status, Bundle extras) {
             System.out.println("*********Status Changed");
         }
+
+
     }
+
+
 
 }

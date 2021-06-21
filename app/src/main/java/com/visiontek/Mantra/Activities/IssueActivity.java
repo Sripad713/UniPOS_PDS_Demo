@@ -135,7 +135,7 @@ public class IssueActivity extends AppCompatActivity {
 
         toolbarFpsid.setText("Fps ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("ISSUE");
+        toolbarActivity.setText("ISSUE GOODS");
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);

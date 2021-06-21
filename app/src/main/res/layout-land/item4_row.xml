@@ -26,6 +26,7 @@
             <TextView
                 android:textAlignment="center"
                 android:id="@+id/total"
+                android:background="@drawable/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -38,6 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/white"
                 android:textSize="25dp"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
@@ -47,6 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/white"
                 android:textSize="25dp"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
@@ -57,6 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/white"
                 android:textSize="25dp"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />

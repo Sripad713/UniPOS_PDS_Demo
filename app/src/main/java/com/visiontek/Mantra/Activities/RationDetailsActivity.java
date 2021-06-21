@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -84,7 +85,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         //    get;
     Context context;
     ProgressDialog pd = null;
-    TextView rd;
+
     MemberModel memberModel;
     // RationDetailsModel rationDetailsModel = new RationDetailsModel();
     public String
@@ -97,7 +98,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ration_details);
         context = RationDetailsActivity.this;
 
-        MESSAGE_FROM_SERIAL_PORT = 0;
+        MESSAGE_FROM_SERIAL_PORT = 1;
         Ref = getIntent().getStringExtra("REF");
         memberModel = (MemberModel) getIntent().getSerializableExtra("OBJ");
         initilisation();
@@ -106,6 +107,14 @@ public class RationDetailsActivity extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (btSocket != null && btSocket.isConnected()) {
+                    try {
+                        btSocket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("++++++++++++++++");
+                    }
+                }
                 conformRation();
             }
         });
@@ -134,6 +143,8 @@ public class RationDetailsActivity extends AppCompatActivity {
 
             }
         });
+        pd = ProgressDialog.show(context, "Connt", "Please_Wait", true, false);
+
     }
 
     private void initilisation() {
@@ -194,7 +205,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         String mos = "P";
         String mt = "R";
         String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-        currentDateTimeString = "23032021163452";
+        //currentDateTimeString = "23032021163452";
 
         String reasons = "{\n" +
                 "   \"fpsId\" :" + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
@@ -262,6 +273,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         adapter = new CustomAdapter1(context, modeldata, new OnClickListener() {
             @Override
             public void onClick_d(int p) {
+
                 ManualDialog(p);
 
             }
@@ -270,7 +282,7 @@ public class RationDetailsActivity extends AppCompatActivity {
     }
 
     EditText weight;
-    TextView  weightstatus;
+    TextView getweight, weightstatus;
     boolean getflag=false;
     private void ManualDialog(final int position) {
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
@@ -278,27 +290,33 @@ public class RationDetailsActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
 
         if (memberConstants.commDetails.get(position).weighing.equals("Y")) {
+
             dialog.setContentView(R.layout.activity_weighing);
-          //  getweight = dialog.findViewById(R.id.weigh);
+            getweight = dialog.findViewById(R.id.weigh);
 
             final Button get =  dialog.findViewById(R.id.weighing_get);
             get.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if ( usb.length()==0) {
-                        get.setEnabled(false);
                         getflag = true;
-                        MESSAGE_FROM_SERIAL_PORT = 0;
                         if (choice == 1) {
                             setFilters();
                             startService(UsbService.class, usbConnection, null);
                         } else {
                             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                             if (mBluetoothAdapter.isEnabled()) {
-                                if (address == null) {
-                                    BTList();
+                                if (address != null) {
+                                    MESSAGE_FROM_SERIAL_PORT = 0;
+                                    if (btSocket != null) {
+                                        ConnectedThread mConnectedThread = new ConnectedThread(btSocket);
+                                        mConnectedThread.start();
+                                    } else {
+                                        pd = ProgressDialog.show(context, "Connt", "Please_Wait", true, false);
+                                        checkBTState(mBluetoothAdapter);
+                                    }
                                 } else {
-                                    checkBTState();
+                                    show_error_box("Device Not Found", "Bluetooth Device", 0);
                                 }
                             } else {
                                 show_error_box(context.getResources().getString(R.string.Enable_Bluetooth_and_pair_your_Device_Manually), context.getResources().getString(R.string.Bluetooth), 0);
@@ -331,13 +349,17 @@ public class RationDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+
                 if (memberConstants.commDetails.get(position).weighing.equals("Y")) {
+                    MESSAGE_FROM_SERIAL_PORT=1;
                     if (getflag) {
-                       // String weighingweight = getweight.getText().toString();
-                        //float value= Float.parseFloat(weighingweight);
-                        if ( usb.length()>0) {
-                            CheckWeight(position, usb, 1);
+                        String weighingweight = getweight.getText().toString();
+                        System.out.println(weighingweight.length());
+                        if (weighingweight.length()==11) {
+                            CheckWeight(position, weighingweight, 1);
                             usb="";
+                        }else {
+                            System.out.println("++++++++++++++++++++++");
                         }
                         /*if (value==0.0) {
                             memberConstants.commDetails.get(position).requiredQty= String.valueOf(value);
@@ -605,6 +627,135 @@ public class RationDetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void checkBTState(final BluetoothAdapter mBluetoothAdapter) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (btSocket == null && mBluetoothAdapter != null) {
+                    //handler();
+                    System.out.println("!!11111111111111111");
+
+                    BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                    try {
+                        btSocket = createBluetoothSocket(device);
+                    } catch (IOException e) {
+                        System.out.println("Socket_creation_failed");
+                    }
+                }
+
+                if (!btSocket.isConnected()) {
+                    try {
+                        btSocket.connect();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        try {
+                            btSocket.close();
+                        } catch (IOException ignored) {
+                            ignored.printStackTrace();
+                        }
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (pd.isShowing())
+                            pd.dismiss();
+                    }
+                });
+
+                ConnectedThread mConnectedThread = new ConnectedThread(btSocket);
+                mConnectedThread.start();
+            }
+        }).start();
+
+
+    }
+
+
+    private class ConnectedThread extends Thread {
+        private final InputStream mmInStream;
+
+        ConnectedThread(BluetoothSocket socket) {
+
+
+            InputStream tmpIn = null;
+            try {
+                tmpIn = socket.getInputStream();
+            } catch (IOException ignored) {
+            }
+            mmInStream = tmpIn;
+        }
+
+        public void run() {
+
+            byte[] buffer = new byte[2048];
+            int bytes;
+            StringBuilder storeBT = new StringBuilder();
+            String wt ;
+            while (true) {
+                try {
+                    bytes = mmInStream.read(buffer);
+                    String readMessage = new String(buffer, 0, bytes);
+                    if (MESSAGE_FROM_SERIAL_PORT == 0) {
+                        storeBT.append(readMessage);
+                        if (storeBT.toString().contains("g")) {
+                            wt = storeBT.toString().trim();
+                            storeBT.setLength(0);
+                            final String finalWt = wt;
+                            RationDetailsActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (finalWt.length() < 12) {
+                                        getweight.setText(finalWt);
+                                    }
+                                }
+                            });
+                        }
+                        // bluetoothIn.obtainMessage(SOCKET, bytes, -1, readMessage).sendToTarget();
+                    } else {
+                        usb = "";
+                        storeBTdata.setLength(0);
+                        break;
+                    }
+                } catch (IOException e) {
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (btSocket != null && btSocket.isConnected()) {
+            try {
+                btSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("++++++++++++++++");
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter.isEnabled()) {
+            if (address == null) {
+                BTList();
+            } else {
+
+                checkBTState(mBluetoothAdapter);
+            }
+        } else {
+            System.out.println("==============");
+            // show_error_box(context.getResources().getString(R.string.Enable_Bluetooth_and_pair_your_Device_Manually), context.getResources().getString(R.string.Bluetooth), 0);
+        }
+        MESSAGE_FROM_SERIAL_PORT = 1;
+    }
+
     private void setFilters() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(UsbService.ACTION_USB_PERMISSION_GRANTED);
@@ -645,67 +796,8 @@ public class RationDetailsActivity extends AppCompatActivity {
                 return;
             }
 
-            checkBTState();
+            checkBTState(mBluetoothAdapter);
         }
-    }
-
-    private void checkBTState() {
-        handler();
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        /*String address1 = (String) Objects.requireNonNull(data.getExtras()).get("device_name");*/
-        BluetoothDevice device = btAdapter.getRemoteDevice(address);
-        try {
-            btSocket = createBluetoothSocket(device);
-
-        } catch (IOException e) {
-            Toast.makeText(getBaseContext(), context.getResources().getString(R.string.Socket_creation_failed), Toast.LENGTH_LONG).show();
-            finish();
-        }
-        try {
-            btSocket.connect();
-
-        } catch (IOException e) {
-            String msg;
-            msg = String.valueOf(e);
-            try {
-                btSocket.close();
-            } catch (IOException ignored) {
-                msg = String.valueOf(ignored);
-            }
-            Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
-            if (pd.isShowing()) {
-                pd.dismiss();
-            }
-            //getweight.setText(context.getResources().getString(R.string.Please_Wait));
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Connecting), context.getResources().getString(R.string.Please_Wait), true, false);
-            checkBTState();
-            return;
-            //show_error_box(msg, "Socket Exception Please try again");
-        }
-
-        ConnectedThread mConnectedThread = new ConnectedThread(btSocket);
-        mConnectedThread.start();
-    }
-
-    private void handler() {
-        bluetoothIn = new Handler() {
-            @SuppressLint("HandlerLeak")
-            public void handleMessage(android.os.Message msg) {
-                if (msg.what == MESSAGE_FROM_SERIAL_PORT) {
-                    String data = (String) msg.obj;
-                    storeBTdata.append(data);
-                    if (storeBTdata.toString().contains("g")) {
-                        if (pd.isShowing()) {
-                            pd.dismiss();
-                        }
-                        usb = String.valueOf(storeBTdata).trim();
-                        storeBTdata.setLength(0);
-                        System.out.println("BLUETOOTH====" + usb);
-                        //getweight.setText(bt);
-                    }
-                }
-            }
-        };
     }
 
     private void show_error_box(String msg, String title,final int i) {
@@ -755,7 +847,96 @@ public class RationDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private class ConnectedThread extends Thread {
+    private void toolbarInitilisation() {
+        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+        TextView toolbarCard = findViewById(R.id.toolbarCard);
+        toolbarCard.setText("RC : "+memberConstants.carddetails.rcId);
+        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+        System.out.println(appversion);
+        toolbarVersion.setText("V." + appversion);
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        String date = dateformat.format(new Date()).substring(6, 16);
+        toolbarDateValue.setText(date);
+        System.out.println(date);
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarActivity.setText("ISSUE GOODS");
+
+        toolbarLatitudeValue.setText(latitude);
+        toolbarLongitudeValue.setText(longitude);
+    }
+}
+
+   /* private void checkBTState(BluetoothAdapter mBluetoothAdapter, int n) {
+
+
+        if (btSocket==null || !btSocket.isConnected()) {
+            //handler();
+
+            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+            try {
+                btSocket = createBluetoothSocket(device);
+            } catch (IOException e) {
+                Toast.makeText(getBaseContext(), context.getResources().getString(R.string.Socket_creation_failed), Toast.LENGTH_LONG).show();
+            }
+            try {
+                btSocket.connect();
+
+            } catch (IOException e) {
+                String msg;
+                msg = String.valueOf(e);
+                try {
+                    btSocket.close();
+                } catch (IOException ignored) {
+                    msg = String.valueOf(ignored);
+                }
+                Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
+                if (pd.isShowing()) {
+                    pd.dismiss();
+                }
+                pd = ProgressDialog.show(context, context.getResources().getString(R.string.Connecting), context.getResources().getString(R.string.Please_Wait), true, false);
+                if (n < 3)
+                    checkBTState(mBluetoothAdapter, n + 1);
+                return;
+            }
+        }
+
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+        ConnectedThread mConnectedThread = new ConnectedThread(btSocket);
+        mConnectedThread.start();
+    }
+
+    private void handler() {
+        bluetoothIn = new Handler() {
+            @SuppressLint("HandlerLeak")
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what == MESSAGE_FROM_SERIAL_PORT) {
+                    String data = (String) msg.obj;
+                    storeBTdata.append(data);
+                    if (storeBTdata.toString().contains("g")) {
+                        if (pd.isShowing()) {
+                            pd.dismiss();
+                        }
+                        usb = String.valueOf(storeBTdata).trim();
+                        storeBTdata.setLength(0);
+                        System.out.println("BLUETOOTH====" + usb);
+                        //getweight.setText(bt);
+                    }
+                }
+            }
+        };
+    }*/
+/* private class ConnectedThread extends Thread {
         private final InputStream mmInStream;
 
         ConnectedThread(BluetoothSocket socket) {
@@ -784,30 +965,4 @@ public class RationDetailsActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-    private void toolbarInitilisation() {
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V." + appversion);
-
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
-
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("COMMODITIES");
-
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
-    }
-}
+    }*/

@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static com.visiontek.Mantra.Activities.DealerDetailsActivity.dealername;
+import static com.visiontek.Mantra.Activities.MemberDetailsActivity.MemberName;
 import static com.visiontek.Mantra.Activities.RationDetailsActivity.TOTALAMOUNT;
 
 
@@ -164,7 +165,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                     int printReceiptsize= printReceipt.printBeans.size();
                     for (int i = 0; i <printReceiptsize ; i++) {
 
-                        app =  String.format("%-10s%-10s%-8s%-8s\n",
+                        app =  String.format("%-10s%-8s%-8s%-8s\n",
                                 printReceipt.printBeans.get(i).comm_name,
                                 printReceipt.printBeans.get(i).carry_over ,
                                 printReceipt.printBeans.get(i).retail_price ,
@@ -213,24 +214,29 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                                 + context.getResources().getString(R.string.Department) + "\n"
                                 + context.getResources().getString(R.string.RECEIPT) + "\n";
 
-                        str2 = "\n________________________________\n"
+                        str2 = "________________________________\n"
                                 + context.getResources().getString(R.string.FPS_Owner_Name) + "  :" + dealername + "\n"
                                 + context.getResources().getString(R.string.FPS_No) + "          :" + dealerConstants.stateBean.statefpsId + "\n"
                                 + context.getResources().getString(R.string.Name_of_Consumer) + ":" + printReceipt.printBeans.get(0).member_name+ "\n"
                                 + context.getResources().getString(R.string.Card_No) + "          :" + printReceipt.rcId  + "\n"
                                 + context.getResources().getString(R.string.TransactionID) + ":" + printReceipt.receiptId + "\n"
-                                + context.getResources().getString(R.string.Date) + ":" + date + "\n"
-                                + context.getResources().getString(R.string.AllotmentMonth)+"  :"+
+                                + context.getResources().getString(R.string.Date) + " :" + date + "\n"
+                                + context.getResources().getString(R.string.AllotmentMonth) +"   :"+
                                 menuConstants.fpsPofflineToken.allocationMonth+"\n"
-                                +context.getResources().getString(R.string.AllotmentYear)+"    :"+
+                                +context.getResources().getString(R.string.AllotmentYear) +"     :"+
                                 menuConstants.fpsPofflineToken.allocationYear+"\n"
-                                + context.getResources().getString(R.string.commodity) + " " + context.getResources().getString(R.string.lifted) + "   " + context.getResources().getString(R.string.rate) + "    " + context.getResources().getString(R.string.price) + "\n"
+                                +
+                                String.format("%-10s%-8s%-8s%-8s\n",
+                                        context.getResources().getString(R.string.commodity) ,
+                                        context.getResources().getString(R.string.lifted) ,
+                                        context.getResources().getString(R.string.rate) ,
+                                        context.getResources().getString(R.string.price))
                                 + "________________________________\n";
 
                         str3 = (add)
                                 + "________________________________\n";
 
-                        str4 = context.getResources().getString(R.string.Total_Amount) + "    :" + printReceipt.printBeans.get(0).tot_amount+ "\n"
+                        str4 = context.getResources().getString(R.string.Total_Amount) + "      :" + printReceipt.printBeans.get(0).tot_amount+ "\n"
                                 + "________________________________\n";
 
 
@@ -490,6 +496,10 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         TextView toolbarActivity = findViewById(R.id.toolbarActivity);
         TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
         TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+        TextView cardnum=findViewById(R.id.cardnum);
+        cardnum.setText(MemberName);
+        TextView toolbarCard = findViewById(R.id.toolbarCard);
+        toolbarCard.setText("RC : "+memberConstants.carddetails.rcId);
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
@@ -502,7 +512,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("PRINT");
+        toolbarActivity.setText("PRINT RECEIPT");
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);

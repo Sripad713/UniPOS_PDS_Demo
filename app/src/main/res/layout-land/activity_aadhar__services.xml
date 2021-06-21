@@ -66,7 +66,7 @@
                         android:gravity="center"
                         android:text="@string/CHHATISGARHPDS"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/TextsizeT"
+                        android:textSize="25dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -160,20 +160,20 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:text="AEPDS "
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
-                            android:textStyle="bold" />
-                        <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
                             android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="25dp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:text=" "
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
@@ -258,7 +258,7 @@
         android:weightSum="2">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -272,6 +272,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
                 <Button
+
                     android:id="@+id/btn_uid_seeding"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -290,7 +291,7 @@
                 android:orientation="horizontal">
                 <Button
                     android:id="@+id/btn_beneficiaryverification"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/LayoutMV"
                     android:background="@color/button"

@@ -67,7 +67,7 @@
                         android:gravity="center"
                         android:text="@string/CHHATISGARHPDS"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/TextsizeT"
+                        android:textSize="25dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -160,20 +160,20 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
                         <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:text="AEPDS "
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
-                            android:textStyle="bold" />
-                        <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
                             android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="25dp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:text=" "
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
@@ -259,7 +259,7 @@
         android:weightSum="2">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -320,12 +320,12 @@
 
                 <Button
                     android:id="@+id/btn_back"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:background="@color/cancel"
                     android:gravity="center"
                     android:layout_gravity="top"
-                    android:text="@string/Back"
+                    android:text="@string/Home"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold" />

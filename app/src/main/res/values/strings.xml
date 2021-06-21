@@ -49,10 +49,10 @@
 
 
     //start
-    <string name="CHHATISGARHPDS">CHHATTISGARH  PDS</string>
+    <string name="CHHATISGARHPDS">CHHATTISGARH  AePDS</string>
     <string name="SET">SET</string>
     <string name="UID_DETAILS">UID DETAILS</string>
-    <string name="Start">Start</string>
+    <string name="Start">Login</string>
     <string name="RD"> RD</string>
     <string name="COMMODITY_WEIGHT">COMMODITY WEIGHT</string>
     <string name="COMMODITY_WEIGHING">COMMODITY WEIGHING</string>
@@ -85,7 +85,7 @@
 
     //home
     <string name="HOME">HOME</string>
-    <string name="Issue">Issue</string>
+    <string name="Issue">Issue Goods</string>
     <string name="Inspection">Inspection</string>
     <string name="Aadhaar_Services">Aadhaar Services</string>
     <string name="Receive_Goods">Receive Goods</string>
@@ -325,10 +325,10 @@
     <string name="Government_of_Chattisgarh">Government of Chattisgarh</string>
     <string name="Permission_denied">Permission denied</string>
     <string name="ConnectUSB">ConnectUSB</string>
-    <string name="MemberName">MemberName :</string>
+    <string name="MemberName">MemberName</string>
     <string name="DOB">DOB : </string>
-    <string name="PindCode">PindCode : </string>
-    <string name="Gender">Gender : </string>
+    <string name="PindCode">PindCode</string>
+    <string name="Gender">Gender</string>
     <string name="Beneficiary_Details">Beneficiary Details</string>
     <string name="LAST_RECEIPT">LAST RECEIPT</string>
     <string name="Please_Enter_date_in_Edit_text_to_view_Stock">Please Enter date in Edit text to view Stock</string>
@@ -338,7 +338,7 @@
     <string name="Day_Report_Date">Day Report Date</string>
     <string name="FPS_ID">FPS ID</string>
     <string name="VERIFICATION_RECEIPT">VERIFICATION RECEIPT</string>
-    <string name="Ration_Card_Number">Ration Card Number</string>
+    <string name="Ration_Card_Number">Ration Card No</string>
     <string name="Commodity_Scheme_Sale">Commodity     Scheme      Sale</string>
     <string name="scheme">Scheme</string>
     <string name="sale">Sale</string>

@@ -128,7 +128,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                    int astockBeansize= stockDetails.astockBean.size();
                    for (int i = 0; i < astockBeansize; i++) {
 
-                       app = String.format("%-8s%-8s%-8s%-8s%-8s\n",
+                       app = String.format("%-6s%-6s%-6s%-8s%-8s\n",
                                stockDetails.astockBean.get(i).comm_name,
                                stockDetails.astockBean.get(i).scheme_desc_en ,
                                stockDetails.astockBean.get(i).total_quantity,
@@ -164,12 +164,17 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                    }else {
 
                         str1 = context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report)+ "\n\n";
-                        str2 = context.getResources().getString(R.string.Date)+"        : " + date +"\n"+
+                        str2 = context.getResources().getString(R.string.Date)+"         : " + date +"\n"+
                                context.getResources().getString(R.string.Time) +"        : "+ time + "\n";
-                        str3 = context.getResources().getString(R.string.Report_Type) + " : PDS\n"
-                               + context.getResources().getString(R.string.FPS_ID)+"      : " + dealerConstants.stateBean.statefpsId + "\n"
+                        str3 = context.getResources().getString(R.string.Report_Type) +" : PDS\n"+
+                                context.getResources().getString(R.string.FPS_ID) +"      : " + dealerConstants.stateBean.statefpsId + "\n"
                                + "-------------------------------\n";
-                        str4 = context.getResources().getString(R.string.name)+"  "+context.getResources().getString(R.string.sch)+"  " +context.getResources().getString(R.string.stock)+"  "+context.getResources().getString(R.string.issued)+"  "+context.getResources().getString(R.string.cb)+ "\n"
+                        str4 = String.format("%-6s%-6s%-6s%-8s%-8s\n",
+                                context.getResources().getString(R.string.name),
+                                context.getResources().getString(R.string.sch),
+                                context.getResources().getString(R.string.stock),
+                                context.getResources().getString(R.string.issued),
+                                context.getResources().getString(R.string.cb))
                                + "-------------------------------\n";
                         str5 = String.valueOf(add);
 

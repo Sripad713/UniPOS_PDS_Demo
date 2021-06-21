@@ -111,6 +111,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
             public void onClick(View v) {
                flag_print = 0;
                 date=edittext.getText().toString();
+
                 if (!date.equals("dd/MM/yyyy") && date.length()>0) {
                     String sale = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
                             "<SOAP-ENV:Envelope\n" +
@@ -159,7 +160,6 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-
                 if (flag_print == 1) {
                     String app;
                     StringBuilder add = new StringBuilder();
@@ -167,12 +167,10 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     String date = sdf1.format(new Date()).substring(6, 16);
                     int drBeansize =saleDetails.drBean.size();
                     for (int i = 0; i < drBeansize; i++) {
-                        app = String.format("%-13s%-13s%-14s\n",saleDetails.drBean.get(i).comm_name,
+                        app = String.format("%-13s%-13s%-13s\n",
+                                saleDetails.drBean.get(i).comm_name,
                                 saleDetails.drBean.get(i).schemeName,
                                 saleDetails.drBean.get(i).sale);
-                      /*  app = saleDetails.drBean.get(i).comm_name + "     " +
-                                saleDetails.drBean.get(i).schemeName+ "  " +
-                                saleDetails.drBean.get(i).sale+ "\n";*/
                         add.append(app);
 
                     }
@@ -203,11 +201,15 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     }else {
 
                          str1 = context.getResources().getString(R.string.DAY_REPORT)+"\n\n";
-                         str2=context.getResources().getString(R.string.Date)+"           : " + date +"\n"+ context.getResources().getString(R.string.Time)+"           :" + time + "\n"
+                         str2=   context.getResources().getString(R.string.Date)+"           : " + date +"\n"+
+                                 context.getResources().getString(R.string.Time)+"           :" + time + "\n"
                                 +context.getResources().getString(R.string.Day_Report_Date)+": " + date + "\n"
                                 +context.getResources().getString(R.string.FPS_ID)+"         : "+ dealerConstants.stateBean.statefpsId + "\n"
                                 + "-------------------------------\n";
-                         str3 =context.getResources().getString(R.string.commodity)+"      "+context.getResources().getString(R.string.scheme)+"       "+context.getResources().getString(R.string.sale)+"\n"
+                         str3 = String.format("%-13s%-13s%-13s\n",
+                                 context.getResources().getString(R.string.commodity),
+                                 context.getResources().getString(R.string.scheme),
+                                 context.getResources().getString(R.string.sale))
                                 + "-------------------------------\n";
                          str4 = String.valueOf(add);
 
@@ -263,7 +265,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
 
         myCalendar = Calendar.getInstance();
 
-        edittext = findViewById(R.id.sale_date);
+
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -296,6 +298,9 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
         home = findViewById(R.id.sale_home);
         print = findViewById(R.id.sale_print);
         view = findViewById(R.id.sale_view);
+        edittext = findViewById(R.id.sale_date);
+        String date = sdf1.format(new Date()).substring(6, 16);
+        edittext.setText(date);
         toolbarInitilisation();
     }
 

@@ -77,7 +77,7 @@ public class UIDDetailsActivity extends AppCompatActivity {
     RecyclerView.Adapter adapter;
     ProgressDialog pd = null;
     TextView UID_details_cardnum;
-    CheckBox checkBox;
+
     UIDDetails uidDetails;
     UIDModel uidModel=new UIDModel();
 
@@ -108,15 +108,13 @@ public class UIDDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (uidModel.click) {
                     if (Util.networkConnected(context)) {
-                        if (checkBox.isChecked()) {
+
                             if (uidModel.bfd_1.equals("Y")) {
                                 ConsentDialog(ConsentForm(context));
                             } else {
                                 show_error_box(context.getResources().getString(R.string.Member_is_already_Verified), context.getResources().getString(R.string.Already_Verified),0);
                             }
-                        }  else {
-                            show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
-                        }
+
                     } else {
                         show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                     }
@@ -194,14 +192,12 @@ public class UIDDetailsActivity extends AppCompatActivity {
     private void initilisation() {
         pd = new ProgressDialog(context);
 
-
-
         UID_details_cardnum = findViewById(R.id.UID_details_cardnum);
         UID_details_cardnum.setText(uidDetails.rationCardId);
         Ekyc = findViewById(R.id.UID_details_Ekyc);
         back = findViewById(R.id.UID_details_back);
 
-        checkBox=findViewById(R.id.check);
+
         toolbarInitilisation();
     }
 
@@ -214,11 +210,16 @@ public class UIDDetailsActivity extends AppCompatActivity {
         Button back = (Button) dialog.findViewById(R.id.cancel);
         TextView tv=(TextView)dialog.findViewById(R.id.consent);
         tv.setText(concent);
+        final CheckBox checkBox =(CheckBox) dialog.findViewById(R.id.check);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                AadhaarDialog();
+                if (checkBox.isChecked()) {
+                    dialog.dismiss();
+                    AadhaarDialog();
+                }  else {
+                    show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
+                }
 
             }
         });
@@ -275,7 +276,7 @@ public class UIDDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 dialog.dismiss();
                 uidModel.Enter_UID = enter.getText().toString();
-                if (uidModel.Enter_UID.length() == 12 && validateVerhoeff(uidModel.Enter_UID)) {
+                if (validateVerhoeff(uidModel.Enter_UID)) {
                     try {
                         uidModel.UID_Details_Aadhaar = encrypt(uidModel.Enter_UID,menuConstants.skey);
                         connectRDserviceEKYC(uidDetails.zwadh);

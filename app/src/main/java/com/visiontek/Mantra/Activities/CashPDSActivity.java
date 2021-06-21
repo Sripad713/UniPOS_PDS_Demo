@@ -163,6 +163,11 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         get_details = findViewById(R.id.cash_pds_getdetails);
         radioGroup = findViewById(R.id.groupradio);
         cardno = findViewById(R.id.cardno);
+        if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
+            id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        }else {
+            id.setInputType(InputType. TYPE_CLASS_NUMBER);
+        }
         toolbarInitilisation();
 
     }
@@ -479,11 +484,9 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 case R.id.radio_aadhaar:
                     cardno.setText("Aadhar No :");
 
-                    if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
-                        id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-                    }else {
-                        id.setInputType(InputType. TYPE_NUMBER_VARIATION_PASSWORD | InputType. TYPE_CLASS_NUMBER );
-                    }
+
+                    id.setInputType(InputType. TYPE_NUMBER_VARIATION_PASSWORD | InputType. TYPE_CLASS_NUMBER );
+
                     InputFilter[] FilterArray1 = new InputFilter[1];
                     FilterArray1[0] = new InputFilter.LengthFilter(12);
                     id.setFilters(FilterArray1);
@@ -685,7 +688,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("CASH PDS");
+        toolbarActivity.setText("ISSUE GOODS");
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);

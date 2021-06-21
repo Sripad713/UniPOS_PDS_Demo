@@ -77,11 +77,11 @@ import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 public class MemberDetailsActivity extends AppCompatActivity {
 
     MemberModel memberModel=new MemberModel();
-    public static int Mdealer;
-    Button scanfp, back;
-    CheckBox checkBox;
-    ProgressDialog pd = null;
 
+    public static int Mdealer;
+    public static String MemberName;
+    Button scanfp, back;
+    ProgressDialog pd = null;
     TextView rd;
     Context context;
 
@@ -124,11 +124,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 }
                 if (memberModel.click) {
                     if (networkConnected(context)) {
-                        if (checkBox.isChecked()) {
-                            ConsentDialog(ConsentForm(context));
-                        } else {
-                            show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
-                        }
+                        ConsentDialog(ConsentForm(context));
+
                     } else {
                         show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
                     }
@@ -196,7 +193,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 memberModel.zmanual = memberConstants.memberdetails.get(p).zmanual;
                 memberModel.member_fusion = memberConstants.memberdetails.get(p).member_fusion;
                 memberModel.w_uid_status = memberConstants.memberdetails.get(p).w_uid_status;
-
+                MemberName=memberConstants.memberdetails.get(p).memberName;
                 if (memberModel.xfinger.equals("Y")) {
                     memberModel.mBIO = true;
                     memberModel.mMan = false;
@@ -219,7 +216,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         pd = new ProgressDialog(context);
         scanfp = findViewById(R.id.member_scanFP);
         back = findViewById(R.id.member_back);
-        checkBox = findViewById(R.id.mcheck);
+
         toolbarInitilisation();
     }
 
@@ -256,18 +253,21 @@ public class MemberDetailsActivity extends AppCompatActivity {
         Button back = (Button) dialog.findViewById(R.id.cancel);
         TextView tv=(TextView)dialog.findViewById(R.id.consent);
         tv.setText(concent);
+        final CheckBox checkBox =(CheckBox) dialog.findViewById(R.id.check);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                memberModel.Fusionflag = 0;
-                memberModel.wadhflag = 0;
-                memberModel.FIRflag = 0;
-                memberModel.fusionflag = 0;
-                memberModel.fCount="1";
-                dialog.dismiss();
-                callScanFP();
-
-
+                if (checkBox.isChecked()) {
+                    dialog.dismiss();
+                    memberModel.Fusionflag = 0;
+                    memberModel.wadhflag = 0;
+                    memberModel.FIRflag = 0;
+                    memberModel.fusionflag = 0;
+                    memberModel.fCount="1";
+                    callScanFP();
+                } else {
+                    show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 4);
+                }
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -927,6 +927,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
         TextView toolbarActivity = findViewById(R.id.toolbarActivity);
         TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
         TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+        TextView toolbarCard = findViewById(R.id.toolbarCard);
+        toolbarCard.setText("RC : "+memberConstants.carddetails.rcId);
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
@@ -940,8 +942,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("MEMBER");
+        toolbarActivity.setText("MEMBER DETAILS");
 
+        toolbarCard.setText(memberConstants.carddetails.rcId);
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
     }

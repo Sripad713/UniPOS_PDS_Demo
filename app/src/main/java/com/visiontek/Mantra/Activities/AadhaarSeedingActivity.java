@@ -84,7 +84,7 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 UID_ID = id.getText().toString().trim();
-                if (UID_ID.length() == 12) {
+                if (UID_ID.length() >0) {
                     UidSeeding();
                 } else {
                     if (select == 2) {
@@ -112,6 +112,11 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
         cardno = findViewById(R.id.cardno);
         id = findViewById(R.id.id);
         radioGroup = findViewById(R.id.groupradio);
+        if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
+            id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        }else {
+            id.setInputType(InputType. TYPE_CLASS_NUMBER);
+        }
         toolbarInitilisation();
     }
 
@@ -152,11 +157,9 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
 
                 case R.id.radio_aadhaar:
                     cardno.setText("Aadhaar No :");
-                    if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
-                        id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-                    }else {
-                        id.setInputType(InputType. TYPE_NUMBER_VARIATION_PASSWORD | InputType. TYPE_CLASS_NUMBER );
-                    }
+
+                    id.setInputType(InputType. TYPE_NUMBER_VARIATION_PASSWORD | InputType. TYPE_CLASS_NUMBER );
+
                     InputFilter[] FilterArray1 = new InputFilter[1];
                     FilterArray1[0] = new InputFilter.LengthFilter(12);
                     id.setFilters(FilterArray1);

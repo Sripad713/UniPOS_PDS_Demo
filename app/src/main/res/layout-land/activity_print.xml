@@ -65,7 +65,7 @@
                         android:gravity="center"
                         android:text="@string/CHHATISGARHPDS"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/TextsizeT"
+                        android:textSize="25dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -158,20 +158,21 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
                         <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:text="AEPDS "
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
-                            android:textStyle="bold" />
-                        <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
                             android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="25dp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/toolbarCard"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:text=""
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
@@ -251,7 +252,36 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:orientation="vertical">
+        <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
+                    <TextView
+                        android:id="@+id/UID_details_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:text="MemberName :"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/TextsizeB"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/cardnum"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textAlignment="center"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/TextsizeB"
+                        android:textStyle="bold" />
+                </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -336,24 +366,24 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/greydark"
-                android:layout_marginHorizontal="20dp"
                 android:orientation="horizontal"
+                android:layout_gravity="end"
+                android:gravity="end"
                 android:weightSum="2">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="end"
                     android:layout_weight="1"
-                    android:text="@string/Total"
-                    android:textAlignment="center"
+                    android:text="@string/Total_Amount"
+                    android:gravity="end"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold" />
@@ -361,11 +391,11 @@
                 <TextView
 
                     android:id="@+id/totalamount"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="end"
-                    android:text=""
+                    android:gravity="center"
+                    android:text="0.0"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold" />
@@ -385,9 +415,8 @@
 
             <Button
                 android:id="@+id/print"
-                android:layout_width="200dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
                 android:background="@color/ok"
                 android:gravity="center"
                 android:text="@string/Print"
@@ -399,7 +428,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

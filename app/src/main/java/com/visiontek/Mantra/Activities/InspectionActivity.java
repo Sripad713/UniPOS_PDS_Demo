@@ -116,7 +116,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     String Iref;
     String Aadhaar;
 
-    CheckBox checkBox;
+
     String Enter_UID;
 
     private InspectionActivity mActivity;
@@ -193,8 +193,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fCount = "1";
-                Enter_UID();
+                if (check()) {
+                    fCount = "1";
+                    Enter_UID();
+                }
             }
         });
 
@@ -225,9 +227,23 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
     }
 
+    private boolean check() {
+        int size=inspectionDetails.commDetails.size();
+        float val;
+        for (int i=0;i<size;i++){
+            val= Float.parseFloat(inspectionDetails.commDetails.get(i).entered);
+            System.out.println("==========="+val);
+            if (val>0.0){
+                System.out.println("="+val);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void initilisation() {
         pd = new ProgressDialog(context);
-        checkBox = findViewById(R.id.check);
+
         next = findViewById(R.id.inspection_next);
         back = findViewById(R.id.inspection_back);
         toolbarInitilisation();
@@ -307,11 +323,16 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         Button back = (Button) dialog.findViewById(R.id.cancel);
         TextView tv = (TextView) dialog.findViewById(R.id.consent);
         tv.setText(concent);
+        final CheckBox checkBox =(CheckBox) dialog.findViewById(R.id.check);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                connectRDservice();
+                if (checkBox.isChecked()) {
+                    dialog.dismiss();
+                    connectRDservice();
+                }  else {
+                    show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
+                }
 
             }
         });
@@ -407,10 +428,12 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     String app;
                     int size = inspectionDetails.commDetails.size();
                     for (int i = 0; i < size; i++) {
-                        app = inspectionDetails.commDetails.get(i).commNameEn + "    " +
-                                inspectionDetails.commDetails.get(i).closingBalance + "    " +
-                                inspectionDetails.commDetails.get(i).entered + "    " +
-                                inspectionDetails.commDetails.get(i).variation;
+
+                        app =  String.format("%-10s%-10s%-10s%-10s\n",
+                                inspectionDetails.commDetails.get(i).commNameEn,
+                                inspectionDetails.commDetails.get(i).closingBalance,
+                                inspectionDetails.commDetails.get(i).entered,
+                                inspectionDetails.commDetails.get(i).variation);
                         add.append(app);
 
                     }
@@ -430,9 +453,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
                         str4 = add + "";
                         image(str2 + str3 + str4, "body.bmp", 0);
-                        str5 = context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n";
+                        str5 = context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
+                                + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n";
 
-                        image(str5, "tail.bmp", 1);
+                        image(str5,"tail.bmp",1);
                         str[0] = "1";
                         str[1] = "1";
                         str[2] = "1";
@@ -442,16 +466,21 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
                         str1 = context.getResources().getString(R.string.Inspection) + "\n" +
                                 context.getResources().getString(R.string.Receipt) + "\n";
-                        str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                                + context.getResources().getString(R.string.TransactionID) + Iref + "\n\n"
-                                + context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
-                                + context.getResources().getString(R.string.Designation) + Ivendor + "\n";
-                        str3 = context.getResources().getString(R.string.Date) + currentDateTimeString + "\n\n"
-                                + context.getResources().getString(R.string.Status) + approval + " \n"
-                                + context.getResources().getString(R.string.Commidity_CB_Obsevn_Varitn) + "\n";
+                        str2 =    context.getResources().getString(R.string.FPS_ID) +"       :"+ dealerConstants.fpsCommonInfo.fpsId + "\n"
+                                + context.getResources().getString(R.string.TransactionID) +":"+ Iref + "\n"
+                                + context.getResources().getString(R.string.Inspected_By) +" :"+ Iname + "\n"
+                                + context.getResources().getString(R.string.Designation) +"  :"+ Ivendor + "\n"
+                                + context.getResources().getString(R.string.Date) +"         :"+currentDateTimeString + "\n\n"
+                                + context.getResources().getString(R.string.Status) +"       :"+approval + " \n";
+                        str3 = String.format("%-10s%-10s%-10s%-10s\n",
+                                context.getResources().getString(R.string.commodity),
+                                context.getResources().getString(R.string.ClBal),
+                                "Observed",
+                                "Var")
+                                + "-------------------------------\n";
                         str4 = String.valueOf(add);
-                        str5 = context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n";
-
+                        str5 = "\n"+context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
+                                + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n\n\n";
                         str[0] = "1";
                         str[1] = str1;
                         str[2] = str2 + str3 + str4;
@@ -506,11 +535,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                         Aadhaar = encrypt(Enter_UID, menuConstants.skey);
 
                         if (Util.networkConnected(context)) {
-                            if (checkBox.isChecked()) {
-                                ConsentDialog(ConsentForm(context));
-                            }  else {
-                                show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
-                            }
+                            ConsentDialog(ConsentForm(context));
                         } else {
                             show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                         }

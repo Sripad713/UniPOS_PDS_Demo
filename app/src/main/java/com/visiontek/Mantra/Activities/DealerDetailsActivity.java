@@ -72,7 +72,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
     RecyclerView.Adapter adapter;
     Button scanfp, back;
     ProgressDialog pd = null;
-    CheckBox checkBox;
+
     Context context;
     MemberModel memberModel;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -108,11 +108,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (dealerModel.click) {
                     if (Util.networkConnected(context)) {
-                        if (checkBox.isChecked()) {
-                            ConsentDialog(ConsentForm(context));
-                        } else {
-                            show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
-                        }
+                        ConsentDialog(ConsentForm(context));
                     } else {
                         show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                     }
@@ -196,7 +192,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
         pd = new ProgressDialog(context);
         scanfp = findViewById(R.id.dealer_scanFP);
         back = findViewById(R.id.dealer_back);
-        checkBox = findViewById(R.id.check);
+
         toolbarInitilisation();
     }
 
@@ -509,18 +505,22 @@ public class DealerDetailsActivity extends AppCompatActivity {
         Button confirm = (Button) dialog.findViewById(R.id.agree);
         Button back = (Button) dialog.findViewById(R.id.cancel);
         TextView tv=(TextView)dialog.findViewById(R.id.consent);
+        final CheckBox checkBox =(CheckBox) dialog.findViewById(R.id.check);
         tv.setText(concent);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dealerModel.Fusionflag = 0;
-                dealerModel.wadhflag = 0;
-                dealerModel.FIRflag = 0;
-                dealerModel.fusionflag = 0;
-                dealerModel.fCount="1";
-                dialog.dismiss();
-                callScanFP();
-
+                if (checkBox.isChecked()) {
+                    dealerModel.Fusionflag = 0;
+                    dealerModel.wadhflag = 0;
+                    dealerModel.FIRflag = 0;
+                    dealerModel.fusionflag = 0;
+                    dealerModel.fCount="1";
+                    callScanFP();
+                    dialog.dismiss();
+                } else {
+                    show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
+                }
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -795,7 +795,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
         toolbarDateValue.setText(date);
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("DEALER");
+        toolbarActivity.setText("DEALER DETAILS");
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
     }

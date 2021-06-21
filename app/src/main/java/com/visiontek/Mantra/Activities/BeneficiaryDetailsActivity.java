@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,8 +17,6 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -42,21 +39,18 @@ import com.visiontek.Mantra.Adapters.CustomAdapter4;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetURLDetails.BeneficiaryAuth;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetURLDetails.BeneficiaryDetails;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetUserDetails.BeneficiaryModel;
-import com.visiontek.Mantra.Models.AadhaarServicesModel.UIDSeeding.GetURLDetails.UIDAuth;
 import com.visiontek.Mantra.Models.DATAModels.DataModel5;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
 import com.visiontek.Mantra.Utils.Json_Parsing;
 import com.visiontek.Mantra.Utils.TaskPrint;
 import com.visiontek.Mantra.Utils.Util;
-import com.visiontek.Mantra.Utils.XML_Parsing;
 
 import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -79,7 +73,6 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
-
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.ConsentForm;
@@ -95,7 +88,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     private static String ACTION_USB_PERMISSION;
     Button back, Ekyc;
 
-    CheckBox checkBox;
+
     Context context;
 
     RecyclerView.Adapter adapter;
@@ -103,7 +96,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     String details;
     TextView Ben_cardnum;
     BeneficiaryAuth beneficiaryAuth;
-    BeneficiaryModel beneficiaryModel=new BeneficiaryModel();
+    BeneficiaryModel beneficiaryModel = new BeneficiaryModel();
     BeneficiaryDetails beneficiaryDetails;
     private BeneficiaryDetailsActivity mActivity;
     private final ExecutorService es = Executors.newScheduledThreadPool(30);
@@ -125,7 +118,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service),0);
+            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
             return;
         }
 
@@ -192,7 +185,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         ArrayList<DataModel5> data = new ArrayList<>();
-        int rcMemberDetVerifysize=beneficiaryDetails.rcMemberDetVerify.size();
+        int rcMemberDetVerifysize = beneficiaryDetails.rcMemberDetVerify.size();
         for (int i = 0; i < rcMemberDetVerifysize; i++) {
             data.add(new DataModel5(beneficiaryDetails.rcMemberDetVerify.get(i).memberName,
                     beneficiaryDetails.rcMemberDetVerify.get(i).uid,
@@ -203,8 +196,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             public void onClick_d(int p) {
                 beneficiaryModel.click = true;
                 beneficiaryModel.memberId = beneficiaryDetails.rcMemberDetVerify.get(p).memberId;
-                beneficiaryModel.memberName =beneficiaryDetails.rcMemberDetVerify.get(p).memberName;
-                beneficiaryModel.memberNamell =beneficiaryDetails.rcMemberDetVerify.get(p).memberNamell;
+                beneficiaryModel.memberName = beneficiaryDetails.rcMemberDetVerify.get(p).memberName;
+                beneficiaryModel.memberNamell = beneficiaryDetails.rcMemberDetVerify.get(p).memberNamell;
                 beneficiaryModel.member_fusion = beneficiaryDetails.rcMemberDetVerify.get(p).member_fusion;
                 beneficiaryModel.uid = beneficiaryDetails.rcMemberDetVerify.get(p).uid;
                 beneficiaryModel.verification = beneficiaryDetails.rcMemberDetVerify.get(p).verification;
@@ -220,8 +213,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         pd = new ProgressDialog(context);
         back = findViewById(R.id.Ben_details_back);
         Ekyc = findViewById(R.id.Ben_details_Ekyc);
-        checkBox = findViewById(R.id.check);
-        Ben_cardnum=findViewById(R.id.Ben_cardnum);
+        Ben_cardnum = findViewById(R.id.Ben_cardnum);
         Ben_cardnum.setText(beneficiaryDetails.rationCardId);
         toolbarInitilisation();
     }
@@ -268,17 +260,13 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 dialog.dismiss();
                 beneficiaryModel.Enter_UID = enter.getText().toString();
 
-                if (beneficiaryModel.Enter_UID.length() == 12 &&
-                        validateVerhoeff(beneficiaryModel.Enter_UID)) {
+                if (validateVerhoeff(beneficiaryModel.Enter_UID)) {
                     try {
                         beneficiaryModel.Enter_UID = encrypt(beneficiaryModel.Enter_UID, menuConstants.skey);
 
                         if (Util.networkConnected(context)) {
-                            if (checkBox.isChecked()) {
-                                ConsentDialog(ConsentForm(context));
-                            }  else {
-                                show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
-                            }
+                            ConsentDialog(ConsentForm(context));
+
                         } else {
                             show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                         }
@@ -320,6 +308,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         dialog.show();
 
     }
+
     private void ConsentDialog(String concent) {
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -327,13 +316,18 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         dialog.setContentView(R.layout.consent);
         Button confirm = (Button) dialog.findViewById(R.id.agree);
         Button back = (Button) dialog.findViewById(R.id.cancel);
-        TextView tv=(TextView)dialog.findViewById(R.id.consent);
+        TextView tv = (TextView) dialog.findViewById(R.id.consent);
         tv.setText(concent);
+        final CheckBox checkBox =(CheckBox) dialog.findViewById(R.id.check);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                connectRDserviceEKYC(beneficiaryDetails.wadh);
+                if (checkBox.isChecked()) {
+                    dialog.dismiss();
+                    connectRDserviceEKYC(beneficiaryDetails.wadh);
+                } else {
+                    show_error_box("Please Check the Consent Message", context.getResources().getString(R.string.Consent_Form), 2);
+                }
 
             }
         });
@@ -354,7 +348,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     private void hitURL1(String BenAuth) {
 
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Beneficiary_Verification), context.getResources().getString(R.string.Processing), true, false);
-        Aadhaar_Parsing request = new Aadhaar_Parsing(context, BenAuth,4 );
+        Aadhaar_Parsing request = new Aadhaar_Parsing(context, BenAuth, 4);
         request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -376,9 +370,9 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     beneficiaryAuth = (BeneficiaryAuth) object;
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
                     details = "\n" + context.getResources().getString(R.string.MemberName) + beneficiaryAuth.eKYCMemberName + "\n" +
-                            context.getResources().getString(R.string.DOB) +beneficiaryAuth.eKYCDOB+ "\n" +
+                            context.getResources().getString(R.string.DOB) + beneficiaryAuth.eKYCDOB + "\n" +
                             context.getResources().getString(R.string.PindCode) + beneficiaryAuth.eKYCPindCode + "\n" +
-                            context.getResources().getString(R.string.Gender) + beneficiaryAuth.eKYCGeneder+ "\n" +
+                            context.getResources().getString(R.string.Gender) + beneficiaryAuth.eKYCGeneder + "\n" +
                             context.getResources().getString(R.string.Date) + currentDateTimeString + "\n";
 
                     String str1, str2, str3;
@@ -386,11 +380,11 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     if (L.equals("hi")) {
                         str1 = context.getResources().getString(R.string.VERIFICATION_RECEIPT) + "\n";
                         image(str1, "header.bmp", 1);
-                        str2 = context.getResources().getString(R.string.Date) +" : "+ currentDateTimeString +
-                                context.getResources().getString(R.string.Time) + " : " + currentDateTimeString +" \n" +
+                        str2 = context.getResources().getString(R.string.Date) + " : " + currentDateTimeString +
+                                context.getResources().getString(R.string.Time) + " : " + currentDateTimeString + " \n" +
                                 context.getResources().getString(R.string.FPS_ID) + " : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
                                 + context.getResources().getString(R.string.NAME) + " : " + beneficiaryAuth.eKYCMemberName + "\n\n"
-                                + context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder+ "\n"
+                                + context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder + "\n"
                                 + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
                                 + context.getResources().getString(R.string.Status) + " : " + "Success" + "\n";
 
@@ -405,13 +399,13 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
                         str1 = context.getResources().getString(R.string.VERIFICATION_RECEIPT) + "\n"
                                 + "-----------------------------\n";
-                        str2 = context.getResources().getString(R.string.Date) +" : "+ currentDateTimeString +
-                                context.getResources().getString(R.string.Time) + " : " +currentDateTimeString+ " \n" +
-                                context.getResources().getString(R.string.FPS_ID) + " : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                                + context.getResources().getString(R.string.NAME) + " : "+ beneficiaryAuth.eKYCMemberName + "\n\n"
-                                + context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder+"\n"
-                                + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
-                                + context.getResources().getString(R.string.Status) + " : " + "Success" +"\n";
+                        str2 =            context.getResources().getString(R.string.Date) + "           :" + currentDateTimeString + "\n"
+                                        + context.getResources().getString(R.string.Time) + "           : " + currentDateTimeString + " \n"
+                                        + context.getResources().getString(R.string.FPS_ID) + "         :" + dealerConstants.fpsCommonInfo.fpsId + "\n"
+                                        + context.getResources().getString(R.string.NAME) + "           : " + beneficiaryAuth.eKYCMemberName + "\n\n"
+                                        + context.getResources().getString(R.string.Gender) + "         : " + beneficiaryAuth.eKYCGeneder + "\n"
+                                        + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
+                                        + context.getResources().getString(R.string.Status) + "         : " + "Success" + "\n";
 
                         str[0] = "1";
                         str[1] = str1;
@@ -419,6 +413,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                         str[3] = "0";
                         checkandprint(str, 0);
                     }
+
 
                 }
             }
@@ -455,7 +450,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             }
             System.out.println("No of activities = " + activities.size());
             act.putExtra("PID_OPTIONS", xmplpid);
-            startActivityForResult(act,beneficiaryModel. RD_SERVICE);
+            startActivityForResult(act, beneficiaryModel.RD_SERVICE);
         } catch (Exception e) {
             System.out.println("Error while connecting to RDService");
             e.printStackTrace();
@@ -501,18 +496,18 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 "            <rcUid>" + beneficiaryModel.uid + "</rcUid>\n" +
                 "            <memberId>" + beneficiaryModel.memberId + "</memberId>\n" +
                 "            <ekycresAuth>\n" +
-                "                <dc>" +  beneficiaryModel.rdModel.dc + "</dc>\n" +
-                "                <dpId>" +  beneficiaryModel.rdModel.dpId + "</dpId>\n" +
-                "                <mc>" +  beneficiaryModel.rdModel.mc + "</mc>\n" +
-                "                <mid>" +  beneficiaryModel.rdModel.mi + "</mid>\n" +
-                "                <rdId>" +  beneficiaryModel.rdModel.rdsId + "</rdId>\n" +
-                "                <rdVer>" + beneficiaryModel.rdModel. rdsVer + "</rdVer>\n" +
+                "                <dc>" + beneficiaryModel.rdModel.dc + "</dc>\n" +
+                "                <dpId>" + beneficiaryModel.rdModel.dpId + "</dpId>\n" +
+                "                <mc>" + beneficiaryModel.rdModel.mc + "</mc>\n" +
+                "                <mid>" + beneficiaryModel.rdModel.mi + "</mid>\n" +
+                "                <rdId>" + beneficiaryModel.rdModel.rdsId + "</rdId>\n" +
+                "                <rdVer>" + beneficiaryModel.rdModel.rdsVer + "</rdVer>\n" +
                 "                <res_Consent_POIandPOA>Y</res_Consent_POIandPOA>\n" +
                 "                <res_Consent_mobileOREmail>Y</res_Consent_mobileOREmail>\n" +
-                "                <res_certificateIdentifier>" +  beneficiaryModel.rdModel.ci + "</res_certificateIdentifier>\n" +
-                "                <res_encHmac>" + beneficiaryModel.rdModel. hmac + "</res_encHmac>\n" +
-                "                <res_secure_pid>" +  beneficiaryModel.rdModel.pid + "</res_secure_pid>\n" +
-                "                <res_sessionKey>" +  beneficiaryModel.rdModel.skey + "</res_sessionKey>\n" +
+                "                <res_certificateIdentifier>" + beneficiaryModel.rdModel.ci + "</res_certificateIdentifier>\n" +
+                "                <res_encHmac>" + beneficiaryModel.rdModel.hmac + "</res_encHmac>\n" +
+                "                <res_secure_pid>" + beneficiaryModel.rdModel.pid + "</res_secure_pid>\n" +
+                "                <res_sessionKey>" + beneficiaryModel.rdModel.skey + "</res_sessionKey>\n" +
                 "                <res_uid>" + beneficiaryModel.Enter_UID + "</res_uid>\n" +
                 "            </ekycresAuth>\n" +
                 "            <password>" + dealerConstants.fpsURLInfo.token + "</password>\n" +
@@ -520,11 +515,11 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 "            <Resp>\n" +
                 "                <errCode>0</errCode>\n" +
                 "                <errInfo>y</errInfo>\n" +
-                "                <nmPoints>" +  beneficiaryModel.rdModel.nmpoint + "</nmPoints>\n" +
-                "                <fCount>" + beneficiaryModel.rdModel. fcount + "</fCount>\n" +
-                "                <fType>" +  beneficiaryModel.rdModel.ftype + "</fType>\n" +
-                "                <iCount>" +  beneficiaryModel.rdModel.icount + "</iCount>\n" +
-                "                <iType>" +  beneficiaryModel.rdModel.itype + "</iType>\n" +
+                "                <nmPoints>" + beneficiaryModel.rdModel.nmpoint + "</nmPoints>\n" +
+                "                <fCount>" + beneficiaryModel.rdModel.fcount + "</fCount>\n" +
+                "                <fType>" + beneficiaryModel.rdModel.ftype + "</fType>\n" +
+                "                <iCount>" + beneficiaryModel.rdModel.icount + "</iCount>\n" +
+                "                <iType>" + beneficiaryModel.rdModel.itype + "</iType>\n" +
                 "                <pCount>0</pCount>\n" +
                 "                <pType>0</pType>\n" +
                 "                <qScore>0</qScore>\n" +
@@ -550,6 +545,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         }
 
     }
+
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -578,7 +574,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     public void onClick(DialogInterface arg0, int arg1) {
                         if (type == 1) {
                             finish();
-                        }else if (type==2){
+                        } else if (type == 2) {
                             prep_consent();
                         }
                     }
@@ -591,19 +587,19 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         System.out.println("@@ In dealer details else case");
         String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
         //currentDateTimeString="26032021114610";
-        String consentrequest="{\n" +
-                "   \"fpsId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
+        String consentrequest = "{\n" +
+                "   \"fpsId\" : " + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
                 "   \"modeOfService\" : \"D\",\n" +
                 "   \"moduleType\" : \"C\",\n" +
-                "   \"rcId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
+                "   \"rcId\" : " + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
                 "   \"requestId\" : \"0\",\n" +
                 "   \"requestValue\" : \"N\",\n" +
-                "   \"sessionId\" : "+"\""+dealerConstants.fpsCommonInfo.fpsSessionId+"\""+",\n" +
-                "   \"stateCode\" : "+"\""+dealerConstants.stateBean.stateCode+"\""+",\n" +
-                "   \"terminalId\" : "+"\""+DEVICEID+"\""+",\n" +
-                "   \"timeStamp\" : "+"\""+currentDateTimeString+"\""+",\n" +
+                "   \"sessionId\" : " + "\"" + dealerConstants.fpsCommonInfo.fpsSessionId + "\"" + ",\n" +
+                "   \"stateCode\" : " + "\"" + dealerConstants.stateBean.stateCode + "\"" + ",\n" +
+                "   \"terminalId\" : " + "\"" + DEVICEID + "\"" + ",\n" +
+                "   \"timeStamp\" : " + "\"" + currentDateTimeString + "\"" + ",\n" +
                 /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
-                "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
+                "   \"token\" : " + "\"9f943748d8c1ff6ded5145c59d0b2ae7\"" + "\n" +
                 "}";
         Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
         ConsentformURL(consentrequest);
@@ -619,7 +615,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                       checkandprint(str,type);
+                        checkandprint(str, type);
 
                     }
                 });
@@ -635,6 +631,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
     private void image(String content, String name, int align) {
         try {
             Util.image(content, name, align);
@@ -658,7 +655,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             es.submit(new TaskPrint(mTerminal100API, str, mActivity, context, i));
             finish();
         } else {
-            printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery),str,i);
+            printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery), str, i);
         }
     }
 
@@ -680,7 +677,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
             beneficiaryModel.err_code = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errCode").getTextContent();
             if (beneficiaryModel.err_code.equals("1")) {
-                beneficiaryModel.rdModel. errinfo = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errInfo").getTextContent();
+                beneficiaryModel.rdModel.errinfo = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errInfo").getTextContent();
                 return 1;
             } else {
                 beneficiaryModel.rdModel.fcount = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("fCount").getTextContent();
@@ -689,15 +686,15 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 beneficiaryModel.rdModel.pid = doc.getElementsByTagName("Data").item(0).getTextContent();
                 beneficiaryModel.rdModel.skey = doc.getElementsByTagName("Skey").item(0).getTextContent();
                 beneficiaryModel.rdModel.ci = doc.getElementsByTagName("Skey").item(0).getAttributes().getNamedItem("ci").getTextContent();
-                beneficiaryModel.rdModel. hmac = doc.getElementsByTagName("Hmac").item(0).getTextContent();
+                beneficiaryModel.rdModel.hmac = doc.getElementsByTagName("Hmac").item(0).getTextContent();
                 beneficiaryModel.rdModel.type = doc.getElementsByTagName("Data").item(0).getAttributes().getNamedItem("type").getTextContent();
                 beneficiaryModel.rdModel.dpId = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("dpId").getTextContent();
-                beneficiaryModel.rdModel. rdsId = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("rdsId").getTextContent();
+                beneficiaryModel.rdModel.rdsId = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("rdsId").getTextContent();
                 beneficiaryModel.rdModel.rdsVer = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("rdsVer").getTextContent();
                 beneficiaryModel.rdModel.dc = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("dc").getTextContent();
-                beneficiaryModel.rdModel. mi = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("mi").getTextContent();
+                beneficiaryModel.rdModel.mi = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("mi").getTextContent();
                 beneficiaryModel.rdModel.mc = doc.getElementsByTagName("DeviceInfo").item(0).getAttributes().getNamedItem("mc").getTextContent();
-                beneficiaryModel.rdModel.skey =  beneficiaryModel.rdModel.skey.replaceAll(" ", "\n");
+                beneficiaryModel.rdModel.skey = beneficiaryModel.rdModel.skey.replaceAll(" ", "\n");
 
             }
         } catch (Exception e) {
@@ -797,6 +794,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         });
 
     }
+
     private void toolbarInitilisation() {
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);

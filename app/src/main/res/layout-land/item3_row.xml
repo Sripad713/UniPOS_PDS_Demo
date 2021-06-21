@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/white"
                 android:gravity="center_horizontal"
                 android:textSize="25dp"
                 android:textAlignment="center"
@@ -38,6 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="@drawable/white"
                 android:textSize="25dp"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
@@ -48,6 +50,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textSize="25dp"
+                android:background="@drawable/white"
                 android:textColor="@color/blackblack"
                 android:gravity="center_horizontal" />
         </LinearLayout>

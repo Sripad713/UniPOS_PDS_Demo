@@ -83,7 +83,7 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 BEN_ID = id.getText().toString().trim();
-                if (BEN_ID.length() == 12) {
+                if (BEN_ID.length() >0) {
                     Benverify();
                 } else {
                     if(select==2){
@@ -109,6 +109,11 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
         back = findViewById(R.id.button_back);
         id = findViewById(R.id.id);
         cardno = findViewById(R.id.cardno);
+        if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
+            id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        }else {
+            id.setInputType(InputType. TYPE_CLASS_NUMBER);
+        }
         toolbarInitilisation();
     }
 
@@ -177,13 +182,7 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
                     "</SOAP-ENV:Envelope>";
         }
         if (networkConnected(context)) {
-            if (mp!=null) {
-                releaseMediaPlayer(context,mp);
-            }
-            if(L.equals("hi")){}else {
-                mp = mp.create(context, R.raw.c100187);
-                mp.start();
-            }
+
             Util.generateNoteOnSD(context, "BenVerificationReq.txt", ben);
             benVerification(ben);
         } else {
@@ -192,6 +191,13 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
     }
 
     private void benVerification(String ben) {
+           if (mp!=null) {
+                releaseMediaPlayer(context,mp);
+            }
+            if(L.equals("hi")){}else {
+                mp = mp.create(context, R.raw.c100075);
+                mp.start();
+            }
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Beneficiary_Details), context.getResources().getString(R.string.Fetching_Members), true, false);
         Aadhaar_Parsing request = new Aadhaar_Parsing(context, ben,3 );
         request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
@@ -271,11 +277,9 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
 
                 case R.id.radio_aadhaar:
                     cardno.setText("Aadhaar No :");
-                    if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
-                        id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-                    }else {
-                        id.setInputType(InputType. TYPE_NUMBER_VARIATION_PASSWORD | InputType. TYPE_CLASS_NUMBER );
-                    }
+
+                    id.setInputType(InputType. TYPE_NUMBER_VARIATION_PASSWORD | InputType. TYPE_CLASS_NUMBER );
+
                     InputFilter[] FilterArray1 = new InputFilter[1];
                     FilterArray1[0] = new InputFilter.LengthFilter(12);
                     id.setFilters(FilterArray1);

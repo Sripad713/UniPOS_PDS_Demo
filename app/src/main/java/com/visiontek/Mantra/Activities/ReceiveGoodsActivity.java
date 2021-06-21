@@ -3,14 +3,11 @@ package com.visiontek.Mantra.Activities;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,24 +25,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.visiontek.Mantra.Adapters.CustomAdapter1;
 import com.visiontek.Mantra.Models.DATAModels.DataModel1;
-import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.MemberModel;
 import com.visiontek.Mantra.Models.ReceiveGoodsModel.ReceiveGoodsDetails;
 import com.visiontek.Mantra.Models.ReceiveGoodsModel.ReceiveGoodsModel;
 import com.visiontek.Mantra.Models.ReceiveGoodsModel.tcCommDetails;
 import com.visiontek.Mantra.R;
-import com.visiontek.Mantra.Utils.DatabaseHelper;
 import com.visiontek.Mantra.Utils.Util;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
-import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
@@ -96,29 +90,35 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
 
         ArrayList<String> trucklist=new ArrayList<>();
-        int size=receiveGoodsDetails.infoTCDetails.size();
+
+        int size=receiveGoodsDetails.infoTCDetails.size() ;
+        trucklist.add("Select Truck Chit");
         for (int i=0;i<size;i++) {
-            trucklist.add( receiveGoodsDetails.infoTCDetails.get(i).truckNo);
+            trucklist.add( receiveGoodsDetails.infoTCDetails.get(i).truckChitNo);
         }
 
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, trucklist);
         options.setAdapter(adapter1);
+        System.out.println(Collections.unmodifiableList(trucklist));
         options.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapter, View v, int position, long id) {
-                receiveGoodsModel. select = position;
-                System.out.println("SELETED=" + position);
-                receiveGoodsModel.length = receiveGoodsDetails.infoTCDetails.get(position).CommLength;
-                receiveGoodsModel.fps = receiveGoodsDetails.infoTCDetails.get(position).fpsId;
-                receiveGoodsModel.month =receiveGoodsDetails.infoTCDetails.get(position).allotedMonth;
-                receiveGoodsModel.year = receiveGoodsDetails.infoTCDetails.get(position).allotedYear;
-                receiveGoodsModel.chit = receiveGoodsDetails.infoTCDetails.get(position).truckChitNo;
-                receiveGoodsModel.cid = receiveGoodsDetails.infoTCDetails.get(position).challanId;
-                receiveGoodsModel. orderno = receiveGoodsDetails.infoTCDetails.get(position).allocationOrderNo;
-                receiveGoodsModel. truckno = receiveGoodsDetails.infoTCDetails.get(position).truckNo;
-                trucknumber.setText(context.getResources().getString(R.string.Truck_No) + receiveGoodsModel.truckno);
-                DisplayTruck(position);
+                if (position!=0) {
+                    position=position-1;
+                    receiveGoodsModel.select = position;
+                    System.out.println("SELETED=" + position);
+                    receiveGoodsModel.length = receiveGoodsDetails.infoTCDetails.get(position).CommLength;
+                    receiveGoodsModel.fps = receiveGoodsDetails.infoTCDetails.get(position).fpsId;
+                    receiveGoodsModel.month = receiveGoodsDetails.infoTCDetails.get(position).allotedMonth;
+                    receiveGoodsModel.year = receiveGoodsDetails.infoTCDetails.get(position).allotedYear;
+                    receiveGoodsModel.chit = receiveGoodsDetails.infoTCDetails.get(position).truckChitNo;
+                    receiveGoodsModel.cid = receiveGoodsDetails.infoTCDetails.get(position).challanId;
+                    receiveGoodsModel.orderno = receiveGoodsDetails.infoTCDetails.get(position).allocationOrderNo;
+                    receiveGoodsModel.truckno = receiveGoodsDetails.infoTCDetails.get(position).truckNo;
+                    trucknumber.setText(context.getResources().getString(R.string.Truck_No) + receiveGoodsModel.truckno);
+                    DisplayTruck(position);
+                }
             }
 
             @Override
@@ -139,15 +139,15 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
                     } else {
                         show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
                     }
-                } else {
-                    if (mp!=null) {
+                } /*else {
+                   *//* if (mp!=null) {
                         releaseMediaPlayer(context,mp);
                     }  if (L.equals("hi")) {
                     } else {
                    mp=mp.create(context, R.raw.c100051);
                            mp.start();
-                    show_error_box( context.getResources().getString(R.string.Please_Select_Dealer_Name),  context.getResources().getString(R.string.Dealer), 0);
-                }}
+                    show_error_box( ect_Dealer_Name),  context.getResources().getString(R.string.Dealer), 0);*//*
+                }*/
             }
         });
 
@@ -188,9 +188,8 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     private boolean check() {
         tcCommDetails tcCommDetails;
         int size=receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.size();
-      // float val = 0;
+      float val = 0;
         for (int i=0;i<size;i++){
-            /*val= Float.parseFloat(receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).enteredvalue);
             //if (val>0.0){*/
                 tcCommDetails =new tcCommDetails();
                 tcCommDetails.enteredvalue=
@@ -211,15 +210,16 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
           //  }
         }
-      /*  for (int i=0;i<size;i++){
-            System.out.println("==========="+val);
+
+        for (int i=0;i<size;i++){
             val= Float.parseFloat(receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).enteredvalue);
+            System.out.println("==========="+val);
             if (val>0.0){
                 System.out.println("="+val);
                 return true;
             }
-        }*/
-        return true;
+        }
+        return false;
     }
 
 
@@ -306,9 +306,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        if (i == 1) {
-                             // print();
-                        }
+
                     }
                 });
 

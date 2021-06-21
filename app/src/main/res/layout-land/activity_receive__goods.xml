@@ -65,7 +65,7 @@
                         android:gravity="center"
                         android:text="@string/CHHATISGARHPDS"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/TextsizeT"
+                        android:textSize="25dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -158,20 +158,20 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
                         <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:text="AEPDS "
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
-                            android:textStyle="bold" />
-                        <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
                             android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="25dp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:text=" "
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
@@ -309,7 +309,7 @@
                 android:text="@string/Comm"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -321,7 +321,7 @@
                 android:text="@string/Scheme"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -333,7 +333,7 @@
                 android:text="@string/Allot"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -345,7 +345,7 @@
                 android:text="@string/dispatch"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -357,7 +357,7 @@
                 android:text="@string/Receive"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>

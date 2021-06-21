@@ -65,7 +65,7 @@
                         android:gravity="center"
                         android:text="@string/CHHATISGARHPDS"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/TextsizeT"
+                        android:textSize="25dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -158,20 +158,20 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
                         <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:text="AEPDS "
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
-                            android:textStyle="bold" />
-                        <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
                             android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="25dp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:text=" "
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
@@ -335,12 +335,10 @@
                     android:orientation="horizontal"
                     android:layout_weight="1">
 
-                    <CheckBox
-                        android:id="@+id/check"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:checked="true"
-                        android:text="@string/Consent_Form"
                         android:textColor="@color/colorPrimary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
