@@ -3,7 +3,6 @@ package com.visiontek.Mantra.Activities;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,8 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.mantra.mTerminal100.printer.Prints;
-import com.visiontek.Mantra.Adapters.CustomAdapter3;
-import com.visiontek.Mantra.Models.DATAModels.DataModel3;
+import com.visiontek.Mantra.Adapters.StockListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.StockListModel;
 import com.visiontek.Mantra.Models.ReportsModel.Stockdetails.StockDetails;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.TaskPrint;
@@ -50,7 +49,6 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 
-import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
@@ -67,7 +65,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
     private MTerminal100API mTerminal100API;
     private RecyclerView.Adapter adapter;
     private RecyclerView recyclerView;
-    private ArrayList<DataModel3> data;
+    private ArrayList<StockListModel> data;
 
     StockDetails stockDetails;
 
@@ -345,13 +343,13 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                     int astockBeansize= stockDetails.astockBean.size();
                     data = new ArrayList<>();
                     for (int i = 0; i < astockBeansize; i++) {
-                        data.add(new DataModel3(stockDetails.astockBean.get(i).comm_name,
+                        data.add(new StockListModel(stockDetails.astockBean.get(i).comm_name,
                                 stockDetails.astockBean.get(i).scheme_desc_en,
                                 stockDetails.astockBean.get(i).total_quantity,
                                 stockDetails.astockBean.get(i).issued_qty,
                                 stockDetails.astockBean.get(i).closing_balance));
                     }
-                    adapter = new CustomAdapter3(context, data);
+                    adapter = new StockListAdapter(context, data);
                     recyclerView.setAdapter(adapter);
                 }
             }

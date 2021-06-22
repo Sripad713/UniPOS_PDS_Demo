@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,8 +13,6 @@ import android.content.pm.ResolveInfo;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -31,8 +28,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.visiontek.Mantra.Adapters.CustomAdapter;
-import com.visiontek.Mantra.Models.DATAModels.DataModel;
+import com.visiontek.Mantra.Adapters.DealerListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.DealerListModel;
 import com.visiontek.Mantra.Models.DealerDetailsModel.GetUserDetails.DealerModel;
 import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.MemberModel;
 import com.visiontek.Mantra.R;
@@ -60,7 +57,6 @@ import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
-import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Utils.Util.ConsentForm;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
@@ -152,16 +148,17 @@ public class DealerDetailsActivity extends AppCompatActivity {
             }
         });
 
-        ArrayList<DataModel> data = new ArrayList<>();
+        ArrayList<DealerListModel> data = new ArrayList<>();
         int dealerlistsize =dealerConstants.fpsCommonInfo.fpsDetails.size();
         for (int i = 0; i < dealerlistsize; i++) {
             System.out.println(dealerConstants.fpsCommonInfo.fpsDetails.get(i).delName);
-            data.add(new DataModel(dealerConstants.fpsCommonInfo.fpsDetails.get(i).delName,
-                    dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type));
+            data.add(new DealerListModel(dealerConstants.fpsCommonInfo.fpsDetails.get(i).delName,
+                    dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type,
+                    dealerConstants.fpsCommonInfo.fpsDetails.get(i).delUid));
         }
-        adapter = new CustomAdapter(context, data, new OnClickListener() {
+        adapter = new DealerListAdapter(context, data, new OnClickDealer() {
             @Override
-            public void onClick_d(int p) {
+            public void onClick(int p) {
                 dealerModel.click = true;
                 dealerModel.Fusionflag = 0;
                 dealerModel.wadhflag = 0;
@@ -184,7 +181,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                         break;
                 }
             }
-        }, 1);
+        }, 0);
         recyclerView.setAdapter(adapter);
     }
 
@@ -775,8 +772,8 @@ public class DealerDetailsActivity extends AppCompatActivity {
         return 0;
     }
 
-    public interface OnClickListener {
-        void onClick_d(int p);
+    public interface OnClickDealer {
+        void onClick(int p);
     }
     private void toolbarInitilisation() {
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);

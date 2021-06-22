@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.visiontek.Mantra.Adapters.CustomAdapter1;
-import com.visiontek.Mantra.Models.DATAModels.DataModel1;
+import com.visiontek.Mantra.Adapters.ReceiveGoodsListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.ReceiveGoodsListModel;
 import com.visiontek.Mantra.Models.ReceiveGoodsModel.ReceiveGoodsDetails;
 import com.visiontek.Mantra.Models.ReceiveGoodsModel.ReceiveGoodsModel;
 import com.visiontek.Mantra.Models.ReceiveGoodsModel.tcCommDetails;
@@ -36,13 +36,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
-import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
-import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
-import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 
 public class ReceiveGoodsActivity extends AppCompatActivity {
@@ -53,7 +50,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     Spinner options;
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
-    ArrayList<DataModel1> modeldata;
+    ArrayList<ReceiveGoodsListModel> modeldata;
     TextView trucknumber;
 
 
@@ -226,7 +223,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     private void DisplayTruck(int position) {
         int tcCommDetailssize=receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.size();
         for (int k = 0; k <tcCommDetailssize ; k++) {
-            modeldata.add(new DataModel1(receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).commName,
+            modeldata.add(new ReceiveGoodsListModel(receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).commName,
                     receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).schemeName,
                     receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).allotment,
                     receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).releasedQuantity,
@@ -236,15 +233,17 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     }
 
     private void Display() {
-        adapter = new CustomAdapter1(context, modeldata, new OnClickListener() {
+        adapter = new ReceiveGoodsListAdapter(context, modeldata, new OnClickReceived() {
             @Override
-            public void onClick_d(int p) {
+            public void onClick(int p) {
                 EnterComm(p);
             }
-        }, 1);
+        });
         recyclerView.setAdapter(adapter);
     }
-
+    public interface OnClickReceived {
+        void onClick(int p);
+    }
     private void EnterComm(final int position) {
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

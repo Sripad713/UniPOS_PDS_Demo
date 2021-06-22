@@ -12,8 +12,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,11 +26,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.visiontek.Mantra.Adapters.CustomAdapter4;
+import com.visiontek.Mantra.Adapters.AadharSeedingListAdapter;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.UIDSeeding.GetURLDetails.UIDAuth;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.UIDSeeding.GetURLDetails.UIDDetails;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.UIDSeeding.GetUserDetails.UIDModel;
-import com.visiontek.Mantra.Models.DATAModels.DataModel5;
+import com.visiontek.Mantra.Models.DATAModels.AadhaarSeedingListModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
 import com.visiontek.Mantra.Utils.Json_Parsing;
@@ -165,17 +163,17 @@ public class UIDDetailsActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        ArrayList<DataModel5> data = new ArrayList<>();
+        ArrayList<AadhaarSeedingListModel> data = new ArrayList<>();
         int rcMemberDetssize=uidDetails.rcMemberDet.size();
         for (int i = 0; i < rcMemberDetssize; i++) {
-            data.add(new DataModel5(uidDetails.rcMemberDet.get(i).memberName,
+            data.add(new AadhaarSeedingListModel(uidDetails.rcMemberDet.get(i).memberName,
                     uidDetails.rcMemberDet.get(i).uid,
                     uidDetails.rcMemberDet.get(i).w_uid_status));
         }
 
-        adapter = new CustomAdapter4(context, data, new DealerDetailsActivity.OnClickListener() {
+        adapter = new AadharSeedingListAdapter(context, data, new OnClickUID() {
             @Override
-            public void onClick_d(int p) {
+            public void onClick(int p) {
                 uidModel.click = true;
                 uidModel.memberId = uidDetails.rcMemberDet.get(p).memberId;
                 uidModel.bfd_1 = uidDetails.rcMemberDet.get(p).bfd_1;
@@ -185,15 +183,13 @@ public class UIDDetailsActivity extends AppCompatActivity {
                 uidModel.uid = uidDetails.rcMemberDet.get(p).uid;
 
             }
-        }, 1);
+        });
         recyclerView.setAdapter(adapter);
     }
 
     private void initilisation() {
         pd = new ProgressDialog(context);
 
-        UID_details_cardnum = findViewById(R.id.UID_details_cardnum);
-        UID_details_cardnum.setText(uidDetails.rationCardId);
         Ekyc = findViewById(R.id.UID_details_Ekyc);
         back = findViewById(R.id.UID_details_back);
 
@@ -260,7 +256,9 @@ public class UIDDetailsActivity extends AppCompatActivity {
         });
 
     }
-
+    public interface OnClickUID {
+        void onClick(int p);
+    }
     private void AadhaarDialog() {
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -578,6 +576,8 @@ public class UIDDetailsActivity extends AppCompatActivity {
         TextView toolbarActivity = findViewById(R.id.toolbarActivity);
         TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
         TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+        TextView  toolbarCard= findViewById(R.id.toolbarCard);
+        toolbarCard.setText(uidDetails.rationCardId);
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);

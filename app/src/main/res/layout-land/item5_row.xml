@@ -14,7 +14,7 @@
         android:foreground="@drawable/custom_ripple">
 
         <LinearLayout
-            android:id="@+id/linear"
+            android:id="@+id/LINEAR"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/ik_blue_white"

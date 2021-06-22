@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/LayoutMV">
+    android:layout_marginVertical="5dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/item2"
@@ -21,7 +21,7 @@
             android:background="@color/ik_blue_white"
             android:orientation="horizontal"
             android:padding="@dimen/Layoutcard"
-            android:weightSum="4"
+            android:weightSum="6"
             tools:ignore="MissingConstraints">
 
             <TextView
@@ -47,15 +47,16 @@
                 android:textSize="25sp" />
 
             <TextView
-                android:background="@drawable/wblack"
                 android:id="@+id/C"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="@drawable/white"
                 android:gravity="center_horizontal"
                 android:textAlignment="center"
                 android:textColor="@color/blackblack"
-                android:textSize="25sp" />
+                android:textSize="25sp"/>
+
             <TextView
                 android:id="@+id/D"
                 android:layout_width="match_parent"
@@ -67,64 +68,26 @@
                 android:textColor="@color/blackblack"
                 android:textSize="25sp"/>
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-   <!-- <androidx.cardview.widget.CardView
-        android:id="@+id/item2"
-        android:layout_width="match_parent"
-        android:clickable="true"
-        android:foreground="@drawable/custom_ripple"
-        android:focusable="true"
-        android:background="@drawable/white"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/linear"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:weightSum="4"
-            android:padding="@dimen/Layoutcard"
-            android:background="@color/ik_blue_white"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
-
-            <TextView
-                android:textAlignment="center"
-                android:id="@+id/total"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/blackblack"
-                android:textSize="25dp"
-                android:gravity="center_horizontal" />
-            <TextView
-
-                android:textAlignment="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="25dp"
-                android:textColor="@color/blackblack"
-                android:gravity="center_horizontal" />
             <TextView
                 android:background="@drawable/wblack"
-                android:id="@+id/rate"
-                android:textAlignment="center"
+                android:id="@+id/E"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textSize="25dp"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
                 android:textColor="@color/blackblack"
-                android:gravity="center_horizontal" />
-
+                android:textSize="25sp" />
             <TextView
-                android:id="@+id/close"
-                android:textAlignment="center"
+                android:id="@+id/F"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textSize="25dp"
+                android:background="@drawable/white"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
                 android:textColor="@color/blackblack"
-                android:gravity="center_horizontal" />
+                android:textSize="25sp"/>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>-->
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

@@ -19,5 +19,5 @@ public class commDetails implements Serializable {
             requiredQty,
             totQty,
             weighing,
-            totalPrice;
+            amount;
 }

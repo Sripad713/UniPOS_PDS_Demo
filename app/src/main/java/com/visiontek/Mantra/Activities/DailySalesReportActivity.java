@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,8 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.mantra.mTerminal100.printer.Prints;
-import com.visiontek.Mantra.Adapters.CustomAdapter3;
-import com.visiontek.Mantra.Models.DATAModels.DataModel3;
+import com.visiontek.Mantra.Adapters.DailySalesListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.DailySalesListModel;
 import com.visiontek.Mantra.Models.ReportsModel.DailySalesDetails.SaleDetails;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.TaskPrint;
@@ -54,7 +53,6 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 
-import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
@@ -76,7 +74,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
     private MTerminal100API mTerminal100API;
     private RecyclerView.Adapter adapter;
     private RecyclerView recyclerView;
-    private ArrayList<DataModel3> data;
+    private ArrayList<DailySalesListModel> data;
     SaleDetails saleDetails;
 
     @Override
@@ -363,8 +361,11 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     data = new ArrayList<>();
                     int drBeansize =saleDetails.drBean.size();
                     for (int i = 0; i < drBeansize; i++) {
-                        String sch = saleDetails.drBean.get(i).schemeName.trim();
-                        switch (sch) {
+                        data.add(new DailySalesListModel(saleDetails.drBean.get(i).comm_name,
+                                saleDetails.drBean.get(i).total_cards,
+                                saleDetails.drBean.get(i).sale));
+                        /*
+                        String sch = saleDetails.drBean.get(i).schemeName.trim();switch (sch) {
                             case "AAY":
                                 data.add(new DataModel3(saleDetails.drBean.get(i).comm_name,
                                         saleDetails.drBean.get(i).total_cards, "0.0", "0.0", saleDetails.drBean.get(i).sale));
@@ -377,10 +378,10 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                                 data.add(new DataModel3(saleDetails.drBean.get(i).comm_name, "0.0", "0.0",
                                         saleDetails.drBean.get(i).total_cards, saleDetails.drBean.get(i).sale));
                                 break;
-                        }
+                        }*/
 
                     }
-                    adapter = new CustomAdapter3(context, data);
+                    adapter = new DailySalesListAdapter(context, data);
                     recyclerView.setAdapter(adapter);
                     flag_print = 1;
                 }

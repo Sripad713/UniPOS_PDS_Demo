@@ -254,7 +254,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:orientation="horizontal"
-            android:weightSum="5">
+            android:weightSum="6">
 
             <TextView
                 android:id="@+id/total"
@@ -270,18 +270,7 @@
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/bblack"
-                android:gravity="center_horizontal"
-                android:padding="@dimen/TextsizeP"
-                android:text="@string/BalQty"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -291,6 +280,18 @@
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
                 android:text="@string/Rate"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/TextsizeP"
+                android:text="@string/BalQty"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="30sp"
@@ -317,6 +318,18 @@
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
                 android:text="@string/issueQty"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bblack"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/TextsizeP"
+                android:text="Amount"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="30sp"

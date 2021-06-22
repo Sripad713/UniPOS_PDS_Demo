@@ -1,41 +1,44 @@
 package com.visiontek.Mantra.Adapters;
 
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.visiontek.Mantra.Activities.DealerAuthenticationActivity;
 import com.visiontek.Mantra.Activities.DealerDetailsActivity;
-import com.visiontek.Mantra.Activities.MemberDetailsActivity;
-import com.visiontek.Mantra.Models.DATAModels.DataModel5;
+import com.visiontek.Mantra.Models.DATAModels.DealerListModel;
 import com.visiontek.Mantra.R;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
+public class DealerListAdapter extends RecyclerView.Adapter<DealerListAdapter.MyViewHolder> {
 
-public class CustomAdapter4 extends RecyclerView.Adapter<CustomAdapter4.MyViewHolder> {
 
-    int type;
     Context context;
-    int type1;
-    private final ArrayList<DataModel5> dataSet;
-    private MemberDetailsActivity.OnClickListener onClickListener;
-    private final DealerDetailsActivity.OnClickListener onClick;
+    int type;
+    private  ArrayList<DealerListModel> dataSet;
+    private  DealerDetailsActivity.OnClickDealer OnClickDealer;
+    private  DealerAuthenticationActivity.OnClickDealerAUTH OnClickDealerAUTH;
 
-    public CustomAdapter4(Context context, ArrayList<DataModel5> data, DealerDetailsActivity.OnClickListener onClickListener, int type1) {
+    public DealerListAdapter(Context context, ArrayList<DealerListModel> data,
+                             DealerDetailsActivity.OnClickDealer OnClickDealer, int type) {
         this.dataSet = data;
         this.context = context;
-        this.type1 = type1;
-        this.onClick = onClickListener;
+        this.type = type;
+        this.OnClickDealer = OnClickDealer;
     }
+    public DealerListAdapter(Context context, ArrayList<DealerListModel> data,
+                             DealerAuthenticationActivity.OnClickDealerAUTH OnClickDealerAUTH, int type) {
+        this.dataSet = data;
+        this.context = context;
+        this.type = type;
+        this.OnClickDealerAUTH = OnClickDealerAUTH;
 
+    }
     @NotNull
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -45,24 +48,23 @@ public class CustomAdapter4 extends RecyclerView.Adapter<CustomAdapter4.MyViewHo
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int listPosition) {
-        final DataModel5 model = dataSet.get(listPosition);
-        TextView textViewName = holder.textName;
-        TextView textViewUid = holder.textUid;
-        TextView textViewStatus = holder.textStatus;
+        final DealerListModel model = dataSet.get(listPosition);
+
         LinearLayout lin = holder.linearLayout;
+        TextView textViewName = holder.textName;
+        TextView textViewStatus = holder.textType;
+        TextView textViewUid = holder.textUid;
 
         textViewName.setText(dataSet.get(listPosition).getName());
+        textViewStatus.setText(dataSet.get(listPosition).getType());
         textViewUid.setText(dataSet.get(listPosition).getUid());
-        textViewStatus.setText(dataSet.get(listPosition).getStatus());
 
         if (model.isSelected) {
             lin.setBackground(context.getResources().getDrawable(R.drawable.bgreen));
             //lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
-
         } else {
             lin.setBackground(context.getResources().getDrawable(R.drawable.white));
             //lin.setBackgroundColor(context.getResources().getColor(R.color.background));
-
         }
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
@@ -70,17 +72,16 @@ public class CustomAdapter4 extends RecyclerView.Adapter<CustomAdapter4.MyViewHo
             public void onClick(View v) {
 
                 for (int i = 0; i < dataSet.size(); i++) {
-
                     dataSet.get(i).isSelected = false;
                 }
-
                 model.isSelected = true;
-                if (type == 1) {
-                    onClickListener.onClick_d(listPosition);
+
+                if (type==1) {
+                    OnClickDealerAUTH.onClick(listPosition);
+                }else {
+                    OnClickDealer.onClick(listPosition);
                 }
-                if (type1 == 1) {
-                    onClick.onClick_d(listPosition);
-                }
+
                 notifyDataSetChanged();
             }
         });
@@ -94,16 +95,16 @@ public class CustomAdapter4 extends RecyclerView.Adapter<CustomAdapter4.MyViewHo
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView textName;
+        TextView textType;
         TextView textUid;
-        TextView textStatus;
         LinearLayout linearLayout;
 
         MyViewHolder(View itemView) {
             super(itemView);
-            this.linearLayout = itemView.findViewById(R.id.linear);
-            this.textName = itemView.findViewById(R.id.txtName);
-            this.textUid = itemView.findViewById(R.id.txtUid);
-            this.textStatus = itemView.findViewById(R.id.txtStatus);
+            this.linearLayout = itemView.findViewById(R.id.LINEAR);
+            this.textName = itemView.findViewById(R.id.A);
+            this.textType = itemView.findViewById(R.id.B);
+            this.textUid = itemView.findViewById(R.id.C);
 
         }
     }

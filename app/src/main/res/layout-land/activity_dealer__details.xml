@@ -264,7 +264,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/LayoutMV"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="3">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -289,6 +289,17 @@
                         android:textColor="@color/white"
                         android:textSize="30sp"
                         android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:background="@drawable/bblack"
+                    android:text="@string/UID"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
 
                 </LinearLayout>
             <LinearLayout

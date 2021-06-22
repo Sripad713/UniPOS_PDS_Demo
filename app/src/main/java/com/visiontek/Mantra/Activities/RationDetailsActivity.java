@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -38,8 +37,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.visiontek.Mantra.Adapters.CustomAdapter1;
-import com.visiontek.Mantra.Models.DATAModels.DataModel1;
+import com.visiontek.Mantra.Adapters.RationListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.RationListModel;
 import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.MemberModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Json_Parsing;
@@ -253,8 +252,9 @@ public class RationDetailsActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        ArrayList<DataModel1> modeldata = new ArrayList<>();
+        ArrayList<RationListModel> modeldata = new ArrayList<>();
         int commDetailssize = memberConstants.commDetails.size();
+        float commprice,commamount,commqty;
         for (int i = 0; i < commDetailssize; i++) {
             if (value==0) {
                 if (memberConstants.commDetails.get(i).weighing.equals("Y")) {
@@ -263,21 +263,26 @@ public class RationDetailsActivity extends AppCompatActivity {
                     memberConstants.commDetails.get(i).requiredQty = memberConstants.commDetails.get(i).balQty;
                 }
             }
-            modeldata.add(new DataModel1(memberConstants.commDetails.get(i).commName +
+                commqty = Float.parseFloat(memberConstants.commDetails.get(i).requiredQty);
+                commprice = Float.parseFloat(memberConstants.commDetails.get(i).price);
+                commamount = commprice * commqty;
+                memberConstants.commDetails.get(i).amount = String.valueOf(commamount);
+                TOTALAMOUNT = TOTALAMOUNT + commamount;
+
+            modeldata.add(new RationListModel(memberConstants.commDetails.get(i).commName +
                     "\n(" + memberConstants.commDetails.get(i).totQty + ")",
-                    memberConstants.commDetails.get(i).balQty,
                     memberConstants.commDetails.get(i).price,
+                    memberConstants.commDetails.get(i).balQty,
                     memberConstants.commDetails.get(i).closingBal,
-                    memberConstants.commDetails.get(i).requiredQty));
+                    memberConstants.commDetails.get(i).requiredQty,
+                    memberConstants.commDetails.get(i).amount));
         }
-        adapter = new CustomAdapter1(context, modeldata, new OnClickListener() {
+        adapter = new RationListAdapter(context, modeldata, new OnClickRation() {
             @Override
-            public void onClick_d(int p) {
-
+            public void onClick(int p) {
                 ManualDialog(p);
-
             }
-        }, 1);
+        });
         recyclerView.setAdapter(adapter);
     }
 
@@ -335,15 +340,16 @@ public class RationDetailsActivity extends AppCompatActivity {
         Button confirm = (Button) dialog.findViewById(R.id.confirm);
         Button back = (Button) dialog.findViewById(R.id.back);
 
-        TextView name=(TextView) dialog.findViewById(R.id.a);
-        TextView bal=(TextView) dialog.findViewById(R.id.b);
-        TextView rate=(TextView) dialog.findViewById(R.id.c);
-        TextView close=(TextView) dialog.findViewById(R.id.d);
+        TextView commName=(TextView) dialog.findViewById(R.id.a);
+        TextView price=(TextView) dialog.findViewById(R.id.b);
+        TextView balQty=(TextView) dialog.findViewById(R.id.c);
+        TextView closingBal=(TextView) dialog.findViewById(R.id.d);
 
-        name.setText(memberConstants.commDetails.get(position).commName);
-        bal.setText(memberConstants.commDetails.get(position).balQty);
-        rate.setText(memberConstants.commDetails.get(position).price);
-        close.setText(memberConstants.commDetails.get(position).closingBal);
+        commName.setText(memberConstants.commDetails.get(position).commName);
+        price.setText(memberConstants.commDetails.get(position).price);
+        balQty.setText(memberConstants.commDetails.get(position).balQty);
+        closingBal.setText(memberConstants.commDetails.get(position).closingBal);
+
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -429,7 +435,7 @@ public class RationDetailsActivity extends AppCompatActivity {
     private int cal(float requiredQty, int position) {
         float price,balQty,closingBal,minQty;
         price= Float.parseFloat(memberConstants.commDetails.get(position).price);
-        memberConstants.commDetails.get(position).totalPrice= String.valueOf((requiredQty * price));
+        memberConstants.commDetails.get(position).amount= String.valueOf((requiredQty * price));
         balQty= Float.parseFloat(memberConstants.commDetails.get(position).balQty);
         closingBal= Float.parseFloat(memberConstants.commDetails.get(position).closingBal);
         minQty= Float.parseFloat(memberConstants.commDetails.get(position).minQty);
@@ -483,15 +489,12 @@ public class RationDetailsActivity extends AppCompatActivity {
         StringBuilder add = new StringBuilder();
         String str;
         int userCommModelssize = memberConstants.commDetails.size();
-        float commprice,commqty,commamount;
+        float commqty;
         if (userCommModelssize > 0) {
             for (int i = 0; i < userCommModelssize; i++) {
                 commqty = Float.parseFloat((memberConstants.commDetails.get(i).requiredQty));
                 if (commqty>0.0) {
-                    commprice = Float.parseFloat((memberConstants.commDetails.get(i).price));
-                    commamount = commprice * commqty;
-                    TOTALAMOUNT = TOTALAMOUNT + commamount;
-                    memberConstants.commDetails.get(i).totalPrice= String.valueOf(commamount);
+
                     str = "<commodityDetail>\n" +
                             "<allocationType>" + memberConstants.commDetails.get(i).allocationType + "</allocationType>\n" +
                             "<allotedMonth>" + memberConstants.commDetails.get(i).allotedMonth + "</allotedMonth>\n" +
@@ -500,7 +503,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                             "<commName>" + memberConstants.commDetails.get(i).commName + "</commName>\n" +
                             "<requiredQuantity>" + memberConstants.commDetails.get(i).requiredQty + "</requiredQuantity>\n" +
                             "<commodityAmount>" + memberConstants.commDetails.get(i).price + "</commodityAmount>\n" +
-                            "<price>" + memberConstants.commDetails.get(i).totalPrice + "</price>\n" +
+                            "<price>" + memberConstants.commDetails.get(i).amount + "</price>\n" +
                             "</commodityDetail>\n";
                     add.append(str);
                 }
@@ -575,8 +578,8 @@ public class RationDetailsActivity extends AppCompatActivity {
         startActivity(p);
     }
 
-    public interface OnClickListener {
-        void onClick_d(int p);
+    public interface OnClickRation {
+        void onClick(int p);
     }
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)

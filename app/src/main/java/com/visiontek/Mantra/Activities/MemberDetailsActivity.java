@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,8 +13,6 @@ import android.content.pm.ResolveInfo;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -31,8 +28,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.visiontek.Mantra.Adapters.CustomAdapter;
-import com.visiontek.Mantra.Models.DATAModels.DataModel;
+import com.visiontek.Mantra.Adapters.MemberListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.MemberListModel;
 import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.Ekyc;
 import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.MemberModel;
 import com.visiontek.Mantra.R;
@@ -71,7 +68,6 @@ import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
-import static com.visiontek.Mantra.Utils.Util.toast;
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
 public class MemberDetailsActivity extends AppCompatActivity {
@@ -169,15 +165,15 @@ public class MemberDetailsActivity extends AppCompatActivity {
             }
         });
 
-        ArrayList<DataModel> data = new ArrayList<>();
+        ArrayList<MemberListModel> data = new ArrayList<>();
         int memberdetailssize=memberConstants.memberdetails.size();
         for (int i = 0; i <memberdetailssize ; i++) {
-            data.add(new DataModel(memberConstants.memberdetails.get(i).memberName,
+            data.add(new MemberListModel(memberConstants.memberdetails.get(i).memberName,
                     memberConstants.memberdetails.get(i).uid));
         }
-        RecyclerView.Adapter adapter = new CustomAdapter(context, data, new OnClickListener() {
+        RecyclerView.Adapter adapter = new MemberListAdapter(context, data, new OnClickMember() {
             @Override
-            public void onClick_d(int p) {
+            public void onClick(int p) {
                 memberModel.click = true;
                 memberModel.Fusionflag = 0;
                 memberModel.wadhflag = 0;
@@ -208,7 +204,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                     memberModel.mMan = false;
                 }
             }
-        }, 1);
+        });
         recyclerView.setAdapter(adapter);
     }
 
@@ -916,8 +912,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
         startActivityForResult(intent, memberModel.RD_SERVICE);
     }
 
-    public interface OnClickListener {
-        void onClick_d(int p);
+    public interface OnClickMember {
+        void onClick(int p);
     }
     private void toolbarInitilisation() {
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);

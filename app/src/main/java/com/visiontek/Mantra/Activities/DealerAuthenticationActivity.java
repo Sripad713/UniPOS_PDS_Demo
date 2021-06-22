@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,8 +35,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.mantra.mTerminal100.printer.Prints;
-import com.visiontek.Mantra.Adapters.CustomAdapter;
-import com.visiontek.Mantra.Models.DATAModels.DataModel;
+import com.visiontek.Mantra.Adapters.DealerListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.DealerListModel;
 import com.visiontek.Mantra.Models.DealerDetailsModel.GetUserDetails.DealerModel;
 import com.visiontek.Mantra.Models.ReceiveGoodsModel.ReceiveGoodsModel;
 import com.visiontek.Mantra.R;
@@ -142,15 +141,16 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                 finish();
             }
         });
-        ArrayList<DataModel> data = new ArrayList<>();
+        ArrayList<DealerListModel> data = new ArrayList<>();
         int dealerlistsize =dealerConstants.fpsCommonInfo.fpsDetails.size();
         for (int i = 0; i < dealerlistsize; i++) {
-            data.add(new DataModel(dealerConstants.fpsCommonInfo.fpsDetails.get(i).delName,
-                    dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type));
+            data.add(new DealerListModel(dealerConstants.fpsCommonInfo.fpsDetails.get(i).delName,
+                    dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type,
+                    dealerConstants.fpsCommonInfo.fpsDetails.get(i).delUid));
         }
-        adapter = new CustomAdapter(context, data, new DealerDetailsActivity.OnClickListener() {
+        adapter = new DealerListAdapter(context, data, new OnClickDealerAUTH() {
             @Override
-            public void onClick_d(int p) {
+            public void onClick(int p) {
                 dealerModel.Fusionflag = 0;
                 dealerModel.wadhflag = 0;
                 dealerModel.FIRflag = 0;
@@ -187,7 +187,9 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
         }
 
     }
-
+    public interface OnClickDealerAUTH {
+        void onClick(int p);
+    }
     private void initilisation() {
         pd = new ProgressDialog(context);
         scanfp = findViewById(R.id.dealer_scanFP);

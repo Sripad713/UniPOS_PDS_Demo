@@ -1,6 +1,5 @@
 package com.visiontek.Mantra.Activities;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -14,8 +13,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.visiontek.Mantra.Adapters.CustomAdapter;
-import com.visiontek.Mantra.Models.DATAModels.DataModel;
+import com.visiontek.Mantra.Adapters.DeviceInfoListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.DeviceInfoListModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Util;
 
@@ -28,7 +27,6 @@ import java.util.Date;
 
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
-import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 
@@ -36,7 +34,7 @@ import static com.visiontek.Mantra.Utils.Util.RDservice;
 public class DeviceInfoActivity extends AppCompatActivity {
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
-    ArrayList<DataModel> arraydata;
+    ArrayList<DeviceInfoListModel> arraydata;
     Context context;
 
     public static String readKernelVersion() {
@@ -121,21 +119,13 @@ public class DeviceInfoActivity extends AppCompatActivity {
         arraydata = new ArrayList<>();
 
         for (int i = 3; i < value.size(); i++) {
-            arraydata.add(new DataModel(value.get(i), info.get(i).trim()));
+            arraydata.add(new DeviceInfoListModel(value.get(i), info.get(i).trim()));
             System.out.println("1111=" + info.get(i));
         }
-        adapter = new CustomAdapter(context, arraydata, new OnClickListener() {
-            @Override
-            public void onClick_d(int p) {
-
-            }
-        });
+        adapter = new DeviceInfoListAdapter(context, arraydata);
         recyclerView.setAdapter(adapter);
     }
 
-    public interface OnClickListener {
-        void onClick_d(int p);
-    }
 
     private void show_error_box(String msg, String title) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);

@@ -1,22 +1,27 @@
 package com.visiontek.Mantra.Models.DATAModels;
 
-
-public class DataModel {
+public class BeneficiaryVerificationListModel {
     public String name;
-    public String type;
+    public String uid;
+    public String status;
     public boolean isSelected = false;
 
-    public DataModel(String name, String type) {
+    public BeneficiaryVerificationListModel(String name,  String uid,String status) {
         this.name = name;
-        this.type = type;
+        this.uid = uid;
+        this.status = status;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getType() {
-        return type;
+    public String getUid() {
+        return uid;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public boolean isSelected() {

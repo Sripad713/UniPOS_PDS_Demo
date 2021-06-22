@@ -292,7 +292,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 android:orientation="horizontal"
-                android:weightSum="4">
+                android:weightSum="5">
 
                 <TextView
                     android:id="@+id/total"
@@ -342,6 +342,18 @@
                     android:gravity="center_horizontal"
                     android:padding="@dimen/TextsizeP"
                     android:text="@string/Price"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bblack"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/TextsizeP"
+                    android:text="Amount"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="30dp"

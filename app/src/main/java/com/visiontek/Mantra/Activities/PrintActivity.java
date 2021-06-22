@@ -3,7 +3,6 @@ package com.visiontek.Mantra.Activities;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,8 +28,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.mantra.mTerminal100.printer.Prints;
-import com.visiontek.Mantra.Adapters.CustomAdapter2;
-import com.visiontek.Mantra.Models.DATAModels.DataModel2;
+import com.visiontek.Mantra.Adapters.PrintListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.PrintListModel;
 import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.Print;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.TaskPrint;
@@ -55,7 +54,6 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 
-import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
@@ -464,7 +462,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        ArrayList<DataModel2> data= new ArrayList<>();
+        ArrayList<PrintListModel> data= new ArrayList<>();
         int commDetailssize = memberConstants.commDetails.size();
 
         float commbal,commqty;
@@ -475,14 +473,15 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             commqty= Float.parseFloat((memberConstants.commDetails.get(i).requiredQty));
             required= String.valueOf(commbal-commqty);
             if (commqty>0.0) {
-                data.add(new DataModel2(memberConstants.commDetails.get(i).commName +
+                data.add(new PrintListModel(memberConstants.commDetails.get(i).commName +
                         "\n(" + memberConstants.commDetails.get(i).totQty + ")",
                         required,
                         memberConstants.commDetails.get(i).requiredQty,
-                        memberConstants.commDetails.get(i).totalPrice));
+                        memberConstants.commDetails.get(i).price,
+                        memberConstants.commDetails.get(i).amount));
             }
         }
-        RecyclerView.Adapter adapter = new CustomAdapter2(this, data);
+        RecyclerView.Adapter adapter = new PrintListAdapter(this, data);
         recyclerView.setAdapter(adapter);
 
         String t= String.valueOf(TOTALAMOUNT);

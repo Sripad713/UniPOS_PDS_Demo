@@ -18,8 +18,6 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -40,8 +38,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.mantra.mTerminal100.printer.Prints;
-import com.visiontek.Mantra.Adapters.CustomAdapter6;
-import com.visiontek.Mantra.Models.DATAModels.DataModel2;
+import com.visiontek.Mantra.Adapters.InspectionListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.InspectionListModel;
 import com.visiontek.Mantra.Models.InspectionModel.InspectionAuth;
 import com.visiontek.Mantra.Models.InspectionModel.InspectionDetails;
 import com.visiontek.Mantra.Models.RDModel;
@@ -100,7 +98,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     RadioGroup radioGroup;
     RadioButton ok, seized;
     int select;
-    ArrayList<DataModel2> data;
+    ArrayList<InspectionListModel> data;
 
     String DATA;
     Float textdata;
@@ -170,17 +168,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         inspectionDetails = (InspectionDetails) getIntent().getSerializableExtra("OBJ");
-        data = new ArrayList<>();
-        int commDetailssize = inspectionDetails.commDetails.size();
-        for (int i = 0; i < commDetailssize; i++) {
-            inspectionDetails.commDetails.get(i).entered = "0.0";
-            inspectionDetails.commDetails.get(i).variation = "0.0";
 
-            data.add(new DataModel2(inspectionDetails.commDetails.get(i).commNameEn,
-                    inspectionDetails.commDetails.get(i).closingBalance,
-                    inspectionDetails.commDetails.get(i).entered,
-                    inspectionDetails.commDetails.get(i).variation));
-        }
         mTerminal100API = new MTerminal100API();
         mTerminal100API.initPrinterAPI(this, this);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
@@ -188,7 +176,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         } else {
             finish();
         }
-        Display();
+        Display(1);
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -783,15 +771,8 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                             inspectionDetails.commDetails.get(position).variation = AFTERDATA;
 
                             data.clear();
-                            int size = inspectionDetails.commDetails.size();
-                            for (int i = 0; i < size; i++) {
-                                data.add(new DataModel2(inspectionDetails.commDetails.get(i).commNameEn,
-                                        inspectionDetails.commDetails.get(i).closingBalance,
-                                        inspectionDetails.commDetails.get(i).entered,
-                                        inspectionDetails.commDetails.get(i).variation));
 
-                            }
-                            Display();
+                            Display(0);
                         }
                     } else {
                         show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
@@ -1001,17 +982,32 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     }
 
 
-    private void Display() {
-        adapter = new CustomAdapter6(this, data, new OnClickListener() {
+    private void Display(int val) {
+        data = new ArrayList<>();
+        int commDetailssize = inspectionDetails.commDetails.size();
+        for (int i = 0; i < commDetailssize; i++) {
+            if (val==1) {
+                inspectionDetails.commDetails.get(i).entered = "0.0";
+                inspectionDetails.commDetails.get(i).variation = "0.0";
+            }
+
+            data.add(new InspectionListModel(inspectionDetails.commDetails.get(i).commNameEn,
+                    inspectionDetails.commDetails.get(i).closingBalance,
+                    inspectionDetails.commDetails.get(i).entered,
+                    inspectionDetails.commDetails.get(i).variation));
+        }
+        adapter = new InspectionListAdapter(this, data, new OnClickInspector() {
             @Override
-            public void onClick_d(int p) {
+            public void onClick(int p) {
                 EnterComm(p);
             }
         });
         recyclerView.setAdapter(adapter);
     }
 
-
+    public interface OnClickInspector {
+        void onClick(int p);
+    }
     @Override
     public void OnOpen() {
         //last.setEnabled(true);

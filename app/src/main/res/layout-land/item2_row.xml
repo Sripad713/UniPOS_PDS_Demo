@@ -14,7 +14,7 @@
         android:background="@drawable/white"
         android:layout_height="match_parent">
         <LinearLayout
-            android:id="@+id/linear"
+            android:id="@+id/LINEAR"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:weightSum="2"
@@ -24,7 +24,7 @@
             tools:ignore="MissingConstraints">
 
             <TextView
-                android:id="@+id/txtName"
+                android:id="@+id/A"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -36,7 +36,7 @@
 
             <TextView
                 android:textAlignment="center"
-                android:id="@+id/txtType"
+                android:id="@+id/B"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

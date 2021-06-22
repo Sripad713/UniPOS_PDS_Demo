@@ -302,20 +302,19 @@
                 android:background="@color/colorPrimary"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:weightSum="5">
+                android:weightSum="3">
 
                 <TextView
-                    android:id="@+id/total"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/bblack"
                     android:gravity="center_horizontal"
                     android:padding="@dimen/TextsizeP"
-                    android:text="@string/Comm"
+                    android:text="@string/COMMODITY"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/TextsizeB"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -325,36 +324,10 @@
                     android:background="@drawable/bblack"
                     android:gravity="center_horizontal"
                     android:padding="@dimen/TextsizeP"
-                    android:text="@string/AAY"
+                    android:text="SCHEME"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/TextsizeB"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bblack"
-                    android:gravity="center_horizontal"
-                    android:padding="@dimen/TextsizeP"
-                    android:text="@string/SFY"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/TextsizeB"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bblack"
-                    android:gravity="center_horizontal"
-                    android:padding="@dimen/TextsizeP"
-                    android:text="@string/PHH"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/TextsizeB"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -367,7 +340,7 @@
                     android:text="@string/TOTAL"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/TextsizeB"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
             </LinearLayout>
 

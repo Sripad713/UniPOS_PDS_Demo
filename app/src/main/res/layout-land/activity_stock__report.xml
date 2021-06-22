@@ -270,10 +270,10 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
-                android:text="@string/Comm"
+                android:text="@string/COMMODITY"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -283,10 +283,10 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
-                android:text="@string/Scheme"
+                android:text="SCHEME"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -296,10 +296,10 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
-                android:text="@string/Stock"
+                android:text="OB"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -309,10 +309,10 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
-                android:text="@string/Issue"
+                android:text="ISSUE GOODS"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
             <TextView
                 android:background="@drawable/bblack"
@@ -322,10 +322,10 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
-                android:text="@string/CB"
+                android:text="CLOSING BAL"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

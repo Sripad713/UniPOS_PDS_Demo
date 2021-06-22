@@ -35,11 +35,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.mantra.mTerminal100.printer.Prints;
-import com.visiontek.Mantra.Adapters.CustomAdapter4;
+import com.visiontek.Mantra.Adapters.BeneficiaryVerificationListAdapter;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetURLDetails.BeneficiaryAuth;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetURLDetails.BeneficiaryDetails;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetUserDetails.BeneficiaryModel;
-import com.visiontek.Mantra.Models.DATAModels.DataModel5;
+import com.visiontek.Mantra.Models.DATAModels.BeneficiaryVerificationListModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
 import com.visiontek.Mantra.Utils.Json_Parsing;
@@ -184,16 +184,16 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        ArrayList<DataModel5> data = new ArrayList<>();
+        ArrayList<BeneficiaryVerificationListModel> data = new ArrayList<>();
         int rcMemberDetVerifysize = beneficiaryDetails.rcMemberDetVerify.size();
         for (int i = 0; i < rcMemberDetVerifysize; i++) {
-            data.add(new DataModel5(beneficiaryDetails.rcMemberDetVerify.get(i).memberName,
+            data.add(new BeneficiaryVerificationListModel(beneficiaryDetails.rcMemberDetVerify.get(i).memberName,
                     beneficiaryDetails.rcMemberDetVerify.get(i).uid,
                     beneficiaryDetails.rcMemberDetVerify.get(i).verifyStatus_en));
         }
-        adapter = new CustomAdapter4(context, data, new DealerDetailsActivity.OnClickListener() {
+        adapter = new BeneficiaryVerificationListAdapter(context, data, new OnClickBen() {
             @Override
-            public void onClick_d(int p) {
+            public void onClick(int p) {
                 beneficiaryModel.click = true;
                 beneficiaryModel.memberId = beneficiaryDetails.rcMemberDetVerify.get(p).memberId;
                 beneficiaryModel.memberName = beneficiaryDetails.rcMemberDetVerify.get(p).memberName;
@@ -205,10 +205,12 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 beneficiaryModel.verifyStatus_ll = beneficiaryDetails.rcMemberDetVerify.get(p).verifyStatus_ll;
                 beneficiaryModel.w_uid_status = beneficiaryDetails.rcMemberDetVerify.get(p).w_uid_status;
             }
-        }, 1);
+        });
         recyclerView.setAdapter(adapter);
     }
-
+    public interface OnClickBen {
+        void onClick(int p);
+    }
     private void initilisation() {
         pd = new ProgressDialog(context);
         back = findViewById(R.id.Ben_details_back);
@@ -803,7 +805,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         TextView toolbarActivity = findViewById(R.id.toolbarActivity);
         TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
         TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-
+        TextView  toolbarCard= findViewById(R.id.toolbarCard);
+        toolbarCard.setText(beneficiaryDetails.rationCardId);
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
         toolbarVersion.setText("Version : " + appversion);
