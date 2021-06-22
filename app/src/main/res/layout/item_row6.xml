@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:background="@color/ik_blue_white"
             android:orientation="horizontal"
-            android:padding="@dimen/Layoutcard"
+            android:padding="@dimen/LayoutP"
             android:weightSum="6"
             tools:ignore="MissingConstraints">
 
