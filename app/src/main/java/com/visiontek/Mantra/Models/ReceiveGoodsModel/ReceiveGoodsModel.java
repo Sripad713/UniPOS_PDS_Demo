@@ -15,9 +15,6 @@ public class ReceiveGoodsModel implements Serializable {
             truckno;
     public int select;
     public String received;
-    public String AFTERDATA;
-    public double textdata;
-
     public ArrayList<tcCommDetails> tcCommDetails=new ArrayList<>();
 
 

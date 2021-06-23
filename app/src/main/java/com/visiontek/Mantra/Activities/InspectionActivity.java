@@ -87,7 +87,7 @@ import static com.visiontek.Mantra.Utils.Util.toast;
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
 public class InspectionActivity extends AppCompatActivity implements PrinterCallBack {
-    private static String ACTION_USB_PERMISSION;
+    String ACTION_USB_PERMISSION;
 
     int RD_SERVICE = 0;
     String errcode = "1";

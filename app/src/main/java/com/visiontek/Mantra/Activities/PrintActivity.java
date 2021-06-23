@@ -44,8 +44,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import static com.visiontek.Mantra.Activities.DealerDetailsActivity.dealername;
-import static com.visiontek.Mantra.Activities.MemberDetailsActivity.MemberName;
 import static com.visiontek.Mantra.Activities.RationDetailsActivity.TOTALAMOUNT;
 
 
@@ -54,6 +52,10 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 
+
+import static com.visiontek.Mantra.Models.AppConstants.Dealername;
+import static com.visiontek.Mantra.Models.AppConstants.MemberName;
+import static com.visiontek.Mantra.Models.AppConstants.MemberUid;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
@@ -65,7 +67,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
     private PrintActivity mActivity;
     private static String ACTION_USB_PERMISSION;
-
+    Print printReceipt;
     Context context;
     ProgressDialog pd = null;
     Button print;
@@ -151,102 +153,14 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                     pd.dismiss();
                 }
                 if (isError == null || isError.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    show_error_box("Invalid Response from Server", "No Response", 1);
                     return;
                 }
                 if (!isError.equals("00")) {
                     show_error_box(msg, "Commodity : " + isError, 1);
                 } else {
-                    Print printReceipt= (Print) object;
-                    String app;
-                    StringBuilder add = new StringBuilder();
-                    int printReceiptsize= printReceipt.printBeans.size();
-                    for (int i = 0; i <printReceiptsize ; i++) {
-
-                        app =  String.format("%-10s%-8s%-8s%-8s\n",
-                                printReceipt.printBeans.get(i).comm_name,
-                                printReceipt.printBeans.get(i).carry_over ,
-                                printReceipt.printBeans.get(i).retail_price ,
-                                printReceipt.printBeans.get(i).commIndividualAmount);
-                        add.append(app);
-                    }
-
-                    String date = printReceipt.printBeans.get(0).transaction_time.substring(0, 19);
-
-                    String str1,str2,str3,str4,str5;
-                    String[] str = new String[4];
-                    if (L.equals("hi")) {
-
-                         str1 = context.getResources().getString(R.string.Chhattisgarh) + "\n"
-                                + context.getResources().getString(R.string.Department) + "\n"
-                                + context.getResources().getString(R.string.RECEIPT) + "\n";
-
-                         image(str1,"header.bmp",1);
-                         str2 = context.getResources().getString(R.string.FPS_Owner_Name) + " :" + dealername + "\n"
-                                + context.getResources().getString(R.string.FPS_No) + " :" +dealerConstants.stateBean.statefpsId + "\n"
-                                + context.getResources().getString(R.string.Name_of_Consumer) + " :" +printReceipt.printBeans.get(0).comm_name+ "\n"
-                                + context.getResources().getString(R.string.Card_No) + " :" + printReceipt.rcId + "\n"
-                                + context.getResources().getString(R.string.TransactionID) + " :" + printReceipt.receiptId + "\n"
-                                + context.getResources().getString(R.string.Date) + " :" + date + "\n"
-                                + context.getResources().getString(R.string.commodity) + " " + context.getResources().getString(R.string.lifted) + "   " + context.getResources().getString(R.string.rate) + "    " + context.getResources().getString(R.string.price) ;
-
-
-                         str3 = (add)+"";
-
-
-                         str4 = context.getResources().getString(R.string.Total_Amount) + " :" + printReceipt.printBeans.get(0).tot_amount ;
-
-                        image(str2+str3+str4,"body.bmp",0);
-
-                         str5 = context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
-                                + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n";
-                        image(str5,"tail.bmp",1);
-
-                        str[0] = "1";
-                        str[1] = "1";
-                        str[2] = "1";
-                        str[3] = "1";
-                        checkandprint(str, 1);
-                    }else {
-                        str1 = context.getResources().getString(R.string.Chhattisgarh) + "\n"
-                                + context.getResources().getString(R.string.Department) + "\n"
-                                + context.getResources().getString(R.string.RECEIPT) + "\n";
-
-                        str2 = "________________________________\n"
-                                + context.getResources().getString(R.string.FPS_Owner_Name) + "  :" + dealername + "\n"
-                                + context.getResources().getString(R.string.FPS_No) + "          :" + dealerConstants.stateBean.statefpsId + "\n"
-                                + context.getResources().getString(R.string.Name_of_Consumer) + ":" + printReceipt.printBeans.get(0).member_name+ "\n"
-                                + context.getResources().getString(R.string.Card_No) + "          :" + printReceipt.rcId  + "\n"
-                                + context.getResources().getString(R.string.TransactionID) + ":" + printReceipt.receiptId + "\n"
-                                + context.getResources().getString(R.string.Date) + " :" + date + "\n"
-                                + context.getResources().getString(R.string.AllotmentMonth) +"   :"+
-                                menuConstants.fpsPofflineToken.allocationMonth+"\n"
-                                +context.getResources().getString(R.string.AllotmentYear) +"     :"+
-                                menuConstants.fpsPofflineToken.allocationYear+"\n"
-                                +
-                                String.format("%-10s%-8s%-8s%-8s\n",
-                                        context.getResources().getString(R.string.commodity) ,
-                                        context.getResources().getString(R.string.lifted) ,
-                                        context.getResources().getString(R.string.rate) ,
-                                        context.getResources().getString(R.string.price))
-                                + "________________________________\n";
-
-                        str3 = (add)
-                                + "________________________________\n";
-
-                        str4 = context.getResources().getString(R.string.Total_Amount) + "      :" + printReceipt.printBeans.get(0).tot_amount+ "\n"
-                                + "________________________________\n";
-
-
-                        str5 = context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
-                                + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n\n\n";
-
-                        str[0] = "1";
-                        str[1] = str1;
-                        str[2] = str2 + str3 + str4;
-                        str[3] = str5;
-                        checkandprint(str, 0);
-                    }
+                    printReceipt = (Print) object;
+                    show_error_box(msg,isError,2);
                 }
             }
         });
@@ -356,6 +270,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
                 new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         if (i==1) {
@@ -363,11 +278,107 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                             home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(home);
                             finish();
+                        }else if (i==2){
+                            calPrint();
                         }
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void calPrint() {
+        String app;
+        StringBuilder add = new StringBuilder();
+        int printReceiptsize= printReceipt.printBeans.size();
+        for (int i = 0; i <printReceiptsize ; i++) {
+
+            app =  String.format("%-10s%-8s%-8s%-8s\n",
+                    printReceipt.printBeans.get(i).comm_name,
+                    printReceipt.printBeans.get(i).carry_over ,
+                    printReceipt.printBeans.get(i).retail_price ,
+                    printReceipt.printBeans.get(i).commIndividualAmount);
+            add.append(app);
+        }
+
+        String date = printReceipt.printBeans.get(0).transaction_time.substring(0, 19);
+
+        String str1,str2,str3,str4,str5;
+        String[] str = new String[4];
+        if (L.equals("hi")) {
+
+            str1 = context.getResources().getString(R.string.Chhattisgarh) + "\n"
+                    + context.getResources().getString(R.string.Department) + "\n"
+                    + context.getResources().getString(R.string.RECEIPT) + "\n";
+
+            image(str1,"header.bmp",1);
+            str2 = context.getResources().getString(R.string.FPS_Owner_Name) + " :" + Dealername + "\n"
+                    + context.getResources().getString(R.string.FPS_No) + " :" +dealerConstants.stateBean.statefpsId + "\n"
+                    + context.getResources().getString(R.string.Name_of_Consumer) + " :" +printReceipt.printBeans.get(0).comm_name+ "\n"
+                    + context.getResources().getString(R.string.Card_No) + " :" + printReceipt.rcId + "\n"
+                    + context.getResources().getString(R.string.TransactionID) + " :" + printReceipt.receiptId + "\n"
+                    + context.getResources().getString(R.string.Date) + " :" + date + "\n"
+                    + context.getResources().getString(R.string.commodity) + " " + context.getResources().getString(R.string.lifted) + "   " + context.getResources().getString(R.string.rate) + "    " + context.getResources().getString(R.string.price) ;
+
+
+            str3 = (add)+"";
+
+
+            str4 = context.getResources().getString(R.string.Total_Amount) + " :" + printReceipt.printBeans.get(0).tot_amount ;
+
+            image(str2+str3+str4,"body.bmp",0);
+
+            str5 = context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
+                    + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n";
+            image(str5,"tail.bmp",1);
+
+            str[0] = "1";
+            str[1] = "1";
+            str[2] = "1";
+            str[3] = "1";
+            checkandprint(str, 1);
+        }else {
+            str1 = context.getResources().getString(R.string.Chhattisgarh) + "\n"
+                    + context.getResources().getString(R.string.Department) + "\n"
+                    + context.getResources().getString(R.string.RECEIPT) + "\n";
+
+            str2 = "________________________________\n"
+                    + context.getResources().getString(R.string.FPS_Owner_Name) + "  :" + Dealername + "\n"
+                    + context.getResources().getString(R.string.FPS_No) + "          :" + dealerConstants.stateBean.statefpsId + "\n"
+                    + context.getResources().getString(R.string.Name_of_Consumer) + ":" + printReceipt.printBeans.get(0).member_name+ "\n"
+                    + context.getResources().getString(R.string.Card_No) + "          :" + printReceipt.rcId  + "\n"
+                    + context.getResources().getString(R.string.TransactionID) + ":" + printReceipt.receiptId + "\n"
+                    + context.getResources().getString(R.string.Date) + " :" + date + "\n"
+                    + context.getResources().getString(R.string.AllotmentMonth) +"   :"+
+                    menuConstants.fpsPofflineToken.allocationMonth+"\n"
+                    +context.getResources().getString(R.string.AllotmentYear) +"     :"+
+                    menuConstants.fpsPofflineToken.allocationYear+"\n"
+                    +
+                    String.format("%-10s%-8s%-8s%-8s\n",
+                            context.getResources().getString(R.string.commodity) ,
+                            context.getResources().getString(R.string.lifted) ,
+                            context.getResources().getString(R.string.rate) ,
+                            context.getResources().getString(R.string.price))
+                    + "________________________________\n";
+
+            str3 = (add)
+                    + "________________________________\n";
+
+            str4 = context.getResources().getString(R.string.Total_Amount) + "      :" + printReceipt.printBeans.get(0).tot_amount+ "\n"
+                    + "________________________________\n";
+
+
+            str5 = context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
+                    + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n\n\n";
+
+            str[0] = "1";
+            str[1] = str1;
+            str[2] = str2 + str3 + str4;
+            str[3] = str5;
+            checkandprint(str, 0);
+        }
+
     }
 
     @Override
@@ -475,9 +486,9 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             if (commqty>0.0) {
                 data.add(new PrintListModel(memberConstants.commDetails.get(i).commName +
                         "\n(" + memberConstants.commDetails.get(i).totQty + ")",
+                        memberConstants.commDetails.get(i).price,
                         required,
                         memberConstants.commDetails.get(i).requiredQty,
-                        memberConstants.commDetails.get(i).price,
                         memberConstants.commDetails.get(i).amount));
             }
         }
@@ -495,8 +506,10 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         TextView toolbarActivity = findViewById(R.id.toolbarActivity);
         TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
         TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-        TextView cardnum=findViewById(R.id.cardnum);
-        cardnum.setText(MemberName);
+        TextView memname=findViewById(R.id.memname);
+        TextView memnuid=findViewById(R.id.memuid);
+        memname.setText(MemberName);
+        memnuid.setText(MemberUid);
         TextView toolbarCard = findViewById(R.id.toolbarCard);
         toolbarCard.setText("RC : "+memberConstants.carddetails.rcId);
 

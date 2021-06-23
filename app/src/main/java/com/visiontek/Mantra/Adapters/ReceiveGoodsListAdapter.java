@@ -38,7 +38,7 @@ public class ReceiveGoodsListAdapter extends RecyclerView.Adapter<ReceiveGoodsLi
     @NotNull
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row6, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row5, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -63,9 +63,9 @@ public class ReceiveGoodsListAdapter extends RecyclerView.Adapter<ReceiveGoodsLi
 
         if (model.isSelected) {
             lin.setBackground(context.getResources().getDrawable(R.drawable.bgreen));
-            //lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            // lin.setBackgroundColor(context.getResources().getColor(R.color.green));
         } else {
-            lin.setBackground(context.getResources().getDrawable(R.drawable.white));
+            lin.setBackground(context.getResources().getDrawable(R.drawable.blightblue));
             //lin.setBackgroundColor(context.getResources().getColor(R.color.background));
         }
 

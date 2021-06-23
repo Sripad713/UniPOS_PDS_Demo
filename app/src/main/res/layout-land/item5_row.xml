@@ -19,7 +19,6 @@
             android:layout_height="match_parent"
             android:background="@color/ik_blue_white"
             android:orientation="horizontal"
-            android:padding="@dimen/Layoutcard"
             android:weightSum="5"
             tools:ignore="MissingConstraints">
 

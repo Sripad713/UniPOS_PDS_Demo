@@ -151,8 +151,6 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
                         mp = mp.create(context, R.raw.c100043);
                         mp.start();
                     }
-
-                    Toast.makeText(context, context.getResources().getString(R.string.Please_Enter_Your_Ration_ID), Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.radio_aadhaar:
@@ -167,7 +165,6 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
                     radiorc.setTypeface(null, Typeface.NORMAL);
                     radioaadhaar.setTypeface(null, Typeface.BOLD_ITALIC);
                     id.setText("");
-                    Toast.makeText(context, context.getResources().getString(R.string.Please_Enter_Your_Aadhaar_ID), Toast.LENGTH_SHORT).show();
                     break;
 
             }

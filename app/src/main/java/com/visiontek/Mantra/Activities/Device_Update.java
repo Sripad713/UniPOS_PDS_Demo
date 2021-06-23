@@ -115,6 +115,13 @@ public class Device_Update extends AppCompatActivity {
             }
         });
 
+        Button back =findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void initilisation() {

@@ -55,12 +55,11 @@ public class AadharSeedingListAdapter extends RecyclerView.Adapter<AadharSeeding
 
         if (model.isSelected) {
             lin.setBackground(context.getResources().getDrawable(R.drawable.bgreen));
-            //lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            // lin.setBackgroundColor(context.getResources().getColor(R.color.green));
         } else {
-            lin.setBackground(context.getResources().getDrawable(R.drawable.white));
+            lin.setBackground(context.getResources().getDrawable(R.drawable.blightblue));
             //lin.setBackgroundColor(context.getResources().getColor(R.color.background));
         }
-
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

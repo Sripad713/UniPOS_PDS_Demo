@@ -275,6 +275,7 @@
                 android:text="@string/Start"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeB"
+                android:shadowRadius="20"
                 android:foreground="@drawable/custom_ripple"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
@@ -305,6 +306,7 @@
                     android:layout_margin="@dimen/ButtonM"
                     android:layout_weight="1"
                     android:text="@string/Quit"
+                    android:shadowRadius="20"
                     android:background="@color/cancel"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
@@ -343,12 +345,14 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 android:text="Powered by"
-                android:textColor="@color/black"
+                android:background="@color/white"
+                android:textColor="@color/link_color"
                 android:textSize="@dimen/TextsizeH"
                 android:textStyle="bold" />
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:gravity="left"
+                android:layout_width="300dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:background="@drawable/wblack"

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -101,17 +100,16 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
             urlConnection = (HttpURLConnection) Url.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "text/xml");
-//            urlConnection.setRequestProperty("SOAPAction", "http://mdasol.com/MeterReading/CreateInvoice");
-//            urlConnection.setRequestProperty("Authorization", "Basic " + org.kobjects.base64.Base64.encode(("Web" + ":" + "5bs2YO!)A8RMEhcS@ADj").getBytes()));
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
+            urlConnection.setConnectTimeout(60*1000);
             OutputStream outputStream = urlConnection.getOutputStream();
             outputStream.write(hit.getBytes());
             outputStream.flush();
             outputStream.close();
             urlConnection.connect();
-            Log.e(getClass().getName(), String.valueOf(urlConnection.getResponseCode()));
-            String result = null;
+            System.out.println("++++++++++" + (urlConnection.getResponseCode()));
+            String result ;
             if (urlConnection.getResponseCode() == 200) {
                 BufferedInputStream bis = new BufferedInputStream(urlConnection.getInputStream());
                 ByteArrayOutputStream buf = new ByteArrayOutputStream();
@@ -121,57 +119,63 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
                     result2 = bis.read();
                 }
                 result = buf.toString();
+                if (result != null && result.length() > 0) {
+                    System.out.println("OUTPU = " + result);
+                    if (type == 1) {
+                        Util.generateNoteOnSD(context, "DDetailsRes.txt", result);
+                        dealerConstants = parseXml_dealer(result);
+                    } else if (type == 2) {
+                        Util.generateNoteOnSD(context, "DealerAuthRes.txt", result);
+                        parseXml_dealer_login(result);
+                    } else if (type == 3) {
+                        Util.generateNoteOnSD(context, "MDetailsRes.txt", result);
+                        memberConstants = parseXml_member(result);
+                    } else if (type == 4) {
+                        Util.generateNoteOnSD(context, "MemberAuthRes.txt", result);
+                        parseXml_member_login(result);
+                    } else if (type == 5) {
+                        Util.generateNoteOnSD(context, "SaleDetailsRes.txt", result);
+                        object = parseXml_sale_details(result);
+                    } else if (type == 6) {
+                        Util.generateNoteOnSD(context, "StockDetailsRes.txt", result);
+                        object = parseXml_stock_details(result);
+                    } else if (type == 7) {
+                        Util.generateNoteOnSD(context, "MenuRes.txt", result);
+                        menuConstants = parseXml_menu_details(result);
+                    } else if (type == 8) {
+                        Util.generateNoteOnSD(context, "MembereKycRes.txt", result);
+                        object = parseXml_eKyc(result);
+                    } else if (type == 9) {
+                        Util.generateNoteOnSD(context, "LastReciptRes.txt", result);
+                        object = parseXml_LastRecipt(result);
+                    } else if (type == 10) {
+                        Util.generateNoteOnSD(context, "ManualRes.txt", result);
+                        parseXml_Manual(result);
+                    } else if (type == 11) {
+                        Util.generateNoteOnSD(context, "RationRes.txt", result);
+                        object = parseXml_printer(result);
+                    } else if (type == 15) {
+                        Util.generateNoteOnSD(context, "RGDealerAuthRes.txt", result);
+                        parseXml_RCDealer(result);
+                    } else {
+                        Util.generateNoteOnSD(context, "ERRORR.txt", result);
+                    }
+
+                } else {
+                    code = "2";
+                    msg = "PARSING Error";
+                }
+            }else if (urlConnection.getResponseCode() == 400){
+                code = "400";
+                msg = "Bad Request";
             }
 
-            if (result != null && result.length() > 0) {
-                System.out.println("OUTPU = " + result);
-                if (type == 1) {
-                    Util.generateNoteOnSD(context, "DDetailsRes.txt", result);
-                    dealerConstants = parseXml_dealer(result);
-                } else if (type == 2) {
-                    Util.generateNoteOnSD(context, "DealerAuthRes.txt", result);
-                    parseXml_dealer_login(result);
-                } else if (type == 3) {
-                    Util.generateNoteOnSD(context, "MDetailsRes.txt", result);
-                    memberConstants = parseXml_member(result);
-                } else if (type == 4) {
-                    Util.generateNoteOnSD(context, "MemberAuthRes.txt", result);
-                    parseXml_member_login(result);
-                } else if (type == 5) {
-                    Util.generateNoteOnSD(context, "SaleDetailsRes.txt", result);
-                    object = parseXml_sale_details(result);
-                } else if (type == 6) {
-                    Util.generateNoteOnSD(context, "StockDetailsRes.txt", result);
-                    object = parseXml_stock_details(result);
-                } else if (type == 7) {
-                    Util.generateNoteOnSD(context, "MenuRes.txt", result);
-                    menuConstants = parseXml_menu_details(result);
-                } else if (type == 8) {
-                    Util.generateNoteOnSD(context, "MembereKycRes.txt", result);
-                    object = parseXml_eKyc(result);
-                } else if (type == 9) {
-                    Util.generateNoteOnSD(context, "LastReciptRes.txt", result);
-                    object = parseXml_LastRecipt(result);
-                } else if (type == 10) {
-                    Util.generateNoteOnSD(context, "ManualRes.txt", result);
-                    parseXml_Manual(result);
-                } else if (type == 11) {
-                    Util.generateNoteOnSD(context, "RationRes.txt", result);
-                    object = parseXml_printer(result);
-                } else if (type == 15) {
-                    Util.generateNoteOnSD(context, "RGDealerAuthRes.txt", result);
-                    parseXml_RCDealer(result);
-                } else {
-                    Util.generateNoteOnSD(context, "ERRORR.txt", result);
-                }
-            } else {
-                code = "error";
-                msg = "PARSING Error";
-            }
         } catch (Exception e) {
             e.printStackTrace();
             code = "1";
-            msg = String.valueOf(e);
+            msg = e.toString();
+            msg = "Server Connection Failed";
+
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -399,7 +403,7 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
                         if (xpp.getName().equals("retail_price")) {
                             eventType = xpp.next();
                             if (eventType == XmlPullParser.TEXT) {
-                                if (lastReceiptComm!=null) {
+                                if (lastReceiptComm != null) {
                                     lastReceiptComm.retail_price = (xpp.getText());
                                     System.out.println("retail_price 2 =================" + xpp.getText());
                                 }

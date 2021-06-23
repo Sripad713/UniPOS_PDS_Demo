@@ -74,7 +74,6 @@ public class UIDDetailsActivity extends AppCompatActivity {
     Context context;
     RecyclerView.Adapter adapter;
     ProgressDialog pd = null;
-    TextView UID_details_cardnum;
 
     UIDDetails uidDetails;
     UIDModel uidModel=new UIDModel();

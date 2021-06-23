@@ -47,7 +47,6 @@ public class HomeActivity extends AppCompatActivity {
     Button issue, inspection, aadhar, receive, reports, others,logout;
     Intent i;
     Context context;
-    TextView rd;
     ProgressDialog pd = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

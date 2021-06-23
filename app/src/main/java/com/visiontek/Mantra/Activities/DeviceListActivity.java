@@ -34,6 +34,7 @@ import java.util.Set;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.address;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.toast;
@@ -42,8 +43,8 @@ import static com.visiontek.Mantra.Utils.Util.toast;
 public class DeviceListActivity extends Activity {
 Context context;
     private static final String TAG = "DeviceListActivity";
-    public static String EXTRA_DEVICE_ADDRESS = "device_address";
-    static String address;
+    public String EXTRA_DEVICE_ADDRESS = "device_address";
+
     TextView textView1;
     ArrayList<String> deviceAdress;
     HashMap<String, String> shorlisteddeviceAdr = new HashMap<String, String>();

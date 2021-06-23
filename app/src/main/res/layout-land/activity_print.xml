@@ -157,6 +157,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
@@ -166,6 +167,7 @@
                             android:textColor="@color/black"
                             android:textSize="25dp"
                             android:textStyle="bold" />
+
                         <TextView
                             android:id="@+id/toolbarCard"
                             android:layout_width="match_parent"
@@ -252,34 +254,55 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:orientation="vertical">
+
         <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4">
 
-                    <TextView
-                        android:id="@+id/UID_details_card"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_weight="1"
-                        android:text="MemberName : "
-                       android:gravity="end"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/TextsizeB"
-                        android:textStyle="bold" />
+            <TextView
 
-                    <TextView
-                        android:id="@+id/cardnum"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_weight="1"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/TextsizeB"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+
+                android:text="MemberName : "
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/TextsizeB"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/memname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/TextsizeB"
+                android:textStyle="bold" />
+
+            <TextView
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:text="Aadhar No : "
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/TextsizeB"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/memuid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/TextsizeB"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -304,6 +327,18 @@
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="30sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bblack"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/TextsizeP"
+                    android:text="@string/Price"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -332,18 +367,8 @@
                     android:textSize="30dp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bblack"
-                    android:gravity="center_horizontal"
-                    android:padding="@dimen/TextsizeP"
-                    android:text="@string/Price"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="30dp"
-                    android:textStyle="bold" />
+
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -381,19 +406,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/greydark"
-                android:orientation="horizontal"
                 android:layout_gravity="end"
+                android:background="@color/greydark"
                 android:gravity="end"
+                android:orientation="horizontal"
                 android:weightSum="2">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_weight="1"
-                    android:text="@string/Total_Amount"
                     android:gravity="end"
+                    android:text="@string/Total_Amount"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold" />
@@ -401,7 +426,7 @@
                 <TextView
 
                     android:id="@+id/totalamount"
-                    android:layout_width="wrap_content"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -416,11 +441,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginHorizontal="20dp"
             android:layout_marginVertical="5dp"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
             android:gravity="center"
+            android:orientation="horizontal"
             tools:ignore="MissingConstraints">
 
             <Button
@@ -428,9 +453,9 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:background="@color/ok"
+                android:foreground="@drawable/custom_ripple"
                 android:gravity="center"
                 android:text="@string/Print"
-                android:foreground="@drawable/custom_ripple"
                 android:textColor="@color/white"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -449,31 +474,35 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
             android:gravity="bottom"
+            android:orientation="horizontal"
             android:weightSum="2">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
+
                 <TextView
-                    android:textAlignment="textEnd"
-                    android:background="@drawable/black"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:gravity="center"
                     android:layout_gravity="center"
+                    android:background="@drawable/black"
+                    android:gravity="center"
                     android:text="Powered by"
+                    android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:textSize="@dimen/TextsizeH"
                     android:textStyle="bold"
                     tools:ignore="RtlCompat" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"

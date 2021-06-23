@@ -32,6 +32,7 @@ import com.visiontek.Mantra.Adapters.DealerListAdapter;
 import com.visiontek.Mantra.Models.DATAModels.DealerListModel;
 import com.visiontek.Mantra.Models.DealerDetailsModel.GetURLDetails.fpsURLInfo;
 import com.visiontek.Mantra.Models.DealerDetailsModel.GetUserDetails.DealerModel;
+import com.visiontek.Mantra.Models.AppConstants.*;
 import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.MemberModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Json_Parsing;
@@ -50,12 +51,13 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import static com.visiontek.Mantra.Activities.MemberDetailsActivity.Mdealer;
+
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.Mdealer;
 
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.ConsentForm;
@@ -64,7 +66,7 @@ import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 public class DealerDetailsActivity extends AppCompatActivity {
-    static String dealername;
+
     DealerModel dealerModel=new DealerModel();
     RecyclerView.Adapter adapter;
     Button scanfp, back;
@@ -172,7 +174,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 dealerModel.Dfusion = dealerConstants.fpsCommonInfo.fpsDetails.get(p).dealerFusion;
                 dealerModel.Dnamell = dealerConstants.fpsCommonInfo.fpsDetails.get(p).delNamell;
                 dealerModel.Dwadh = dealerConstants.fpsCommonInfo.fpsDetails.get(p).wadhStatus;
-                dealername=dealerModel.DName;
+                DEVICEID=dealerModel.DName;
                 switch (dealerModel.DAtype) {
                     case "F":
                         dealerModel.DEALER_AUTH_TYPE = "Bio";

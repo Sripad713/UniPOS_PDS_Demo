@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.visiontek.Mantra.Activities.DealerAuthenticationActivity;
@@ -49,7 +51,7 @@ public class DealerListAdapter extends RecyclerView.Adapter<DealerListAdapter.My
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int listPosition) {
         final DealerListModel model = dataSet.get(listPosition);
-
+       // CardView card = holder.cardView;
         LinearLayout lin = holder.linearLayout;
         TextView textViewName = holder.textName;
         TextView textViewStatus = holder.textType;
@@ -61,9 +63,9 @@ public class DealerListAdapter extends RecyclerView.Adapter<DealerListAdapter.My
 
         if (model.isSelected) {
             lin.setBackground(context.getResources().getDrawable(R.drawable.bgreen));
-            //lin.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+           // lin.setBackgroundColor(context.getResources().getColor(R.color.green));
         } else {
-            lin.setBackground(context.getResources().getDrawable(R.drawable.white));
+            lin.setBackground(context.getResources().getDrawable(R.drawable.blightblue));
             //lin.setBackgroundColor(context.getResources().getColor(R.color.background));
         }
 
@@ -98,6 +100,7 @@ public class DealerListAdapter extends RecyclerView.Adapter<DealerListAdapter.My
         TextView textType;
         TextView textUid;
         LinearLayout linearLayout;
+        //CardView cardView ;
 
         MyViewHolder(View itemView) {
             super(itemView);

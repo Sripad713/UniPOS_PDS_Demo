@@ -67,6 +67,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.Dealername;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.ConsentForm;
 import static com.visiontek.Mantra.Utils.Util.RDservice;

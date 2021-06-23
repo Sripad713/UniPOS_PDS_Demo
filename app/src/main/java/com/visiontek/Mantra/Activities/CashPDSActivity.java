@@ -69,8 +69,8 @@ import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
 
 public class CashPDSActivity extends AppCompatActivity implements PrinterCallBack {
-    public String Cash_ID;
-    public static String ACTION_USB_PERMISSION;
+    String Cash_ID;
+    String ACTION_USB_PERMISSION;
     int select;
 
     RadioGroup radioGroup;
@@ -478,15 +478,11 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     radiorc.setTypeface(null, Typeface.BOLD_ITALIC);
                     radioaadhaar.setTypeface(null, Typeface.NORMAL);
                     id.setText("");
-                    Toast.makeText(context, context.getResources().getString(R.string.Please_Enter_Your_Ration_ID), Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.radio_aadhaar:
                     cardno.setText("Aadhar No :");
-
-
                     id.setInputType(InputType. TYPE_NUMBER_VARIATION_PASSWORD | InputType. TYPE_CLASS_NUMBER );
-
                     InputFilter[] FilterArray1 = new InputFilter[1];
                     FilterArray1[0] = new InputFilter.LengthFilter(12);
                     id.setFilters(FilterArray1);
@@ -494,7 +490,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     radiorc.setTypeface(null, Typeface.NORMAL);
                     radioaadhaar.setTypeface(null, Typeface.BOLD_ITALIC);
                     id.setText("");
-                    Toast.makeText(context, context.getResources().getString(R.string.Please_Enter_Your_Aadhaar_ID), Toast.LENGTH_SHORT).show();
                     break;
 
             }

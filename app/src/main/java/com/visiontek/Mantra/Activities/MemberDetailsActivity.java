@@ -59,6 +59,9 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.Mdealer;
+import static com.visiontek.Mantra.Models.AppConstants.MemberName;
+import static com.visiontek.Mantra.Models.AppConstants.MemberUid;
 
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
@@ -73,12 +76,8 @@ import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 public class MemberDetailsActivity extends AppCompatActivity {
 
     MemberModel memberModel=new MemberModel();
-
-    public static int Mdealer;
-    public static String MemberName;
     Button scanfp, back;
     ProgressDialog pd = null;
-    TextView rd;
     Context context;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -190,6 +189,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 memberModel.member_fusion = memberConstants.memberdetails.get(p).member_fusion;
                 memberModel.w_uid_status = memberConstants.memberdetails.get(p).w_uid_status;
                 MemberName=memberConstants.memberdetails.get(p).memberName;
+                MemberUid=memberConstants.memberdetails.get(p).uid;
                 if (memberModel.xfinger.equals("Y")) {
                     memberModel.mBIO = true;
                     memberModel.mMan = false;
@@ -218,7 +218,6 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
 
     private void prep_consent() {
-        System.out.println("@@ In dealer details else case");
         String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
         //currentDateTimeString="26032021114610";
         String consentrequest="{\n" +
@@ -303,7 +302,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
     }
 
-    private  void show_AfterEkycFail(String msg, String title, final String flow) {
+    private  void show_AfterEkyc(String msg, String title, final String flow) {
          final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
         alertDialogBuilder.setTitle(title);
@@ -463,11 +462,11 @@ public class MemberDetailsActivity extends AppCompatActivity {
                         if (memberModel.zwgenWadhAuth.equals("Y")) {
                             if (memberModel.wadhflag != 1) {
                                 memberModel.wadhflag = 1;
-                                show_error_box(msg, context.getResources().getString(R.string.Member_Authentication) + isError, 1);
+                                show_error_box(msg, isError, 1);
                             } else {
                                 memberModel.EKYC = 1;
                                 memberModel.fCount = "1";
-                                show_error_box(msg, context.getResources().getString(R.string.Member_Authentication) + isError, 2);
+                                show_error_box(msg,  isError, 2);
                             }
                         } /*else if (fpsCommonInfo.firauthFlag.equals("Y")) {
                             if (memberModel.FIRflag != 1) {
@@ -483,27 +482,27 @@ public class MemberDetailsActivity extends AppCompatActivity {
                             if (memberModel.Fusionflag != 1) {
                                 memberModel.fCount = "2";
                                 memberModel.Fusionflag = 1;
-                                show_error_box(msg, context.getResources().getString(R.string.Dealer_Fusion_Authentication)+ isError, 1);
+                                show_error_box(msg,   isError, 1);
                             } else {
                                 memberModel.EKYC = 1;
                                 memberModel.fCount = "1";
-                                show_error_box(msg, context.getResources().getString(R.string.Member_Authentication) + isError, 2);
+                                show_error_box(msg, isError, 2);
                             }
                         } else {
                             if (memberModel.fusionflag != 1) {
                                 memberModel.fCount = "2";
                                 memberModel.fusionflag = 1;
-                                show_error_box(msg, context.getResources().getString(R.string.Dealer_FP_Authentication) + isError, 1);
+                                show_error_box(msg,  isError, 1);
                             } else {
                                 memberModel.EKYC = 1;
                                 memberModel.fCount = "1";
-                                show_error_box(msg, context.getResources().getString(R.string.Member_Authentication) + isError, 2);
+                                show_error_box(msg,  isError, 2);
                             }
                         }
                         return;
                     }
                     memberModel.fCount = "1";
-                    show_error_box(msg, context.getResources().getString(R.string.Member_Authentication) + isError, 0);
+                    show_error_box(msg,  isError, 0);
                 } else {
                     if (memberModel.fusionflag == 1) {
                         memberModel.fusionflag = 0;
@@ -639,26 +638,24 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
                 Ekyc= (Ekyc) object;
 
-                if (isError.equals("E00") && flow.equals("F")) {
-
-                    String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                    String details = "\n"+context.getResources().getString(R.string.MemberName) + Ekyc.eKYCMemberName + "\n" +
-                            context.getResources().getString(R.string.DOB) + Ekyc.eKYCDOB + "\n" +
-                            context.getResources().getString(R.string.PindCode) + Ekyc.eKYCPindCode+ "\n" +
-                            context.getResources().getString(R.string.Gender) + Ekyc.eKYCGeneder+ "\n" +
-                            context.getResources().getString(R.string.Date) +  currentDateTimeString + "\n";
-                    show_error_box(msg + details, isError, 3);
-                } else if (isError.equals("E00") && flow.equals("B")){
-                    String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                    String details = "\n"+context.getResources().getString(R.string.MemberName) + Ekyc.eKYCMemberName + "\n" +
-                            context.getResources().getString(R.string.DOB) + Ekyc.eKYCDOB + "\n" +
-                            context.getResources().getString(R.string.PindCode) + Ekyc.eKYCPindCode+ "\n" +
-                            context.getResources().getString(R.string.Gender) + Ekyc.eKYCGeneder+ "\n" +
-                            context.getResources().getString(R.string.Date) +  currentDateTimeString + "\n";
-                    show_AfterEkycFail(msg + details, isError,flow);
-
-                }else {
+                if (!isError.equals("E00")) {
                     show_error_box(msg, context.getResources().getString(R.string.Member_EKYC) + isError, 0);
+                   /* String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+                    String details = "\n"+context.getResources().getString(R.string.MemberName) + Ekyc.eKYCMemberName + "\n" +
+                            context.getResources().getString(R.string.DOB) + Ekyc.eKYCDOB + "\n" +
+                            context.getResources().getString(R.string.PindCode) + Ekyc.eKYCPindCode+ "\n" +
+                            context.getResources().getString(R.string.Gender) + Ekyc.eKYCGeneder+ "\n" +
+                            context.getResources().getString(R.string.Date) +  currentDateTimeString + "\n";
+                    show_error_box(msg + details, isError, 3);*/
+                } else {
+                    String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+                    String details = "\n"+context.getResources().getString(R.string.MemberName) + Ekyc.eKYCMemberName + "\n" +
+                            context.getResources().getString(R.string.DOB) + Ekyc.eKYCDOB + "\n" +
+                            context.getResources().getString(R.string.PindCode) + Ekyc.eKYCPindCode+ "\n" +
+                            context.getResources().getString(R.string.Gender) + Ekyc.eKYCGeneder+ "\n" +
+                            context.getResources().getString(R.string.Date) +  currentDateTimeString + "\n";
+
+                    show_AfterEkyc(msg + details, isError,flow);
                 }
             }
         });

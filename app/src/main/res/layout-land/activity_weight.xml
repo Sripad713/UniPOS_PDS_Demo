@@ -99,7 +99,7 @@
                 android:textSize="@dimen/TextsizeV" />
 
             <TextView
-                android:background="@drawable/white"
+                android:background="@drawable/byellow"
                 android:id="@+id/c"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                 android:textSize="@dimen/TextsizeV" />
 
             <TextView
-                android:background="@drawable/white"
+                android:background="@drawable/bpink"
                 android:id="@+id/d"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -148,7 +148,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="15"
-                    android:hint="Enter Observation"
                     android:inputType="numberDecimal"
                     android:textSize="@dimen/TextsizeB" />
             </LinearLayout>

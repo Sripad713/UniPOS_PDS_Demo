@@ -85,16 +85,12 @@ import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
 public class BeneficiaryDetailsActivity extends AppCompatActivity implements PrinterCallBack {
 
-    private static String ACTION_USB_PERMISSION;
+    String ACTION_USB_PERMISSION;
     Button back, Ekyc;
-
-
     Context context;
-
     RecyclerView.Adapter adapter;
     ProgressDialog pd = null;
     String details;
-    TextView Ben_cardnum;
     BeneficiaryAuth beneficiaryAuth;
     BeneficiaryModel beneficiaryModel = new BeneficiaryModel();
     BeneficiaryDetails beneficiaryDetails;
@@ -134,10 +130,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     if (beneficiaryModel.verification.equals("N")) {
                         AadhaarDialog();
                     } else {
-                        show_error_box("", context.getResources().getString(R.string.Member_is_already_Verified), 0);
+                        show_error_box("", beneficiaryModel.verifyStatus_en, 0);
                     }
                 } else {
-                    toast(context, context.getResources().getString(R.string.Please_Select_a_Member));
+                    show_error_box("", context.getResources().getString(R.string.Please_Select_a_Member),0);
                 }
             }
         });
@@ -290,7 +286,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     } else {
                         mp = mp.create(context, R.raw.c100047);
                         mp.start();
-                        toast(context, context.getResources().getString(R.string.Invalid_UID));
+                        show_error_box("","Please enter a valid UID", 0);
                     }
                 }
             }
@@ -363,9 +359,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 }
                 if (!error.equals("E00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                    show_error_box(msg,
-                            context.getResources().getString(R.string.Member_Details) + error,
-                            1);
+                    show_error_box(msg, context.getResources().getString(R.string.Member_Details) + error, 0);
                 } else {
                     beneficiaryAuth = (BeneficiaryAuth) object;
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
@@ -375,46 +369,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                             context.getResources().getString(R.string.Gender) + beneficiaryAuth.eKYCGeneder + "\n" +
                             context.getResources().getString(R.string.Date) + currentDateTimeString + "\n";
 
-                    String str1, str2, str3;
-                    String[] str = new String[4];
-                    if (L.equals("hi")) {
-                        str1 = context.getResources().getString(R.string.VERIFICATION_RECEIPT) + "\n";
-                        image(str1, "header.bmp", 1);
-                        str2 = context.getResources().getString(R.string.Date) + " : " + currentDateTimeString +
-                                context.getResources().getString(R.string.Time) + " : " + currentDateTimeString + " \n" +
-                                context.getResources().getString(R.string.FPS_ID) + " : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                                + context.getResources().getString(R.string.NAME) + " : " + beneficiaryAuth.eKYCMemberName + "\n\n"
-                                + context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder + "\n"
-                                + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
-                                + context.getResources().getString(R.string.Status) + " : " + "Success" + "\n";
-
-                        image(str2, "body.bmp", 0);
-
-                        str[0] = "1";
-                        str[1] = "1";
-                        str[2] = "1";
-                        str[3] = "0";
-                        checkandprint(str, 1);
-                    } else {
-
-                        str1 = context.getResources().getString(R.string.VERIFICATION_RECEIPT) + "\n"
-                                + "-----------------------------\n";
-                        str2 =            context.getResources().getString(R.string.Date) + "           :" + currentDateTimeString + "\n"
-                                        + context.getResources().getString(R.string.Time) + "           : " + currentDateTimeString + " \n"
-                                        + context.getResources().getString(R.string.FPS_ID) + "         :" + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                                        + context.getResources().getString(R.string.NAME) + "           : " + beneficiaryAuth.eKYCMemberName + "\n\n"
-                                        + context.getResources().getString(R.string.Gender) + "         : " + beneficiaryAuth.eKYCGeneder + "\n"
-                                        + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
-                                        + context.getResources().getString(R.string.Status) + "         : " + "Success" + "\n";
-
-                        str[0] = "1";
-                        str[1] = str1;
-                        str[2] = str2;
-                        str[3] = "0";
-                        checkandprint(str, 0);
-                    }
-
-
+                    show_error_box(details,error,1);
                 }
             }
         });
@@ -572,15 +527,59 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        if (type == 1) {
-                            finish();
-                        } else if (type == 2) {
+                        if (type==1){
+                            callPrint();
+                        }
+                       else if (type == 2) {
                             prep_consent();
                         }
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void callPrint() {
+        String str1, str2, str3;
+        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+        String[] str = new String[4];
+        if (L.equals("hi")) {
+            str1 = context.getResources().getString(R.string.VERIFICATION_RECEIPT) + "\n";
+            image(str1, "header.bmp", 1);
+            str2 = context.getResources().getString(R.string.Date) + " : " + currentDateTimeString +
+                    context.getResources().getString(R.string.Time) + " : " + currentDateTimeString + " \n" +
+                    context.getResources().getString(R.string.FPS_ID) + " : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
+                    + context.getResources().getString(R.string.NAME) + " : " + beneficiaryAuth.eKYCMemberName + "\n\n"
+                    + context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder + "\n"
+                    + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
+                    + context.getResources().getString(R.string.Status) + " : " + "Success" + "\n";
+
+            image(str2, "body.bmp", 0);
+
+            str[0] = "1";
+            str[1] = "1";
+            str[2] = "1";
+            str[3] = "0";
+            checkandprint(str, 1);
+        } else {
+
+            str1 = context.getResources().getString(R.string.VERIFICATION_RECEIPT) + "\n"
+                    + "-----------------------------\n";
+            str2 =            context.getResources().getString(R.string.Date) + "           :" + currentDateTimeString + "\n"
+                    + context.getResources().getString(R.string.Time) + "           : " + currentDateTimeString + " \n"
+                    + context.getResources().getString(R.string.FPS_ID) + "         :" + dealerConstants.fpsCommonInfo.fpsId + "\n"
+                    + context.getResources().getString(R.string.NAME) + "           : " + beneficiaryAuth.eKYCMemberName + "\n\n"
+                    + context.getResources().getString(R.string.Gender) + "         : " + beneficiaryAuth.eKYCGeneder + "\n"
+                    + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
+                    + context.getResources().getString(R.string.Status) + "         : " + "Success" + "\n";
+
+            str[0] = "1";
+            str[1] = str1;
+            str[2] = str2;
+            str[3] = "0";
+            checkandprint(str, 0);
+        }
     }
 
     private void prep_consent() {
@@ -653,16 +652,12 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 mp.start();
             }
             es.submit(new TaskPrint(mTerminal100API, str, mActivity, context, i));
-            finish();
+            Intent intent=new Intent(context,HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         } else {
             printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery), str, i);
         }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void print() {
-
-
     }
 
     @SuppressLint("SetTextI18n")

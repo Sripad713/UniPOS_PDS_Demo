@@ -50,19 +50,16 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     Spinner options;
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
-    ArrayList<ReceiveGoodsListModel> modeldata;
+
     TextView trucknumber;
-
-
     ReceiveGoodsDetails receiveGoodsDetails;
-    ReceiveGoodsModel receiveGoodsModel=new ReceiveGoodsModel();
+    ReceiveGoodsModel receiveGoodsModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive__goods);
 
         context = ReceiveGoodsActivity.this;
-
         receiveGoodsDetails = (ReceiveGoodsDetails) getIntent().getSerializableExtra("OBJ");
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
@@ -83,7 +80,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        modeldata = new ArrayList<>();
+
 
 
         ArrayList<String> trucklist=new ArrayList<>();
@@ -129,6 +126,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (check()) {
                     if (Util.networkConnected(context)) {
+                        addCommDetails();
                         Intent i = new Intent(ReceiveGoodsActivity.this, DealerAuthenticationActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         i.putExtra("OBJ",  receiveGoodsModel);
@@ -136,15 +134,9 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
                     } else {
                         show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
                     }
-                } /*else {
-                   *//* if (mp!=null) {
-                        releaseMediaPlayer(context,mp);
-                    }  if (L.equals("hi")) {
-                    } else {
-                   mp=mp.create(context, R.raw.c100051);
-                           mp.start();
-                    show_error_box( ect_Dealer_Name),  context.getResources().getString(R.string.Dealer), 0);*//*
-                }*/
+                } else {
+                    show_error_box( "Please Enter Quantity",  "Enter Quantity", 0);
+                }
             }
         });
 
@@ -173,6 +165,30 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         });
     }
 
+    private void addCommDetails() {
+        int size=receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.size();
+        tcCommDetails tcCommDetails;
+        for (int i=0;i<size;i++){
+            tcCommDetails =new tcCommDetails();
+            tcCommDetails.enteredvalue=
+                    receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).enteredvalue;
+            tcCommDetails.allotment=
+                    receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).allotment;
+            tcCommDetails.commCode=
+                    receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).commCode;
+            tcCommDetails.commName=
+                    receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).commName;
+            tcCommDetails.releasedQuantity=
+                    receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).releasedQuantity;
+            tcCommDetails.schemeId=
+                    receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).schemeId;
+            tcCommDetails.schemeName=
+                    receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).schemeName;
+            receiveGoodsModel.tcCommDetails.add(tcCommDetails);
+
+        }
+    }
+
     private void initilisation() {
         pd = new ProgressDialog(context);
         trucknumber = findViewById(R.id.tv_truckno);
@@ -183,36 +199,11 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     }
 
     private boolean check() {
-        tcCommDetails tcCommDetails;
+        float val = 0;
         int size=receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.size();
-      float val = 0;
-        for (int i=0;i<size;i++){
-            //if (val>0.0){*/
-                tcCommDetails =new tcCommDetails();
-                tcCommDetails.enteredvalue=
-                        receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).enteredvalue;
-                tcCommDetails.allotment=
-                        receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).allotment;
-                tcCommDetails.commCode=
-                        receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).commCode;
-                tcCommDetails.commName=
-                        receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).commName;
-                tcCommDetails.releasedQuantity=
-                        receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).releasedQuantity;
-                tcCommDetails.schemeId=
-                        receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).schemeId;
-                tcCommDetails.schemeName=
-                        receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).schemeName;
-                receiveGoodsModel.tcCommDetails.add(tcCommDetails);
-
-          //  }
-        }
-
         for (int i=0;i<size;i++){
             val= Float.parseFloat(receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).enteredvalue);
-            System.out.println("==========="+val);
             if (val>0.0){
-                System.out.println("="+val);
                 return true;
             }
         }
@@ -221,18 +212,16 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
 
     private void DisplayTruck(int position) {
+        ArrayList<ReceiveGoodsListModel> modeldata = new ArrayList<>();
         int tcCommDetailssize=receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.size();
         for (int k = 0; k <tcCommDetailssize ; k++) {
-            modeldata.add(new ReceiveGoodsListModel(receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).commName,
+            modeldata.add(new ReceiveGoodsListModel(
+                    receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).commName,
                     receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).schemeName,
                     receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).allotment,
                     receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).releasedQuantity,
                     receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).enteredvalue));
         }
-        Display();
-    }
-
-    private void Display() {
         adapter = new ReceiveGoodsListAdapter(context, modeldata, new OnClickReceived() {
             @Override
             public void onClick(int p) {
@@ -241,6 +230,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adapter);
     }
+
     public interface OnClickReceived {
         void onClick(int p);
     }
@@ -258,6 +248,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         TextView allot=(TextView) dialog.findViewById(R.id.c);
         TextView dispatch=(TextView) dialog.findViewById(R.id.d);
         TextView status = (TextView) dialog.findViewById(R.id.status);
+
         status.setText("Please Enter Received Qty ");
         name.setText( receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select)
                 .tcCommDetails.get(position).commName);
@@ -273,11 +264,15 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
                 dialog.dismiss();
                 receiveGoodsModel.received = received.getText().toString();
                 if (!receiveGoodsModel.received.isEmpty()) {
-                    receiveGoodsModel.textdata = Double.parseDouble((receiveGoodsModel.received));
-                    receiveGoodsModel.AFTERDATA = String.valueOf(receiveGoodsModel.textdata);
-                    receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(position).enteredvalue=receiveGoodsModel.AFTERDATA;
-                    modeldata.clear();
-                    DisplayTruck(receiveGoodsModel.select);
+                    float textdata = Float.parseFloat((receiveGoodsModel.received));
+                    float dispatch = Float.parseFloat(( receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(position).releasedQuantity));
+                    if (textdata>dispatch){
+                        show_error_box("","Please Enter the value less than Dispatched",  0);
+                    }else {
+                        receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(position).enteredvalue = receiveGoodsModel.received;
+
+                        DisplayTruck(receiveGoodsModel.select);
+                    }
                 } else {
                     show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
                 }
@@ -313,9 +308,6 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public interface OnClickListener {
-        void onClick_d(int p);
-    }
     private void toolbarInitilisation() {
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);

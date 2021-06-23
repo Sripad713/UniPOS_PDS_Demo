@@ -55,12 +55,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.visiontek.Mantra.Activities.DeviceListActivity.address;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.address;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
@@ -255,17 +255,24 @@ public class RationDetailsActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         ArrayList<RationListModel> modeldata = new ArrayList<>();
         int commDetailssize = memberConstants.commDetails.size();
-        float commprice, commamount, commqty;
+        float commprice, commamount, commqty, commclosebal, commbal;
         for (int i = 0; i < commDetailssize; i++) {
+            commqty = Float.parseFloat(memberConstants.commDetails.get(i).requiredQty);
+            commprice = Float.parseFloat(memberConstants.commDetails.get(i).price);
+            commclosebal = Float.parseFloat(memberConstants.commDetails.get(i).closingBal);
+            commbal = Float.parseFloat(memberConstants.commDetails.get(i).balQty);
             if (value == 0) {
                 if (memberConstants.commDetails.get(i).weighing.equals("Y")) {
                     memberConstants.commDetails.get(i).requiredQty = "0.0";
                 } else {
-                    memberConstants.commDetails.get(i).requiredQty = memberConstants.commDetails.get(i).balQty;
+                    if (commbal <= commclosebal) {
+                        memberConstants.commDetails.get(i).requiredQty = memberConstants.commDetails.get(i).balQty;
+                    } else {
+                        memberConstants.commDetails.get(i).requiredQty = memberConstants.commDetails.get(i).closingBal;
+                    }
                 }
             }
-            commqty = Float.parseFloat(memberConstants.commDetails.get(i).requiredQty);
-            commprice = Float.parseFloat(memberConstants.commDetails.get(i).price);
+
             commamount = commprice * commqty;
             memberConstants.commDetails.get(i).amount = String.valueOf(commamount);
 
@@ -281,21 +288,35 @@ public class RationDetailsActivity extends AppCompatActivity {
         adapter = new RationListAdapter(context, modeldata, new OnClickRation() {
             @Override
             public void onClick(int p) {
-                if (memberConstants.commDetails.get(p).weighing.equals("Y")) {
-                    if (choice != 0){
-                        Weighing(p);
-                  }else {
-                        show_error_box("Please select Communication mode", "Communication", 0);
+
+                float commclbal = Float.parseFloat(memberConstants.commDetails.get(p).closingBal);
+                float commbal = Float.parseFloat(memberConstants.commDetails.get(p).balQty);
+                float commmin = Float.parseFloat(memberConstants.commDetails.get(p).minQty);
+                if (!(commclbal < commmin)  ) {
+                    if (!(commbal < commmin)) {
+
+                        if (memberConstants.commDetails.get(p).weighing.equals("Y")) {
+                            if (choice != 0) {
+                                WeighingDialog(p);
+                            } else {
+                                show_error_box("Please select Communication mode", "Communication", 0);
+                            }
+                        } else {
+                            ManualDialog(p);
+                        }
+                    }else {
+                        show_error_box("Balance Quantity is too low ",(memberConstants.commDetails.get(p).commName) , 0);
                     }
                 } else {
-                    ManualDialog(p);
+                    show_error_box("Closing Balance Quantity is too low ",(memberConstants.commDetails.get(p).commName) , 0);
+
                 }
             }
         });
         recyclerView.setAdapter(adapter);
     }
 
-    private void Weighing(final int position) {
+    private void WeighingDialog(final int position) {
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCanceledOnTouchOutside(false);
@@ -356,7 +377,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                 if (getflag) {
                     String weighingweight = getweight.getText().toString();
                     System.out.println(weighingweight.length());
-                    if (weighingweight.length() >0) {
+                    if (weighingweight.length() > 0) {
                         CheckWeight(position, weighingweight, 1);
                         usb = "";
                     } else {
@@ -366,7 +387,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                    /* memberConstants.commDetails.get(position).requiredQty = String.valueOf(value);
                     Display(1);*/
                 } else {
-                    Toast.makeText(context,"Please get Weight ",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Please get Weight ", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -448,17 +469,18 @@ public class RationDetailsActivity extends AppCompatActivity {
                     Display(1);
                 } else if (calculated == 2) {
                     show_error_box(context.getResources().getString(R.string.Please_Issue_Commodity_upto_Bal_Qty_only),
-                            context.getResources().getString(R.string.Not_a_Valid_Weight), 0);
+                            memberConstants.commDetails.get(position).commName , 0);
                 } else if (calculated == 3) {
-                    show_error_box("Please Enter the " + memberConstants.commDetails.get(position).commName +
-                            " Qty greater than or Equal to " + memberConstants.commDetails.get(position).minQty, context.getResources().getString(R.string.Not_a_Valid_Weight), 0);
+                    show_error_box("Please Enter the  Quantity greater than or Equal to " + memberConstants.commDetails.get(position).minQty,
+                            memberConstants.commDetails.get(position).commName , 0);
                 } else {
-                    show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value),
-                            context.getResources().getString(R.string.Not_a_Valid_Weight), 0);
+                    show_error_box("Please Enter the Quantity less than or Equal to " + memberConstants.commDetails.get(position).closingBal,
+                            memberConstants.commDetails.get(position).commName, 0);
                 }
             } else {
                 show_error_box("Issue Qty should be Multiple by Minimum Qty -"
-                        + memberConstants.commDetails.get(position).minQty, context.getResources().getString(R.string.Enter_valid_weight), 0);
+                                + memberConstants.commDetails.get(position).minQty,
+                        memberConstants.commDetails.get(position).commName , 0);
             }
         } else {
             show_error_box(context.getResources().getString(R.string.Please_Enter_the_Weight), context.getResources().getString(R.string.Enter_valid_weight), 0);
@@ -784,7 +806,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter.isEnabled()) {
             if (address == null) {
-               // BTList();
+                // BTList();
             } else {
                 //checkBTState(mBluetoothAdapter);
             }

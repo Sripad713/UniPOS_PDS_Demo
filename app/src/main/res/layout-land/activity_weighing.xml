@@ -94,7 +94,7 @@
             android:textSize="@dimen/TextsizeV" />
 
         <TextView
-            android:background="@drawable/white"
+            android:background="@drawable/byellow"
             android:id="@+id/c"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
             android:textSize="@dimen/TextsizeV" />
 
         <TextView
-            android:background="@drawable/white"
+            android:background="@drawable/bpink"
             android:id="@+id/d"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text=""
+        android:text="Get Weight"
         android:textAlignment="center"
         android:textColor="@color/button"
         android:textSize="@dimen/TextsizeH"

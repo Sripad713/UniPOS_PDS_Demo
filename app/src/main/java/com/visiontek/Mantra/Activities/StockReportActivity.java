@@ -273,7 +273,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                 mp.start();
             }
             es.submit(new TaskPrint(mTerminal100API,str,mActivity,context,i));
-
+            finish();
         }else {
             show_error_box(context.getResources().getString(R.string.Battery_Msg),context.getResources().getString(R.string.Battery));
         }
