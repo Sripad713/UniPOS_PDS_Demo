@@ -48,22 +48,22 @@ public class AadhaarServicesActivity extends AppCompatActivity {
         }
         initilisation();
 
-        if (diableMenu(context, 4)) {
+        //if (diableMenu(context, 4)) {
             uid.setVisibility(View.INVISIBLE);
             uid.setEnabled(false);
-        }
+        //}
 
         if (diableMenu(context, 2)) {
             beneficiary.setVisibility(View.INVISIBLE);
             beneficiary.setEnabled(false);
         }
-        uid.setOnClickListener(new View.OnClickListener() {
+        /*uid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent uid = new Intent(context, AadhaarSeedingActivity.class);
                 startActivity(uid);
             }
-        });
+        });*/
 
         beneficiary.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -24,7 +24,7 @@
             tools:ignore="MissingConstraints">
 
             <TextView
-                android:textAlignment="center"
+
                 android:id="@+id/total"
                 android:background="@drawable/white"
                 android:layout_width="match_parent"
@@ -32,7 +32,7 @@
                 android:layout_weight="1"
                 android:textColor="@color/blackblack"
                 android:textSize="25dp"
-                android:gravity="center_horizontal" />
+                 />
             <TextView
                 android:id="@+id/bal"
                 android:textAlignment="center"

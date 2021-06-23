@@ -157,9 +157,10 @@ public class DeviceActivity extends AppCompatActivity {
         String date = dateformat.format(new Date()).substring(6, 16);
         toolbarDateValue.setText(date);
         System.out.println(date);
-
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarFpsid.setText("DEVICE ID");
+        toolbarFpsidValue.setText(DEVICEID);
+        //toolbarFpsid.setText("FPS ID");
+//        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
         toolbarActivity.setText("DEVICE");
 
         toolbarLatitudeValue.setText(latitude);

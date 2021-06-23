@@ -362,6 +362,7 @@
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:text="@string/Home"
+                android:foreground="@drawable/custom_ripple"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeB"
                 android:textStyle="bold" />
@@ -375,6 +376,7 @@
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:text="@string/Last_Reciept"
+                android:foreground="@drawable/custom_ripple"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeB"
                 android:textStyle="bold" />
@@ -386,6 +388,7 @@
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:text="@string/Get_Details"
+                android:foreground="@drawable/custom_ripple"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeB"
                 android:textStyle="bold" />

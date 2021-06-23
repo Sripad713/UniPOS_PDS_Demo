@@ -338,11 +338,12 @@
         <Button
             android:layout_marginVertical="20dp"
             android:id="@+id/back"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/cancel"
             android:text="@string/Back"
+            android:foreground="@drawable/custom_ripple"
             android:textColor="@color/white"
             android:textSize="@dimen/TextsizeB" />
     </LinearLayout>

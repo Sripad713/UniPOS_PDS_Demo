@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.visiontek.Mantra.Adapters.DealerListAdapter;
 import com.visiontek.Mantra.Models.DATAModels.DealerListModel;
+import com.visiontek.Mantra.Models.DealerDetailsModel.GetURLDetails.fpsURLInfo;
 import com.visiontek.Mantra.Models.DealerDetailsModel.GetUserDetails.DealerModel;
 import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.MemberModel;
 import com.visiontek.Mantra.R;
@@ -487,7 +488,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 "   \"stateCode\" : "+"\""+dealerConstants.stateBean.stateCode+"\""+",\n" +
                 "   \"terminalId\" : "+"\""+DEVICEID+"\""+",\n" +
                 "   \"timeStamp\" : "+"\""+currentDateTimeString+"\""+",\n" +
-                /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
+               /* "   \"token\" : "+"\""+ dealerConstants.fpsURLInfo.token+"\""+"\n" +*/
                 "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
                 "}";
         Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);

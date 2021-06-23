@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:weightSum="2"
-            android:padding="@dimen/Layoutcard"
+            android:padding="10dp"
             android:background="@color/ik_blue_white"
             android:orientation="horizontal"
             tools:ignore="MissingConstraints">
@@ -29,9 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/white"
-                android:gravity="center_horizontal"
                 android:textSize="25sp"
-                android:textAlignment="center"
                 android:textColor="@color/blackblack" />
 
             <TextView

@@ -264,8 +264,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_weight="1"
-                        android:text="MemberName :"
-                        android:textAlignment="center"
+                        android:text="MemberName : "
+                       android:gravity="end"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/TextsizeB"
                         android:textStyle="bold" />
@@ -274,10 +274,8 @@
                         android:id="@+id/cardnum"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
+                        android:layout_gravity="left"
                         android:layout_weight="1"
-                        android:text=""
-                        android:textAlignment="center"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/TextsizeB"
                         android:textStyle="bold" />
@@ -285,7 +283,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginVertical="@dimen/LayoutMV">
+            android:layout_marginVertical="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -419,7 +417,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="10dp"
+            android:layout_marginVertical="5dp"
             android:orientation="horizontal"
             android:layout_gravity="center"
             android:gravity="center"
@@ -432,6 +430,7 @@
                 android:background="@color/ok"
                 android:gravity="center"
                 android:text="@string/Print"
+                android:foreground="@drawable/custom_ripple"
                 android:textColor="@color/white"
                 android:textSize="30sp"
                 android:textStyle="bold" />

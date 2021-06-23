@@ -30,8 +30,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/white"
-                android:gravity="center_horizontal"
-                android:textAlignment="center"
                 android:textColor="@color/blackblack"
                 android:textSize="25sp" />
 

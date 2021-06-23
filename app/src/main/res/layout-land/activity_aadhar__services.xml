@@ -272,7 +272,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
                 <Button
-
+                    android:foreground="@drawable/custom_ripple"
                     android:id="@+id/btn_uid_seeding"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -290,6 +290,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
                 <Button
+                    android:foreground="@drawable/custom_ripple"
                     android:id="@+id/btn_beneficiaryverification"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -320,7 +321,7 @@
                 android:orientation="vertical">
 
                 <Button
-
+                    android:foreground="@drawable/custom_ripple"
                     android:id="@+id/btn_back"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"

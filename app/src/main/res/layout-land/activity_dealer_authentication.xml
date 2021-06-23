@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -157,6 +157,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
@@ -246,6 +247,7 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -262,7 +264,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/LayoutMV"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="3">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -283,6 +285,17 @@
                     android:layout_weight="1"
                     android:background="@drawable/bblack"
                     android:text="@string/TYPE"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:background="@drawable/bblack"
+                    android:text="@string/UID"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="30sp"
@@ -326,9 +339,11 @@
                         android:textColor="@color/white"
                         android:textSize="30sp"
                         android:textStyle="bold"
+                        android:foreground="@drawable/custom_ripple"
                         tools:ignore="ButtonStyle" />
                 </LinearLayout>
                 <LinearLayout
+                    android:layout_gravity="center"
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -336,6 +351,7 @@
                     android:layout_weight="1">
 
                     <TextView
+
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:checked="true"
@@ -357,6 +373,7 @@
                         android:text="@string/Scan_FP"
                         android:textColor="@color/white"
                         android:textSize="30sp"
+                        android:foreground="@drawable/custom_ripple"
                         android:textStyle="bold"
                         tools:ignore="ButtonStyle" />
                 </LinearLayout>
@@ -364,7 +381,6 @@
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -409,4 +425,5 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

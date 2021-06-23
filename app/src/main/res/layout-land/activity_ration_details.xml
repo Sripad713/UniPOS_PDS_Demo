@@ -69,6 +69,7 @@
                         android:textStyle="bold" />
 
                     <Spinner
+                        style="@style/Widget.AppCompat.DropDownItem.Spinner"
                         android:background="@drawable/wblack"
                         android:id="@+id/options"
                         android:layout_width="match_parent"
@@ -367,6 +368,7 @@
                 android:layout_weight="1"
                 android:background="@color/opaque_red"
                 android:text="@string/Back"
+                android:foreground="@drawable/custom_ripple"
                 android:textColor="@color/white"
                 android:textSize="30dp"
                 android:textStyle="bold" />
@@ -394,6 +396,7 @@
                 android:layout_weight="1"
                 android:background="@color/ok"
                 android:text="@string/Confirm"
+                android:foreground="@drawable/custom_ripple"
                 android:textColor="@color/white"
                 android:textSize="30dp"
                 android:textStyle="bold" />

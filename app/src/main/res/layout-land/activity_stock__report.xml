@@ -359,6 +359,7 @@
                 android:layout_weight="1"
                 android:background="@color/opaque_red"
                 android:text="@string/Back"
+                android:foreground="@drawable/custom_ripple"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="@dimen/TextsizeB"/>
@@ -375,6 +376,7 @@
                 android:layout_weight="1"
                 android:background="@color/ok"
                 android:text="@string/Print"
+                android:foreground="@drawable/custom_ripple"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="@dimen/TextsizeB"/>

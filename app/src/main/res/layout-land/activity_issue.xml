@@ -279,6 +279,7 @@
                     android:layout_weight="1"
                     android:background="@color/button"
                     android:text="@string/Cash_PDS"
+                    android:foreground="@drawable/custom_ripple"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold" />
@@ -289,6 +290,7 @@
                     android:layout_height="@dimen/ButtonH"
                     android:layout_margin="@dimen/ButtonM"
                     android:layout_weight="1"
+                    android:foreground="@drawable/custom_ripple"
                     android:background="@color/button"
                     android:text="@string/Cashless_PDS"
                     android:textColor="@color/white"
@@ -312,6 +314,7 @@
                     android:layout_weight="1"
                     android:background="@color/button"
                     android:text="@string/IMPDS"
+                    android:foreground="@drawable/custom_ripple"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold"

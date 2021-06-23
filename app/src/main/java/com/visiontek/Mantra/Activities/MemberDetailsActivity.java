@@ -299,7 +299,31 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
+
+    private  void show_AfterEkycFail(String msg, String title, final String flow) {
+         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(msg);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        if (flow.equals("D")) {
+                            DealerAuth();
+                        } else if (flow.equals("M")) {
+                            ManualAuth();
+                        }
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
 
     private void show_error_box(String msg, String title, final int type) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
@@ -612,6 +636,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
+
                 Ekyc= (Ekyc) object;
 
                 if (isError.equals("E00") && flow.equals("F")) {
@@ -623,22 +648,17 @@ public class MemberDetailsActivity extends AppCompatActivity {
                             context.getResources().getString(R.string.Gender) + Ekyc.eKYCGeneder+ "\n" +
                             context.getResources().getString(R.string.Date) +  currentDateTimeString + "\n";
                     show_error_box(msg + details, isError, 3);
-                } else {
-                    if (flow.equals("D")) {
-                        DealerAuth();
-                        return;
-                    } else if (flow.equals("M")) {
-                        ManualAuth();
-                        return;
-                    }
+                } else if (isError.equals("E00") && flow.equals("B")){
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
                     String details = "\n"+context.getResources().getString(R.string.MemberName) + Ekyc.eKYCMemberName + "\n" +
                             context.getResources().getString(R.string.DOB) + Ekyc.eKYCDOB + "\n" +
                             context.getResources().getString(R.string.PindCode) + Ekyc.eKYCPindCode+ "\n" +
                             context.getResources().getString(R.string.Gender) + Ekyc.eKYCGeneder+ "\n" +
                             context.getResources().getString(R.string.Date) +  currentDateTimeString + "\n";
-                    show_error_box(msg + details, isError,0);
-                    //show_error_box(msg, context.getResources().getString(R.string.Member_EKYC) + isError, 0);
+                    show_AfterEkycFail(msg + details, isError,flow);
+
+                }else {
+                    show_error_box(msg, context.getResources().getString(R.string.Member_EKYC) + isError, 0);
                 }
             }
         });

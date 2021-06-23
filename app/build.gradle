@@ -73,4 +73,6 @@ dependencies {
 
     implementation files('libs/mTerminal100.aar')
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+
 }

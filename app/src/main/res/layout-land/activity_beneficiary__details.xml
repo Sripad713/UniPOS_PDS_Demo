@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool"
@@ -285,8 +286,7 @@
         </LinearLayout>-->
 
         <LinearLayout
-            android:layout_marginVertical="@dimen/LayoutH"
-            android:layout_width="match_parent"
+            android:layout_marginVertical="10dp"            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:orientation="horizontal"
@@ -368,6 +368,7 @@
                     android:text="@string/Back"
                     android:textColor="@color/white"
                     android:textSize="30sp"
+                    android:foreground="@drawable/custom_ripple"
                     android:textStyle="bold"
                     tools:ignore="ButtonStyle" />
             </LinearLayout>
@@ -401,6 +402,7 @@
                     android:textColor="@color/white"
                     android:textSize="30sp"
                     android:textStyle="bold"
+                    android:foreground="@drawable/custom_ripple"
                     tools:ignore="ButtonStyle" />
             </LinearLayout>
         </LinearLayout>

@@ -391,6 +391,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
             <Button
+                android:foreground="@drawable/custom_ripple"
                 android:id="@+id/inspection_back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -425,7 +426,7 @@
                 android:id="@+id/inspection_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:foreground="@drawable/custom_ripple"
                 android:background="@color/ok"
                 android:text="@string/Next"
                 android:textColor="@color/white"

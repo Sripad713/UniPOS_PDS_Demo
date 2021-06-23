@@ -27,6 +27,7 @@ import java.util.Date;
 
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 
@@ -160,8 +161,8 @@ public class DeviceInfoActivity extends AppCompatActivity {
         toolbarDateValue.setText(date);
         System.out.println(date);
 
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        toolbarFpsid.setText("DEVICE ID");
+        toolbarFpsidValue.setText(DEVICEID);
         toolbarActivity.setText("DEVICE INFO");
 
         toolbarLatitudeValue.setText(latitude);

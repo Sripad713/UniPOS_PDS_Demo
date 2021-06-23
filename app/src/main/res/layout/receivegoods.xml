@@ -166,6 +166,7 @@
                     android:layout_height="60dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
+                    android:foreground="@drawable/custom_ripple"
                     android:background="@color/opaque_red"
                     android:text="@string/Back"
                     android:textColor="@color/white"
@@ -180,6 +181,7 @@
                     android:layout_weight="1"
                     android:background="@color/ok"
                     android:text="@string/Confirm"
+                    android:foreground="@drawable/custom_ripple"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold" />

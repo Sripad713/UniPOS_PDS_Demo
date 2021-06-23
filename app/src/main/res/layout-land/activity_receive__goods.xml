@@ -259,6 +259,7 @@
         android:weightSum="2">
 
         <Spinner
+            style="@style/Widget.AppCompat.DropDownItem.Spinner"
             android:id="@+id/truckchit"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -393,6 +394,7 @@
             android:layout_weight="1"
             android:background="@color/opaque_red"
             android:text="@string/Back"
+            android:foreground="@drawable/custom_ripple"
             android:textColor="@color/white"
             android:textSize="@dimen/TextsizeB"
             android:textStyle="bold" />
@@ -409,6 +411,7 @@
             android:layout_weight="1"
             android:background="@color/ok"
             android:text="@string/Next"
+            android:foreground="@drawable/custom_ripple"
             android:textColor="@color/white"
             android:textSize="@dimen/TextsizeB"
             android:textStyle="bold" />

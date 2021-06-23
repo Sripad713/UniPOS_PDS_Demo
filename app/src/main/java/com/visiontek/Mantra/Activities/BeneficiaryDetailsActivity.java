@@ -215,8 +215,6 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         pd = new ProgressDialog(context);
         back = findViewById(R.id.Ben_details_back);
         Ekyc = findViewById(R.id.Ben_details_Ekyc);
-        Ben_cardnum = findViewById(R.id.Ben_cardnum);
-        Ben_cardnum.setText(beneficiaryDetails.rationCardId);
         toolbarInitilisation();
     }
 

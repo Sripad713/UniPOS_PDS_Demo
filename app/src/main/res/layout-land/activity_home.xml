@@ -267,7 +267,7 @@
                 android:orientation="horizontal"
                 android:weightSum="2">
                 <Button
-
+                    android:foreground="@drawable/custom_ripple"
                     android:id="@+id/issue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -280,6 +280,7 @@
                     android:textStyle="bold" />
 
                 <Button
+                    android:foreground="@drawable/custom_ripple"
                     android:id="@+id/inspection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -304,6 +305,7 @@
                 android:orientation="horizontal"
                 android:weightSum="2">
                 <Button
+                    android:foreground="@drawable/custom_ripple"
                     android:id="@+id/aadhaar_services"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -316,6 +318,7 @@
                     android:textStyle="bold" />
 
                 <Button
+                    android:foreground="@drawable/custom_ripple"
                     android:id="@+id/receive_goods"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -339,6 +342,7 @@
                 android:orientation="horizontal"
                 android:weightSum="2">
                 <Button
+                    android:foreground="@drawable/custom_ripple"
                     android:id="@+id/reports"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -351,6 +355,7 @@
                     android:textStyle="bold" />
 
                 <Button
+                    android:foreground="@drawable/custom_ripple"
                     android:id="@+id/others"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -378,6 +383,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:foreground="@drawable/custom_ripple"
                 android:id="@+id/logout"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"

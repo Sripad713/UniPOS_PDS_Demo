@@ -129,7 +129,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                        app = String.format("%-6s%-6s%-6s%-8s%-8s\n",
                                stockDetails.astockBean.get(i).comm_name,
                                stockDetails.astockBean.get(i).scheme_desc_en ,
-                               stockDetails.astockBean.get(i).total_quantity,
+                               stockDetails.astockBean.get(i).opening_balance,
                                stockDetails.astockBean.get(i).issued_qty,
                                stockDetails.astockBean.get(i).closing_balance);
                        add.append(app);
@@ -345,7 +345,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                     for (int i = 0; i < astockBeansize; i++) {
                         data.add(new StockListModel(stockDetails.astockBean.get(i).comm_name,
                                 stockDetails.astockBean.get(i).scheme_desc_en,
-                                stockDetails.astockBean.get(i).total_quantity,
+                                stockDetails.astockBean.get(i).opening_balance,
                                 stockDetails.astockBean.get(i).issued_qty,
                                 stockDetails.astockBean.get(i).closing_balance));
                     }
