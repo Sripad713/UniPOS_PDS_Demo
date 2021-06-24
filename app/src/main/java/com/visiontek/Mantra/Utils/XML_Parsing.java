@@ -466,7 +466,7 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
                             }
                         }
                     }
-                    if (eventType == XmlPullParser.START_TAG) {
+                    /*if (eventType == XmlPullParser.START_TAG) {
                         if (xpp.getName().equals("rcId")) {
                             eventType = xpp.next();
                             if (eventType == XmlPullParser.TEXT) {
@@ -474,7 +474,7 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
                                 System.out.println("rcId 2 =================" + xpp.getText());
                             }
                         }
-                    }
+                    }*/
                     if (eventType == XmlPullParser.START_TAG) {
                         if (xpp.getName().equals("retail_price")) {
                             eventType = xpp.next();

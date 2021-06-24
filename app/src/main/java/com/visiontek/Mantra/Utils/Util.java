@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
-import com.visiontek.Mantra.Models.DealerDetailsModel.GetURLDetails.stateBean;
 import com.visiontek.Mantra.R;
 
 import org.apache.commons.net.util.Base64;
@@ -74,10 +73,10 @@ public class Util {
         }
     }
 
-    public static void releaseMediaPlayer(Context context, MediaPlayer mp){
+    public static void releaseMediaPlayer(Context context, MediaPlayer mp) {
         mp.stop();
         mp.release();
-        mp=null;
+        mp = null;
 
     }
 
@@ -87,12 +86,11 @@ public class Util {
         return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) >= 30;
     }
 
-    public static String ConsentForm(Context context)
-    {
-          String concent = context.getResources().getString(R.string.part1) + dealerConstants.stateBean.stateReceiptHeaderEn +
-                 context.getResources().getString(R.string.part2) + dealerConstants.stateBean.stateReceiptHeaderEn +
-                 context.getResources().getString(R.string.part3);
-       return concent;
+    public static String ConsentForm(Context context) {
+        String concent = context.getResources().getString(R.string.part1) + dealerConstants.stateBean.stateReceiptHeaderEn +
+                context.getResources().getString(R.string.part2) + dealerConstants.stateBean.stateReceiptHeaderEn +
+                context.getResources().getString(R.string.part3);
+        return concent;
     }
 
 
@@ -250,19 +248,19 @@ public class Util {
     }
 
 
-    public static byte[] image( String print,String name,int align) throws IOException{
+    public static byte[] image(String print, String name, int align) throws IOException {
 
         byte[] logo = new byte[0];
 
-        final TextPaint textPaint = new TextPaint() ;
+        final TextPaint textPaint = new TextPaint();
         textPaint.setTextSize(20f);
         StaticLayout staticLayout;
-        if (align==1) {
-             staticLayout = new StaticLayout(print, 0, print.length(),
+        if (align == 1) {
+            staticLayout = new StaticLayout(print, 0, print.length(),
                     textPaint, 300, Layout.Alignment.ALIGN_CENTER, 1.0f,
                     1.0f, false);
-        }else {
-             staticLayout = new StaticLayout(print, 0, print.length(),
+        } else {
+            staticLayout = new StaticLayout(print, 0, print.length(),
                     textPaint, 300, Layout.Alignment.ALIGN_NORMAL, 1.0f,
                     1.0f, false);
         }
@@ -279,7 +277,7 @@ public class Util {
 
         staticLayout.draw(canvas);
 
-        FileOutputStream stream = new FileOutputStream(Environment.getExternalStorageDirectory() + "/"+name); //create your FileOutputStream here
+        FileOutputStream stream = new FileOutputStream(Environment.getExternalStorageDirectory() + "/" + name); //create your FileOutputStream here
         BufferedOutputStream bos = new BufferedOutputStream(stream);
 
         Bitmap image = addBorder(bmp, 2, Color.WHITE);
@@ -290,14 +288,15 @@ public class Util {
         bos.close();
 
         try {
-            logo = LogoUtil.toBytes(Environment.getExternalStorageDirectory() + "/"+name);
-            System.out.println(".............."+ Arrays.toString(logo));
+            logo = LogoUtil.toBytes(Environment.getExternalStorageDirectory() + "/" + name);
+            System.out.println(".............." + Arrays.toString(logo));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return logo;
     }
+
     public static Bitmap addBorder(Bitmap bmp, int borderSize, int borderColor) {
         Bitmap bmpWithBorder = Bitmap.createBitmap(bmp.getWidth() + borderSize
                 * 2, bmp.getHeight() + borderSize * 2, bmp.getConfig());
@@ -306,10 +305,11 @@ public class Util {
         canvas.drawBitmap(bmp, borderSize, borderSize, null);
         return bmpWithBorder;
     }
+
     public static Bitmap getImageFromAssetsFile(Context ctx, String s) {
         Bitmap image = null;
         File sdcard = Environment.getExternalStorageDirectory();
-        String bmp_file = sdcard + "/"+s;
+        String bmp_file = sdcard + "/" + s;
         image = BitmapFactory.decodeFile(bmp_file);
 
         return image;
@@ -329,9 +329,39 @@ public class Util {
             return "";
         }
     }
+
+
+    public static boolean checkdotvalue(String Qty) {
+        int i = 0, count = 0;
+        int len = 0, dotPos = 0;
+
+        for (i = 0; i < (Qty.length()); i++) {
+            if (Qty.charAt(0) == '.') {
+                return false;
+            } else if (Qty.charAt((Qty.length()) - 1) == '.') {
+                return false;
+            } else if (Qty.charAt(i) == '.') {
+                dotPos = i;
+                count++;
+            }
+        }
+
+        if (count > 1) {
+            return false;
+        } else {
+            if (dotPos == 0) {
+                return true;
+            } else {
+                len = (Qty.length()) - (dotPos + 1);
+                if (len > 3) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
     //***************************************************************************
-
-
 
 
 }

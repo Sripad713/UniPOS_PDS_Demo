@@ -356,13 +356,13 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     show_error_box(msg, context.getResources().getString(R.string.Dealer_Details) + isError);
 
                 } else {
-                    System.out.println("==============");
+
                     saleDetails= (SaleDetails) object;
                     data = new ArrayList<>();
                     int drBeansize =saleDetails.drBean.size();
                     for (int i = 0; i < drBeansize; i++) {
                         data.add(new DailySalesListModel(saleDetails.drBean.get(i).comm_name,
-                                saleDetails.drBean.get(i).total_cards,
+                                saleDetails.drBean.get(i).schemeName,
                                 saleDetails.drBean.get(i).sale));
                         /*
                         String sch = saleDetails.drBean.get(i).schemeName.trim();switch (sch) {

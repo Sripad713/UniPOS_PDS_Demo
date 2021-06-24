@@ -131,7 +131,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                         show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
                     }
                 } else {
-                    show_error_box(context.getResources().getString(R.string.Please_Select_Another_Dealer), context.getResources().getString(R.string.Dealer), 0);
+                    show_error_box("Please Select Dealer who has FingerPrint Authentication", context.getResources().getString(R.string.Dealer), 0);
                 }
             }
         });

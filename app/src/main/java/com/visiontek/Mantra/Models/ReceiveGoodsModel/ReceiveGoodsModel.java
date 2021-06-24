@@ -13,7 +13,7 @@ public class ReceiveGoodsModel implements Serializable {
             cid,
             orderno,
             truckno;
-    public int select;
+    public int select=-1;
     public String received;
     public ArrayList<tcCommDetails> tcCommDetails=new ArrayList<>();
 

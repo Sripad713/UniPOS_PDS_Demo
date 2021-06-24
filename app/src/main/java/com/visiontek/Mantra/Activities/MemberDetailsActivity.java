@@ -113,11 +113,11 @@ public class MemberDetailsActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
-                if (memberModel.uid.equals("NA")){
-                    show_error_box(context.getResources().getString(R.string.NA_MSG), context.getResources().getString(R.string.NA), 0);
-                    return;
-                }
                 if (memberModel.click) {
+                    if (memberModel.uid.equals("NA")){
+                        show_error_box(context.getResources().getString(R.string.NA_MSG), context.getResources().getString(R.string.NA), 0);
+                        return;
+                    }
                     if (networkConnected(context)) {
                         ConsentDialog(ConsentForm(context));
 
@@ -640,20 +640,14 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
                 if (!isError.equals("E00")) {
                     show_error_box(msg, context.getResources().getString(R.string.Member_EKYC) + isError, 0);
-                   /* String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                    String details = "\n"+context.getResources().getString(R.string.MemberName) + Ekyc.eKYCMemberName + "\n" +
-                            context.getResources().getString(R.string.DOB) + Ekyc.eKYCDOB + "\n" +
-                            context.getResources().getString(R.string.PindCode) + Ekyc.eKYCPindCode+ "\n" +
-                            context.getResources().getString(R.string.Gender) + Ekyc.eKYCGeneder+ "\n" +
-                            context.getResources().getString(R.string.Date) +  currentDateTimeString + "\n";
-                    show_error_box(msg + details, isError, 3);*/
                 } else {
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                    String details = "\n"+context.getResources().getString(R.string.MemberName) + Ekyc.eKYCMemberName + "\n" +
-                            context.getResources().getString(R.string.DOB) + Ekyc.eKYCDOB + "\n" +
-                            context.getResources().getString(R.string.PindCode) + Ekyc.eKYCPindCode+ "\n" +
-                            context.getResources().getString(R.string.Gender) + Ekyc.eKYCGeneder+ "\n" +
-                            context.getResources().getString(R.string.Date) +  currentDateTimeString + "\n";
+                    String details = "\n"+
+                            context.getResources().getString(R.string.MemberName) + Ekyc.eKYCMemberName + "\n" +
+                            context.getResources().getString(R.string.DOB) + " : "+Ekyc.eKYCDOB + "\n" +
+                            context.getResources().getString(R.string.PindCode) +" : "+ Ekyc.eKYCPindCode+ "\n" +
+                            context.getResources().getString(R.string.Gender) +" : "+ Ekyc.eKYCGeneder+ "\n" +
+                            context.getResources().getString(R.string.Date) +" : "+  currentDateTimeString + "\n";
 
                     show_AfterEkyc(msg + details, isError,flow);
                 }

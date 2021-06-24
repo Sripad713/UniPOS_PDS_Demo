@@ -40,6 +40,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Utils.Util.checkdotvalue;
 
 
 public class ReceiveGoodsActivity extends AppCompatActivity {
@@ -53,7 +54,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
     TextView trucknumber;
     ReceiveGoodsDetails receiveGoodsDetails;
-    ReceiveGoodsModel receiveGoodsModel;
+    ReceiveGoodsModel receiveGoodsModel=new ReceiveGoodsModel();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +72,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service),0);
             return;
         }
-
+        receiveGoodsModel=new ReceiveGoodsModel();
         initilisation();
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -99,19 +100,18 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapter, View v, int position, long id) {
                 if (position!=0) {
-                    position=position-1;
-                    receiveGoodsModel.select = position;
+                    receiveGoodsModel.select = position-1;
                     System.out.println("SELETED=" + position);
-                    receiveGoodsModel.length = receiveGoodsDetails.infoTCDetails.get(position).CommLength;
-                    receiveGoodsModel.fps = receiveGoodsDetails.infoTCDetails.get(position).fpsId;
-                    receiveGoodsModel.month = receiveGoodsDetails.infoTCDetails.get(position).allotedMonth;
-                    receiveGoodsModel.year = receiveGoodsDetails.infoTCDetails.get(position).allotedYear;
-                    receiveGoodsModel.chit = receiveGoodsDetails.infoTCDetails.get(position).truckChitNo;
-                    receiveGoodsModel.cid = receiveGoodsDetails.infoTCDetails.get(position).challanId;
-                    receiveGoodsModel.orderno = receiveGoodsDetails.infoTCDetails.get(position).allocationOrderNo;
-                    receiveGoodsModel.truckno = receiveGoodsDetails.infoTCDetails.get(position).truckNo;
+                    receiveGoodsModel.length = receiveGoodsDetails.infoTCDetails.get(position-1).CommLength;
+                    receiveGoodsModel.fps = receiveGoodsDetails.infoTCDetails.get(position-1).fpsId;
+                    receiveGoodsModel.month = receiveGoodsDetails.infoTCDetails.get(position-1).allotedMonth;
+                    receiveGoodsModel.year = receiveGoodsDetails.infoTCDetails.get(position-1).allotedYear;
+                    receiveGoodsModel.chit = receiveGoodsDetails.infoTCDetails.get(position-1).truckChitNo;
+                    receiveGoodsModel.cid = receiveGoodsDetails.infoTCDetails.get(position-1).challanId;
+                    receiveGoodsModel.orderno = receiveGoodsDetails.infoTCDetails.get(position-1).allocationOrderNo;
+                    receiveGoodsModel.truckno = receiveGoodsDetails.infoTCDetails.get(position-1).truckNo;
                     trucknumber.setText(context.getResources().getString(R.string.Truck_No) + receiveGoodsModel.truckno);
-                    DisplayTruck(position);
+                    DisplayTruck(position-1);
                 }
             }
 
@@ -124,18 +124,23 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         scapfp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (check()) {
-                    if (Util.networkConnected(context)) {
-                        addCommDetails();
-                        Intent i = new Intent(ReceiveGoodsActivity.this, DealerAuthenticationActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.putExtra("OBJ",  receiveGoodsModel);
-                        startActivity(i);
+                if (receiveGoodsModel.select!=-1) {
+                    if (check()) {
+                        if (Util.networkConnected(context)) {
+                            addCommDetails();
+                            Intent i = new Intent(ReceiveGoodsActivity.this, DealerAuthenticationActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.putExtra("OBJ", receiveGoodsModel);
+                            startActivity(i);
+                        } else {
+                            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                        }
                     } else {
-                        show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
+                        show_error_box("Please Enter Received Quantity", "Enter Quantity", 0);
                     }
-                } else {
-                    show_error_box( "Please Enter Quantity",  "Enter Quantity", 0);
+                }else {
+                    show_error_box("Please Select Truck Chit No", "Enter Quantity", 0);
+
                 }
             }
         });
@@ -262,16 +267,21 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                receiveGoodsModel.received = received.getText().toString();
-                if (!receiveGoodsModel.received.isEmpty()) {
-                    float textdata = Float.parseFloat((receiveGoodsModel.received));
-                    float dispatch = Float.parseFloat(( receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(position).releasedQuantity));
-                    if (textdata>dispatch){
-                        show_error_box("","Please Enter the value less than Dispatched",  0);
+                String res;
+                 res= received.getText().toString();
+                if (!res.isEmpty() && res.length()>0 && res!=null) {
+                    if (checkdotvalue(res)) {
+                        receiveGoodsModel.received = res;
+                        float textdata = Float.parseFloat((receiveGoodsModel.received));
+                        float dispatch = Float.parseFloat((receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(position).releasedQuantity));
+                        if (textdata > dispatch) {
+                            show_error_box("", "Please Enter the value less than Dispatched", 0);
+                        } else {
+                            receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(position).enteredvalue = receiveGoodsModel.received;
+                            DisplayTruck(receiveGoodsModel.select);
+                        }
                     }else {
-                        receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(position).enteredvalue = receiveGoodsModel.received;
-
-                        DisplayTruck(receiveGoodsModel.select);
+                        show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
                     }
                 } else {
                     show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);

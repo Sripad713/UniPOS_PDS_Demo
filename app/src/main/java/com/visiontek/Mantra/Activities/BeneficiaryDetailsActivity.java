@@ -256,7 +256,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 dialog.dismiss();
                 beneficiaryModel.Enter_UID = enter.getText().toString();
 
-                if (validateVerhoeff(beneficiaryModel.Enter_UID)) {
+                if (validateVerhoeff(beneficiaryModel.Enter_UID) && beneficiaryModel.Enter_UID.length()==12) {
                     try {
                         beneficiaryModel.Enter_UID = encrypt(beneficiaryModel.Enter_UID, menuConstants.skey);
 
@@ -364,10 +364,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     beneficiaryAuth = (BeneficiaryAuth) object;
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
                     details = "\n" + context.getResources().getString(R.string.MemberName) + beneficiaryAuth.eKYCMemberName + "\n" +
-                            context.getResources().getString(R.string.DOB) + beneficiaryAuth.eKYCDOB + "\n" +
-                            context.getResources().getString(R.string.PindCode) + beneficiaryAuth.eKYCPindCode + "\n" +
-                            context.getResources().getString(R.string.Gender) + beneficiaryAuth.eKYCGeneder + "\n" +
-                            context.getResources().getString(R.string.Date) + currentDateTimeString + "\n";
+                            context.getResources().getString(R.string.DOB) +" : "+ beneficiaryAuth.eKYCDOB + "\n" +
+                            context.getResources().getString(R.string.PindCode) +" : "+ beneficiaryAuth.eKYCPindCode + "\n" +
+                            context.getResources().getString(R.string.Gender) +" : "+ beneficiaryAuth.eKYCGeneder + "\n" +
+                            context.getResources().getString(R.string.Date) +" : "+ currentDateTimeString + "\n";
 
                     show_error_box(details,error,1);
                 }

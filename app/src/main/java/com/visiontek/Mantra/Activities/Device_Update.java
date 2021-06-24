@@ -53,9 +53,9 @@ public class Device_Update extends AppCompatActivity {
     ProgressDialog pd;
     String
             fHostName = "115.111.229.10",
-            fUserName = "rnd",
+            fUserName = "Android",
             fPassword = "rnd123",
-            Source = "/" + fUserName + "/apk/",
+            Source = "/" + fUserName + "/Chhattisgarh/",
             FTP_file = "",
             Download = "",
             Device_Download_path;
@@ -163,12 +163,14 @@ public class Device_Update extends AppCompatActivity {
     }
 
     private void fdownload() {
+        pd = ProgressDialog.show(context, "", context.getResources().getString(R.string.Processing), false, false);
         try {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     boolean download = ftpclient.ftpDownload(Download, Device_Download_path);
                     if (download) {
+                        something = context.getResources().getString(R.string.Download_Completed);
                         handler.sendEmptyMessage(3);
                     } else {
                         something = context.getResources().getString(R.string.Download_Failed);
@@ -241,7 +243,7 @@ public class Device_Update extends AppCompatActivity {
                     show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection));
                 }
             } else if (msg.what == 3) {
-                install();
+                show_Install("Please click ok to Install",something);
             }  else if (msg.what == 4) {
                 show_error_box(something,context.getResources().getString(R.string.Something_went_Wrong_Please_Try_Again));
             } else if (msg.what == 5) {
@@ -264,6 +266,7 @@ public class Device_Update extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
 
+
                     }
                 });
 
@@ -271,6 +274,25 @@ public class Device_Update extends AppCompatActivity {
         alertDialog.show();
 
     }
+
+    private void show_Install(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(msg);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    install();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+    }
+
 
     private void toolbarInitilisation() {
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);

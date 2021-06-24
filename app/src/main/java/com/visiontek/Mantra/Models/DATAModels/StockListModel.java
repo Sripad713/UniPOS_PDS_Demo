@@ -24,14 +24,12 @@ public class StockListModel {
         return scheme;
     }
 
-    public String getIssue() {
+    public String getPrice() {
         return ob;
     }
-
-    public String getPrice() {
+    public String getIssue() {
         return issue;
     }
-
     public String getAmount() {
         return cb;
     }

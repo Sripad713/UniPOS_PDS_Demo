@@ -137,9 +137,10 @@ public class StartActivity extends AppCompatActivity {
                 startActivityForResult(settings, 1);
             }
         });
-        }catch (Exception e){
-            show_error_box(e.toString(),"Start"  , 0);
-
+        }catch (Exception ex){
+            System.out.println(ex.getMessage());
+            show_error_box(ex.getMessage(),"Start"  , 0);
+            Timber.e(ex.getMessage(),"");
         }
     }
 

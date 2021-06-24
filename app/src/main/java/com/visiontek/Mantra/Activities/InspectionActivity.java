@@ -80,6 +80,7 @@ import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.ConsentForm;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Utils.Util.checkdotvalue;
 import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
@@ -184,6 +185,9 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 if (check()) {
                     fCount = "1";
                     Enter_UID();
+                }else {
+                    show_error_box("Please Select atleast one Observation", context.getResources().getString(R.string.Internet_Connection), 0);
+
                 }
             }
         });
@@ -758,25 +762,31 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 public void onClick(View v) {
                     dialog.dismiss();
                     String Check = observation.getText().toString();
-                    textdata = Float.parseFloat(Check);
-                    cb = Float.parseFloat(inspectionDetails.commDetails.get(position).closingBalance);
-                    if (!Check.isEmpty() && textdata < cb && textdata > 0) {
-                        var = (Float) (cb - textdata);
-                        if (var > 0 && var < cb) {
-                            System.out.println("----------------0");
-                            AFTERDATA = String.valueOf(var);
-                            DATA = String.valueOf(textdata);
-
-                            inspectionDetails.commDetails.get(position).entered = DATA;
-                            inspectionDetails.commDetails.get(position).variation = AFTERDATA;
-
-                            data.clear();
-
-                            Display(0);
+                    if (!Check.isEmpty()&& Check!=null&& Check.length()>0 ) {
+                        if (checkdotvalue(Check)) {
+                            textdata = Float.parseFloat(Check);
+                            cb = Float.parseFloat(inspectionDetails.commDetails.get(position).closingBalance);
+                            if (textdata <= cb && textdata >= 0) {
+                                var = (Float) (cb - textdata);
+                                if (var >= 0 && var <= cb) {
+                                    System.out.println("----------------0");
+                                    AFTERDATA = String.valueOf(var);
+                                    DATA = String.valueOf(textdata);
+                                    inspectionDetails.commDetails.get(position).entered = DATA;
+                                    inspectionDetails.commDetails.get(position).variation = AFTERDATA;
+                                    data.clear();
+                                    Display(0);
+                                }
+                            } else {
+                                show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
+                            }
+                        }else {
+                            show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
                         }
-                    } else {
-                        show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
-                    }
+                        } else {
+                            show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
+                        }
+
                 }
             });
             back.setOnClickListener(new View.OnClickListener() {

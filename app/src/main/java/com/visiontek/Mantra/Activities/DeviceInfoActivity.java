@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -78,14 +80,18 @@ public class DeviceInfoActivity extends AppCompatActivity {
 
         toolbarInitilisation();
         saveInfo(context);
+        Button back=findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void saveInfo(Context context) {
         ArrayList<String> value = new ArrayList<>();
-        value.add("Brand");
-        value.add("Product");
-        value.add("Hardware");
         value.add("Device");
         value.add("Manufacture");
         value.add("Model");
@@ -98,9 +104,6 @@ public class DeviceInfoActivity extends AppCompatActivity {
         value.add("Application");
 
         ArrayList<String> info = new ArrayList<>();
-        info.add(Build.BRAND);
-        info.add(Build.PRODUCT);
-        info.add(Build.HARDWARE);
         info.add(Build.DEVICE);
         info.add(Build.MANUFACTURER);
         info.add(Build.MODEL);
@@ -110,7 +113,7 @@ public class DeviceInfoActivity extends AppCompatActivity {
         info.add(Build.DISPLAY);
         info.add(Build.getRadioVersion());
         info.add(readKernelVersion());
-        info.add("UniPOS_PDS_Demo");
+        info.add("MantraPDS_1.0");
 
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -121,7 +124,6 @@ public class DeviceInfoActivity extends AppCompatActivity {
 
         for (int i = 3; i < value.size(); i++) {
             arraydata.add(new DeviceInfoListModel(value.get(i), info.get(i).trim()));
-            System.out.println("1111=" + info.get(i));
         }
         adapter = new DeviceInfoListAdapter(context, arraydata);
         recyclerView.setAdapter(adapter);
@@ -154,7 +156,6 @@ public class DeviceInfoActivity extends AppCompatActivity {
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
         toolbarVersion.setText("Version : " + appversion);
-
 
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
         String date = dateformat.format(new Date()).substring(6, 16);

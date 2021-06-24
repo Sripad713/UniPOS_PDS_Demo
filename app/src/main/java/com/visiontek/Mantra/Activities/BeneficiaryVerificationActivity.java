@@ -121,7 +121,7 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
     private void Benverify() {
         String ben = null;
         if (select == 2) {
-            if (validateVerhoeff(BEN_ID)) {
+            if (validateVerhoeff(BEN_ID) && BEN_ID.length() ==12) {
                 try {
                     BEN_ID = encrypt(BEN_ID, menuConstants.skey);
                 } catch (BadPaddingException e) {
@@ -160,6 +160,7 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
                     mp.start();
                 }
                 show_error_box(context.getResources().getString(R.string.Please_Enter_Valid_Number), context.getResources().getString(R.string.Invalid_UID));
+                id.setText("");
                 return;
             }
         } else {
@@ -209,17 +210,19 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
                 }
                 if (error == null || error.isEmpty()) {
                     show_error_box("Invalid Response from Server", "No Response");
+                    id.setText("");
                     return;
                 }
                 if (!error.equals("00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
                     show_error_box(msg, "Member Details: " + error);
-                } else {
                     id.setText("");
+                } else {
                     BeneficiaryDetails beneficiaryDetails= (BeneficiaryDetails) object;
                     Intent ben = new Intent(context, BeneficiaryDetailsActivity.class);
                     ben.putExtra("OBJ", (Serializable) beneficiaryDetails);
                     startActivity(ben);
+                    id.setText("");
                 }
             }
         });

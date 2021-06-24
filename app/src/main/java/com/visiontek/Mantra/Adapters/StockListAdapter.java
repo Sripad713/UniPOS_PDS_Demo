@@ -45,8 +45,8 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.MyVi
 
         textViewComm.setText(dataSet.get(listPosition).getName());
         textViewScheme.setText(dataSet.get(listPosition).getPrev());
-        textViewIssue.setText(dataSet.get(listPosition).getIssue());
         textViewOb.setText(dataSet.get(listPosition).getPrice());
+        textViewIssue.setText(dataSet.get(listPosition).getIssue());
         textViewCb.setText(dataSet.get(listPosition).getAmount());
 
     }

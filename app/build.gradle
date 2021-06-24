@@ -32,7 +32,7 @@ android {
 
 android.applicationVariants.all { variant ->
     variant.outputs.all {
-        outputFileName = "MantraPDS.apk"
+        outputFileName = "MantraPDS_" + "${variant.versionName}.apk"
     }
 }
 dependencies {

@@ -63,6 +63,7 @@ import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.address;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
+import static com.visiontek.Mantra.Utils.Util.checkdotvalue;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 public class RationDetailsActivity extends AppCompatActivity {
@@ -305,10 +306,10 @@ public class RationDetailsActivity extends AppCompatActivity {
                             ManualDialog(p);
                         }
                     }else {
-                        show_error_box("Balance Quantity is too low ",(memberConstants.commDetails.get(p).commName) , 0);
+                        show_error_box("Balance Quantity is Not Available ",(memberConstants.commDetails.get(p).commName) , 0);
                     }
                 } else {
-                    show_error_box("Closing Balance Quantity is too low ",(memberConstants.commDetails.get(p).commName) , 0);
+                    show_error_box("Closing Balance Quantity is Not Available ",(memberConstants.commDetails.get(p).commName) , 0);
 
                 }
             }
@@ -317,6 +318,9 @@ public class RationDetailsActivity extends AppCompatActivity {
     }
 
     private void WeighingDialog(final int position) {
+        try {
+
+
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCanceledOnTouchOutside(false);
@@ -343,8 +347,8 @@ public class RationDetailsActivity extends AppCompatActivity {
                 if (usb.length() == 0) {
                     getflag = true;
                     if (choice == 2) {
-                        /*setFilters();
-                        startService(UsbService.class, usbConnection, null);*/
+                        setFilters();
+                        startService(UsbService.class, usbConnection, null);
                     } else if (choice == 1) {
                         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                         if (mBluetoothAdapter.isEnabled()) {
@@ -403,6 +407,11 @@ public class RationDetailsActivity extends AppCompatActivity {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
+        }catch (Exception e){
+            String ex=e.getMessage();
+            show_error_box(ex,"WeighingDialog Exception" , 0);
+
+        }
     }
 
     EditText weight;
@@ -436,12 +445,21 @@ public class RationDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 dialog.dismiss();
                 String enteredweight = weight.getText().toString();
-                float value = Float.parseFloat(enteredweight);
-                if (value == 0.0) {
-                    memberConstants.commDetails.get(position).requiredQty = String.valueOf(value);
-                    Display(1);
-                } else if (value > 0.0) {
-                    CheckWeight(position, enteredweight, 0);
+                if (enteredweight!=null && !enteredweight.isEmpty()
+                        && enteredweight.length()>0 ) {
+                   if (checkdotvalue(enteredweight)) {
+                       float value = Float.parseFloat(enteredweight);
+                       if (value == 0.0) {
+                           memberConstants.commDetails.get(position).requiredQty = String.valueOf(value);
+                           Display(1);
+                       } else if (value > 0.0) {
+                           CheckWeight(position, enteredweight, 0);
+                       }
+                   }else {
+                       show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
+                   }
+                }else {
+                    show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
                 }
             }
         });
@@ -574,9 +592,8 @@ public class RationDetailsActivity extends AppCompatActivity {
     }
 
     private void conformRation() {
-
         String com = add_comm();
-        if (!com.equals(null) && com.length() > 0) {
+        if (com!=null && com.length() > 0) {
             String ration = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
                     "<SOAP-ENV:Envelope\n" +
                     "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
@@ -623,7 +640,7 @@ public class RationDetailsActivity extends AppCompatActivity {
             } else {
                 mp = mp.create(context, R.raw.c100189);
                 mp.start();
-                show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Inputs), 0);
+                show_error_box("", "Please Select any Commodity for Issuance", 0);
             }
         }
     }
@@ -885,11 +902,9 @@ public class RationDetailsActivity extends AppCompatActivity {
     @SuppressLint("HandlerLeak")
     private class MyHandler extends Handler {
         private final WeakReference<RationDetailsActivity> mActivity;
-
         MyHandler(RationDetailsActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
-
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == MESSAGE_FROM_SERIAL_PORT) {
@@ -901,8 +916,6 @@ public class RationDetailsActivity extends AppCompatActivity {
                     }
                     usb = String.valueOf(storeUSBdata).trim();
                     storeUSBdata.setLength(0);
-                    System.out.println("USB====" + usb);
-                    // mActivity.get().getweight.setText(usb);
                 }
             }
         }

@@ -110,7 +110,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
             @Override
             public void onClick(View v) {
                 Cash_ID = id.getText().toString().trim();
-                if (Cash_ID.length() == 12) {
+                if (Cash_ID.length() >0) {
                     member_details();
                 } else {
                     if (select==2){
@@ -158,6 +158,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
     private void initilisation() {
         pd = new ProgressDialog(context);
         id = findViewById(R.id.id);
+        id.setText("");
         home = findViewById(R.id.cash_pds_home);
         last = findViewById(R.id.cash_pds_lastreciept);
         get_details = findViewById(R.id.cash_pds_getdetails);
@@ -194,10 +195,12 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 }
 
                 if (isError == null || isError.isEmpty()) {
+                    id.setText("");
                     show_error_box("Invalid Response from Server", "No Response");
                     return;
                 }
                 if (!isError.equals("00")) {
+                    id.setText("");
                     show_error_box(msg, context.getResources().getString(R.string.Member_Details) + isError);
                 } else {
                     LastReceipt lastReceipt= (LastReceipt) object;
@@ -254,7 +257,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                                 + context.getResources().getString(R.string.FPS_No) +"          :"+ dealerConstants.fpsCommonInfo.fpsId+ "\n"
                                 + context.getResources().getString(R.string.Availed_FPS_No) + " : "+lastReceipt.lastReceiptComm.get(0).availedFps +"\n"
                                 + context.getResources().getString(R.string.Name_of_Consumer)+":" + lastReceipt.lastReceiptComm.get(0).member_name + "\n"
-                                + context.getResources().getString(R.string.Card_No)+"        :" + lastReceipt.rcId + "\n"
+                                + context.getResources().getString(R.string.Card_No)+"        :" + lastReceipt.lastReceiptComm.get(0).rcId + "\n"
                                 + context.getResources().getString(R.string.TransactionID) +"   :"+ lastReceipt.lastReceiptComm.get(0).reciept_id + "\n"
                                 +context.getResources().getString(R.string.Date)+"            :" + date + "\n"
                                 + context.getResources().getString(R.string.AllotmentMonth)+ " : "+month +"\n"
@@ -316,7 +319,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
 
         if (select == 2) {
             String Cash_Aadhaar = null;
-            if (validateVerhoeff(Cash_ID)) {
+            if (validateVerhoeff(Cash_ID) && Cash_ID.length()==12) {
                 try {
                     Cash_Aadhaar = encrypt(Cash_ID, menuConstants.skey);
                 } catch (BadPaddingException e) {
@@ -359,6 +362,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     mp.start();
                 }
                 show_error_box(context.getResources().getString(R.string.Please_Enter_Valid_Number), context.getResources().getString(R.string.Invalid_UID));
+                id.setText("");
                 return;
             }
         } else {
@@ -413,15 +417,19 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     pd.dismiss();
                 }
                 if (isError == null || isError.isEmpty()) {
+                    id = findViewById(R.id.id);
+                    id.setText("");
                     show_error_box("Invalid Response from Server", "No Response");
                     return;
                 }
                 if (!isError.equals("00")) {
+                    id.setText("");
                     show_error_box(msg, context.getResources().getString(R.string.Member_Details) + isError);
                 } else {
                     Intent members = new Intent(getApplicationContext(), MemberDetailsActivity.class);
                     members.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(members);
+                    id = findViewById(R.id.id);
                     id.setText("");
                 }
             }
@@ -543,6 +551,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     mp.start();
                 }
                 show_error_box(context.getResources().getString(R.string.Please_Enter_Valid_Number), context.getResources().getString(R.string.Invalid_UID));
+                id.setText("");
                 return;
             }
         } else {

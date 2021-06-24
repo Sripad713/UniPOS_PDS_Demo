@@ -343,7 +343,8 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                     int astockBeansize= stockDetails.astockBean.size();
                     data = new ArrayList<>();
                     for (int i = 0; i < astockBeansize; i++) {
-                        data.add(new StockListModel(stockDetails.astockBean.get(i).comm_name,
+                        data.add(new StockListModel(
+                                stockDetails.astockBean.get(i).comm_name,
                                 stockDetails.astockBean.get(i).scheme_desc_en,
                                 stockDetails.astockBean.get(i).opening_balance,
                                 stockDetails.astockBean.get(i).issued_qty,
