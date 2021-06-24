@@ -57,6 +57,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.Dealername;
 import static com.visiontek.Mantra.Models.AppConstants.Mdealer;
 
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
@@ -174,7 +175,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 dealerModel.Dfusion = dealerConstants.fpsCommonInfo.fpsDetails.get(p).dealerFusion;
                 dealerModel.Dnamell = dealerConstants.fpsCommonInfo.fpsDetails.get(p).delNamell;
                 dealerModel.Dwadh = dealerConstants.fpsCommonInfo.fpsDetails.get(p).wadhStatus;
-                DEVICEID=dealerModel.DName;
+                Dealername=dealerModel.DName;
                 switch (dealerModel.DAtype) {
                     case "F":
                         dealerModel.DEALER_AUTH_TYPE = "Bio";
