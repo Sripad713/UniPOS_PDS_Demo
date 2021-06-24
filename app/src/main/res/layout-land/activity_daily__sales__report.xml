@@ -410,7 +410,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_weight="1"
@@ -418,36 +418,39 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
             android:gravity="bottom"
-            android:weightSum="2">
+            android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_gravity="center"
+                android:background="@drawable/black"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
                 <TextView
-                    android:textAlignment="textEnd"
-                    android:background="@drawable/black"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center"
-                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
                     android:text="Powered by"
-                    android:textColor="@color/black"
+                    android:background="@color/link_color"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeH"
-                    android:textStyle="bold"
-                    tools:ignore="RtlCompat" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
+                    android:textStyle="bold" />
+
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:gravity="left"
+                    android:layout_width="300dp"
                     android:layout_height="50dp"
+                    android:layout_weight="1"
                     android:background="@drawable/wblack"
                     android:contentDescription="TODO"
                     android:src="@drawable/nic3" />

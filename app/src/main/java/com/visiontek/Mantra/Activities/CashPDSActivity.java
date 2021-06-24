@@ -53,12 +53,12 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import static com.visiontek.Mantra.Activities.DealerDetailsActivity.dealername;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.Dealername;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
@@ -223,7 +223,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     if (L.equals("hi")){
                         str1 =context.getResources().getString(R.string.LAST_RECEIPT);
                         image(str1,"header.bmp",1);
-                        str2 =context.getResources().getString(R.string.FPS_Owner_Name) +" : "+dealername  + "\n"
+                        str2 =context.getResources().getString(R.string.FPS_Owner_Name) +" : "+Dealername  + "\n"
                                 + context.getResources().getString(R.string.FPS_No) +" : "+ dealerConstants.fpsCommonInfo.fpsId+ "\n"
                                 + context.getResources().getString(R.string.Availed_FPS_No) + " : "+lastReceipt.lastReceiptComm.get(0).availedFps +"\n"
                                 + context.getResources().getString(R.string.Name_of_Consumer)+" : " +lastReceipt.lastReceiptComm.get(0).member_name  + "\n"
@@ -250,7 +250,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         str1 =context.getResources().getString(R.string.LAST_RECEIPT)+"\n";
 
                         str2 ="\n________________________________\n"
-                                + context.getResources().getString(R.string.FPS_Owner_Name) +"  :"+dealername  + "\n"
+                                + context.getResources().getString(R.string.FPS_Owner_Name) +"  :"+Dealername  + "\n"
                                 + context.getResources().getString(R.string.FPS_No) +"          :"+ dealerConstants.fpsCommonInfo.fpsId+ "\n"
                                 + context.getResources().getString(R.string.Availed_FPS_No) + " : "+lastReceipt.lastReceiptComm.get(0).availedFps +"\n"
                                 + context.getResources().getString(R.string.Name_of_Consumer)+":" + lastReceipt.lastReceiptComm.get(0).member_name + "\n"

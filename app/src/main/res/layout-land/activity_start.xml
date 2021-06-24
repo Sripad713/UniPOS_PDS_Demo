@@ -345,8 +345,8 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 android:text="Powered by"
-                android:background="@color/white"
-                android:textColor="@color/link_color"
+                android:background="@color/link_color"
+                android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeH"
                 android:textStyle="bold" />
 
