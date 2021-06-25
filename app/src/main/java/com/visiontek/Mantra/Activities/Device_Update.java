@@ -53,9 +53,9 @@ public class Device_Update extends AppCompatActivity {
     ProgressDialog pd;
     String
             fHostName = "115.111.229.10",
-            fUserName = "Android",
-            fPassword = "rnd123",
-            Source = "/" + fUserName + "/Chhattisgarh/",
+            fUserName = "mktg",
+            fPassword = "mktg",
+            Source = "/" + fUserName + "/Android/Chhattisgarh/",
             FTP_file = "",
             Download = "",
             Device_Download_path;
@@ -71,6 +71,7 @@ public class Device_Update extends AppCompatActivity {
             String version = pInfo.versionName;
             System.out.println("@@Version: "+version);
             appVersion = Float.parseFloat(version);
+            System.out.println("+++++++++++"+appVersion);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -95,7 +96,11 @@ public class Device_Update extends AppCompatActivity {
         usb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show_error_box(context.getResources().getString(R.string.Connect_your_device_to_the_usb_Port), context.getResources().getString(R.string.USB_Connection));
+                File file = new File("/Mantra/", "MantraPDS_1.1.apk");
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                startActivity(intent);
+                //show_error_box(context.getResources().getString(R.string.Connect_your_device_to_the_usb_Port), context.getResources().getString(R.string.USB_Connection));
             }
         });
 
@@ -103,15 +108,15 @@ public class Device_Update extends AppCompatActivity {
         gprs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (dealerConstants.fpsCommonInfo.versionUpdateRequired.equals("Y")) {
+               // if (dealerConstants.fpsCommonInfo.versionUpdateRequired.equals("Y")) {
                     if (Util.networkConnected(context)) {
                         filesize();
                     } else {
                         show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection));
                     }
-                }else {
+               /* }else {
                     show_error_box("No Updated Apk Found","Update Version");
-                }
+                }*/
             }
         });
 

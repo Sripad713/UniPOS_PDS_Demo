@@ -545,7 +545,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
     }
 
     private void hitURLfusion(String fusion) {
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating), true, false);
+        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member), context.getResources().getString(R.string.Authenticating), true, false);
         XML_Parsing request = new XML_Parsing(MemberDetailsActivity.this, fusion, 7);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 

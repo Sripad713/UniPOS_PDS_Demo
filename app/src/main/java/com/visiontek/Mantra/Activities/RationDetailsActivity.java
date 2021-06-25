@@ -993,9 +993,14 @@ public class RationDetailsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setFilters();
-        setFiltersbluetooth();
-        startService(UsbService.class, usbConnection, null);
+        if (mUsbReceiver==null) {
+            setFilters();
+            startService(UsbService.class, usbConnection, null);
+        }
+        if (mReceiver==null){
+            setFiltersbluetooth();
+        }
+
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter.isEnabled()) {

@@ -317,13 +317,19 @@ public class Util {
 
 
     public static String getAppVersionFromPkgName(Context context) {
-        String version;
+        String appVersion;
         try {
 
+                PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+                String version = pInfo.versionName;
+                System.out.println("@@Version: "+version);
+                appVersion = String.valueOf(Float.parseFloat(version));
+
+/*
             PackageManager pm = context.getPackageManager();
             PackageInfo pInfo = pm.getPackageInfo("com.visiontek.Mantra", 0);
-            version = pInfo.versionName;
-            return version;
+            version = pInfo.versionName;*/
+            return appVersion;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return "";
