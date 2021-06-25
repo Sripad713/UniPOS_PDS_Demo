@@ -42,7 +42,6 @@
         <activity android:name=".Activities.DeviceActivity" />
         <activity android:name=".Activities.InspectionActivity" />
         <activity android:name=".Activities.ReportsActivity" />
-        <activity android:name=".Activities.DeviceListActivity" />
         <activity android:name=".Activities.OthersActivity" />
         <activity android:name=".Activities.ReceiveGoodsActivity" />
         <activity android:name=".Activities.AadhaarServicesActivity" />

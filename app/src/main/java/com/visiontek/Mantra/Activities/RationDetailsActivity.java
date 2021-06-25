@@ -62,7 +62,6 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
-import static com.visiontek.Mantra.Models.AppConstants.address;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Utils.Util.checkdotvalue;
@@ -116,14 +115,7 @@ public class RationDetailsActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                if (btSocket != null && btSocket.isConnected()) {
-                    try {
-                        btSocket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.out.println("++++++++++++++++");
-                    }
-                }
+
                 conformRation();
             }
         });
@@ -143,9 +135,7 @@ public class RationDetailsActivity extends AppCompatActivity {
             if (mBluetoothAdapter != null)
                 mBluetoothAdapter.cancelDiscovery();
         }));
-     /*   mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> {
 
-        });*/
         String[] items = new String[]{"Communication", "Bluetooth", "USB"};
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, items);
@@ -170,9 +160,9 @@ public class RationDetailsActivity extends AppCompatActivity {
                     Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
                     if (pairedDevices.size() > 0) {
                         //findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);//make title viewable
-                        /*ArrayList<String> deviceAdress = new ArrayList<String>();*/
+                        ArrayList<String> deviceAdress = new ArrayList<String>();
                         for (BluetoothDevice device : pairedDevices) {
-                            if (device.getName().equals("VTWS100") || device.getName().equals("VTWS100")) {
+                            if (device.getName().equals("APPDS_VNTK@2015") || device.getName().equals("VTWS100")) {
                                 address = (device.getAddress());
                             } else {
                                 String noDevices = "No Devices have been paired";
@@ -197,6 +187,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         //pd = ProgressDialog.show(context, "Connt", "Please_Wait", true, false);
 
     }
+
 
     private void initilisation() {
         pd = new ProgressDialog(context);
@@ -315,7 +306,7 @@ public class RationDetailsActivity extends AppCompatActivity {
             commclosebal = Float.parseFloat(memberConstants.commDetails.get(i).closingBal);
             commbal = Float.parseFloat(memberConstants.commDetails.get(i).balQty);
             if (value == 0) {
-                if (memberConstants.commDetails.get(i).weighing.equals("Y")) {
+                if (memberConstants.commDetails.get(i).weighing.equals("N")) {
                     memberConstants.commDetails.get(i).requiredQty = "0.0";
                 } else {
                     if (commbal <= commclosebal) {
@@ -519,7 +510,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                                     }
                                 }
                             } else {
-
+                                System.out.println("SerialPort connection failed");
                                 if (mHandler != null) {
                                     mHandler.obtainMessage(1, "SerialPort Connection Failed").sendToTarget();
                                 }
@@ -527,15 +518,16 @@ public class RationDetailsActivity extends AppCompatActivity {
                                 // getweight.setText("Failed Serialport");
                             }
                         } else {
-
+                            System.out.println("Failed to connect");
                             if (mHandler != null) {
-                                mHandler.obtainMessage(2, "to Connect").sendToTarget();
+                                mHandler.obtainMessage(2, "Failed to Connect").sendToTarget();
                             }
 
                             //getweight.setText("Failed to connect");
                         }
                     } else {
 
+                        System.out.println("Device Not Found");
                         if (mHandler != null) {
                             mHandler.obtainMessage(3, "Device NOt Found").sendToTarget();
                         }
@@ -774,6 +766,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                     "    </SOAP-ENV:Body>\n" +
                     "</SOAP-ENV:Envelope>";
             if (Util.networkConnected(context)) {
+
                 Util.generateNoteOnSD(context, "RationReq.txt", ration);
                 hitURL(ration);
             } else {
@@ -809,7 +802,7 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void checkBTState(BluetoothAdapter mBluetoothAdapter) {
 
         new Thread(() -> {
-            if (btSocket == null && mBluetoothAdapter != null) {
+            if (btSocket == null && mBluetoothAdapter != null && address != null) {
                 BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
                 try {
                     btSocket = createBluetoothSocket(device);
@@ -946,6 +939,9 @@ public class RationDetailsActivity extends AppCompatActivity {
                 System.out.println("++++++++++++++++");
             }
         }
+
+        unregisterReceiver(mUsbReceiver);
+        unregisterReceiver(mReceiver);
     }
 
 
@@ -968,7 +964,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                 mDeviceList.add(device1);
                 if (device1 != null) {
                     if (device1.getName() != null) {
-                        if (device1.getName().equalsIgnoreCase("VTWS100") ||
+                        if (device1.getName().equalsIgnoreCase("APPDS_VNTK@2015") ||
                                 device1.getName().equalsIgnoreCase("VTWS100")) {
                             device1.createBond();
                             mBluetoothAdapter.cancelDiscovery();
@@ -989,26 +985,26 @@ public class RationDetailsActivity extends AppCompatActivity {
         filter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
         registerReceiver(mReceiver, filter);
     }
-
+    public  String address;
     @Override
     protected void onResume() {
         super.onResume();
-        if (mUsbReceiver==null) {
-            setFilters();
-            startService(UsbService.class, usbConnection, null);
-        }
-        if (mReceiver==null){
-            setFiltersbluetooth();
-        }
 
-
+        setFilters();
+        startService(UsbService.class, usbConnection, null);
+        setFiltersbluetooth();
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter.isEnabled()) {
-            if (address == null) {
-                mBluetoothAdapter.startDiscovery();
-            } else if (btSocket == null) {
-                checkBTState(mBluetoothAdapter);
+            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+            if (pairedDevices.size() > 0) {
+                for (BluetoothDevice device : pairedDevices) {
+                    if (device.getName().equals("APPDS_VNTK@2015") || device.getName().equals("VTWS100")) {
+                        address = (device.getAddress());
+                        return;
+                    }
+                }
             }
+            mBluetoothAdapter.startDiscovery();
         }
     }
 
@@ -1035,7 +1031,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             if (msg.what == MESSAGE_FROM_SERIAL_PORT) {
                 final StringBuilder data = (StringBuilder) msg.obj;
-                if (data!=null) {
+                if (data != null) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

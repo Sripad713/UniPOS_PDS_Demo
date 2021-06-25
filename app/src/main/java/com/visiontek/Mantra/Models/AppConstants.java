@@ -13,7 +13,7 @@ public class AppConstants {
 
     public static String Dealername;
 
-    public static String address;
+
 
     public static int Mdealer;
     public static String MemberName,MemberUid;
