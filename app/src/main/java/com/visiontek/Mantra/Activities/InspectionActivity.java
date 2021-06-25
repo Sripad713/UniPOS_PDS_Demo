@@ -421,7 +421,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     int size = inspectionDetails.commDetails.size();
                     for (int i = 0; i < size; i++) {
 
-                        app =  String.format("%-10s%-10s%-10s%-10s\n",
+                        app =  String.format("%-8s%-8s%-8s%-8s\n",
                                 inspectionDetails.commDetails.get(i).commNameEn,
                                 inspectionDetails.commDetails.get(i).closingBalance,
                                 inspectionDetails.commDetails.get(i).entered,
@@ -457,19 +457,18 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     } else {
 
                         str1 = context.getResources().getString(R.string.Inspection) + "\n" +
-                                context.getResources().getString(R.string.Receipt) + "\n";
+                                context.getResources().getString(R.string.Receipt) + "\n\n";
                         str2 =    context.getResources().getString(R.string.FPS_ID) +"       :"+ dealerConstants.fpsCommonInfo.fpsId + "\n"
                                 + context.getResources().getString(R.string.TransactionID) +":"+ Iref + "\n"
                                 + context.getResources().getString(R.string.Inspected_By) +" :"+ Iname + "\n"
                                 + context.getResources().getString(R.string.Designation) +"  :"+ Ivendor + "\n"
-                                + context.getResources().getString(R.string.Date) +"         :"+currentDateTimeString + "\n\n"
+                                + context.getResources().getString(R.string.Date) +" : "+currentDateTimeString + "\n"
                                 + context.getResources().getString(R.string.Status) +"       :"+approval + " \n";
-                        str3 = String.format("%-10s%-10s%-10s%-10s\n",
-                                context.getResources().getString(R.string.commodity),
+                        str3 = String.format("%-8s%-8s%-8s%-8s\n",
+                                "CommName",
                                 context.getResources().getString(R.string.ClBal),
-                                "Observed",
-                                "Var")
-                                + "-------------------------------\n";
+                                "Obs",
+                                "Var");
                         str4 = String.valueOf(add);
                         str5 = "\n"+context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
                                 + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n\n\n";

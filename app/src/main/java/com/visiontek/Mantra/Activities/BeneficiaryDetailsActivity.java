@@ -568,10 +568,11 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     + "-----------------------------\n";
             str2 =            context.getResources().getString(R.string.Date) + "           :" + currentDateTimeString + "\n"
                     + context.getResources().getString(R.string.Time) + "           : " + currentDateTimeString + " \n"
-                    + context.getResources().getString(R.string.FPS_ID) + "         :" + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                    + context.getResources().getString(R.string.NAME) + "           : " + beneficiaryAuth.eKYCMemberName + "\n\n"
+                    + context.getResources().getString(R.string.FPS_ID) + "         : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
+                    + context.getResources().getString(R.string.NAME) + "           : " + beneficiaryAuth.eKYCMemberName + "\n"
                     + context.getResources().getString(R.string.Gender) + "         : " + beneficiaryAuth.eKYCGeneder + "\n"
-                    + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
+                    + "DOB          : " + beneficiaryAuth.eKYCDOB + "\n"
+                    + context.getResources().getString(R.string.Ration_Card_Number) + " : " + beneficiaryDetails.rationCardId+"\n"
                     + context.getResources().getString(R.string.Status) + "         : " + "Success" + "\n";
 
             str[0] = "1";
@@ -799,7 +800,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
         TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
         TextView  toolbarCard= findViewById(R.id.toolbarCard);
-        toolbarCard.setText(beneficiaryDetails.rationCardId);
+        toolbarCard.setText("RC : "+beneficiaryDetails.rationCardId);
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
         toolbarVersion.setText("Version : " + appversion);

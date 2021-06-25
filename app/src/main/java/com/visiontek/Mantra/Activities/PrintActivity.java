@@ -339,34 +339,31 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             str[3] = "1";
             checkandprint(str, 1);
         }else {
-            str1 = context.getResources().getString(R.string.Chhattisgarh) + "\n"
-                    + context.getResources().getString(R.string.Department) + "\n"
-                    + context.getResources().getString(R.string.RECEIPT) + "\n";
+            str1 = dealerConstants.stateBean.stateReceiptHeaderEn+"\n\n";
 
-            str2 = "________________________________\n"
-                    + context.getResources().getString(R.string.FPS_Owner_Name) + "  :" + Dealername + "\n"
+            str2 =
+                    context.getResources().getString(R.string.FPS_Owner_Name) + "  :" + Dealername + "\n"
                     + context.getResources().getString(R.string.FPS_No) + "          :" + dealerConstants.stateBean.statefpsId + "\n"
                     + context.getResources().getString(R.string.Name_of_Consumer) + ":" + printReceipt.printBeans.get(0).member_name+ "\n"
-                    + context.getResources().getString(R.string.Card_No) + "          :" + printReceipt.rcId  + "\n"
+                    + context.getResources().getString(R.string.Card_No) + "          :" + printReceipt.rcId  + "/"+printReceipt.printBeans.get(0).scheme_desc_en+"\n"
                     + context.getResources().getString(R.string.TransactionID) + ":" + printReceipt.receiptId + "\n"
                     + context.getResources().getString(R.string.Date) + " :" + date + "\n"
                     + context.getResources().getString(R.string.AllotmentMonth) +"   :"+
                     menuConstants.fpsPofflineToken.allocationMonth+"\n"
-                    +context.getResources().getString(R.string.AllotmentYear) +"     :"+
+                    +context.getResources().getString(R.string.AllotmentYear) +"    :"+
                     menuConstants.fpsPofflineToken.allocationYear+"\n"
                     +
                     String.format("%-10s%-8s%-8s%-8s\n",
                             context.getResources().getString(R.string.commodity) ,
                             context.getResources().getString(R.string.lifted) ,
                             context.getResources().getString(R.string.rate) ,
-                            context.getResources().getString(R.string.price))
-                    + "________________________________\n";
+                            context.getResources().getString(R.string.price));
 
             str3 = (add)
-                    + "________________________________\n";
+                    + "\n";
 
-            str4 = context.getResources().getString(R.string.Total_Amount) + "      :" + printReceipt.printBeans.get(0).tot_amount+ "\n"
-                    + "________________________________\n";
+            str4 = context.getResources().getString(R.string.Total_Amount) + "      : " + printReceipt.printBeans.get(0).tot_amount+ "\n"
+                    + "\n";
 
 
             str5 = context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"

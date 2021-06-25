@@ -165,7 +165,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     String date = sdf1.format(new Date()).substring(6, 16);
                     int drBeansize =saleDetails.drBean.size();
                     for (int i = 0; i < drBeansize; i++) {
-                        app = String.format("%-13s%-13s%-13s\n",
+                        app = String.format("%-10s%-12s%-12s\n",
                                 saleDetails.drBean.get(i).comm_name,
                                 saleDetails.drBean.get(i).schemeName,
                                 saleDetails.drBean.get(i).sale);
@@ -200,11 +200,11 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
 
                          str1 = context.getResources().getString(R.string.DAY_REPORT)+"\n\n";
                          str2=   context.getResources().getString(R.string.Date)+"           : " + date +"\n"+
-                                 context.getResources().getString(R.string.Time)+"           :" + time + "\n"
+                                 context.getResources().getString(R.string.Time)+"           : " + time + "\n"
                                 +context.getResources().getString(R.string.Day_Report_Date)+": " + date + "\n"
                                 +context.getResources().getString(R.string.FPS_ID)+"         : "+ dealerConstants.stateBean.statefpsId + "\n"
                                 + "-------------------------------\n";
-                         str3 = String.format("%-13s%-13s%-13s\n",
+                         str3 = String.format("%-10s%-12s%-12s\n",
                                  context.getResources().getString(R.string.commodity),
                                  context.getResources().getString(R.string.scheme),
                                  context.getResources().getString(R.string.sale))

@@ -54,6 +54,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:textAlignment="center"
+            android:textColor="@color/blackblack"
             android:text="000.000"
             android:textSize="@dimen/TextsizeB" />
             <Button

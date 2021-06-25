@@ -173,7 +173,12 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     private void addCommDetails() {
         int size=receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.size();
         tcCommDetails tcCommDetails;
+
+        if (receiveGoodsModel.tcCommDetails.size()>0){
+            receiveGoodsModel.tcCommDetails.clear();
+        }
         for (int i=0;i<size;i++){
+
             tcCommDetails =new tcCommDetails();
             tcCommDetails.enteredvalue=
                     receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(i).enteredvalue;

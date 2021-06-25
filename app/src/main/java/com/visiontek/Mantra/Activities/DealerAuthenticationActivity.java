@@ -287,7 +287,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                     "</SOAP-ENV:Envelope>";
             System.out.println(stockupdate);
             Util.generateNoteOnSD(context, "StockUploadDetailsReq.txt", stockupdate);
-            hitUploading(stockupdate);
+           // hitUploading(stockupdate);
 
         }
     }
