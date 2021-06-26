@@ -79,6 +79,7 @@ import static com.visiontek.Mantra.Utils.Util.ConsentForm;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 import static com.visiontek.Mantra.Utils.Util.toast;
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
@@ -125,7 +126,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
         Ekyc.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 if (beneficiaryModel.click) {
                     if (beneficiaryModel.verification.equals("N")) {
                         AadhaarDialog();
@@ -150,25 +152,9 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
-                alertDialogBuilder.setCancelable(false);
-                alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                finish();
-                            }
-                        });
-                alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+            public void onClick(View view) {
+                preventTwoClick(view);
+               finish();
             }
         });
     }
@@ -248,7 +234,9 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         Button back = (Button) dialog.findViewById(R.id.back);
         Button confirm = (Button) dialog.findViewById(R.id.confirm);
         TextView tv = (TextView) dialog.findViewById(R.id.status);
+        TextView dialogbox = (TextView) dialog.findViewById(R.id.dialog);
         final EditText enter = (EditText) dialog.findViewById(R.id.enter);
+        dialogbox.setText("EKYC");
         tv.setText("Please Enter Benficiary UID");
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -803,7 +791,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         toolbarCard.setText("RC : "+beneficiaryDetails.rationCardId);
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
-        toolbarVersion.setText("Version : " + appversion);
+        toolbarVersion.setText("V" + appversion);
 
 
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");

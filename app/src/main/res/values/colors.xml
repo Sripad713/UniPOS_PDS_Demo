@@ -3,7 +3,7 @@
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#00BCD4</color>
     <color name="colorAccent">#03DAC5</color>
-
+    <color name="blue">#0f9efc</color>
     <color name="ok">#176A1F</color>
     <color name="cancel">#FF0000</color>
     <color name="button">#009688</color>
@@ -12,7 +12,7 @@
     <color name="rd">#444</color>
     <color name="background">#d9e8ed</color>
     <color name="white">#FFFFFF</color>
-
+    <color name="card_lt_yellow">#FDF5CF</color>
 
     <color name="member_details_color">#F6C987</color>
     <drawable name="label_color">#FF6BB324</drawable>

@@ -71,6 +71,7 @@ import static com.visiontek.Mantra.Models.AppConstants.Dealername;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.ConsentForm;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 public class DealerAuthenticationActivity extends AppCompatActivity implements PrinterCallBack {
@@ -123,6 +124,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
+                preventTwoClick(view);
                 if (dealerModel.click) {
                     if (Util.networkConnected(context)) {
                         ConsentDialog(ConsentForm(context));
@@ -138,7 +140,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                preventTwoClick(view);
                 finish();
             }
         });
@@ -475,7 +477,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             checkandprint(str,1);
         }else {
 
-            str1 =  context.getResources().getString(R.string.DAY_REPORT)+"\n\n";
+            str1 =  dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
+                    context.getResources().getString(R.string.Receive_Goods)+"\n\n";
             str2=    context.getResources().getString(R.string.Date)+"           : " + date +"\n"+
                      context.getResources().getString(R.string.Time)+"           :" + time + "\n"+
                      "Truck Chit No   : " +  receiveGoodsModel.chit + "\n"+
@@ -835,7 +838,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
-        toolbarVersion.setText("Version : " + appversion);
+        toolbarVersion.setText("V" + appversion);
 
 
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");

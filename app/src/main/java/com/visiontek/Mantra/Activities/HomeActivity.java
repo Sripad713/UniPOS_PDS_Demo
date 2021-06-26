@@ -35,9 +35,11 @@ import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 
+import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.diableMenu;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 import static com.visiontek.Mantra.Utils.Util.toast;
 
@@ -66,6 +68,8 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         initilisation();
+        memberConstants=null;
+        System.out.println("JAYANTH");
         if (diableMenu(context, 10)) {
             inspection.setVisibility(View.INVISIBLE);
             inspection.setEnabled(false);
@@ -82,7 +86,8 @@ public class HomeActivity extends AppCompatActivity {
 
         issue.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 i = new Intent(context, IssueActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -91,12 +96,11 @@ public class HomeActivity extends AppCompatActivity {
         });
         inspection.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View view) {
+                preventTwoClick(view);
                if (networkConnected(context)){
                    FrameXMLforInspection();
                }else {
-
                    show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
                }
 
@@ -104,7 +108,8 @@ public class HomeActivity extends AppCompatActivity {
         });
         aadhar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 i = new Intent(context, AadhaarServicesActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivityForResult(i, 1);
@@ -112,7 +117,8 @@ public class HomeActivity extends AppCompatActivity {
         });
         receive.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 if(networkConnected(context))
                 {
                     FrameJsonforReceiveGoods();
@@ -127,7 +133,8 @@ public class HomeActivity extends AppCompatActivity {
         });
         reports.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 i = new Intent(context, ReportsActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivityForResult(i, 1);
@@ -135,7 +142,8 @@ public class HomeActivity extends AppCompatActivity {
         });
         others.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 toast(context, context.getResources().getString(R.string.Not_Enabled));
             }
         });
@@ -143,6 +151,7 @@ public class HomeActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                preventTwoClick(view);
               String logoutreq="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                       "<SOAP-ENV:Envelope\n" +
                       "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
@@ -190,7 +199,7 @@ public class HomeActivity extends AppCompatActivity {
                     return;
                 }
                 if (!error.equals("00")) {
-                    show_error_box(msg, context.getResources().getString(R.string.Inspection_Details)+ error, 0);
+                    show_error_box(msg,  error, 0);
                 } else {
                     show_error_box(msg,"Response Code :"+  error,1);
                 }

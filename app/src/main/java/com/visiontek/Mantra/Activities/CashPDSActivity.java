@@ -33,6 +33,7 @@ import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.mantra.mTerminal100.printer.Prints;
 import com.visiontek.Mantra.Models.IssueModel.LastReceipt;
+import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetURLDetails.Member;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.TaskPrint;
 import com.visiontek.Mantra.Utils.Util;
@@ -60,10 +61,12 @@ import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.Dealername;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
+import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
@@ -106,9 +109,11 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
 
         initilisation();
 
+
         get_details.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Cash_ID = id.getText().toString().trim();
                 if (Cash_ID.length() >0) {
                     member_details();
@@ -123,7 +128,8 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         });
         home.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 finish();
                 Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.Going_Back), Toast.LENGTH_SHORT).show();
             }
@@ -131,7 +137,8 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         last.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Cash_ID = id.getText().toString().trim();
                 if (Cash_ID.length() == 12) {
                     lastReceipt_frame();
@@ -148,7 +155,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         mTerminal100API = new MTerminal100API();
         mTerminal100API.initPrinterAPI(this, this);
         last.setEnabled(false);
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
             probe();
         } else {
             finish();
@@ -184,8 +191,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Processing), context.getResources().getString(R.string.Fetching_Details), true, false);
         XML_Parsing request = new XML_Parsing(context, lastRecipt, 9);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
-
-
 
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -250,14 +255,14 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         str[3]="1";
                         checkandprint(str,1);
                     }else {
-                        str1 =context.getResources().getString(R.string.LAST_RECEIPT)+"\n\n";
-
+                        str1 =dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
+                                context.getResources().getString(R.string.LAST_RECEIPT)+"\n\n";
                         str2 =
                                 context.getResources().getString(R.string.FPS_Owner_Name) +"  :"+Dealername  + "\n"
                                 + context.getResources().getString(R.string.FPS_No) +"          :"+ dealerConstants.fpsCommonInfo.fpsId+ "\n"
                                 + context.getResources().getString(R.string.Availed_FPS_No) + "  : "+lastReceipt.lastReceiptComm.get(0).availedFps +"\n"
                                 + context.getResources().getString(R.string.Name_of_Consumer)+":" + lastReceipt.lastReceiptComm.get(0).member_name + "\n"
-                                + context.getResources().getString(R.string.Card_No)+"          :" + lastReceipt.lastReceiptComm.get(0).rcId + "/"+lastReceipt.lastReceiptComm.get(0).scheme_desc_en+"\n"
+                                + context.getResources().getString(R.string.Card_No)+"/scheme   :" + lastReceipt.lastReceiptComm.get(0).rcId + "/"+lastReceipt.lastReceiptComm.get(0).scheme_desc_en+"\n"
                                 + context.getResources().getString(R.string.TransactionID) +":"+ lastReceipt.lastReceiptComm.get(0).reciept_id + "\n"
                                 +context.getResources().getString(R.string.Date)+" : " + date + "\n"
                                 + context.getResources().getString(R.string.AllotmentMonth)+ " : "+month +"\n"
@@ -419,6 +424,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
+
                 if (isError == null || isError.isEmpty()) {
                     id = findViewById(R.id.id);
                     id.setText("");

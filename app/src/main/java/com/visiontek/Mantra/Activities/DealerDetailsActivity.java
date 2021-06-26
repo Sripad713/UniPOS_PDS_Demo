@@ -61,9 +61,12 @@ import static com.visiontek.Mantra.Models.AppConstants.Dealername;
 import static com.visiontek.Mantra.Models.AppConstants.Mdealer;
 
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
+import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
+import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.ConsentForm;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 public class DealerDetailsActivity extends AppCompatActivity {
@@ -106,9 +109,14 @@ public class DealerDetailsActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
+                preventTwoClick(view);
                 if (dealerModel.click) {
                     if (Util.networkConnected(context)) {
-                        ConsentDialog(ConsentForm(context));
+                        if (dealerModel.DAtype.equals("P")) {
+                            password_Dialog();
+                        }else {
+                            ConsentDialog(ConsentForm(context));
+                        }
                     } else {
                         show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                     }
@@ -128,7 +136,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                preventTwoClick(view);
                 final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                 alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
                 alertDialogBuilder.setCancelable(false);
@@ -538,8 +546,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
     }
 
     private void callScanFP() {
-        switch (dealerModel.DAtype) {
-            case "F":
+
                 if (dealerModel.Dwadh.equals("Y")) {
                     connectRDservice(dealerConstants.fpsCommonInfo.wadhValue,1);
                     System.out.println("WADH_EKYC Request");
@@ -552,14 +559,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                     System.out.println("fingerPrint Request");
                 }
 
-                break;
-            case "P":
-                System.out.println("Password Request");
-                password_Dialog();
-                break;
-            default:
-                break;
-        }
+
     }
 
     private void prep_Dlogin() {

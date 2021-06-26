@@ -51,6 +51,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.mp;
 
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 public class StockReportActivity extends AppCompatActivity implements PrinterCallBack {
@@ -116,7 +117,8 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
         print.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                if (flag_print==1) {
 
                    String app;
@@ -161,7 +163,8 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                        checkandprint(str,1);
                    }else {
 
-                        str1 = context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report)+ "\n\n";
+                        str1 = dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
+                                context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report)+ "\n\n";
                         str2 = context.getResources().getString(R.string.Date) +"        : " + date +"\n"+
                                context.getResources().getString(R.string.Time) +"        : "+ time + "\n";
                         str3 = context.getResources().getString(R.string.Report_Type) +" : PDS\n"+
@@ -200,25 +203,9 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
         }
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
-                alertDialogBuilder.setCancelable(false);
-                alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                finish();
-                            }
-                        });
-                alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+            public void onClick(View view) {
+                preventTwoClick(view);
+                finish();
             }
         });
 
@@ -433,7 +420,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
-        toolbarVersion.setText("Version : " + appversion);
+        toolbarVersion.setText("V" + appversion);
 
 
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");

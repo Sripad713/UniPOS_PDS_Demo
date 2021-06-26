@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -368,6 +369,11 @@ public class Util {
         return true;
     }
     //***************************************************************************
-
+    public static void preventTwoClick(final View view){
+        view.setEnabled(false);
+        view.postDelayed(() ->
+                        view.setEnabled(true)
+                , 2000);
+    }
 
 }

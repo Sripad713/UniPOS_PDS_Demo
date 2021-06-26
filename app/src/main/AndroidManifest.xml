@@ -4,8 +4,8 @@
 
     <uses-feature
         android:name="android.hardware.usb.host"
-        android:required="true"
-        android:configChanges="locale" />
+        android:configChanges="locale"
+        android:required="true" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -31,24 +31,48 @@
         android:roundIcon="@drawable/clogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.DealerAuthenticationActivity"></activity>
+        <activity android:name=".Activities.IMPDSActivity"
+            android:screenOrientation="landscape">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <activity android:name=".Activities.BeneficiaryDetailsActivity" />
-        <activity android:name=".Activities.StockReportActivity" />
-        <activity android:name=".Activities.DailySalesReportActivity" />
-        <activity android:name=".Activities.UIDDetailsActivity" />
-        <activity android:name=".Activities.BeneficiaryVerificationActivity" />
-        <activity android:name=".Activities.AadhaarSeedingActivity" />
-        <activity android:name=".Activities.DeviceActivity" />
-        <activity android:name=".Activities.InspectionActivity" />
-        <activity android:name=".Activities.ReportsActivity" />
-        <activity android:name=".Activities.OthersActivity" />
-        <activity android:name=".Activities.ReceiveGoodsActivity" />
-        <activity android:name=".Activities.AadhaarServicesActivity" />
-        <activity android:name=".Activities.IssueActivity" />
-        <activity android:name=".Activities.DeviceInfoActivity" />
-        <activity android:name=".Activities.Device_Update" />
-        <activity android:name=".Activities.SettingActivity">
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity android:name=".Activities.DealerAuthenticationActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.BeneficiaryDetailsActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.StockReportActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.DailySalesReportActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.UIDDetailsActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.BeneficiaryVerificationActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.AadhaarSeedingActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.DeviceActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.InspectionActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.ReportsActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.OthersActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.ReceiveGoodsActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.AadhaarServicesActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.IssueActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.DeviceInfoActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.Device_Update"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.SettingActivity"
+            android:screenOrientation="landscape">
 
             <!--
            <intent-filter>
@@ -59,7 +83,8 @@
             -->
 
         </activity>
-        <activity android:name=".Activities.PrintActivity">
+        <activity android:name=".Activities.PrintActivity"
+            android:screenOrientation="landscape">
 
             <!--
             <intent-filter>
@@ -69,7 +94,8 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".Activities.RationDetailsActivity">
+        <activity android:name=".Activities.RationDetailsActivity"
+            android:screenOrientation="landscape">
 
             <!--
             <intent-filter>
@@ -79,7 +105,8 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".Activities.HomeActivity">
+        <activity android:name=".Activities.HomeActivity"
+            android:screenOrientation="landscape">
 
             <!--
             <intent-filter>
@@ -89,15 +116,18 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".Activities.MemberDetailsActivity" />
-        <activity android:name=".Activities.StartActivity">
+        <activity android:name=".Activities.MemberDetailsActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.StartActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.DealerDetailsActivity">
+        <activity android:name=".Activities.DealerDetailsActivity"
+            android:screenOrientation="landscape">
 
             <!--
             <intent-filter>
@@ -107,7 +137,8 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".Activities.CashPDSActivity">
+        <activity android:name=".Activities.CashPDSActivity"
+            android:screenOrientation="landscape">
 
             <!--
             <intent-filter>

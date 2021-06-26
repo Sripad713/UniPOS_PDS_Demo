@@ -25,6 +25,7 @@ import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.diableMenu;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
 public class AadhaarServicesActivity extends AppCompatActivity {
     Button back, uid, beneficiary;
@@ -67,14 +68,16 @@ public class AadhaarServicesActivity extends AppCompatActivity {
 
         beneficiary.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Intent ben = new Intent(context, BeneficiaryVerificationActivity.class);
                 startActivity(ben);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 finish();
             }
         });

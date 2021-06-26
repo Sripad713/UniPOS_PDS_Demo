@@ -47,6 +47,7 @@ import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
@@ -81,7 +82,8 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
 
         details.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 BEN_ID = id.getText().toString().trim();
                 if (BEN_ID.length() >0) {
                     Benverify();
@@ -97,7 +99,8 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 finish();
             }
         });
@@ -306,7 +309,7 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
-        toolbarVersion.setText("Version : " + appversion);
+        toolbarVersion.setText("V" + appversion);
 
 
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");

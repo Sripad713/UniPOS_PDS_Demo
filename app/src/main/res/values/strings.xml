@@ -17,7 +17,6 @@
     <dimen name="Layoutcard">5dp</dimen>
 
 
-
     <!--Button-->
     <dimen name="ButtonW">80dp</dimen>
     <dimen name="ButtonH">80dp</dimen>
@@ -31,17 +30,6 @@
 
     <dimen name="TextsizeH">20sp</dimen>
     <dimen name="TextsizeV">20sp</dimen>
-
-
-
-
-
-
-
-
-
-
-
 
 
     <string name="printsuccess">Print Success</string>
@@ -59,8 +47,6 @@
     <string name="Iris">I</string>
     <string name="Quit">Quit</string>
     <string name="Settings">Settings</string>
-
-
 
 
     //dealers_details
@@ -191,7 +177,7 @@
     <string name="Application">Application</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-    <string name= "Start_Ok">OK</string>
+    <string name="Start_Ok">OK</string>
 
     //Dealers Details
     <string name="Explain_here_why_the_app_needs_permissions">Explain here why the app needs permissions</string>
@@ -200,7 +186,7 @@
     <string name="Internet_Connection">No Internet Connection</string>
     <string name="Internet_Connection_Msg">Please check Device Internet Connection and Try again</string>
     <string name="Connection_Error">Connection Error</string>
-    <string name="Please_Select_Dealer_Name">Please Select Dealer Name</string>
+    <string name="Please_Select_Dealer_Name">Please Select Dealer or Nominee</string>
     <string name="Please_Select_Another_Dealer">Please Select Another Dealer Name</string>
     <string name="Dealer">Dealer</string>
     <string name="Please_wait">Please Wait</string>
@@ -315,7 +301,7 @@
     <string name="Note_Qualitys_in_KgsLtrs">(Note : Qualitys in Kgs/Ltrs)</string>
     <string name="LOGOUT_SUCCESS">LOGOUT SUCCESS</string>
 
-    <string name = "Aadhaar_Seeding">Aadhaar Seeding</string>
+    <string name="Aadhaar_Seeding">Aadhaar Seeding</string>
     <string name="Error_Code">Error Code</string>
     <string name="Member_is_already_Verified">Member is already Verified</string>
     <string name="Already_Verified">UID Already Seeded</string>
@@ -446,7 +432,6 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="Commodity">Commodity</string>
     <string name="Issued">Issued</string>
     <string name="Sno">S.no</string>
-
 
 
 </resources>

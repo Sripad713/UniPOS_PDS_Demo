@@ -48,7 +48,9 @@ import timber.log.Timber;
 
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
+import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 public class StartActivity extends AppCompatActivity {
@@ -99,13 +101,14 @@ public class StartActivity extends AppCompatActivity {
         }
 
         initilisation();
-
+        dealerConstants = null;
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothAdapter.enable();
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 if (Util.networkConnected(context)) {
                     if (mp != null) {
                         releaseMediaPlayer(context, mp);
@@ -127,12 +130,16 @@ public class StartActivity extends AppCompatActivity {
         quit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                preventTwoClick(view);
                 show_box();
             }
         });
+
+
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                preventTwoClick(view);
                 Intent settings = new Intent(context, SettingActivity.class);
                 startActivityForResult(settings, 1);
             }
@@ -222,7 +229,7 @@ public class StartActivity extends AppCompatActivity {
                     pd.dismiss();
                 }
                 if (isError == null || isError.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    show_error_box("Invalid Response from Server"+isError, "No Response", 0);
                     return;
                 }
                 if (!isError.equals("00")) {

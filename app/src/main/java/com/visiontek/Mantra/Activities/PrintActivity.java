@@ -60,6 +60,7 @@ import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 
@@ -103,7 +104,8 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         print.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 if (Util.networkConnected(context)) {
                     Util.generateNoteOnSD(context, "RationReq.txt", ration);
                     hitURL(ration);
@@ -160,7 +162,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                     show_error_box(msg, "Commodity : " + isError, 1);
                 } else {
                     printReceipt = (Print) object;
-                    show_error_box(msg,isError,2);
+                    show_error_box("","Transaction Successful Printing Please wait",2);
                 }
             }
         });
@@ -345,7 +347,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                     context.getResources().getString(R.string.FPS_Owner_Name) + "  :" + Dealername + "\n"
                     + context.getResources().getString(R.string.FPS_No) + "          :" + dealerConstants.stateBean.statefpsId + "\n"
                     + context.getResources().getString(R.string.Name_of_Consumer) + ":" + printReceipt.printBeans.get(0).member_name+ "\n"
-                    + context.getResources().getString(R.string.Card_No) + "          :" + printReceipt.rcId  + "/"+printReceipt.printBeans.get(0).scheme_desc_en+"\n"
+                    + context.getResources().getString(R.string.Card_No) + "/scheme   :" + printReceipt.rcId  + "/"+printReceipt.printBeans.get(0).scheme_desc_en+"\n"
                     + context.getResources().getString(R.string.TransactionID) + ":" + printReceipt.receiptId + "\n"
                     + context.getResources().getString(R.string.Date) + " :" + date + "\n"
                     + context.getResources().getString(R.string.AllotmentMonth) +"   :"+

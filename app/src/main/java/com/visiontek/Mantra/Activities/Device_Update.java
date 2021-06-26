@@ -42,6 +42,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
 
 public class Device_Update extends AppCompatActivity {
@@ -95,7 +96,8 @@ public class Device_Update extends AppCompatActivity {
 
         usb.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 File file = new File("/Mantra/", "MantraPDS_1.1.apk");
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
@@ -107,7 +109,8 @@ public class Device_Update extends AppCompatActivity {
 
         gprs.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                // if (dealerConstants.fpsCommonInfo.versionUpdateRequired.equals("Y")) {
                     if (Util.networkConnected(context)) {
                         filesize();
@@ -123,7 +126,8 @@ public class Device_Update extends AppCompatActivity {
         Button back =findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 finish();
             }
         });
@@ -310,7 +314,7 @@ public class Device_Update extends AppCompatActivity {
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
-        toolbarVersion.setText("Version : " + appversion);
+        toolbarVersion.setText("V" + appversion);
 
 
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");

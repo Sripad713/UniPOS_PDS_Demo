@@ -41,6 +41,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.checkdotvalue;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
 
 public class ReceiveGoodsActivity extends AppCompatActivity {
@@ -98,7 +99,8 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         System.out.println(Collections.unmodifiableList(trucklist));
         options.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapter, View v, int position, long id) {
+            public void onItemSelected(AdapterView<?> adapter, View view, int position, long id) {
+                preventTwoClick(view);
                 if (position!=0) {
                     receiveGoodsModel.select = position-1;
                     System.out.println("SELETED=" + position);
@@ -123,7 +125,8 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
         scapfp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 if (receiveGoodsModel.select!=-1) {
                     if (check()) {
                         if (Util.networkConnected(context)) {
@@ -147,25 +150,9 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
-                alertDialogBuilder.setCancelable(false);
-                alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                finish();
-                            }
-                        });
-                alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+            public void onClick(View view) {
+                preventTwoClick(view);
+               finish();
             }
         });
     }
@@ -224,6 +211,9 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     private void DisplayTruck(int position) {
         ArrayList<ReceiveGoodsListModel> modeldata = new ArrayList<>();
         int tcCommDetailssize=receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.size();
+        /*if (position==-1){
+            tcCommDetailssize=0;
+        }*/
         for (int k = 0; k <tcCommDetailssize ; k++) {
             modeldata.add(new ReceiveGoodsListModel(
                     receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).commName,
@@ -334,7 +324,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
-        toolbarVersion.setText("Version : " + appversion);
+        toolbarVersion.setText("V" + appversion);
 
 
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");

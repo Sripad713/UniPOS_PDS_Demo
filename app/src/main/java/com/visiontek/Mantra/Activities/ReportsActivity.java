@@ -25,6 +25,7 @@ import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.diableMenu;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
 public class ReportsActivity extends AppCompatActivity {
 
@@ -62,7 +63,8 @@ public class ReportsActivity extends AppCompatActivity {
         }
         daily_report.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Intent daily = new Intent(context, DailySalesReportActivity.class);
                 startActivity(daily);
             }
@@ -70,14 +72,16 @@ public class ReportsActivity extends AppCompatActivity {
 
         stock_report.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Intent stock = new Intent(context, StockReportActivity.class);
                 startActivity(stock);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 finish();
             }
         });

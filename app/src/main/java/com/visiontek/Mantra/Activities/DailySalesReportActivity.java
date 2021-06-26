@@ -56,6 +56,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 import static com.visiontek.Mantra.Utils.Util.toast;
 
@@ -107,6 +108,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                preventTwoClick(view);
                flag_print = 0;
                 date=edittext.getText().toString();
 
@@ -158,6 +160,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
+                preventTwoClick(view);
                 if (flag_print == 1) {
                     String app;
                     StringBuilder add = new StringBuilder();
@@ -198,7 +201,8 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                         checkandprint(str,1);
                     }else {
 
-                         str1 = context.getResources().getString(R.string.DAY_REPORT)+"\n\n";
+                         str1 =dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
+                                 context.getResources().getString(R.string.DAY_REPORT)+"\n\n";
                          str2=   context.getResources().getString(R.string.Date)+"           : " + date +"\n"+
                                  context.getResources().getString(R.string.Time)+"           : " + time + "\n"
                                 +context.getResources().getString(R.string.Day_Report_Date)+": " + date + "\n"
@@ -222,7 +226,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     }
 
                 } else {
-                    toast(context, context.getResources().getString(R.string.No_Data_to_Print));
+                    show_error_box("Please click on view Button","Daily Sales");
                 }
             }
         });
@@ -231,6 +235,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                preventTwoClick(view);
                 Intent home = new Intent(context, HomeActivity.class);
                 startActivity(home);
                 finish();

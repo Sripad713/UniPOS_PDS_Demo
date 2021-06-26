@@ -24,6 +24,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
 
 public class SettingActivity extends AppCompatActivity {
@@ -55,21 +56,24 @@ public class SettingActivity extends AppCompatActivity {
 
         device.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Intent info = new Intent(context, DeviceActivity.class);
                 startActivityForResult(info,1);
             }
         });
         info.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Intent info = new Intent(context, DeviceInfoActivity.class);
                 startActivity(info);
             }
         });
         update.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Intent update = new Intent(context, Device_Update.class);
                 startActivity(update);
             }
@@ -79,6 +83,7 @@ public class SettingActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                preventTwoClick(view);
                 finish();
             }
         });
@@ -125,7 +130,7 @@ public class SettingActivity extends AppCompatActivity {
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
-        toolbarVersion.setText("Version : " + appversion);
+        toolbarVersion.setText("V" + appversion);
 
 
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");

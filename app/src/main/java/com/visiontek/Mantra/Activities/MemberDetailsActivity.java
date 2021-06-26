@@ -70,6 +70,7 @@ import static com.visiontek.Mantra.Utils.Util.ConsentForm;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
@@ -113,6 +114,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
+                preventTwoClick(view);
                 if (memberModel.click) {
                     if (memberModel.uid.equals("NA")){
                         show_error_box(context.getResources().getString(R.string.NA_MSG), context.getResources().getString(R.string.NA), 0);
@@ -142,25 +144,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
-                alertDialogBuilder.setCancelable(false);
-                alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                finish();
-                            }
-                        });
-                alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                preventTwoClick(view);
+               finish();
             }
         });
 
@@ -315,6 +300,13 @@ public class MemberDetailsActivity extends AppCompatActivity {
                             DealerAuth();
                         } else if (flow.equals("M")) {
                             ManualAuth();
+                        }else if (flow.equals("F")){
+                            Intent ration = new Intent(context, RationDetailsActivity.class);
+                            ration.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            ration.putExtra("OBJ", memberModel);
+                            ration.putExtra("REF", Ekyc.zdistrTxnId);
+                            startActivity(ration);
+                            finish();
                         }
 
                     }
@@ -799,6 +791,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
         Button back = (Button) dialog.findViewById(R.id.back);
         Button confirm = (Button) dialog.findViewById(R.id.confirm);
         TextView tv = (TextView) dialog.findViewById(R.id.status);
+        TextView dialogbox = (TextView) dialog.findViewById(R.id.dialog);
+        dialogbox.setText("EKYC");
         final EditText enter = (EditText) dialog.findViewById(R.id.enter);
         tv.setText("Please Enter Member UID");
         confirm.setOnClickListener(new View.OnClickListener() {

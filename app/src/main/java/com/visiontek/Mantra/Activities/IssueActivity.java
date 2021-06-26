@@ -25,6 +25,7 @@ import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.diableMenu;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
 public class IssueActivity extends AppCompatActivity {
     Button cash, cashless, impds, back;
@@ -63,7 +64,8 @@ public class IssueActivity extends AppCompatActivity {
         }
         cash.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Intent cash = new Intent(IssueActivity.this, CashPDSActivity.class);
                 cash.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(cash);
@@ -73,19 +75,22 @@ public class IssueActivity extends AppCompatActivity {
         });
         cashless.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Util.toast(IssueActivity.this, "Cashless PDS function is Not Available");
             }
         });
         impds.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 Util.toast(IssueActivity.this, "IMPDS function is Not Available");
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 finish();
             }
         });

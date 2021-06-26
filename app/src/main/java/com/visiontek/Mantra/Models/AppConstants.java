@@ -12,9 +12,6 @@ public class AppConstants {
 
 
     public static String Dealername;
-
-
-
     public static int Mdealer;
     public static String MemberName,MemberUid;
 

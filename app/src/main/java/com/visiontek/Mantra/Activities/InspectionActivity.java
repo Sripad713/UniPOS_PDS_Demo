@@ -83,6 +83,7 @@ import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.checkdotvalue;
 import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 import static com.visiontek.Mantra.Utils.Util.toast;
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
@@ -182,6 +183,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                preventTwoClick(view);
                 if (check()) {
                     fCount = "1";
                     Enter_UID();
@@ -195,25 +197,9 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
-                alertDialogBuilder.setCancelable(false);
-                alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                finish();
-                            }
-                        });
-                alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+            public void onClick(View view) {
+                preventTwoClick(view);
+                finish();
             }
         });
 
@@ -456,7 +442,8 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                         checkandprint(str, 1);
                     } else {
 
-                        str1 = context.getResources().getString(R.string.Inspection) + "\n" +
+                        str1 = dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
+                                context.getResources().getString(R.string.Inspection) + "\n" +
                                 context.getResources().getString(R.string.Receipt) + "\n\n";
                         str2 =    context.getResources().getString(R.string.FPS_ID) +"       :"+ dealerConstants.fpsCommonInfo.fpsId + "\n"
                                 + context.getResources().getString(R.string.TransactionID) +":"+ Iref + "\n"
@@ -513,6 +500,8 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         dialog.setContentView(R.layout.uid);
         Button back = (Button) dialog.findViewById(R.id.back);
         Button confirm = (Button) dialog.findViewById(R.id.confirm);
+        Button dialogbox = (Button) dialog.findViewById(R.id.dialog);
+        dialogbox.setText("INSPECTOR");
         TextView tv = (TextView) dialog.findViewById(R.id.status);
         final EditText enter = (EditText) dialog.findViewById(R.id.enter);
         tv.setText("Please Enter Inspector UID");
@@ -521,38 +510,42 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             public void onClick(View v) {
                 dialog.dismiss();
                 Enter_UID = enter.getText().toString();
-                if (Enter_UID.length() == 12 && validateVerhoeff(Enter_UID)) {
-                    try {
-                        Aadhaar = encrypt(Enter_UID, menuConstants.skey);
+               // if (Enter_UID.length() < 11) {
+                    if (Enter_UID.length() == 12 && validateVerhoeff(Enter_UID)) {
+                        try {
+                            Aadhaar = encrypt(Enter_UID, menuConstants.skey);
 
-                        if (Util.networkConnected(context)) {
-                            ConsentDialog(ConsentForm(context));
-                        } else {
-                            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                            if (Util.networkConnected(context)) {
+                                ConsentDialog(ConsentForm(context));
+                            } else {
+                                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                            }
+
+                        } catch (BadPaddingException e) {
+                            e.printStackTrace();
+                        } catch (IllegalBlockSizeException e) {
+                            e.printStackTrace();
+                        } catch (InvalidKeyException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchPaddingException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (BadPaddingException e) {
-                        e.printStackTrace();
-                    } catch (IllegalBlockSizeException e) {
-                        e.printStackTrace();
-                    } catch (InvalidKeyException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchPaddingException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    if (mp != null) {
-                        releaseMediaPlayer(context, mp);
-                    }
-                    if (L.equals("hi")) {
                     } else {
-                        mp = mp.create(context, R.raw.c100047);
-                        mp.start();
+                        if (mp != null) {
+                            releaseMediaPlayer(context, mp);
+                        }
+                        if (L.equals("hi")) {
+                        } else {
+                            mp = mp.create(context, R.raw.c100047);
+                            mp.start();
+                        }
+                        show_error_box("Please Enter Valid UID", "Invalid UID", 0);
                     }
-                    show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_UID), 0);
-                }
+               /* }else {
+                    show_error_box("Please Enter UID Number", "UID", 0);
+                }*/
 
             }
         });
@@ -567,26 +560,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
-       /* AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        final EditText edittext = new EditText(context);
-        alert.setMessage(context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID));
-        alert.setTitle(context.getResources().getString(R.string.Enter_UID));
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        edittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(12);
-        edittext.setFilters(FilterArray);
-        alert.setView(edittext);
-        alert.setPositiveButton(context.getResources().getString(R.string.Ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-
-            }
-        });
-        alert.setNegativeButton(context.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            }
-        });
-        alert.show();*/
 
     }
 
@@ -765,17 +738,16 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                         if (checkdotvalue(Check)) {
                             textdata = Float.parseFloat(Check);
                             cb = Float.parseFloat(inspectionDetails.commDetails.get(position).closingBalance);
-                            if (textdata <= cb && textdata >= 0) {
+                            //if (textdata <= cb && textdata >= 0) {
+                                if ( textdata >= 0) {
                                 var = (Float) (cb - textdata);
-                                if (var >= 0 && var <= cb) {
-                                    System.out.println("----------------0");
                                     AFTERDATA = String.valueOf(var);
                                     DATA = String.valueOf(textdata);
                                     inspectionDetails.commDetails.get(position).entered = DATA;
                                     inspectionDetails.commDetails.get(position).variation = AFTERDATA;
                                     data.clear();
                                     Display(0);
-                                }
+
                             } else {
                                 show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
                             }
@@ -799,52 +771,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
             dialog.show();
-            /*AlertDialog.Builder alert = new AlertDialog.Builder(context);
-            final EditText edittext = new EditText(context);
-            alert.setMessage(context.getResources().getString(R.string.Please_Enter_the_required_quantity));
-            alert.setTitle(context.getResources().getString(R.string.Enter_Quantity));
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-            edittext.setInputType(InputType.TYPE_CLASS_NUMBER);
-            InputFilter[] FilterArray = new InputFilter[1];
-            FilterArray[0] = new InputFilter.LengthFilter(12);
-            edittext.setFilters(FilterArray);
-            alert.setView(edittext);
-            alert.setPositiveButton(context.getResources().getString(R.string.Ok), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    Check = edittext.getText().toString();
-                    textdata = Float.parseFloat(Check);
-                    cb = Float.parseFloat(inspectionDetails.commDetails.get(p).closingBalance);
-                    if (!Check.isEmpty() && textdata < cb && textdata > 0) {
-                        var = (Float) (cb - textdata);
-                        if (var > 0 && var < cb) {
-                            System.out.println("----------------0");
-                            AFTERDATA = String.valueOf(var);
-                            DATA = String.valueOf(textdata);
 
-                            inspectionDetails.commDetails.get(p).entered = DATA;
-                            inspectionDetails.commDetails.get(p).variation = AFTERDATA;
-
-                            data.clear();
-                            int size = inspectionDetails.commDetails.size();
-                            for (int i = 0; i < size; i++) {
-                                data.add(new DataModel2(inspectionDetails.commDetails.get(i).commNameEn,
-                                        inspectionDetails.commDetails.get(i).closingBalance,
-                                        inspectionDetails.commDetails.get(i).entered,
-                                        inspectionDetails.commDetails.get(i).variation));
-
-                            }
-                            Display();
-                        }
-                    } else {
-                        show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
-                    }
-                }
-            });
-            alert.setNegativeButton(context.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                }
-            });
-            alert.show();*/
         } catch (Exception e) {
             show_error_box("Please enter a valid value", context.getResources().getString(R.string.Invalid_Quantity), 0);
 
@@ -1114,7 +1041,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
-        toolbarVersion.setText("Version : " + appversion);
+        toolbarVersion.setText("V" + appversion);
 
 
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");

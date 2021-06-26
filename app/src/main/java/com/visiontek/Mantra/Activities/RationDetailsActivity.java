@@ -65,6 +65,7 @@ import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Utils.Util.checkdotvalue;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 public class RationDetailsActivity extends AppCompatActivity {
@@ -114,15 +115,16 @@ public class RationDetailsActivity extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View view) {
+                preventTwoClick(view);
                 conformRation();
             }
         });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                preventTwoClick(view);
                 dialog();
             }
         });
@@ -142,7 +144,8 @@ public class RationDetailsActivity extends AppCompatActivity {
         options.setAdapter(adapter1);
         options.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapter, View v, int position, long id) {
+            public void onItemSelected(AdapterView<?> adapter, View view, int position, long id) {
+                preventTwoClick(view);
                 choice = position;
                 if (choice == 2) {
                     new Thread(new Runnable() {
@@ -1158,7 +1161,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         toolbarCard.setText("RC : " + memberConstants.carddetails.rcId);
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
-        toolbarVersion.setText("V." + appversion);
+        toolbarVersion.setText("V" + appversion);
 
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
         String date = dateformat.format(new Date()).substring(6, 16);
