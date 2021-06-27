@@ -108,6 +108,25 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
         });
     }
 
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
     private void initilisation() {
         pd = new ProgressDialog(context);
         details = findViewById(R.id.button_ok);

@@ -68,8 +68,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         initilisation();
-        memberConstants=null;
-        System.out.println("JAYANTH");
+
         if (diableMenu(context, 10)) {
             inspection.setVisibility(View.INVISIBLE);
             inspection.setEnabled(false);
@@ -88,6 +87,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 preventTwoClick(view);
+                memberConstants=null;
                 i = new Intent(context, IssueActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -98,7 +98,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 preventTwoClick(view);
-               if (networkConnected(context)){
+                memberConstants=null;
+                if (networkConnected(context)){
                    FrameXMLforInspection();
                }else {
                    show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
@@ -110,6 +111,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 preventTwoClick(view);
+                memberConstants=null;
                 i = new Intent(context, AadhaarServicesActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivityForResult(i, 1);
@@ -119,12 +121,12 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 preventTwoClick(view);
+                memberConstants=null;
                 if(networkConnected(context))
                 {
                     FrameJsonforReceiveGoods();
                 }
                 else {
-
                     show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
                 }
 
@@ -152,6 +154,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 preventTwoClick(view);
+                memberConstants=null;
               String logoutreq="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                       "<SOAP-ENV:Envelope\n" +
                       "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
@@ -198,6 +201,10 @@ public class HomeActivity extends AppCompatActivity {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
+                if (error.equals("057") || error.equals("09")){
+                    Sessiontimeout(msg,  error);
+                    return;
+                }
                 if (!error.equals("00")) {
                     show_error_box(msg,  error, 0);
                 } else {
@@ -207,6 +214,26 @@ public class HomeActivity extends AppCompatActivity {
 
         });
         request.execute();
+    }
+
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
     private void FrameXMLforInspection() {
         String inspection = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
@@ -265,6 +292,10 @@ public class HomeActivity extends AppCompatActivity {
                     show_error_box("Invalid Out put from Server","No Response",0);
                     return;
                 }
+                if (code.equals("057") || code.equals("09")){
+                    Sessiontimeout(msg,  code);
+                    return;
+                }
                 if (!code.equals("00")) {
                     show_error_box(msg, context.getResources().getString(R.string.Commodities_Error) + code, 0);
                 } else {
@@ -300,6 +331,10 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 if (error == null || error.isEmpty()) {
                     show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
+                if (error.equals("057") || error.equals("09")){
+                    Sessiontimeout(msg,  error);
                     return;
                 }
                 if (!error.equals("00")) {

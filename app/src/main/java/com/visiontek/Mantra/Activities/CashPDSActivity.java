@@ -24,7 +24,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -131,7 +131,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
             public void onClick(View view) {
                 preventTwoClick(view);
                 finish();
-                Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.Going_Back), Toast.LENGTH_SHORT).show();
             }
         });
         last.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +160,25 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
             finish();
         }
     }
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
 
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
     private void initilisation() {
         pd = new ProgressDialog(context);
         id = findViewById(R.id.id);
@@ -202,6 +219,10 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 if (isError == null || isError.isEmpty()) {
                     id.setText("");
                     show_error_box("Invalid Response from Server", "No Response");
+                    return;
+                }
+                if (isError.equals("057") || isError.equals("09")){
+                    Sessiontimeout(msg,  isError);
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -426,9 +447,12 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 }
 
                 if (isError == null || isError.isEmpty()) {
-                    id = findViewById(R.id.id);
                     id.setText("");
                     show_error_box("Invalid Response from Server", "No Response");
+                    return;
+                }
+                if (isError.equals("057") || isError.equals("09")){
+                    Sessiontimeout(msg,  isError);
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -438,7 +462,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                     Intent members = new Intent(getApplicationContext(), MemberDetailsActivity.class);
                     members.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(members);
-                    id = findViewById(R.id.id);
                     id.setText("");
                 }
             }
@@ -596,7 +619,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
     public void OnOpen() {
         last.setEnabled(true);
         // btnConnect.setEnabled(false);
-        Toast.makeText(context, context.getResources().getString(R.string.CONNECTED), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -610,7 +632,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
             mp = mp.create(context, R.raw.c100078);
             mp.start();
         }
-       Toast.makeText(context, context.getResources().getString(R.string.Connection_Failed), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -630,7 +652,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(context.getApplicationContext(), (bPrintResult == 0) ? getResources().getString(R.string.printsuccess) : getResources().getString(R.string.printfailed) + " " + Prints.ResultCodeToString(bPrintResult), Toast.LENGTH_SHORT).show();
                 mActivity.last.setEnabled(bIsOpened);
             }
         });
@@ -665,7 +686,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         IntentFilter filter = new IntentFilter();
                         filter.addAction(ACTION_USB_PERMISSION);
                         context.registerReceiver(mUsbReceiver, filter);
-                        Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.Permission_denied), Toast.LENGTH_LONG).show();
                     } else {
                         last.setEnabled(false);
                         es.submit(new Runnable() {
@@ -675,7 +695,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         });
                     }
                 } else {
-                      Toast.makeText(context, "Connection Failed", Toast.LENGTH_SHORT).show();
+                    show_error_box("Connection Failed",context.getResources().getString(R.string.Internet_Connection));
                 }
             }
         }

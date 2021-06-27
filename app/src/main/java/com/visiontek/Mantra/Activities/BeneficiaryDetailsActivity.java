@@ -24,7 +24,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -81,7 +81,7 @@ import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
-import static com.visiontek.Mantra.Utils.Util.toast;
+
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
 public class BeneficiaryDetailsActivity extends AppCompatActivity implements PrinterCallBack {
@@ -159,6 +159,25 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         });
     }
 
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
     private void Display() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
@@ -212,6 +231,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 }
                 if (code == null || code.isEmpty()) {
                     show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
+                if (code.equals("057") || code.equals("09")){
+                    Sessiontimeout(msg,  code);
                     return;
                 }
                 if (!code.equals("00")) {
@@ -345,6 +368,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
+                if (error.equals("057") || error.equals("09")){
+                    Sessiontimeout(msg,  error);
+                    return;
+                }
                 if (!error.equals("E00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
                     show_error_box(msg, context.getResources().getString(R.string.Member_Details) + error, 0);
@@ -388,9 +415,6 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             List<ResolveInfo> activities = packageManager.queryIntentActivities(act, PackageManager.MATCH_DEFAULT_ONLY);
             final boolean isIntentSafe = activities.size() > 0;
             System.out.println("Boolean check for activities = " + isIntentSafe);
-            if (!isIntentSafe) {
-                Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.No_RD_Service_Available), Toast.LENGTH_SHORT).show();
-            }
             System.out.println("No of activities = " + activities.size());
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act, beneficiaryModel.RD_SERVICE);
@@ -496,7 +520,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             if (ACTION_USB_PERMISSION.equals(action)) {
                 probe();
                 // btnConnect.performClick();
-                Toast.makeText(context, context.getResources().getString(R.string.ConnectUSB), Toast.LENGTH_LONG).show();
+
                 //last.setEnabled(true);
                 synchronized (this) {
 
@@ -555,7 +579,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             str1 = context.getResources().getString(R.string.VERIFICATION_RECEIPT) + "\n"
                     + "-----------------------------\n";
             str2 =            context.getResources().getString(R.string.Date) + "           :" + currentDateTimeString + "\n"
-                    + context.getResources().getString(R.string.Time) + "           : " + currentDateTimeString + " \n"
+                    /*+ context.getResources().getString(R.string.Time) + "           : " + currentDateTimeString + " \n"*/
                     + context.getResources().getString(R.string.FPS_ID) + "         : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
                     + context.getResources().getString(R.string.NAME) + "           : " + beneficiaryAuth.eKYCMemberName + "\n"
                     + context.getResources().getString(R.string.Gender) + "         : " + beneficiaryAuth.eKYCGeneder + "\n"
@@ -709,11 +733,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                         IntentFilter filter = new IntentFilter();
                         filter.addAction(ACTION_USB_PERMISSION);
                         context.registerReceiver(mUsbReceiver, filter);
-                        Toast.makeText(getApplicationContext(),
-                                context.getResources().getString(R.string.Permission_denied), Toast.LENGTH_LONG)
-                                .show();
+
                     } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.Connecting), Toast.LENGTH_SHORT).show();
 
                         //last.setEnabled(false);
                         es.submit(new Runnable() {
@@ -725,8 +746,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     }
                     //  });
                 } else {
-                    //  Toast.makeText(ConnectUSBActivity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
-                }
+
+                       }
             }
         }
     }
@@ -736,7 +757,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     public void OnOpen() {
         //last.setEnabled(true);
         // btnConnect.setEnabled(false);
-        Toast.makeText(context, context.getResources().getString(R.string.CONNECTED), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -751,7 +772,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             mp = mp.create(context, R.raw.c100078);
             mp.start();
         }
-        Toast.makeText(context, context.getResources().getString(R.string.Connection_Failed), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -768,14 +789,14 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
     @Override
     public void OnPrint(final int bPrintResult, final boolean bIsOpened) {
-        mActivity.runOnUiThread(new Runnable() {
+        /*mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
                 Toast.makeText(context.getApplicationContext(), (bPrintResult == 0) ? getResources().getString(R.string.printsuccess) : getResources().getString(R.string.printfailed) + " " + Prints.ResultCodeToString(bPrintResult), Toast.LENGTH_SHORT).show();
 
             }
-        });
+        });*/
 
     }
 

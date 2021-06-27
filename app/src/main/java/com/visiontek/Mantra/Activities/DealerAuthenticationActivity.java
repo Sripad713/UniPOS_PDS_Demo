@@ -24,7 +24,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -215,6 +215,10 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
+                if (code.equals("057") || code.equals("09")){
+                    Sessiontimeout(msg,  code);
+                    return;
+                }
                 if (!code.equals("00")) {
                     show_error_box(msg,  code,0);
                 } else {
@@ -224,6 +228,27 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
         });
 
+    }
+
+
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
     private void hitURL1(String dealerlogin) {
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating), true, false);
@@ -236,6 +261,14 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                     pd.dismiss();
                 }
 
+                if (isError == null || isError.isEmpty()){
+                    show_error_box("Invalid Out put from Server","No Response",0);
+                    return;
+                }
+                if (isError.equals("057") || isError.equals("09")){
+                    Sessiontimeout(msg,  isError);
+                    return;
+                }
                 if (!isError.equals("00")) {
                     dealerModel. fusionflag = 0;
                     if (isError.equals("300")) {
@@ -307,6 +340,10 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                 }
                 if (error == null || error.isEmpty()) {
                     show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
+                if (error.equals("057") || error.equals("09")){
+                    Sessiontimeout(msg,  error);
                     return;
                 }
                 if (!error.equals("00")) {
@@ -634,9 +671,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
             final boolean isIntentSafe = activities.size() > 0;
             System.out.println("Boolean check for activities = " + isIntentSafe);
-            if (!isIntentSafe) {
-                Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.No_RD_Service_Available), Toast.LENGTH_SHORT).show();
-            }
+
             System.out.println("No of activities = " + activities.size());
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act,dealerModel. RD_SERVICE);
@@ -727,7 +762,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
     @Override
     public void OnOpen() {
         // btnConnect.setEnabled(false);
-        Toast.makeText(context, context.getResources().getString(R.string.CONNECTED), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -741,7 +776,6 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
         } else {
             mp = mp.create(context, R.raw.c100078);
             mp.start();
-            Toast.makeText(context, context.getResources().getString(R.string.Connection_Failed), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -762,7 +796,6 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(context.getApplicationContext(), (bPrintResult == 0) ? getResources().getString(R.string.printsuccess) : getResources().getString(R.string.printfailed) + " " + Prints.ResultCodeToString(bPrintResult), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -776,7 +809,6 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             if (ACTION_USB_PERMISSION.equals(action)) {
                 probe();
                 // btnConnect.performClick();
-                Toast.makeText(context, context.getResources().getString(R.string.ConnectUSB), Toast.LENGTH_LONG).show();
                 synchronized (this) {
                 }
             }
@@ -804,11 +836,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                         filter.addAction(
                                 ACTION_USB_PERMISSION);
                         context.registerReceiver(mUsbReceiver, filter);
-                        Toast.makeText(getApplicationContext(),
-                                context.getResources().getString(R.string.Permission_denied), Toast.LENGTH_LONG)
-                                .show();
+
                     } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.Connecting), Toast.LENGTH_SHORT).show();
                         es.submit(new Runnable() {
                             @Override
                             public void run() {

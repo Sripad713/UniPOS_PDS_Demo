@@ -51,4 +51,5 @@ public class IMPDSActivity extends AppCompatActivity {
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
     }
+
 }

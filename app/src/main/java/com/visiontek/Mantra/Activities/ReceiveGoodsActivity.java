@@ -156,7 +156,25 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             }
         });
     }
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
 
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
     private void addCommDetails() {
         int size=receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.size();
         tcCommDetails tcCommDetails;
@@ -270,7 +288,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
                         float textdata = Float.parseFloat((receiveGoodsModel.received));
                         float dispatch = Float.parseFloat((receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(position).releasedQuantity));
                         if (textdata > dispatch) {
-                            show_error_box("", "Please Enter the value less than Dispatched", 0);
+                            show_error_box("", "Please Enter the Quantity upto Dispatch", 0);
                         } else {
                             receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.get(position).enteredvalue = receiveGoodsModel.received;
                             DisplayTruck(receiveGoodsModel.select);

@@ -228,10 +228,12 @@ public class StartActivity extends AppCompatActivity {
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
+
                 if (isError == null || isError.isEmpty()) {
                     show_error_box("Invalid Response from Server"+isError, "No Response", 0);
                     return;
                 }
+
                 if (!isError.equals("00")) {
                     show_error_box(msg,  isError, 0);
                 } else {
@@ -245,6 +247,7 @@ public class StartActivity extends AppCompatActivity {
         });
         request.execute();
     }
+
 
     private void show_error_box(String msg, String title, final int i) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);

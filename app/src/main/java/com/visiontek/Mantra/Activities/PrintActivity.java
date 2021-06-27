@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -128,6 +127,25 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
     }
 
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
     private void initilisation() {
         pd = new ProgressDialog(context);
         print = findViewById(R.id.print);
@@ -156,6 +174,10 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                 }
                 if (isError == null || isError.isEmpty()) {
                     show_error_box("Invalid Response from Server", "No Response", 1);
+                    return;
+                }
+                if (isError.equals("057") || isError.equals("09")){
+                    Sessiontimeout(msg,  isError);
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -244,11 +266,8 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                         IntentFilter filter = new IntentFilter();
                         filter.addAction(ACTION_USB_PERMISSION);
                         context.registerReceiver(mUsbReceiver, filter);
-                        Toast.makeText(getApplicationContext(),
-                                context.getResources().getString(R.string.Permission_denied), Toast.LENGTH_LONG)
-                                .show();
+
                     } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.Connecting), Toast.LENGTH_SHORT).show();
 
                         print.setEnabled(false);
                         es.submit(new Runnable() {
@@ -390,7 +409,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
                 print.setEnabled(true);
                 // btnConnect.setEnabled(false);
-                Toast.makeText(context, context.getResources().getString(R.string.CONNECTED), Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -406,7 +425,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                 print.setEnabled(false);
                 //btnConnect.setEnabled(true);
 
-                Toast.makeText(context, context.getResources().getString(R.string.Connection_Failed), Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -447,20 +466,14 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
     @Override
     public void OnPrint(final int bPrintResult, final boolean bIsOpened) {
-        mActivity.runOnUiThread(new Runnable() {
+       /* mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(context.getApplicationContext(), (bPrintResult == 0) ? getResources().getString(R.string.printsuccess) : getResources().getString(R.string.printfailed) + " " + Prints.ResultCodeToString(bPrintResult), Toast.LENGTH_SHORT).show();
                 mActivity.print.setEnabled(bIsOpened);
-                if (bPrintResult==0){
-                    Intent home = new Intent(context, HomeActivity.class);
-                    home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(home);
-                    finish();
-                }
+
             }
-        });
+        });*/
 
     }
 

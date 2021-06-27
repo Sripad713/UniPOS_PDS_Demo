@@ -182,6 +182,25 @@ public class UIDDetailsActivity extends AppCompatActivity {
         toolbarInitilisation();
     }
 
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
     private void ConsentDialog(String concent) {
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -229,6 +248,10 @@ public class UIDDetailsActivity extends AppCompatActivity {
                 }
                 if (code == null || code.isEmpty()) {
                     show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
+                if (code.equals("057") || code.equals("09")){
+                    Sessiontimeout(msg,  code);
                     return;
                 }
                 if (!code.equals("00")) {
@@ -315,6 +338,10 @@ public class UIDDetailsActivity extends AppCompatActivity {
                 }
                 if (error == null || error.isEmpty()) {
                     show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
+                if (error.equals("057") || error.equals("09")){
+                    Sessiontimeout(msg,  error);
                     return;
                 }
                 if (!error.equals("E00")) {

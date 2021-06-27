@@ -58,7 +58,7 @@ import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
-import static com.visiontek.Mantra.Utils.Util.toast;
+
 
 public class DailySalesReportActivity extends AppCompatActivity implements PrinterCallBack {
     public SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm dd/MM/yyyy");
@@ -355,7 +355,10 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     show_error_box("Invalid Response from Server", "No Response");
                     return;
                 }
-
+                if (isError.equals("057") || isError.equals("09")){
+                    Sessiontimeout(msg,  isError);
+                    return;
+                }
                 if (!isError.equals("00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
                     show_error_box(msg, context.getResources().getString(R.string.Dealer_Details) + isError);
@@ -416,7 +419,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
     public void OnOpen() {
         print.setEnabled(true);
         // btnConnect.setEnabled(false);
-        Toast.makeText(context, context.getResources().getString(R.string.CONNECTED), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -430,7 +433,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
         } else {
             mp = mp.create(context, R.raw.c100078);
             mp.start();
-            Toast.makeText(context, context.getResources().getString(R.string.Connection_Failed), Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -452,7 +455,6 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(context.getApplicationContext(), (bPrintResult == 0) ? getResources().getString(R.string.printsuccess) : getResources().getString(R.string.printfailed) + " " + Prints.ResultCodeToString(bPrintResult), Toast.LENGTH_SHORT).show();
                 mActivity.print.setEnabled(bIsOpened);
             }
         });
@@ -466,7 +468,6 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
             if (ACTION_USB_PERMISSION.equals(action)) {
                 probe();
                 // btnConnect.performClick();
-                Toast.makeText(context, context.getResources().getString(R.string.ConnectUSB), Toast.LENGTH_LONG).show();
                 print.setEnabled(true);
                 synchronized (this) {
                 }
@@ -495,11 +496,8 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                         filter.addAction(
                                 ACTION_USB_PERMISSION);
                         context.registerReceiver(mUsbReceiver, filter);
-                        Toast.makeText(getApplicationContext(),
-                                context.getResources().getString(R.string.Permission_denied), Toast.LENGTH_LONG)
-                                .show();
+
                     } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.Connecting), Toast.LENGTH_SHORT).show();
 
                         print.setEnabled(false);
                         es.submit(new Runnable() {
@@ -515,6 +513,25 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                 }
             }
         }
+    }
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
     private void toolbarInitilisation() {
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);

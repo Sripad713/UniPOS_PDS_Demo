@@ -85,7 +85,7 @@ import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
-import static com.visiontek.Mantra.Utils.Util.toast;
+
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
 public class InspectionActivity extends AppCompatActivity implements PrinterCallBack {
@@ -132,7 +132,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             if (ACTION_USB_PERMISSION.equals(action)) {
                 probe();
                 // btnConnect.performClick();
-                Toast.makeText(context, context.getResources().getString(R.string.ConnectUSB), Toast.LENGTH_LONG).show();
+
                 //last.setEnabled(true);
                 synchronized (this) {
 
@@ -204,7 +204,25 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         });
 
     }
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
 
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
     private boolean check() {
         int size=inspectionDetails.commDetails.size();
         float val;
@@ -249,6 +267,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
+                if (error.equals("057") || error.equals("09")){
+                    Sessiontimeout(msg,  error);
+                    return;
+                }
                 if (!error.equals("00")) {
                     System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
                     show_error_box(msg, "Member Details: " + error, 0);
@@ -259,7 +281,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     Iname = inspectionAuth.inspectorName;
                     Itrans = inspectionAuth.auth_transaction_code;
                     com = addComm();
-                    if (!com.equals("1")) {
+                    if (!com.equals("0")) {
                         String Inspectionpush = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                                 "<SOAP-ENV:Envelope\n" +
                                 "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
@@ -283,7 +305,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                             show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                         }
                     } else {
-                        toast(context, context.getResources().getString(R.string.Invalid_Inputs));
+
                     }
                 }
             }
@@ -336,6 +358,14 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             public void onCompleted(String code, String msg, Object object) {
                 if (pd.isShowing()) {
                     pd.dismiss();
+                }
+                if (code == null || code.isEmpty()) {
+                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
+                if (code.equals("057") || code.equals("09")){
+                    Sessiontimeout(msg,  code);
+                    return;
                 }
                 if (!code.equals("00")) {
                     show_error_box(msg, code, 0);
@@ -394,6 +424,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 }
                 if (error == null || error.isEmpty()) {
                     show_error_box("Invalid Response from Server", "No Response", 0);
+                    return;
+                }
+                if (error.equals("057") || error.equals("09")){
+                    Sessiontimeout(msg,  error);
                     return;
                 }
                 if (!error.equals("00")) {
@@ -500,7 +534,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         dialog.setContentView(R.layout.uid);
         Button back = (Button) dialog.findViewById(R.id.back);
         Button confirm = (Button) dialog.findViewById(R.id.confirm);
-        Button dialogbox = (Button) dialog.findViewById(R.id.dialog);
+        TextView dialogbox = (TextView) dialog.findViewById(R.id.dialog);
         dialogbox.setText("INSPECTOR");
         TextView tv = (TextView) dialog.findViewById(R.id.status);
         final EditText enter = (EditText) dialog.findViewById(R.id.enter);
@@ -619,9 +653,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             }
             final boolean isIntentSafe = activities.size() > 0;
             System.out.println("Boolean check for activities = " + isIntentSafe);
-            if (!isIntentSafe) {
-                Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.No_RD_Service_Available), Toast.LENGTH_SHORT).show();
-            }
+
             System.out.println("No of activities = " + activities.size());
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act, RD_SERVICE);
@@ -948,7 +980,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     public void OnOpen() {
         //last.setEnabled(true);
         // btnConnect.setEnabled(false);
-        Toast.makeText(context, context.getResources().getString(R.string.CONNECTED), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -956,7 +988,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         //last.setEnabled(false);
         //btnConnect.setEnabled(true);
 
-        Toast.makeText(context, context.getResources().getString(R.string.Connection_Failed), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -973,14 +1005,14 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
     @Override
     public void OnPrint(final int bPrintResult, final boolean bIsOpened) {
-        mActivity.runOnUiThread(new Runnable() {
+      /*  mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
                 Toast.makeText(context.getApplicationContext(), (bPrintResult == 0) ? getResources().getString(R.string.printsuccess) : getResources().getString(R.string.printfailed) + " " + Prints.ResultCodeToString(bPrintResult), Toast.LENGTH_SHORT).show();
                 //mActivity.last.setEnabled(bIsOpened);
             }
-        });
+        });*/
 
     }
 
@@ -1004,11 +1036,8 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                         IntentFilter filter = new IntentFilter();
                         filter.addAction(ACTION_USB_PERMISSION);
                         context.registerReceiver(mUsbReceiver, filter);
-                        Toast.makeText(getApplicationContext(),
-                                context.getResources().getString(R.string.Permission_denied), Toast.LENGTH_LONG)
-                                .show();
+
                     } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.Connecting), Toast.LENGTH_SHORT).show();
 
                         //last.setEnabled(false);
                         es.submit(new Runnable() {

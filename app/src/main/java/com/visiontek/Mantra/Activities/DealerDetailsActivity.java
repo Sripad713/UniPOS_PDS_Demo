@@ -219,6 +219,10 @@ public class DealerDetailsActivity extends AppCompatActivity {
                     show_error_box("Invalid Response from server","No Response",0);
                     return;
                 }
+                if (code.equals("057") || code.equals("09")){
+                    Sessiontimeout(msg,  code);
+                    return;
+                }
                 if (!code.equals("00")) {
                     show_error_box(msg,  code,0);
                 } else {
@@ -310,7 +314,25 @@ public class DealerDetailsActivity extends AppCompatActivity {
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
+    private void Sessiontimeout(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(title);
+        alertDialogBuilder.setTitle(msg);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
 
+                        Intent i = new Intent(context, StartActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
     private void hitURLDealerAuthentication(String dealerlogin) {
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
                 context.getResources().getString(R.string.Authenticating), true, false);
@@ -324,6 +346,10 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 }
                 if (isError == null || isError.isEmpty()){
                     show_error_box("Invalid Response from server","No Response",0);
+                    return;
+                }
+                if (isError.equals("057") || isError.equals("09")){
+                    Sessiontimeout(msg,  isError);
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -429,6 +455,12 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
+
+                if (isError.equals("057") || isError.equals("09")){
+                    Sessiontimeout(msg,  isError);
+                    return;
+                }
+
             }
         });
         request.execute();
@@ -447,6 +479,10 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 }
                 if (isError == null || isError.isEmpty()){
                     show_error_box("Invalid Out put from Server","No Response",0);
+                    return;
+                }
+                if (isError.equals("057") || isError.equals("09")){
+                    Sessiontimeout(msg,  isError);
                     return;
                 }
                 if (!isError.equals("00")) {
