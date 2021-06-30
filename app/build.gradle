@@ -2,12 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "29.0.1"
+
 
     defaultConfig {
         applicationId "com.visiontek.unipos_pds_demo"
         minSdkVersion 16
         targetSdkVersion 28
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
        /* ndk {
@@ -29,7 +30,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-
+android {
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
 android.applicationVariants.all { variant ->
     variant.outputs.all {
         outputFileName = "MantraPDS_" + "${variant.versionName}.apk"
@@ -67,12 +73,23 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     implementation("com.squareup.okhttp3:okhttp:4.1.0")
 
-    compile 'com.github.felHR85:UsbSerial:4.5'
+    implementation 'com.github.felHR85:UsbSerial:4.5'
     implementation files('libs/97bt-android-library.jar')
     implementation files('libs/commons-net-3.3.jar')
 
     implementation files('libs/mTerminal100.aar')
     implementation 'com.jakewharton.timber:timber:4.7.1'
+//=============================IMPDS
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.google.android.gms:play-services-location:9.0.2'
+    implementation 'com.google.android.gms:play-services-maps:9.0.2'
+    implementation 'com.google.maps.android:android-maps-utils:0.4'
 
-
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.itextpdf:itextg:5.5.10'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    implementation files('libs/ACPL_FM220_SDK_DUAL.jar')
+    implementation 'com.github.delight-im:Android-SimpleLocation:v1.0.1'
+    implementation 'com.android.support:gridlayout-v7:28.0.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
 }

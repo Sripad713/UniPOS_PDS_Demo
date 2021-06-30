@@ -14,6 +14,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -39,6 +40,7 @@ import com.visiontek.Mantra.Utils.TelephonyInfo;
 import com.visiontek.Mantra.Utils.Util;
 import com.visiontek.Mantra.Utils.XML_Parsing;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +50,6 @@ import timber.log.Timber;
 
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
-import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
@@ -84,81 +85,88 @@ public class StartActivity extends AppCompatActivity {
         Timber.plant(new FileLoggingTree());
         try {
 
-        mp = mp.create(context, R.raw.c100041);
-        mp.start();
+            mp = mp.create(context, R.raw.c100041);
+            mp.start();
+            SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
 
-        PS = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_PHONE_STATE);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_ACCESS_FINE_LOCATION );
-        TextView toolbarRD = findViewById(R.id.toolbarRD);
-        boolean rd_fps = RDservice(context);
-        if (rd_fps) {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
-            return;
-        }
+            PS = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_PHONE_STATE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
+            TextView toolbarRD = findViewById(R.id.toolbarRD);
+            boolean rd_fps = RDservice(context);
+            if (rd_fps) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+            } else {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+                show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
+                return;
+            }
 
-        initilisation();
-        dealerConstants = null;
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.enable();
+            initilisation();
+            dealerConstants = null;
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            mBluetoothAdapter.enable();
 
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                if (Util.networkConnected(context)) {
-                    if (mp != null) {
-                        releaseMediaPlayer(context, mp);
-                    }
-                    if (L.equals("hi")) {
-                        mp = mp.create(context, R.raw.c200175);
-                        mp.start();
+            start.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    if (DEVICEID.length() > 0&& DEVICEID!=null) {
+                        if (Util.networkConnected(context)) {
+                            if (mp != null) {
+                                releaseMediaPlayer(context, mp);
+                            }
+                            if (L.equals("hi")) {
+                                mp = mp.create(context, R.raw.c200175);
+                                mp.start();
+                            } else {
+                                mp = mp.create(context, R.raw.c100175);
+                                mp.start();
+                            }
+                            FramexmlforDealerDetails();
+                        } else {
+                            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                        }
                     } else {
-                        mp = mp.create(context, R.raw.c100175);
-                        mp.start();
+                        show_error_box("Please Grant All Permission", "Permissions", 0);
                     }
-                    FramexmlforDealerDetails();
-                } else {
-                    show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                 }
-            }
-        });
+            });
 
-        quit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                show_box();
-            }
-        });
+            quit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    show_box();
+                }
+            });
 
 
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                Intent settings = new Intent(context, SettingActivity.class);
-                startActivityForResult(settings, 1);
-            }
-        });
-        }catch (Exception ex){
-            System.out.println(ex.getMessage());
-            show_error_box(ex.getMessage(),"Start"  , 0);
-            Timber.e(ex.getMessage(),"");
+            settings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    Intent settings = new Intent(context, SettingActivity.class);
+                    startActivityForResult(settings, 1);
+                }
+            });
+
+        } catch (Exception ex) {
+
+            Timber.tag("StartActivity-onCreate-").e(ex.getMessage(), "");
         }
     }
 
+    TextView toolbarFpsidValue,toolbarLatitudeValue,toolbarLongitudeValue;
     private void toolbarInitilisation() {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+        toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
         TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+        toolbarLatitudeValue  = findViewById(R.id.toolbarLatitudeValue);
+         toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
@@ -181,75 +189,98 @@ public class StartActivity extends AppCompatActivity {
         quit = findViewById(R.id.button_quit);
         settings = findViewById(R.id.button_settings);
         toolbarInitilisation();
+        Startbutton();
+        File file = new File("", "YourApp.apk");
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        startActivity(intent);
     }
 
     private void checkLanguage() {
-        db = new DatabaseHelper(context);
-        L = db.get_L("Language");
-        if (L != null && !L.isEmpty()) {
-            setLocal(L);
+        try {
+
+            db = new DatabaseHelper(context);
+            L = db.get_L("Language");
+            if (L != null && !L.isEmpty()) {
+                setLocal(L);
+            }
+        } catch (Exception ex) {
+
+            Timber.tag("StartActivity-checklng-").e(ex.getMessage(), "");
         }
     }
 
     private void FramexmlforDealerDetails() {
-        String dealers = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
-                "<SOAP-ENV:Envelope\n" +
-                "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
-                "    xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n" +
-                "    xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
-                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "    xmlns:ns1=\"http://service.fetch.rationcard/\">\n" +
-                "    <SOAP-ENV:Body>\n" +
-                "        <ns1:getPDSFpsNoDetails>\n" +
-                "            <VersionNo>2.3</VersionNo>\n" +//static
-                "            <deviceID>" + DEVICEID + "</deviceID>\n" +//dynamic
-                "            <token>7797602c3da57f23e57a259b60358622</token>\n" +//static
-                "            <key>111</key>\n" +//static
-                "            <simID>" + IMEI + "</simID>\n" +//dynamic
-                "            <checkSum></checkSum>\n" +//dynamic
-                "            <longtude>" + longitude + "</longtude>\n" +//dynamic
-                "            <latitude>" + latitude + "</latitude>\n" +//dynamic
-                "            <vendorId></vendorId>\n" +//static
-                "            <simStatus>" + STATE + "</simStatus>\n" +//dynamic
-                "        </ns1:getPDSFpsNoDetails>\n" +
-                "    </SOAP-ENV:Body>\n" +
-                "</SOAP-ENV:Envelope>\n";
-        Util.generateNoteOnSD(context, "DealerDetailsReq.txt", dealers);
-        hitURLforDealer(dealers);
+        try {
+
+            String dealers = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
+                    "<SOAP-ENV:Envelope\n" +
+                    "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
+                    "    xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n" +
+                    "    xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
+                    "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                    "    xmlns:ns1=\"http://service.fetch.rationcard/\">\n" +
+                    "    <SOAP-ENV:Body>\n" +
+                    "        <ns1:getPDSFpsNoDetails>\n" +
+                    "            <VersionNo>2.3</VersionNo>\n" +//static
+                    "            <deviceID>" + DEVICEID + "</deviceID>\n" +//dynamic
+                    "            <token>7797602c3da57f23e57a259b60358622</token>\n" +//static
+                    "            <key>111</key>\n" +//static
+                    "            <simID>" + IMEI + "</simID>\n" +//dynamic
+                    "            <checkSum></checkSum>\n" +//dynamic
+                    "            <longtude>" + longitude + "</longtude>\n" +//dynamic
+                    "            <latitude>" + latitude + "</latitude>\n" +//dynamic
+                    "            <vendorId></vendorId>\n" +//static
+                    "            <simStatus>" + STATE + "</simStatus>\n" +//dynamic
+                    "        </ns1:getPDSFpsNoDetails>\n" +
+                    "    </SOAP-ENV:Body>\n" +
+                    "</SOAP-ENV:Envelope>\n";
+            Util.generateNoteOnSD(context, "DealerDetailsReq.txt", dealers);
+            hitURLforDealer(dealers);
+        } catch (Exception ex) {
+
+            Timber.tag("StartActivity-Format-").e(ex.getMessage(), "");
+        }
     }
 
     private void hitURLforDealer(String dealers) {
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer_Details), context.getResources().getString(R.string.Please_wait), true, false);
-        XML_Parsing request = new XML_Parsing(StartActivity.this, dealers, 1);
-        request.setOnResultListener(new XML_Parsing.OnResultListener() {
+        try {
+            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer_Details), context.getResources().getString(R.string.Please_wait), true, false);
+            XML_Parsing request = new XML_Parsing(StartActivity.this, dealers, 1);
+            request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
-            @Override
-            public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
+                @Override
+                public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
+                    if (pd.isShowing()) {
+                        pd.dismiss();
+                    }
+
+                    if (isError == null || isError.isEmpty()) {
+                        show_error_box("Invalid Response from Server" + isError, "No Response", 0);
+                        return;
+                    }
+
+                    if (!isError.equals("00")) {
+                        show_error_box(msg, isError, 0);
+                    } else {
+                        Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        //show_error_box(msg,  isError,1);
+
+                    }
                 }
+            });
+            request.execute();
+        } catch (Exception ex) {
 
-                if (isError == null || isError.isEmpty()) {
-                    show_error_box("Invalid Response from Server"+isError, "No Response", 0);
-                    return;
-                }
-
-                if (!isError.equals("00")) {
-                    show_error_box(msg,  isError, 0);
-                } else {
-                    Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                    //show_error_box(msg,  isError,1);
-
-                }
-            }
-        });
-        request.execute();
+            Timber.tag("StartActivity-Request-").e(ex.getMessage(), "");
+        }
     }
 
 
     private void show_error_box(String msg, String title, final int i) {
+
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(title);
         alertDialogBuilder.setTitle(msg);
@@ -258,7 +289,7 @@ public class StartActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        if (i==1){
+                        if (i == 1) {
                             Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
@@ -270,6 +301,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void show_box() {
+
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
         alertDialogBuilder.setTitle(context.getResources().getString(R.string.CHHATISGARHPDS));
@@ -301,109 +333,147 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void setLocal(String lang) {
-        if (lang != null) {
-            Locale locale = new Locale(lang);
-            Locale.setDefault(locale);
-            Configuration con = new Configuration();
-            con.locale = locale;
-            getBaseContext().getResources().updateConfiguration(con, getBaseContext().getResources().getDisplayMetrics());
+        try {
+            if (lang != null) {
+                Locale locale = new Locale(lang);
+                Locale.setDefault(locale);
+                Configuration con = new Configuration();
+                con.locale = locale;
+                getBaseContext().getResources().updateConfiguration(con, getBaseContext().getResources().getDisplayMetrics());
+            }
+        } catch (Exception ex) {
+
+            Timber.tag("StartActivity-SetLng-").e(ex.getMessage(), "");
         }
     }
 
     private boolean getLocation() {
-        int locationMode = 0;
-        String locationProviders;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            try {
-                locationMode = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
+        try {
+            int locationMode = 0;
+            String locationProviders;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                try {
+                    locationMode = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
 
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-                return false;
+                } catch (Settings.SettingNotFoundException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+                return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+            } else {
+                locationProviders = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+                return !TextUtils.isEmpty(locationProviders);
             }
-            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-        } else {
-            locationProviders = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-            return !TextUtils.isEmpty(locationProviders);
+        } catch (Exception ex) {
+
+            Timber.tag("StartActivity-getloc-").e(ex.getMessage(), "");
+            return false;
         }
     }
 
     private void DisplayGPS() {
+        try {
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        boolean st = getLocation();
-        System.out.println("LOCATION = " + st);
-        if (!st) {
-            statusCheck();
-        }
-        LocationListener locationListener = new MyLocationListener();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            boolean st = getLocation();
+            System.out.println("LOCATION = " + st);
+            if (!st) {
+                statusCheck();
+            }
+            LocationListener locationListener = new MyLocationListener();
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
 //        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
+        } catch (Exception ex) {
 
+            Timber.tag("StartAct-displyGps-").e(ex.getMessage(), "");
+        }
     }
 
     public void statusCheck() {
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        try {
 
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
+            final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                buildAlertMessageNoGps();
+            }
+        } catch (Exception ex) {
+
+            Timber.tag("StartActivity-onCreate-").e(ex.getMessage(), "");
         }
     }
 
     private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(context.getResources().getString(R.string.Your_GPS_seems_to_be_disabled_do_you_want_to_enable_it))
-                .setCancelable(false)
-                .setPositiveButton(context.getResources().getString(R.string.Yes), new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton(context.getResources().getString(R.string.No), new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
+        try {
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(context.getResources().getString(R.string.Your_GPS_seems_to_be_disabled_do_you_want_to_enable_it))
+                    .setCancelable(false)
+                    .setPositiveButton(context.getResources().getString(R.string.Yes), new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .setNegativeButton(context.getResources().getString(R.string.No), new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+                            dialog.cancel();
+                        }
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+        } catch (Exception ex) {
+
+            Timber.tag("StartActivity-msg-").e(ex.getMessage(), "");
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     private void get_method() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            return;
+        try {
 
-        }
-        //MultiSimTelephonyManager multiSimTelephonyManager = new MultiSimTelephonyManager(this);
-        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        subscriptionManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-        subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
-        telephonyInfo = TelephonyInfo.getInstance(this);
-        STATE = null;
-        STATE = get_state();
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                return;
 
-        if (STATE.equals("No Sim")) {
-            System.out.println("No Sims");
-        }
+            }
+            //MultiSimTelephonyManager multiSimTelephonyManager = new MultiSimTelephonyManager(this);
+            telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            subscriptionManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+            subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
+            telephonyInfo = TelephonyInfo.getInstance(this);
+            STATE = null;
+            STATE = get_state();
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            IMEI = get_Imei();
+            if (STATE.equals("No Sim")) {
+                System.out.println("No Sims");
+            }
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                IMEI = get_Imei();
+            }
+        } catch (Exception ex) {
+
+            Timber.tag("StartActivity-Sim-").e(ex.getMessage(), "");
         }
     }
 
     @SuppressLint("HardwareIds")
     @RequiresApi(api = Build.VERSION_CODES.M)
     private String get_Imei() {
+        try {
+        } catch (Exception ex) {
+            show_error_box(ex.getMessage(), "Start", 0);
+            Timber.tag("StartActivity-onCreate-").e(ex.getMessage(), "");
+        }
         String imei = null;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -422,6 +492,7 @@ public class StartActivity extends AppCompatActivity {
 
     private String get_state() {
 
+
         boolean isSIM1Ready = telephonyInfo.isSIM1Ready();
         boolean isSIM2Ready = telephonyInfo.isSIM2Ready();
 
@@ -435,6 +506,7 @@ public class StartActivity extends AppCompatActivity {
         } else {
             return "N";
         }
+
     }
 
     @Override
@@ -475,31 +547,27 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void Startbutton() {
+        try {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             get_method();
             DisplayGPS();
         }
 
-        TelephonyManager telephonyManager = null;
-        telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        String simSerialNo = telephonyManager.getSimSerialNumber();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            System.out.println("++++++++++++++++++++++++++++++" + Build.getSerial());
-            String serial = Build.getSerial();
-            serial = serial.substring(1, serial.length() - 1);
-            System.out.println("++++++++++++++++++++++++++++++" + serial);
+           /* DEVICEID = Build.getSerial();
+            toolbarFpsidValue.setText(DEVICEID);*/
+            toolbarLatitudeValue.setText(latitude);
+            toolbarLongitudeValue.setText(longitude);
         }
-        //statecode(dealerConstants.stateBean.stateCode);
+        } catch (Exception ex) {
+
+            Timber.tag("StartActivity-onCreate-").e(ex.getMessage(), "");
+        }
     }
 
     private void statecode(String st) {
@@ -543,10 +611,5 @@ public class StartActivity extends AppCompatActivity {
         public void onStatusChanged(String provider, int status, Bundle extras) {
             System.out.println("*********Status Changed");
         }
-
-
     }
-
-
-
 }

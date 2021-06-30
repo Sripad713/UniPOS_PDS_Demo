@@ -13,12 +13,12 @@
     <color name="background">#d9e8ed</color>
     <color name="white">#FFFFFF</color>
     <color name="card_lt_yellow">#FDF5CF</color>
-
+    <color name="toolbar">#0099CC</color>
     <color name="member_details_color">#F6C987</color>
     <drawable name="label_color">#FF6BB324</drawable>
-
-
-
+    <color name="onClickColor">#b0bbd9</color>
+    <color name="Blue">#3e569e</color>
+    <color name="act_bar_blue">#08459c</color>
     <drawable name="tweet_user_color">#FF52991F</drawable>
     <drawable name="tweet_color">#FF000000</drawable>
     <drawable name="tweet_meta_color">#FF999999</drawable>

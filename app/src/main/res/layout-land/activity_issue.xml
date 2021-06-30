@@ -317,8 +317,7 @@
                     android:foreground="@drawable/custom_ripple"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
-                    android:textStyle="bold"
-                    android:visibility="invisible" />
+                    android:textStyle="bold" />
             </LinearLayout>
 
 

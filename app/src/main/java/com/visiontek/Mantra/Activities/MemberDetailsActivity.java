@@ -54,6 +54,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
@@ -86,6 +89,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member__details);
+        try {
 
         context = MemberDetailsActivity.this;
 
@@ -191,8 +195,13 @@ public class MemberDetailsActivity extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(adapter);
+        }catch (Exception ex){
+
+            Timber.tag("Member-onCreate-").e(ex.getMessage(),"");
+        }
     }
     private void Sessiontimeout(String msg, String title) {
+
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(title);
         alertDialogBuilder.setTitle(msg);
@@ -221,6 +230,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
 
     private void prep_consent() {
+        try {
+
         String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
         //currentDateTimeString="26032021114610";
         String consentrequest="{\n" +
@@ -239,10 +250,16 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 "}";
         Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
         ConsentformURL(consentrequest);
+         }catch (Exception ex){
+
+            Timber.tag("Member-CnsntFmt-").e(ex.getMessage(),"");
+        }
     }
 
 
     private void ConsentDialog(String concent) {
+        try {
+
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCanceledOnTouchOutside(false);
@@ -279,8 +296,14 @@ public class MemberDetailsActivity extends AppCompatActivity {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
+         }catch (Exception ex){
+
+            Timber.tag("Member-consent-").e(ex.getMessage(),"");
+        }
     }
     private void ConsentformURL(String consentrequest) {
+        try {
+
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member), context.getResources().getString(R.string.Consent_Form), true, false);
         Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
         request.setOnResultListener(new Json_Parsing.OnResultListener() {
@@ -294,8 +317,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
-                if (code.equals("057") || code.equals("09")){
-                    Sessiontimeout(msg,  code);
+                if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+                    Sessiontimeout(msg, code);
                     return;
                 }
                 if (!code.equals("00")) {
@@ -305,11 +328,16 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+ }catch (Exception ex){
 
+            Timber.tag("Member-ConsentReq-").e(ex.getMessage(),"");
+        }
 
     }
 
     private  void show_AfterEkyc(String msg, String title, final String flow) {
+        try {
+
          final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
         alertDialogBuilder.setTitle(title);
@@ -335,6 +363,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+         }catch (Exception ex){
+
+            Timber.tag("Member-ekycflow-").e(ex.getMessage(),"");
+        }
     }
 
 
@@ -369,6 +401,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
     }
 
     private void callScanFP() {
+        try {
+
         if (memberModel.mBIO) {
             memberModel.MEMBER_AUTH_TYPE = "Bio";
             if (memberModel.zwgenWadhAuth.equals("Y")) {
@@ -390,17 +424,29 @@ public class MemberDetailsActivity extends AppCompatActivity {
         } else {
             show_error_box(context.getResources().getString(R.string.Authentication_Type_Not_Specified), context.getResources().getString(R.string.Authentication_Type), 0);
         }
+         }catch (Exception ex){
+
+            Timber.tag("Member-scanfp-").e(ex.getMessage(),"");
+        }
     }
 
     private void DealerAuth() {
+        try {
+
         Mdealer = 1;
         Intent dealer = new Intent(getApplicationContext(), DealerDetailsActivity.class);
         dealer.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         dealer.putExtra("OBJ",  memberModel);
         startActivityForResult(dealer, 2);
+        }catch (Exception ex){
+
+            Timber.tag("Member-DealerAuth-").e(ex.getMessage(),"");
+        }
     }
 
     private void ManualAuth() {
+        try {
+
         String manual = "<soapenv:Envelope\n" +
                 "    xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
                 "    xmlns:ser=\"http://service.fetch.rationcard/\">\n" +
@@ -427,9 +473,15 @@ public class MemberDetailsActivity extends AppCompatActivity {
         } else {
             show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
         }
+         }catch (Exception ex){
+
+            Timber.tag("Member-Manual-").e(ex.getMessage(),"");
+        }
     }
 
     private void hitManual(String manual) {
+        try {
+
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating), true, false);
         XML_Parsing request = new XML_Parsing(MemberDetailsActivity.this, manual, 10);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
@@ -442,8 +494,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 if (isError == null || isError.isEmpty()) {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
-                }if (isError.equals("057") || isError.equals("09")){
-                    Sessiontimeout(msg,  isError);
+                }
+                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
+                    Sessiontimeout(msg, isError);
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -458,9 +511,15 @@ public class MemberDetailsActivity extends AppCompatActivity {
             }
         });
         request.execute();
+         }catch (Exception ex){
+
+            Timber.tag("Member-ManualRes-").e(ex.getMessage(),"");
+        }
     }
 
     private void hitURL1(String memberlogin) {
+        try {
+
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member_Authentication), context.getResources().getString(R.string.Processing), true, false);
         XML_Parsing request = new XML_Parsing(MemberDetailsActivity.this, memberlogin, 4);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
@@ -474,8 +533,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("09")){
-                    Sessiontimeout(msg,  isError);
+                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
+                    Sessiontimeout(msg, isError);
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -549,6 +608,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                         Util.generateNoteOnSD(context, "MemberFusionReq.txt", fusion);
                         if (networkConnected(context)) {
                             hitURLfusion(fusion);
+
                         } else {
                             show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
                         }
@@ -563,32 +623,44 @@ public class MemberDetailsActivity extends AppCompatActivity {
             }
         });
         request.execute();
+        }catch (Exception ex){
+
+            Timber.tag("Member-MemAuth-").e(ex.getMessage(),"");
+        }
     }
 
     private void hitURLfusion(String fusion) {
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member), context.getResources().getString(R.string.Authenticating), true, false);
-        XML_Parsing request = new XML_Parsing(MemberDetailsActivity.this, fusion, 7);
+        try {
+
+      //  pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member), context.getResources().getString(R.string.Authenticating), true, false);
+        XML_Parsing request = new XML_Parsing(MemberDetailsActivity.this, fusion, 4);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
             @Override
             public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
+              /*  if (pd.isShowing()) {
                     pd.dismiss();
-                }
-                if (isError == null || isError.isEmpty()) {
+                }*/
+               /* if (isError == null || isError.isEmpty()) {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("09")){
-                    Sessiontimeout(msg,  isError);
+                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
+                    Sessiontimeout(msg, isError);
                     return;
-                }
+                }*/
+
             }
         });
         request.execute();
+        }catch (Exception ex){
+
+            Timber.tag("Member-fusion-").e(ex.getMessage(),"");
+        }
     }
 
     private void EKYCAuth() {
+        try {
 
         String memeKyc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<SOAP-ENV:Envelope\n" +
@@ -643,10 +715,15 @@ public class MemberDetailsActivity extends AppCompatActivity {
         } else {
             show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
         }
+  }catch (Exception ex){
 
+            Timber.tag("Member-EkycAuth-").e(ex.getMessage(),"");
+        }
     }
     Ekyc Ekyc;
     private void hiteKyc(String memeKyc) {
+        try {
+
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member), context.getResources().getString(R.string.Authenticating_EKYC), true, false);
         XML_Parsing request = new XML_Parsing(MemberDetailsActivity.this, memeKyc, 8);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
@@ -660,11 +737,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("09")){
-                    Sessiontimeout(msg,  isError);
+                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
+                    Sessiontimeout(msg, isError);
                     return;
                 }
-
                 Ekyc= (Ekyc) object;
 
                 if (!isError.equals("E00")) {
@@ -683,9 +759,14 @@ public class MemberDetailsActivity extends AppCompatActivity {
             }
         });
         request.execute();
+        }catch (Exception ex){
+
+            Timber.tag("Member-Ekycres-").e(ex.getMessage(),"");
+        }
     }
 
     private void prep_Mlogin() {
+        try {
 
         String memberlogin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<SOAP-ENV:Envelope\n" +
@@ -736,10 +817,16 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 "</SOAP-ENV:Envelope>";
         Util.generateNoteOnSD(context, "MemberAuthReq.txt", memberlogin);
         hitURL1(memberlogin);
+        }catch (Exception ex){
+
+            Timber.tag("Member-AuthFmt-").e(ex.getMessage(),"");
+        }
     }
 
     private void connectRDservice() {
         try {
+
+
             if (mp!=null) {
                 releaseMediaPlayer(context,mp);
             }
@@ -777,13 +864,16 @@ public class MemberDetailsActivity extends AppCompatActivity {
             }
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act, memberModel.RD_SERVICE);
-        } catch (Exception e) {
-            System.out.println("Error while connecting to RDService");
-            e.printStackTrace();
+
+        }catch (Exception ex){
+
+            Timber.tag("Member-PIDReq-").e(ex.getMessage(),"");
         }
     }
 
     private void connectRDserviceEKYC(String wadhvalue) {
+
+
         try {
             if (mp!=null) {
                 releaseMediaPlayer(context,mp);
@@ -813,13 +903,14 @@ public class MemberDetailsActivity extends AppCompatActivity {
             }
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act, memberModel.RD_SERVICE);
-        } catch (Exception e) {
-            System.out.println("Error while connecting to RDService");
-            e.printStackTrace();
+
+        }catch (Exception ex){
+            Timber.tag("Member-EkycPIDReq-").e(ex.getMessage(),"");
         }
     }
 
     private void AadhaarDialog() {
+        try {
 
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -855,6 +946,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
                 } else {
                     memberModel.EKYC = 0;
+
                     show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_UID),0);
                 }
             }
@@ -863,6 +955,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                memberModel.EKYC = 0;
             }
         });
 
@@ -870,7 +963,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
+        }catch (Exception ex){
 
+            Timber.tag("Member-Aadhardilg-").e(ex.getMessage(),"");
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -940,7 +1036,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("createAuthXMLRegistered error= " + e);
+            Timber.tag("Member-PIDData-").e(e.getMessage(),"");
             memberModel.rdModel.errinfo = String.valueOf(e);
             return 2;
         }
@@ -958,6 +1054,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
         void onClick(int p);
     }
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -966,7 +1064,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
         TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
         TextView toolbarCard = findViewById(R.id.toolbarCard);
-        toolbarCard.setText("RC : "+memberConstants.carddetails.rcId);
+        toolbarCard.setText("RC:"+memberConstants.carddetails.rcId);
 
         String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
         System.out.println(appversion);
@@ -985,5 +1083,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
         toolbarCard.setText(memberConstants.carddetails.rcId);
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+
+            Timber.tag("Member-Toolbar-").e(ex.getMessage(),"");
+        }
     }
 }

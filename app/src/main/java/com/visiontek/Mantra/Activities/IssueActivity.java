@@ -19,6 +19,8 @@ import com.visiontek.Mantra.Utils.Util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
@@ -37,6 +39,8 @@ public class IssueActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue);
+        try {
+
         context = IssueActivity.this;
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
@@ -69,7 +73,7 @@ public class IssueActivity extends AppCompatActivity {
                 Intent cash = new Intent(IssueActivity.this, CashPDSActivity.class);
                 cash.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(cash);
-                finish();
+
 
             }
         });
@@ -84,7 +88,11 @@ public class IssueActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 preventTwoClick(view);
-                Util.toast(IssueActivity.this, "IMPDS function is Not Available");
+                Intent cash = new Intent(IssueActivity.this, IMPDSActivity.class);
+                cash.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(cash);
+
+              //  Util.toast(IssueActivity.this, "IMPDS function is Not Available");
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +102,10 @@ public class IssueActivity extends AppCompatActivity {
                 finish();
             }
         });
+        }catch (Exception ex){
+
+            Timber.tag("Issue-onCreate-").e(ex.getMessage(),"");
+        }
     }
 
     private void initilisation() {
@@ -120,6 +132,8 @@ public class IssueActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -144,5 +158,8 @@ public class IssueActivity extends AppCompatActivity {
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+            Timber.tag("Issue-Toolbar-").e(ex.getMessage(),"");
+        }
     }
 }

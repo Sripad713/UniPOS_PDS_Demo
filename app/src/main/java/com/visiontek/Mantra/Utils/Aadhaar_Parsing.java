@@ -1034,6 +1034,8 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
                             }
                         }
                     }
+                    //RZ+k4w9ySTzOibQdDHPzCFqrKScZ74b3EibKYy1WyGw=
+                    //RZ+k4w9ySTzOibQdDHPzCFqrKScZ74b3EibKYy1WyGw=
                     if (eventType == XmlPullParser.START_TAG) {
                         if (xpp.getName().equals("rationCardId")) {
                             eventType = xpp.next();

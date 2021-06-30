@@ -27,7 +27,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,7 +36,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
-import com.mantra.mTerminal100.printer.Prints;
 import com.visiontek.Mantra.Adapters.InspectionListAdapter;
 import com.visiontek.Mantra.Models.DATAModels.InspectionListModel;
 import com.visiontek.Mantra.Models.InspectionModel.InspectionAuth;
@@ -52,7 +50,6 @@ import com.visiontek.Mantra.Utils.Util;
 import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -71,6 +68,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
@@ -85,7 +84,6 @@ import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
-
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
 public class InspectionActivity extends AppCompatActivity implements PrinterCallBack {
@@ -128,15 +126,18 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action)) {
-                probe();
-                // btnConnect.performClick();
+            try {
 
-                //last.setEnabled(true);
-                synchronized (this) {
 
+                String action = intent.getAction();
+                if (ACTION_USB_PERMISSION.equals(action)) {
+                    probe();
+                    synchronized (this) {
+
+                    }
                 }
+            }catch (Exception ex){
+                Timber.tag("Inspection-broadcast-").e(ex.getMessage(), "");
             }
         }
     };
@@ -149,61 +150,67 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspection);
-        context = InspectionActivity.this;
-        mActivity = this;
-        ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
-        TextView toolbarRD = findViewById(R.id.toolbarRD);
-        boolean rd_fps = RDservice(context);
-        if (rd_fps) {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
-            return;
-        }
-        initilisation();
-        radioGroup = findViewById(R.id.groupradio);
-        recyclerView = findViewById(R.id.my_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        try {
 
-        inspectionDetails = (InspectionDetails) getIntent().getSerializableExtra("OBJ");
-
-        mTerminal100API = new MTerminal100API();
-        mTerminal100API.initPrinterAPI(this, this);
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            probe();
-        } else {
-            finish();
-        }
-        Display(1);
-
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                if (check()) {
-                    fCount = "1";
-                    Enter_UID();
-                }else {
-                    show_error_box("Please Select atleast one Observation", context.getResources().getString(R.string.Internet_Connection), 0);
-
-                }
+            context = InspectionActivity.this;
+            mActivity = this;
+            ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
+            TextView toolbarRD = findViewById(R.id.toolbarRD);
+            boolean rd_fps = RDservice(context);
+            if (rd_fps) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+            } else {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+                show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
+                return;
             }
-        });
+            initilisation();
+            radioGroup = findViewById(R.id.groupradio);
+            recyclerView = findViewById(R.id.my_recycler_view);
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+            inspectionDetails = (InspectionDetails) getIntent().getSerializableExtra("OBJ");
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
+            mTerminal100API = new MTerminal100API();
+            mTerminal100API.initPrinterAPI(this, this);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                probe();
+            } else {
                 finish();
             }
-        });
+            Display(1);
 
+            next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    if (check()) {
+                        fCount = "1";
+                        Enter_UID();
+                    } else {
+                        show_error_box("Please Select atleast one Observation", "", 0);
+
+                    }
+                }
+            });
+
+
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    finish();
+                }
+            });
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-onCreate-").e(ex.getMessage(), "");
+        }
     }
+
     private void Sessiontimeout(String msg, String title) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(title);
@@ -223,16 +230,22 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
     private boolean check() {
-        int size=inspectionDetails.commDetails.size();
-        float val;
-        for (int i=0;i<size;i++){
-            val= Float.parseFloat(inspectionDetails.commDetails.get(i).entered);
-            System.out.println("==========="+val);
-            if (val>0.0){
-                System.out.println("="+val);
-                return true;
+        try {
+
+            int size = inspectionDetails.commDetails.size();
+            float val;
+            for (int i = 0; i < size; i++) {
+                val = Float.parseFloat(inspectionDetails.commDetails.get(i).entered);
+                System.out.println("===========" + val);
+                if (val > 0.0) {
+                    System.out.println("=" + val);
+                    return true;
+                }
             }
+        } catch (Exception ex) {
+            Timber.tag("Inspection-check-").e(ex.getMessage(), "");
         }
         return false;
     }
@@ -247,304 +260,347 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
 
     private void hit_inspectioAuth(String inspectionAuth) {
-        if (select == 2) {
-            app("Seized");
-        } else {
-            app("OK");
-        }
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.COMMODITIES), context.getResources().getString(R.string.Commodity_details_are_updating), true, false);
-        Aadhaar_Parsing request = new Aadhaar_Parsing(context, inspectionAuth, 6);
-        request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
+        try {
 
-            @Override
-            public void onCompleted(String error, String msg, String ref, String flow, Object object) {
+            if (select == 2) {
+                app("Seized");
+            } else {
+                app("OK");
+            }
+            pd = ProgressDialog.show(context, context.getResources().getString(R.string.COMMODITIES), context.getResources().getString(R.string.Commodity_details_are_updating), true, false);
+            Aadhaar_Parsing request = new Aadhaar_Parsing(context, inspectionAuth, 6);
+            request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
+                @Override
+                public void onCompleted(String error, String msg, String ref, String flow, Object object) {
 
-                if (error == null || error.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
-                    return;
-                }
-                if (error.equals("057") || error.equals("09")){
-                    Sessiontimeout(msg,  error);
-                    return;
-                }
-                if (!error.equals("00")) {
-                    System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                    show_error_box(msg, "Member Details: " + error, 0);
-                } else {
-                    InspectionAuth inspectionAuth = (InspectionAuth) object;
+                    if (pd.isShowing()) {
+                        pd.dismiss();
+                    }
 
-                    Ivendor = inspectionAuth.inspectorDesignation;
-                    Iname = inspectionAuth.inspectorName;
-                    Itrans = inspectionAuth.auth_transaction_code;
-                    com = addComm();
-                    if (!com.equals("0")) {
-                        String Inspectionpush = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                "<SOAP-ENV:Envelope\n" +
-                                "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
-                                "    xmlns:ns1=\"http://service.fetch.rationcard/\">\n" +
-                                "    <SOAP-ENV:Body>\n" +
-                                "        <ns1:inspPushCBData>\n" +
-                                "            <fpsId>" + dealerConstants.fpsCommonInfo.fpsId + "</fpsId>\n" +
-                                "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
-                                "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
-                                "            <password>" + dealerConstants.fpsURLInfo.token + "</password>\n" +
-                                "            <approvalStatus>" + approval + "</approvalStatus>\n" +
-                                com +
-                                "            <inspUid>" + Enter_UID + "</inspUid>\n" +
-                                "        </ns1:inspPushCBData>\n" +
-                                "    </SOAP-ENV:Body>\n" +
-                                "</SOAP-ENV:Envelope>";
-                        if (Util.networkConnected(context)) {
-                            hitpush(Inspectionpush);
-                            Util.generateNoteOnSD(context, "InspectionPushReq.txt", Inspectionpush);
-                        } else {
-                            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
-                        }
+                    if (error == null || error.isEmpty()) {
+                        show_error_box("Invalid Response from Server", "No Response", 0);
+                        return;
+                    }
+                    if (error.equals("057") || error.equals("008") || error.equals("09D")) {
+                        Sessiontimeout(msg, error);
+                        return;
+                    }
+                    if (!error.equals("00")) {
+                        System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
+                        show_error_box(msg, "Member Details: " + error, 0);
                     } else {
+                        InspectionAuth inspectionAuth = (InspectionAuth) object;
 
+                        Ivendor = inspectionAuth.inspectorDesignation;
+                        Iname = inspectionAuth.inspectorName;
+                        Itrans = inspectionAuth.auth_transaction_code;
+                        com = addComm();
+                        if (!com.equals("0")) {
+                            String Inspectionpush = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                    "<SOAP-ENV:Envelope\n" +
+                                    "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
+                                    "    xmlns:ns1=\"http://service.fetch.rationcard/\">\n" +
+                                    "    <SOAP-ENV:Body>\n" +
+                                    "        <ns1:inspPushCBData>\n" +
+                                    "            <fpsId>" + dealerConstants.fpsCommonInfo.fpsId + "</fpsId>\n" +
+                                    "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
+                                    "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
+                                    "            <password>" + dealerConstants.fpsURLInfo.token + "</password>\n" +
+                                    "            <approvalStatus>" + approval + "</approvalStatus>\n" +
+                                    com +
+                                    "            <inspUid>" + Enter_UID + "</inspUid>\n" +
+                                    "        </ns1:inspPushCBData>\n" +
+                                    "    </SOAP-ENV:Body>\n" +
+                                    "</SOAP-ENV:Envelope>";
+                            if (Util.networkConnected(context)) {
+                                hitpush(Inspectionpush);
+                                Util.generateNoteOnSD(context, "InspectionPushReq.txt", Inspectionpush);
+                            } else {
+                                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                            }
+                        } else {
+
+                        }
                     }
                 }
-            }
-        });
-        request.execute();
+            });
+            request.execute();
+        } catch (Exception ex) {
 
+            Timber.tag("Inspection-InspReq-").e(ex.getMessage(), "");
+        }
     }
 
     private void ConsentDialog(String concent) {
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.consent);
-        Button confirm = (Button) dialog.findViewById(R.id.agree);
-        Button back = (Button) dialog.findViewById(R.id.cancel);
-        TextView tv = (TextView) dialog.findViewById(R.id.consent);
-        tv.setText(concent);
-        final CheckBox checkBox =(CheckBox) dialog.findViewById(R.id.check);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkBox.isChecked()) {
-                    dialog.dismiss();
-                    connectRDservice();
-                }  else {
-                    show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
+        try {
+
+            final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setContentView(R.layout.consent);
+            Button confirm = (Button) dialog.findViewById(R.id.agree);
+            Button back = (Button) dialog.findViewById(R.id.cancel);
+            TextView tv = (TextView) dialog.findViewById(R.id.consent);
+            tv.setText(concent);
+            final CheckBox checkBox = (CheckBox) dialog.findViewById(R.id.check);
+            confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (checkBox.isChecked()) {
+                        dialog.dismiss();
+                        connectRDservice();
+                    } else {
+                        show_error_box("Please Check the Consent Message", context.getResources().getString(R.string.Consent_Form), 2);
+                    }
+
                 }
+            });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
 
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            dialog.show();
+        } catch (Exception ex) {
 
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
+            Timber.tag("Inspection-cnsntDlg-").e(ex.getMessage(), "");
+        }
     }
 
     private void ConsentformURL(String consentrequest) {
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Inspection), context.getResources().getString(R.string.Consent_Form), true, false);
-        Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
-        request.setOnResultListener(new Json_Parsing.OnResultListener() {
+        try {
 
-            @Override
-            public void onCompleted(String code, String msg, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (code == null || code.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
-                    return;
-                }
-                if (code.equals("057") || code.equals("09")){
-                    Sessiontimeout(msg,  code);
-                    return;
-                }
-                if (!code.equals("00")) {
-                    show_error_box(msg, code, 0);
-                } else {
-                    show_error_box(msg, code, 0);
-                }
-            }
+            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Inspection), context.getResources().getString(R.string.Consent_Form), true, false);
+            Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
+            request.setOnResultListener(new Json_Parsing.OnResultListener() {
 
-        });
+                @Override
+                public void onCompleted(String code, String msg, Object object) {
+                    if (pd.isShowing()) {
+                        pd.dismiss();
+                    }
+                    if (code == null || code.isEmpty()) {
+                        show_error_box("Invalid Response from Server", "No Response", 0);
+                        return;
+                    }
+                    if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+                        Sessiontimeout(msg, code);
+                        return;
+                    }
+                    if (!code.equals("00")) {
+                        show_error_box(msg, code, 0);
+                    } else {
+                        show_error_box(msg, code, 0);
+                    }
+                }
 
+            });
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-cnsntRsp-").e(ex.getMessage(), "");
+        }
     }
 
     private void app(String ok) {
-        int size = inspectionDetails.approvals.size();
-        for (int i = 0; i < size; i++) {
-            if (inspectionDetails.approvals.get(i).approveValue.equals(ok)) {
-                approval = inspectionDetails.approvals.get(i).approveKey;
+        try {
+
+            int size = inspectionDetails.approvals.size();
+            for (int i = 0; i < size; i++) {
+                if (inspectionDetails.approvals.get(i).approveValue.equals(ok)) {
+                    approval = inspectionDetails.approvals.get(i).approveKey;
+                }
             }
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-app-").e(ex.getMessage(), "");
         }
     }
 
     public void onRadioButtonClicked(View v) {
-        ok = findViewById(R.id.ok);
-        seized = findViewById(R.id.seized);
-        boolean checked = ((RadioButton) v).isChecked();
-        if (checked) {
-            switch (v.getId()) {
-                case R.id.ok:
-                    select = 1;
-                    ok.setTypeface(null, Typeface.BOLD_ITALIC);
-                    seized.setTypeface(null, Typeface.NORMAL);
+        try {
 
-                    break;
+            ok = findViewById(R.id.ok);
+            seized = findViewById(R.id.seized);
+            boolean checked = ((RadioButton) v).isChecked();
+            if (checked) {
+                switch (v.getId()) {
+                    case R.id.ok:
+                        select = 1;
+                        ok.setTypeface(null, Typeface.BOLD_ITALIC);
+                        seized.setTypeface(null, Typeface.NORMAL);
 
-                case R.id.seized:
-                    select = 2;
-                    ok.setTypeface(null, Typeface.NORMAL);
-                    seized.setTypeface(null, Typeface.BOLD_ITALIC);
+                        break;
 
-                    break;
+                    case R.id.seized:
+                        select = 2;
+                        ok.setTypeface(null, Typeface.NORMAL);
+                        seized.setTypeface(null, Typeface.BOLD_ITALIC);
 
+                        break;
+
+                }
             }
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-Select-").e(ex.getMessage(), "");
         }
     }
 
     private void hitpush(String inspectionpush) {
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.COMMODITIES), context.getResources().getString(R.string.Commodity_details_are_updating), true, false);
-        Aadhaar_Parsing request = new Aadhaar_Parsing(context, inspectionpush, 7);
-        request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
+        try {
 
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onCompleted(String error, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (error == null || error.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
-                    return;
-                }
-                if (error.equals("057") || error.equals("09")){
-                    Sessiontimeout(msg,  error);
-                    return;
-                }
-                if (!error.equals("00")) {
-                    System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                    show_error_box(msg, context.getResources().getString(R.string.Commodities_Error) + error, 0);
-                } else {
-                    Iref = ref;
-                    String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                    StringBuilder add = new StringBuilder();
-                    String app;
-                    int size = inspectionDetails.commDetails.size();
-                    for (int i = 0; i < size; i++) {
+            pd = ProgressDialog.show(context, context.getResources().getString(R.string.COMMODITIES), context.getResources().getString(R.string.Commodity_details_are_updating), true, false);
+            Aadhaar_Parsing request = new Aadhaar_Parsing(context, inspectionpush, 7);
+            request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
-                        app =  String.format("%-8s%-8s%-8s%-8s\n",
-                                inspectionDetails.commDetails.get(i).commNameEn,
-                                inspectionDetails.commDetails.get(i).closingBalance,
-                                inspectionDetails.commDetails.get(i).entered,
-                                inspectionDetails.commDetails.get(i).variation);
-                        add.append(app);
-
+                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public void onCompleted(String error, String msg, String ref, String flow, Object object) {
+                    if (pd.isShowing()) {
+                        pd.dismiss();
                     }
-                    String str1, str2, str3, str4, str5;
-                    String[] str = new String[4];
-                    if (L.equals("hi")) {
-                        str1 = context.getResources().getString(R.string.Inspection) + "\n" +
-                                context.getResources().getString(R.string.Receipt) + "\n";
-                        image(str1, "header.bmp", 1);
-                        str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                                + context.getResources().getString(R.string.TransactionID) + Iref + "\n\n"
-                                + context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
-                                + context.getResources().getString(R.string.Designation) + Ivendor + "\n";
-                        str3 = context.getResources().getString(R.string.Date) + currentDateTimeString + "\n\n"
-                                + context.getResources().getString(R.string.Status) + approval + " \n"
-                                + context.getResources().getString(R.string.Commidity_CB_Obsevn_Varitn) + "\n";
-
-                        str4 = add + "";
-                        image(str2 + str3 + str4, "body.bmp", 0);
-                        str5 = context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
-                                + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n";
-
-                        image(str5,"tail.bmp",1);
-                        str[0] = "1";
-                        str[1] = "1";
-                        str[2] = "1";
-                        str[3] = "1";
-                        checkandprint(str, 1);
+                    if (error == null || error.isEmpty()) {
+                        show_error_box("Invalid Response from Server", "No Response", 0);
+                        return;
+                    }
+                    if (error.equals("057") || error.equals("008") || error.equals("09D")) {
+                        Sessiontimeout(msg, error);
+                        return;
+                    }
+                    if (!error.equals("00")) {
+                        System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
+                        show_error_box(msg, context.getResources().getString(R.string.Commodities_Error) + error, 0);
                     } else {
+                        Iref = ref;
+                        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+                        StringBuilder add = new StringBuilder();
+                        String app;
+                        int size = inspectionDetails.commDetails.size();
+                        for (int i = 0; i < size; i++) {
 
-                        str1 = dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
-                                context.getResources().getString(R.string.Inspection) + "\n" +
-                                context.getResources().getString(R.string.Receipt) + "\n\n";
-                        str2 =    context.getResources().getString(R.string.FPS_ID) +"       :"+ dealerConstants.fpsCommonInfo.fpsId + "\n"
-                                + context.getResources().getString(R.string.TransactionID) +":"+ Iref + "\n"
-                                + context.getResources().getString(R.string.Inspected_By) +" :"+ Iname + "\n"
-                                + context.getResources().getString(R.string.Designation) +"  :"+ Ivendor + "\n"
-                                + context.getResources().getString(R.string.Date) +" : "+currentDateTimeString + "\n"
-                                + context.getResources().getString(R.string.Status) +"       :"+approval + " \n";
-                        str3 = String.format("%-8s%-8s%-8s%-8s\n",
-                                "CommName",
-                                context.getResources().getString(R.string.ClBal),
-                                "Obs",
-                                "Var");
-                        str4 = String.valueOf(add);
-                        str5 = "\n"+context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
-                                + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n\n\n";
-                        str[0] = "1";
-                        str[1] = str1;
-                        str[2] = str2 + str3 + str4;
-                        str[3] = str5;
-                        checkandprint(str, 0);
+                            app = String.format("%-8s%-8s%-8s%-8s\n",
+                                    inspectionDetails.commDetails.get(i).commNameEn,
+                                    inspectionDetails.commDetails.get(i).closingBalance,
+                                    inspectionDetails.commDetails.get(i).entered,
+                                    inspectionDetails.commDetails.get(i).variation);
+                            add.append(app);
+
+                        }
+                        String str1, str2, str3, str4, str5;
+                        String[] str = new String[4];
+                        if (L.equals("hi")) {
+                            str1 = context.getResources().getString(R.string.Inspection) + "\n" +
+                                    context.getResources().getString(R.string.Receipt) + "\n";
+                            image(str1, "header.bmp", 1);
+                            str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
+                                    + context.getResources().getString(R.string.TransactionID) + Iref + "\n\n"
+                                    + context.getResources().getString(R.string.Inspected_By) + Iname + "\n"
+                                    + context.getResources().getString(R.string.Designation) + Ivendor + "\n";
+                            str3 = context.getResources().getString(R.string.Date) + currentDateTimeString + "\n\n"
+                                    + context.getResources().getString(R.string.Status) + approval + " \n"
+                                    + context.getResources().getString(R.string.Commidity_CB_Obsevn_Varitn) + "\n";
+
+                            str4 = add + "";
+                            image(str2 + str3 + str4, "body.bmp", 0);
+                            str5 = context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
+                                    + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n";
+
+                            image(str5, "tail.bmp", 1);
+                            str[0] = "1";
+                            str[1] = "1";
+                            str[2] = "1";
+                            str[3] = "1";
+                            checkandprint(str, 1);
+                        } else {
+
+                            str1 = dealerConstants.stateBean.stateReceiptHeaderEn + "\n" +
+                                    context.getResources().getString(R.string.Inspection) + "\n" +
+                                    context.getResources().getString(R.string.Receipt) + "\n\n";
+                            str2 = context.getResources().getString(R.string.FPS_ID) + "       :" + dealerConstants.fpsCommonInfo.fpsId + "\n"
+                                    + context.getResources().getString(R.string.TransactionID) + ":" + Iref + "\n"
+                                    + context.getResources().getString(R.string.Inspected_By) + " :" + Iname + "\n"
+                                    + context.getResources().getString(R.string.Designation) + "  :" + Ivendor + "\n"
+                                    + context.getResources().getString(R.string.Date) + " : " + currentDateTimeString + "\n"
+                                    + context.getResources().getString(R.string.Status) + "       :" + approval + " \n";
+                            str3 = String.format("%-8s%-8s%-8s%-8s\n",
+                                    "CommName",
+                                    context.getResources().getString(R.string.ClBal),
+                                    "Obs",
+                                    "Var");
+                            str4 = String.valueOf(add);
+                            str5 = "\n" + context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
+                                    + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n\n\n";
+                            str[0] = "1";
+                            str[1] = str1;
+                            str[2] = str2 + str3 + str4;
+                            str[3] = str5;
+                            checkandprint(str, 0);
+
+                        }
 
                     }
-
                 }
-            }
-        });
-        request.execute();
-    }
+            });
+            request.execute();
+        } catch (Exception ex) {
 
-    private String addComm() {
-        StringBuilder add = new StringBuilder();
-        String str;
-        int commsize = inspectionDetails.commDetails.size();
-        if (commsize > 0) {
-            for (int i = 0; i < commsize; i++) {
-                str = "<inspCBUpdate>\n" +
-                        "                <closingBalance>" + inspectionDetails.commDetails.get(i).closingBalance + "</closingBalance>\n" +
-                        "                <commCode>" + inspectionDetails.commDetails.get(i).commCode + "</commCode>\n" +
-                        "                <observedClosingBalance>" + inspectionDetails.commDetails.get(i).entered + "</observedClosingBalance>\n" +
-                        "                <variation>" + inspectionDetails.commDetails.get(i).variation + "</variation>\n" +
-                        "</inspCBUpdate>\n";
-                add.append(str);
-            }
-            return String.valueOf(add);
-        } else {
-            return "0";
+            Timber.tag("Inspection-hitpush-").e(ex.getMessage(), "");
         }
     }
 
+    private String addComm() {
+        try {
+
+            StringBuilder add = new StringBuilder();
+            String str;
+            int commsize = inspectionDetails.commDetails.size();
+            if (commsize > 0) {
+                for (int i = 0; i < commsize; i++) {
+                    str = "<inspCBUpdate>\n" +
+                            "                <closingBalance>" + inspectionDetails.commDetails.get(i).closingBalance + "</closingBalance>\n" +
+                            "                <commCode>" + inspectionDetails.commDetails.get(i).commCode + "</commCode>\n" +
+                            "                <observedClosingBalance>" + inspectionDetails.commDetails.get(i).entered + "</observedClosingBalance>\n" +
+                            "                <variation>" + inspectionDetails.commDetails.get(i).variation + "</variation>\n" +
+                            "</inspCBUpdate>\n";
+                    add.append(str);
+                }
+                return String.valueOf(add);
+            }
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-addcomm-").e(ex.getMessage(), "");
+        }
+
+        return "0";
+
+    }
+
     private void Enter_UID() {
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.uid);
-        Button back = (Button) dialog.findViewById(R.id.back);
-        Button confirm = (Button) dialog.findViewById(R.id.confirm);
-        TextView dialogbox = (TextView) dialog.findViewById(R.id.dialog);
-        dialogbox.setText("INSPECTOR");
-        TextView tv = (TextView) dialog.findViewById(R.id.status);
-        final EditText enter = (EditText) dialog.findViewById(R.id.enter);
-        tv.setText("Please Enter Inspector UID");
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Enter_UID = enter.getText().toString();
-               // if (Enter_UID.length() < 11) {
+        try {
+
+            final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setContentView(R.layout.uid);
+            Button back = (Button) dialog.findViewById(R.id.back);
+            Button confirm = (Button) dialog.findViewById(R.id.confirm);
+            TextView dialogbox = (TextView) dialog.findViewById(R.id.dialog);
+            dialogbox.setText("INSPECTOR");
+            TextView tv = (TextView) dialog.findViewById(R.id.status);
+            final EditText enter = (EditText) dialog.findViewById(R.id.enter);
+            tv.setText("Please Enter Inspector UID");
+            confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    Enter_UID = enter.getText().toString();
+                    // if (Enter_UID.length() < 11) {
                     if (Enter_UID.length() == 12 && validateVerhoeff(Enter_UID)) {
                         try {
                             Aadhaar = encrypt(Enter_UID, menuConstants.skey);
@@ -581,46 +637,57 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     show_error_box("Please Enter UID Number", "UID", 0);
                 }*/
 
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+                }
+            });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
 
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            dialog.show();
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-enterUid-").e(ex.getMessage(), "");
+        }
 
     }
 
 
     private void prep_consent() {
-        System.out.println("@@ In dealer details else case");
-        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-        //currentDateTimeString="26032021114610";
-        String consentrequest="{\n" +
-                "   \"fpsId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
-                "   \"modeOfService\" : \"D\",\n" +
-                "   \"moduleType\" : \"C\",\n" +
-                "   \"rcId\" : "+"\""+dealerConstants.stateBean.statefpsId+"\""+",\n" +
-                "   \"requestId\" : \"0\",\n" +
-                "   \"requestValue\" : \"N\",\n" +
-                "   \"sessionId\" : "+"\""+dealerConstants.fpsCommonInfo.fpsSessionId+"\""+",\n" +
-                "   \"stateCode\" : "+"\""+dealerConstants.stateBean.stateCode+"\""+",\n" +
-                "   \"terminalId\" : "+"\""+DEVICEID+"\""+",\n" +
-                "   \"timeStamp\" : "+"\""+currentDateTimeString+"\""+",\n" +
-                /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
-                "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
-                "}";
-        Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
-        ConsentformURL(consentrequest);
+        try {
+
+            System.out.println("@@ In dealer details else case");
+            String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+            //currentDateTimeString="26032021114610";
+            String consentrequest = "{\n" +
+                    "   \"fpsId\" : " + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
+                    "   \"modeOfService\" : \"D\",\n" +
+                    "   \"moduleType\" : \"C\",\n" +
+                    "   \"rcId\" : " + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
+                    "   \"requestId\" : \"0\",\n" +
+                    "   \"requestValue\" : \"N\",\n" +
+                    "   \"sessionId\" : " + "\"" + dealerConstants.fpsCommonInfo.fpsSessionId + "\"" + ",\n" +
+                    "   \"stateCode\" : " + "\"" + dealerConstants.stateBean.stateCode + "\"" + ",\n" +
+                    "   \"terminalId\" : " + "\"" + DEVICEID + "\"" + ",\n" +
+                    "   \"timeStamp\" : " + "\"" + currentDateTimeString + "\"" + ",\n" +
+                    /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
+                    "   \"token\" : " + "\"9f943748d8c1ff6ded5145c59d0b2ae7\"" + "\n" +
+                    "}";
+            Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
+            ConsentformURL(consentrequest);
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-cnsntFmt-").e(ex.getMessage(), "");
+        }
     }
 
     private void connectRDservice() {
+
         try {
             if (mp != null) {
                 releaseMediaPlayer(context, mp);
@@ -657,90 +724,77 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             System.out.println("No of activities = " + activities.size());
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act, RD_SERVICE);
-        } catch (Exception e) {
-            System.out.println("Error while connecting to RDService");
-            e.printStackTrace();
+
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-onCreate-").e(ex.getMessage(), "");
         }
     }
 
     private void xml_Frame() {
-        String InspectionAuth = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<SOAP-ENV:Envelope\n" +
-                "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
-                "    xmlns:ns1=\"http://www.uidai.gov.in/authentication/uid-auth-request/2.0\"\n" +
-                "    xmlns:ns2=\"http://service.fetch.rationcard/\">\n" +
-                "    <SOAP-ENV:Body>\n" +
-                "        <ns2:getAuthenticateNICAuaInspectionRD2>\n" +
-                "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
-                "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
-                "            <Shop_no>" + dealerConstants.stateBean.statefpsId + "</Shop_no>\n" +
-                "            <User_Id>" + dealerConstants.fpsCommonInfo.fpsId + "</User_Id>\n" +
-                "            <uidNumber>" + Aadhaar + "</uidNumber>\n" +
-                "            <udc>" + DEVICEID + "</udc>\n" +
-                "            <authMode>V</authMode>\n" +
-                "            <auth_packet>\n" +
-                "                <ns1:certificateIdentifier>" + rdModel.ci + "</ns1:certificateIdentifier>\n" +
-                "                <ns1:dataType>X</ns1:dataType>\n" +
-                "                <ns1:dc>" + rdModel.dc + "</ns1:dc>\n" +
-                "                <ns1:dpId>" + rdModel.dpId + "</ns1:dpId>\n" +
-                "                <ns1:encHmac>" + rdModel.hmac + "</ns1:encHmac>\n" +
-                "                <ns1:mc>" + rdModel.mc + "</ns1:mc>\n" +
-                "                <ns1:mid>" + rdModel.mi + "</ns1:mid>\n" +
-                "                <ns1:rdId>" + rdModel.rdsId + "</ns1:rdId>\n" +
-                "                <ns1:rdVer>" + rdModel.rdsVer + "</ns1:rdVer>\n" +
-                "                <ns1:secure_pid>" + rdModel.pid + "</ns1:secure_pid>\n" +
-                "                <ns1:sessionKey>" + rdModel.skey + "</ns1:sessionKey>\n" +
-                "            </auth_packet>\n" +
-                "            <password>" + dealerConstants.fpsURLInfo.token + "</password>\n" +
-                "            <Resp>\n" +
-                "                <errCode>0</errCode>\n" +
-                "                <errInfo>y</errInfo>\n" +
-                "                <nmPoints>" + rdModel.nmpoint + "</nmPoints>\n" +
-                "                <fCount>" + rdModel.fcount + "</fCount>\n" +
-                "                <fType>" + rdModel.ftype + "</fType>\n" +
-                "                <iCount>" + rdModel.icount + "</iCount>\n" +
-                "                <iType>" + rdModel.itype + "</iType>\n" +
-                "                <pCount>0</pCount>\n" +
-                "                <pType>0</pType>\n" +
-                "                <qScore>0</qScore>\n" +
-                "            </Resp>\n" +
-                "        </ns2:getAuthenticateNICAuaInspectionRD2>\n" +
-                "    </SOAP-ENV:Body>\n" +
-                "</SOAP-ENV:Envelope>";
+        try {
+
+            String InspectionAuth = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<SOAP-ENV:Envelope\n" +
+                    "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
+                    "    xmlns:ns1=\"http://www.uidai.gov.in/authentication/uid-auth-request/2.0\"\n" +
+                    "    xmlns:ns2=\"http://service.fetch.rationcard/\">\n" +
+                    "    <SOAP-ENV:Body>\n" +
+                    "        <ns2:getAuthenticateNICAuaInspectionRD2>\n" +
+                    "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
+                    "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
+                    "            <Shop_no>" + dealerConstants.stateBean.statefpsId + "</Shop_no>\n" +
+                    "            <User_Id>" + dealerConstants.fpsCommonInfo.fpsId + "</User_Id>\n" +
+                    "            <uidNumber>" + Aadhaar + "</uidNumber>\n" +
+                    "            <udc>" + DEVICEID + "</udc>\n" +
+                    "            <authMode>V</authMode>\n" +
+                    "            <auth_packet>\n" +
+                    "                <ns1:certificateIdentifier>" + rdModel.ci + "</ns1:certificateIdentifier>\n" +
+                    "                <ns1:dataType>X</ns1:dataType>\n" +
+                    "                <ns1:dc>" + rdModel.dc + "</ns1:dc>\n" +
+                    "                <ns1:dpId>" + rdModel.dpId + "</ns1:dpId>\n" +
+                    "                <ns1:encHmac>" + rdModel.hmac + "</ns1:encHmac>\n" +
+                    "                <ns1:mc>" + rdModel.mc + "</ns1:mc>\n" +
+                    "                <ns1:mid>" + rdModel.mi + "</ns1:mid>\n" +
+                    "                <ns1:rdId>" + rdModel.rdsId + "</ns1:rdId>\n" +
+                    "                <ns1:rdVer>" + rdModel.rdsVer + "</ns1:rdVer>\n" +
+                    "                <ns1:secure_pid>" + rdModel.pid + "</ns1:secure_pid>\n" +
+                    "                <ns1:sessionKey>" + rdModel.skey + "</ns1:sessionKey>\n" +
+                    "            </auth_packet>\n" +
+                    "            <password>" + dealerConstants.fpsURLInfo.token + "</password>\n" +
+                    "            <Resp>\n" +
+                    "                <errCode>0</errCode>\n" +
+                    "                <errInfo>y</errInfo>\n" +
+                    "                <nmPoints>" + rdModel.nmpoint + "</nmPoints>\n" +
+                    "                <fCount>" + rdModel.fcount + "</fCount>\n" +
+                    "                <fType>" + rdModel.ftype + "</fType>\n" +
+                    "                <iCount>" + rdModel.icount + "</iCount>\n" +
+                    "                <iType>" + rdModel.itype + "</iType>\n" +
+                    "                <pCount>0</pCount>\n" +
+                    "                <pType>0</pType>\n" +
+                    "                <qScore>0</qScore>\n" +
+                    "            </Resp>\n" +
+                    "        </ns2:getAuthenticateNICAuaInspectionRD2>\n" +
+                    "    </SOAP-ENV:Body>\n" +
+                    "</SOAP-ENV:Envelope>";
 
 
-        Util.generateNoteOnSD(context, "InspectionAuthReq.txt", InspectionAuth);
-        if (networkConnected(context)) {
+            Util.generateNoteOnSD(context, "InspectionAuthReq.txt", InspectionAuth);
+            if (networkConnected(context)) {
 
-            hit_inspectioAuth(InspectionAuth);
-        } else {
-            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                hit_inspectioAuth(InspectionAuth);
+            } else {
+                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+            }
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-Auth-").e(ex.getMessage(), "");
         }
     }
 
-   /* private boolean replcae(int p) {
-
-        System.out.println("p value = " + p);
-        for (int i = 0; i < place.size(); i++) {
-            System.out.println("I value = " + i);
-            System.out.println("PLACE = " + place.get(i));
-            System.out.println("PLACE SIZE = " + place.size());
-            if (p == place.get(i)) {
-                System.out.println("ENTERED SIZE = " + entered.size());
-                System.out.println("REPLACING VALUES at " + i);
-                entered.set(i, DATA);
-                variation.set(i, AFTERDATA);
-                updatedcb.set(i, closingBalance.get(p));
-                updatedname.set(i, commNameEn.get(p));
-                updatedcode.set(i, commNameEn.get(p));
-                return true;
-            }
-        }
-        return false;
-    }*/
-
     private void EnterComm(final int position) {
         try {
+
             final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setCanceledOnTouchOutside(false);
@@ -766,29 +820,29 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 public void onClick(View v) {
                     dialog.dismiss();
                     String Check = observation.getText().toString();
-                    if (!Check.isEmpty()&& Check!=null&& Check.length()>0 ) {
+                    if (!Check.isEmpty() && Check != null && Check.length() > 0) {
                         if (checkdotvalue(Check)) {
                             textdata = Float.parseFloat(Check);
                             cb = Float.parseFloat(inspectionDetails.commDetails.get(position).closingBalance);
                             //if (textdata <= cb && textdata >= 0) {
-                                if ( textdata >= 0) {
+                            if (textdata >= 0) {
                                 var = (Float) (cb - textdata);
-                                    AFTERDATA = String.valueOf(var);
-                                    DATA = String.valueOf(textdata);
-                                    inspectionDetails.commDetails.get(position).entered = DATA;
-                                    inspectionDetails.commDetails.get(position).variation = AFTERDATA;
-                                    data.clear();
-                                    Display(0);
+                                AFTERDATA = String.valueOf(var);
+                                DATA = String.valueOf(textdata);
+                                inspectionDetails.commDetails.get(position).entered = DATA;
+                                inspectionDetails.commDetails.get(position).variation = AFTERDATA;
+                                data.clear();
+                                Display(0);
 
                             } else {
                                 show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
                             }
-                        }else {
-                            show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
-                        }
                         } else {
                             show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
                         }
+                    } else {
+                        show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
+                    }
 
                 }
             });
@@ -804,9 +858,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
             dialog.show();
 
-        } catch (Exception e) {
-            show_error_box("Please enter a valid value", context.getResources().getString(R.string.Invalid_Quantity), 0);
 
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-onCreate-").e(ex.getMessage(), "");
         }
     }
 
@@ -814,6 +869,8 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        try {
+
         System.out.println("OnActivityResult");
         if (requestCode == RD_SERVICE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -829,10 +886,15 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 }
             }
         }
+         } catch (Exception ex) {
+            show_error_box(ex.getMessage(), "PID Response", 0);
+            Timber.tag("Inspection-onCreate-").e(ex.getMessage(), "");
+        }
     }
 
     @SuppressLint("SetTextI18n")
     public int createAuthXMLRegistered(String piddataxml) {
+
 
         try {
             InputStream is = new ByteArrayInputStream(piddataxml.getBytes());
@@ -867,7 +929,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("createAuthXMLRegistered error= " + e);
+            Timber.tag("Inspection-onCreate-").e(e.getMessage(), "");
             rdModel.errinfo = String.valueOf(e);
             return 2;
         }
@@ -884,7 +946,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        if (i==2){
+                        if (i == 2) {
                             prep_consent();
                         }
 
@@ -898,14 +960,17 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     private void image(String content, String name, int align) {
         try {
             Util.image(content, name, align);
-        } catch (IOException e) {
-            e.printStackTrace();
-            show_error_box(e.toString(), "Image formation Error", 0);
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-Image-").e(ex.getMessage(), "");
         }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkandprint(String[] str, int i) {
+        try {
+
         if (Util.batterylevel(context) || Util.adapter(context)) {
             if (mp != null) {
                 releaseMediaPlayer(context, mp);
@@ -919,6 +984,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             finish();
         } else {
             printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery), str, i);
+        }
+          } catch (Exception ex) {
+
+            Timber.tag("Inspection-battery-").e(ex.getMessage(), "");
         }
     }
 
@@ -951,10 +1020,12 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
 
     private void Display(int val) {
+        try {
+
         data = new ArrayList<>();
         int commDetailssize = inspectionDetails.commDetails.size();
         for (int i = 0; i < commDetailssize; i++) {
-            if (val==1) {
+            if (val == 1) {
                 inspectionDetails.commDetails.get(i).entered = "0.0";
                 inspectionDetails.commDetails.get(i).variation = "0.0";
             }
@@ -971,53 +1042,43 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             }
         });
         recyclerView.setAdapter(adapter);
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-Display-").e(ex.getMessage(), "");
+        }
     }
 
     public interface OnClickInspector {
         void onClick(int p);
     }
+
     @Override
     public void OnOpen() {
-        //last.setEnabled(true);
-        // btnConnect.setEnabled(false);
+
 
     }
 
     @Override
     public void OnOpenFailed() {
-        //last.setEnabled(false);
-        //btnConnect.setEnabled(true);
-
-
     }
 
     @Override
     public void OnClose() {
-        //  last.setEnabled(false);
-        // btnConnect.setEnabled(true);
         if (mUsbReceiver != null) {
             context.unregisterReceiver(mUsbReceiver);
         }
-
-        // If Close is caused because the printer is turned off. Then you need to re-enumerate it here.
         probe();
     }
 
     @Override
     public void OnPrint(final int bPrintResult, final boolean bIsOpened) {
-      /*  mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                Toast.makeText(context.getApplicationContext(), (bPrintResult == 0) ? getResources().getString(R.string.printsuccess) : getResources().getString(R.string.printfailed) + " " + Prints.ResultCodeToString(bPrintResult), Toast.LENGTH_SHORT).show();
-                //mActivity.last.setEnabled(bIsOpened);
-            }
-        });*/
 
     }
 
 
     private void probe() {
+        try {
+
         final UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
         HashMap<String, UsbDevice> deviceList = mUsbManager.getDeviceList();
@@ -1053,13 +1114,16 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 }
             }
         }
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-Probe-").e(ex.getMessage(), "");
+        }
     }
 
-    public interface OnClickListener {
-        void onClick_d(int p);
-    }
 
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -1084,5 +1148,8 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        } catch (Exception ex) {
+            Timber.tag("Inspection-Toolbar-").e(ex.getMessage(), "");
+        }
     }
 }

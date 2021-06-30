@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:ignore="MissingDefaultResource">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.visiontek.Mantra.Utils.MyCustomTextView
+                android:id="@+id/text_comm_name"
+                android:text="Commodity"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ben_table_cell_shape"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:textColor="@color/blackblack"
+                android:padding="10dp"/>
+
+            <com.visiontek.Mantra.Utils.MyCustomTextView
+                android:id="@+id/text_units"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Units"
+                android:maxLines="1"
+                android:background="@drawable/ben_table_cell_shape"
+                android:textSize="16sp"
+                android:textColor="@color/blackblack"
+                android:padding="10dp"/>
+
+            <com.visiontek.Mantra.Utils.MyCustomTextView
+                android:id="@+id/text_availed_qty"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/ben_table_cell_shape"
+                android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:maxLines="1"
+                android:text="Issued Qty"
+                android:textColor="@color/blackblack"
+                android:textSize="16sp" />
+
+            <com.visiontek.Mantra.Utils.MyCustomEditText
+                android:id="@+id/text_issue_qty"
+                android:text="Issued Qty"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ben_table_cell_shape"
+                android:textSize="16sp"
+                android:maxLength="4"
+                android:maxLines="1"
+                android:longClickable="false"
+                android:textColor="@color/act_bar_blue"
+                android:padding="10dp"
+                android:inputType="numberDecimal"
+                />
+
+            <com.visiontek.Mantra.Utils.MyCustomTextView
+                android:id="@+id/text_clos_bal"
+                android:text="CB"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ben_table_cell_shape"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:textColor="@color/blackblack"
+                android:padding="10dp"
+                />
+
+            <com.visiontek.Mantra.Utils.MyCustomTextView
+                android:id="@+id/text_price"
+                android:text="Price"
+                android:layout_width="100dp"
+                android:maxLines="1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ben_table_cell_shape"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:padding="10dp"
+                />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <View
+                android:id="@+id/line1"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_weight="1"
+                android:background="#FF909090"
+                android:padding="2dip" />
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>

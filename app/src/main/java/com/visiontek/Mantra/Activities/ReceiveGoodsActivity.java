@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
@@ -60,6 +62,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive__goods);
+        try {
 
         context = ReceiveGoodsActivity.this;
         receiveGoodsDetails = (ReceiveGoodsDetails) getIntent().getSerializableExtra("OBJ");
@@ -155,27 +158,16 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
                finish();
             }
         });
-    }
-    private void Sessiontimeout(String msg, String title) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(title);
-        alertDialogBuilder.setTitle(msg);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
+        }catch (Exception ex){
 
-                        Intent i = new Intent(context, StartActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+            Timber.tag("ReceiveGoods-onCreate-").e(ex.getMessage(),"");
+        }
     }
+
     private void addCommDetails() {
+
+        try {
+
         int size=receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.size();
         tcCommDetails tcCommDetails;
 
@@ -202,6 +194,10 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             receiveGoodsModel.tcCommDetails.add(tcCommDetails);
 
         }
+        }catch (Exception ex){
+
+            Timber.tag("ReceiveGoods-addcomm-").e(ex.getMessage(),"");
+        }
     }
 
     private void initilisation() {
@@ -214,6 +210,8 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     }
 
     private boolean check() {
+        try {
+
         float val = 0;
         int size=receiveGoodsDetails.infoTCDetails.get(receiveGoodsModel.select).tcCommDetails.size();
         for (int i=0;i<size;i++){
@@ -222,11 +220,18 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
                 return true;
             }
         }
+        }catch (Exception ex){
+
+            Timber.tag("ReceiveGoods-check-").e(ex.getMessage(),"");
+        }
         return false;
+
     }
 
 
     private void DisplayTruck(int position) {
+        try {
+
         ArrayList<ReceiveGoodsListModel> modeldata = new ArrayList<>();
         int tcCommDetailssize=receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.size();
         /*if (position==-1){
@@ -247,12 +252,18 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(adapter);
+        }catch (Exception ex){
+
+            Timber.tag("ReceiveGoods-Display-").e(ex.getMessage(),"");
+        }
     }
 
     public interface OnClickReceived {
         void onClick(int p);
     }
     private void EnterComm(final int position) {
+        try {
+
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCanceledOnTouchOutside(false);
@@ -312,6 +323,10 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
+        }catch (Exception ex){
+
+            Timber.tag("ReceiveGoods-Entered-").e(ex.getMessage(),"");
+        }
     }
 
     private void show_error_box(String msg, String title, final int i) {
@@ -332,6 +347,8 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
     }
 
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -356,5 +373,9 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+
+            Timber.tag("ReceiveGoods-ToolBar-").e(ex.getMessage(),"");
+        }
     }
 }

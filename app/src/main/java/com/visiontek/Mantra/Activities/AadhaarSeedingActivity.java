@@ -139,6 +139,9 @@ public class AadhaarSeedingActivity extends AppCompatActivity {
         }else {
             id.setInputType(InputType. TYPE_CLASS_NUMBER);
         }
+        InputFilter[] FilterArray = new InputFilter[1];
+        FilterArray[0] = new InputFilter.LengthFilter(Integer.parseInt(dealerConstants.fpsURLInfo.cardEntryLength));
+        id.setFilters(FilterArray);
         toolbarInitilisation();
     }
 

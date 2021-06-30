@@ -52,6 +52,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
@@ -84,7 +87,11 @@ public class UIDDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_u_i_d__details);
-
+        try {
+        }catch (Exception ex){
+            show_error_box(ex.getMessage(),"Start",0);
+            Timber.tag("UIDDetails-onCreate-").e(ex.getMessage(),"");
+        }
         context = UIDDetailsActivity.this;
 
         uidDetails = (UIDDetails) getIntent().getSerializableExtra("OBJ");
@@ -250,8 +257,8 @@ public class UIDDetailsActivity extends AppCompatActivity {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
-                if (code.equals("057") || code.equals("09")){
-                    Sessiontimeout(msg,  code);
+                if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+                    Sessiontimeout(msg, code);
                     return;
                 }
                 if (!code.equals("00")) {
@@ -340,8 +347,8 @@ public class UIDDetailsActivity extends AppCompatActivity {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
-                if (error.equals("057") || error.equals("09")){
-                    Sessiontimeout(msg,  error);
+                if (error.equals("057") || error.equals("008") || error.equals("09D")) {
+                    Sessiontimeout(msg, error);
                     return;
                 }
                 if (!error.equals("E00")) {

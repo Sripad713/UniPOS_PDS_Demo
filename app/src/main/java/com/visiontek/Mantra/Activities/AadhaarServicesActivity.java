@@ -19,6 +19,8 @@ import com.visiontek.Mantra.Utils.Util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
@@ -35,6 +37,7 @@ public class AadhaarServicesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aadhar__services);
+        try {
 
         context = AadhaarServicesActivity.this;
 
@@ -81,6 +84,10 @@ public class AadhaarServicesActivity extends AppCompatActivity {
                 finish();
             }
         });
+        }catch (Exception ex){
+
+            Timber.tag("AadharService-OnCreate-").e(ex.getMessage(),"");
+        }
     }
 
     private void initilisation() {
@@ -106,6 +113,8 @@ public class AadhaarServicesActivity extends AppCompatActivity {
     }
 
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -129,5 +138,9 @@ public class AadhaarServicesActivity extends AppCompatActivity {
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+
+            Timber.tag("AadharService-ToolBr-").e(ex.getMessage(),"");
+        }
     }
 }

@@ -27,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
@@ -41,7 +43,8 @@ public class DeviceInfoActivity extends AppCompatActivity {
     ArrayList<DeviceInfoListModel> arraydata;
     Context context;
 
-    public static String readKernelVersion() {
+    public String readKernelVersion() {
+
         try {
             Process p = Runtime.getRuntime().exec("uname -a");
             InputStream is = null;
@@ -65,7 +68,11 @@ public class DeviceInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device__info);
-
+        try {
+        }catch (Exception ex){
+            show_error_box(ex.getMessage(),"Start");
+            Timber.tag("DeviceInfo-onCreate-").e(ex.getMessage(),"");
+        }
         context = DeviceInfoActivity.this;
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
@@ -93,6 +100,11 @@ public class DeviceInfoActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void saveInfo(Context context) {
+        try {
+        }catch (Exception ex){
+            show_error_box(ex.getMessage(),"Start");
+            Timber.tag("DeviceInfo-onCreate-").e(ex.getMessage(),"");
+        }
         ArrayList<String> value = new ArrayList<>();
         value.add("Device");
         value.add("Manufacture");
@@ -147,6 +159,8 @@ public class DeviceInfoActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -170,5 +184,9 @@ public class DeviceInfoActivity extends AppCompatActivity {
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+
+            Timber.tag("DeviceInfo-Toolbar-").e(ex.getMessage(),"");
+        }
     }
 }

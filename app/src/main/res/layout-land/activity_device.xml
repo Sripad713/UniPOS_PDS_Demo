@@ -276,36 +276,10 @@
                 android:layout_height="match_parent"
                 android:layout_marginVertical="@dimen/LayoutMV"
                 android:layout_weight="1"
-                android:text="0110000106"
+                android:text=""
                 android:textSize="@dimen/TextsizeB" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/LayoutMH"
-            android:layout_marginVertical="20dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/RD_Service"
-                android:textColor="@color/button"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold" />
-
-            <TextView
-
-                android:id="@+id/rdservice"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="1838I014629"
-                android:textSize="@dimen/TextsizeB" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -332,6 +306,26 @@
                 android:layout_gravity="right"
                 android:layout_weight="1" />
 
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/LayoutMH"
+            android:layout_marginVertical="20dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/log"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Upload Log"
+                android:background="@color/button"
+                android:textSize="@dimen/TextsizeB"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

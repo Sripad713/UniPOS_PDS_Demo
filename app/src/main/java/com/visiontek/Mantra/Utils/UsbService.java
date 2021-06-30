@@ -22,10 +22,7 @@ import com.felhr.usbserial.UsbSerialInterface;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-import static com.visiontek.Mantra.Activities.RationDetailsActivity.MESSAGE_FROM_SERIAL_PORT;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class UsbService extends Service {
 

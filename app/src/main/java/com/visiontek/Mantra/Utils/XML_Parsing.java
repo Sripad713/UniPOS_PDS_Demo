@@ -119,8 +119,8 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
                     result2 = bis.read();
                 }
                 result = buf.toString();
-                if (result != null && result.length() > 0) {
-                    System.out.println("OUTPU = " + result);
+                if (result.length() > 0 ) {
+                    System.out.println("OUTPUT = " + result);
                     if (type == 1) {
                         Util.generateNoteOnSD(context, "DDetailsRes.txt", result);
                         dealerConstants = parseXml_dealer(result);
@@ -165,16 +165,15 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
                     code = "2";
                     msg = "PARSING Error";
                 }
-            }else if (urlConnection.getResponseCode() == 400){
-                code = "400";
-                msg = "Bad Request";
+            }else {
+                code = String.valueOf(urlConnection.getResponseCode());
+                msg = urlConnection.getResponseMessage();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             code = "1";
-            msg = e.toString();
-            msg = "Server Connection Failed";
+            msg = e.getMessage();
 
         } finally {
             if (urlConnection != null) {
@@ -237,11 +236,11 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
         } catch (XmlPullParserException e) {
             e.printStackTrace();
             code = "1";
-            msg = String.valueOf(e);
+            msg = String.valueOf(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
             code = "2";
-            msg = String.valueOf(e);
+            msg = String.valueOf(e.getMessage());
         }
     }
 

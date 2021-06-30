@@ -36,6 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
+import timber.log.Timber;
+
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
@@ -73,9 +75,7 @@ public class Device_Update extends AppCompatActivity {
             System.out.println("@@Version: "+version);
             appVersion = Float.parseFloat(version);
             System.out.println("+++++++++++"+appVersion);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
         boolean rd_fps = RDservice(context);
@@ -98,11 +98,9 @@ public class Device_Update extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 preventTwoClick(view);
-                File file = new File("/Mantra/", "MantraPDS_1.1.apk");
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-                startActivity(intent);
-                //show_error_box(context.getResources().getString(R.string.Connect_your_device_to_the_usb_Port), context.getResources().getString(R.string.USB_Connection));
+
+                //InstallfromUSB();
+                show_error_box("Not Yet Enabled", context.getResources().getString(R.string.USB_Connection));
             }
         });
 
@@ -131,6 +129,10 @@ public class Device_Update extends AppCompatActivity {
                 finish();
             }
         });
+         }catch (Exception ex){
+
+            Timber.tag("DeviceUpdate-onCreate-").e(ex.getMessage(),"");
+        }
     }
 
     private void initilisation() {
@@ -140,6 +142,8 @@ public class Device_Update extends AppCompatActivity {
     }
 
     private void filesize() {
+
+
         try {
             pd = ProgressDialog.show(context, "", context.getResources().getString(R.string.Processing), false, false);
             new Thread(new Runnable() {
@@ -168,12 +172,16 @@ public class Device_Update extends AppCompatActivity {
         } catch (Exception e) {
             something = context.getResources().getString(R.string.ERROR_IN_GETTING_FILE);
             handler.sendEmptyMessage(4);
+            Timber.tag("DeviceUpdate-FileName-").e(e.getMessage(),"");
         }
+
     }
 
     private void fdownload() {
-        pd = ProgressDialog.show(context, "", context.getResources().getString(R.string.Processing), false, false);
+
+
         try {
+            pd = ProgressDialog.show(context, "", context.getResources().getString(R.string.Processing), false, false);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -190,10 +198,14 @@ public class Device_Update extends AppCompatActivity {
         } catch (Exception e) {
             something = context.getResources().getString(R.string.ERROR_IN_DOWNLOAD) + e.toString();
             handler.sendEmptyMessage(4);
+            Timber.tag("DeviceUpdate-Fdownld-").e(e.getMessage(),"");
         }
+
     }
 
     public  boolean isStoragePermissionGranted() {
+        try {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -205,20 +217,19 @@ public class Device_Update extends AppCompatActivity {
                 return false;
             }
         }
-        else {
-            System.out.println("@@Permission granted");
-            return true;
+        }catch (Exception ex){
+            Timber.tag("DeviceUpdate-Prmsn-").e(ex.getMessage(),"");
         }
+        return true;
     }
 
 
     private void install() {
+
         boolean isNonPlayAppAllowed = false;
         try {
             isNonPlayAppAllowed = Settings.Secure.getInt(getContentResolver(), Settings.Secure.INSTALL_NON_MARKET_APPS) == 1;
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }
+
         if (!isNonPlayAppAllowed) {
             System.out.println("Unknown Resource file is not allowed to install");
             startActivity(new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS));
@@ -237,6 +248,41 @@ public class Device_Update extends AppCompatActivity {
         }
 
         startActivity(intent);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            Timber.tag("DeviceUpdate-onCreate-").e(e.getMessage(),"");
+        }
+    }
+
+    private void InstallfromUSB() {
+        try {
+
+        boolean isNonPlayAppAllowed = false;
+
+            isNonPlayAppAllowed = Settings.Secure.getInt(getContentResolver(), Settings.Secure.INSTALL_NON_MARKET_APPS) == 1;
+
+        if (!isNonPlayAppAllowed) {
+            System.out.println("Unknown Resource file is not allowed to install");
+            startActivity(new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS));
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        File apkFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +"/"+FTP_file);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri uri = FileProvider.getUriForFile(this,
+                    BuildConfig.APPLICATION_ID + ".provider", apkFile);
+            intent.setDataAndType(uri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+        }
+
+        startActivity(intent);
+        }catch (Exception ex){
+
+            Timber.tag("DeviceUpdate-onCreate-").e(ex.getMessage(),"");
+        }
     }
 
     @SuppressLint("HandlerLeak")
@@ -285,6 +331,7 @@ public class Device_Update extends AppCompatActivity {
     }
 
     private void show_Install(String msg, String title) {
+
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
         alertDialogBuilder.setTitle(title);
@@ -304,6 +351,8 @@ public class Device_Update extends AppCompatActivity {
 
 
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -329,5 +378,9 @@ public class Device_Update extends AppCompatActivity {
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+
+            Timber.tag("DeviceUpdate-Toolbar-").e(ex.getMessage(),"");
+        }
     }
 }

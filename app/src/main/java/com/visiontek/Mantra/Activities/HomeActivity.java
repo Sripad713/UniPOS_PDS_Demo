@@ -27,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
@@ -54,6 +56,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        try {
+
         context = HomeActivity.this;
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
@@ -173,6 +177,10 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+         }catch (Exception ex){
+
+            Timber.tag("Home-onCreate-").e(ex.getMessage(),"");
+        }
     }
 
     private void initilisation() {
@@ -188,6 +196,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void logout(String logoutrequest) {
+        try {
+
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating), true, false);
         Aadhaar_Parsing request = new Aadhaar_Parsing(context, logoutrequest, 10);
         request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
@@ -201,8 +211,8 @@ public class HomeActivity extends AppCompatActivity {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
-                if (error.equals("057") || error.equals("09")){
-                    Sessiontimeout(msg,  error);
+                if (error.equals("057") || error.equals("008") || error.equals("09D")) {
+                    Sessiontimeout(msg, error);
                     return;
                 }
                 if (!error.equals("00")) {
@@ -214,6 +224,10 @@ public class HomeActivity extends AppCompatActivity {
 
         });
         request.execute();
+        }catch (Exception ex){
+
+            Timber.tag("Home-logout-").e(ex.getMessage(),"");
+        }
     }
 
     private void Sessiontimeout(String msg, String title) {
@@ -236,6 +250,8 @@ public class HomeActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void FrameXMLforInspection() {
+        try {
+
         String inspection = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
                 "<soapenv:Envelope\n" +
                 "    xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
@@ -261,9 +277,15 @@ public class HomeActivity extends AppCompatActivity {
 
             show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
         }
+        }catch (Exception ex){
+
+            Timber.tag("Home-InspFrmt-").e(ex.getMessage(),"");
+        }
     }
 
     private void FrameJsonforReceiveGoods() {
+        try {
+
         if (mp!=null) {
             releaseMediaPlayer(context,mp);
         }
@@ -292,8 +314,8 @@ public class HomeActivity extends AppCompatActivity {
                     show_error_box("Invalid Out put from Server","No Response",0);
                     return;
                 }
-                if (code.equals("057") || code.equals("09")){
-                    Sessiontimeout(msg,  code);
+                if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+                    Sessiontimeout(msg, code);
                     return;
                 }
                 if (!code.equals("00")) {
@@ -308,10 +330,15 @@ public class HomeActivity extends AppCompatActivity {
             }
 
         });
+        }catch (Exception ex){
 
+            Timber.tag("Home-RGReq-").e(ex.getMessage(),"");
+        }
     }
 
     private void hit_Inspection(String inspection) {
+        try {
+
         if (mp!=null) {
             releaseMediaPlayer(context,mp);
         }
@@ -333,8 +360,8 @@ public class HomeActivity extends AppCompatActivity {
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
-                if (error.equals("057") || error.equals("09")){
-                    Sessiontimeout(msg,  error);
+                if (error.equals("057") || error.equals("008") || error.equals("09D")) {
+                    Sessiontimeout(msg, error);
                     return;
                 }
                 if (!error.equals("00")) {
@@ -350,6 +377,10 @@ public class HomeActivity extends AppCompatActivity {
 
         });
         request.execute();
+        }catch (Exception ex){
+
+            Timber.tag("Home-InspReq-").e(ex.getMessage(),"");
+        }
     }
 
     private void show_error_box(String msg, String title, final int i) {
@@ -370,6 +401,8 @@ public class HomeActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -394,5 +427,8 @@ public class HomeActivity extends AppCompatActivity {
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+            Timber.tag("Home-Toolbar-").e(ex.getMessage(),"");
+        }
     }
 }

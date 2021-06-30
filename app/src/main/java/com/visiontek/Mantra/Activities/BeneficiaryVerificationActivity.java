@@ -36,6 +36,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
@@ -64,8 +66,9 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beneficiary__verification);
-        context = BeneficiaryVerificationActivity.this;
 
+        try {
+        context = BeneficiaryVerificationActivity.this;
         TextView toolbarRD = findViewById(R.id.toolbarRD);
         boolean rd_fps = RDservice(context);
         if (rd_fps) {
@@ -104,9 +107,14 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
                 finish();
             }
         });
+         }catch (Exception ex){
+
+            Timber.tag("BeneficiaryV-onCreate-").e(ex.getMessage(),"");
+        }
     }
 
     private void initilisation() {
+
         pd = new ProgressDialog(context);
         details = findViewById(R.id.button_ok);
         back = findViewById(R.id.button_back);
@@ -117,9 +125,13 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
         }else {
             id.setInputType(InputType. TYPE_CLASS_NUMBER);
         }
+        InputFilter[] FilterArray = new InputFilter[1];
+        FilterArray[0] = new InputFilter.LengthFilter(Integer.parseInt(dealerConstants.fpsURLInfo.cardEntryLength));
+        id.setFilters(FilterArray);
         toolbarInitilisation();
     }
     private void Sessiontimeout(String msg, String title) {
+
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(title);
         alertDialogBuilder.setTitle(msg);
@@ -140,6 +152,8 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
     }
 
     private void Benverify() {
+        try {
+
         String ben = null;
         if (select == 2) {
             if (validateVerhoeff(BEN_ID) && BEN_ID.length() ==12) {
@@ -210,9 +224,15 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
         } else {
             show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection));
         }
+        }catch (Exception ex){
+
+            Timber.tag("BeneficiaryV-onCreate-").e(ex.getMessage(),"");
+        }
     }
 
     private void benVerification(String ben) {
+        try {
+
            if (mp!=null) {
                 releaseMediaPlayer(context,mp);
             }
@@ -234,8 +254,8 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
                     id.setText("");
                     return;
                 }
-                if (error.equals("057") || error.equals("09")){
-                    Sessiontimeout(msg,  error);
+                if (error.equals("057") || error.equals("008") || error.equals("09D")) {
+                    Sessiontimeout(msg, error);
                     return;
                 }
                 if (!error.equals("00")) {
@@ -252,9 +272,14 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
             }
         });
         request.execute();
+        }catch (Exception ex){
+
+            Timber.tag("BeneficiaryV-AuthResp-").e(ex.getMessage(),"");
+        }
     }
 
     private void show_error_box(String msg, String title) {
+
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
         alertDialogBuilder.setTitle(title);
@@ -270,6 +295,8 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
     }
 
     public void onRadioButtonClicked(View v) {
+        try {
+
         radiorc = findViewById(R.id.radio_rc_no);
         radioaadhaar = findViewById(R.id.radio_aadhaar);
         boolean checked = ((RadioButton) v).isChecked();
@@ -318,9 +345,15 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
 
             }
         }
+        }catch (Exception ex){
+
+            Timber.tag("StartActivity-select-").e(ex.getMessage(),"");
+        }
     }
 
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -345,5 +378,9 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+
+            Timber.tag("BeneficiaryV-Toolbar-").e(ex.getMessage(),"");
+        }
     }
 }

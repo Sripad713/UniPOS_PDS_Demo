@@ -43,6 +43,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.RationDetailsActivity.TOTALAMOUNT;
 
 
@@ -66,7 +69,7 @@ import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 public class PrintActivity extends AppCompatActivity implements PrinterCallBack {
 
     private PrintActivity mActivity;
-    private static String ACTION_USB_PERMISSION;
+    private  String ACTION_USB_PERMISSION;
     Print printReceipt;
     Context context;
     ProgressDialog pd = null;
@@ -80,6 +83,8 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print);
         context = PrintActivity.this;
+        try {
+
         mActivity = this;
         ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
 
@@ -124,7 +129,10 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         } else {
             finish();
         }
+ }catch (Exception ex){
 
+            Timber.tag("Print-onCreate-").e(ex.getMessage(),"");
+        }
     }
 
     private void Sessiontimeout(String msg, String title) {
@@ -154,6 +162,8 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
     }
 
     private void hitURL(String ration) {
+        try {
+
         if (mp!=null) {
             releaseMediaPlayer(context,mp);
         }
@@ -176,8 +186,8 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                     show_error_box("Invalid Response from Server", "No Response", 1);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("09")){
-                    Sessiontimeout(msg,  isError);
+                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
+                    Sessiontimeout(msg, isError);
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -189,17 +199,25 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             }
         });
         request.execute();
+        }catch (Exception ex){
+
+            Timber.tag("Print-onCreate-").e(ex.getMessage(),"");
+        }
     }
     private void image(String content, String name,int align) {
         try {
             Util.image(content,name,align);
-        } catch (IOException e) {
-            e.printStackTrace();
+        }catch (Exception ex){
+
+            Timber.tag("Print-Image-").e(ex.getMessage(),"");
         }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkandprint(String[] str, int i) {
+        try {
+
         if (Util.batterylevel(context)|| Util.adapter(context)) {
             if (mp!=null) {
                 releaseMediaPlayer(context,mp);
@@ -216,6 +234,10 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             finish();
         }else {
             printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery),str,i);
+        }
+        }catch (Exception ex){
+
+            Timber.tag("Print-Battery-").e(ex.getMessage(),"");
         }
     }
 
@@ -248,6 +270,9 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
 
     private void probe() {
+        try {
+
+
         final UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
         HashMap<String, UsbDevice> deviceList = mUsbManager.getDeviceList();
@@ -282,6 +307,9 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                 }
             }
         }
+        }catch (Exception ex){
+            Timber.tag("Print-Probe-").e(ex.getMessage(),"");
+        }
     }
 
     private void show_error_box(String msg, String title, final int i) {
@@ -310,6 +338,8 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void calPrint() {
+        try {
+
         String app;
         StringBuilder add = new StringBuilder();
         int printReceiptsize= printReceipt.printBeans.size();
@@ -396,7 +426,10 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             str[3] = str5;
             checkandprint(str, 0);
         }
+        }catch (Exception ex){
 
+            Timber.tag("Print-Printcall-").e(ex.getMessage(),"");
+        }
     }
 
     @Override
@@ -439,19 +472,17 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             public void run() {
 
                 print.setEnabled(false);
-                // btnConnect.setEnabled(true);
                 if (mUsbReceiver != null) {
                     context.unregisterReceiver(mUsbReceiver);
-                }
-
-                // If Close is caused because the printer is turned off. Then you need to re-enumerate it here.
-                probe();
+                }probe();
             }
         });
     }
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            try {
+
             String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action)) {
                 probe();
@@ -460,24 +491,30 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                 synchronized (this) {
                 }
             }
+            }catch (Exception ex){
+
+                Timber.tag("Print-Broadcast-").e(ex.getMessage(),"");
+            }
         }
     };
 
 
     @Override
     public void OnPrint(final int bPrintResult, final boolean bIsOpened) {
-       /* mActivity.runOnUiThread(new Runnable() {
+        mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
                 mActivity.print.setEnabled(bIsOpened);
 
             }
-        });*/
+        });
 
     }
 
     private void Display() {
+        try {
+
         RecyclerView recyclerView;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         recyclerView = findViewById(R.id.my_recycler_view);
@@ -509,8 +546,14 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
         String t= String.valueOf(TOTALAMOUNT);
         total.setText(t);
+        }catch (Exception ex){
+
+            Timber.tag("Print-Display-").e(ex.getMessage(),"");
+        }
     }
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -540,5 +583,9 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+
+            Timber.tag("Print-Toolbar-").e(ex.getMessage(),"");
+        }
     }
 }

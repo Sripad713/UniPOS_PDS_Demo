@@ -31,7 +31,15 @@
         android:roundIcon="@drawable/clogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.IMPDSActivity"
+        <activity android:name=".Activities.SuccessActivity"
+            android:screenOrientation="landscape" ></activity>
+        <activity android:name=".Activities.RC_CommodityDetails"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.RC_MemberDetails"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.IMPDSActivity"
             android:screenOrientation="landscape">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,39 +47,56 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
-        <activity android:name=".Activities.DealerAuthenticationActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.BeneficiaryDetailsActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.StockReportActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.DailySalesReportActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.UIDDetailsActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.BeneficiaryVerificationActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.AadhaarSeedingActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.DeviceActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.InspectionActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.ReportsActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.OthersActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.ReceiveGoodsActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.AadhaarServicesActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.IssueActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.DeviceInfoActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.Device_Update"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.SettingActivity"
+        <activity
+            android:name=".Activities.DealerAuthenticationActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.BeneficiaryDetailsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.StockReportActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.DailySalesReportActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.UIDDetailsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.BeneficiaryVerificationActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.AadhaarSeedingActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.DeviceActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.InspectionActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.ReportsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.OthersActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.ReceiveGoodsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.AadhaarServicesActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.IssueActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.DeviceInfoActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.Device_Update"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.SettingActivity"
             android:screenOrientation="landscape">
 
             <!--
@@ -83,7 +108,8 @@
             -->
 
         </activity>
-        <activity android:name=".Activities.PrintActivity"
+        <activity
+            android:name=".Activities.PrintActivity"
             android:screenOrientation="landscape">
 
             <!--
@@ -94,7 +120,8 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".Activities.RationDetailsActivity"
+        <activity
+            android:name=".Activities.RationDetailsActivity"
             android:screenOrientation="landscape">
 
             <!--
@@ -105,7 +132,8 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".Activities.HomeActivity"
+        <activity
+            android:name=".Activities.HomeActivity"
             android:screenOrientation="landscape">
 
             <!--
@@ -116,17 +144,21 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".Activities.MemberDetailsActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.StartActivity"
+        <activity
+            android:name=".Activities.MemberDetailsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.StartActivity"
             android:screenOrientation="landscape">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.DealerDetailsActivity"
+        <activity
+            android:name=".Activities.DealerDetailsActivity"
             android:screenOrientation="landscape">
 
             <!--
@@ -137,7 +169,8 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".Activities.CashPDSActivity"
+        <activity
+            android:name=".Activities.CashPDSActivity"
             android:screenOrientation="landscape">
 
             <!--

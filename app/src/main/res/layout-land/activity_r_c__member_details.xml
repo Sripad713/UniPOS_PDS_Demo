@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activities.RC_MemberDetails"
+    tools:ignore="MissingDefaultResource">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tool"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/black">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/black"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/black"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/image"
+                    android:layout_height="@dimen/image"
+                    android:background="@drawable/black"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/chhattisghar" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/black"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:id="@+id/toolbarVersion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/black"
+                        android:gravity="left"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/TextsizeT"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="41dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/black"
+                        android:gravity="center"
+                        android:text="@string/CHHATISGARHPDS"
+                        android:textColor="@color/black"
+                        android:textSize="25dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/toolbarRD"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/black"
+                        android:gravity="right"
+                        android:text="@string/RD"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/TextsizeT"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            tools:ignore="NestedWeights">
+
+                            <TextView
+                                android:id="@+id/toolbarDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:text="DATE"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/toolbarFpsid"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:text="FPS ID"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/toolbarDateValue"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH" />
+
+                            <TextView
+                                android:id="@+id/toolbarFpsidValue"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/toolbarActivity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="25dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/black"
+                            android:gravity="center"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/TextsizeH"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            tools:ignore="NestedWeights">
+
+                            <TextView
+                                android:id="@+id/toolbarLatitude"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:text="LATITUDE"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/toolbarLongitude"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:text="LONGITUDE"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/toolbarLatitudeValue"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH" />
+
+                            <TextView
+                                android:id="@+id/toolbarLongitudeValue"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/black"
+                                android:gravity="left"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/TextsizeH" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:text="Home State Name"
+                        android:textColor="@color/Blue"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="42dp"
+                        android:text=" :" />
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView
+                        android:id="@+id/home_state_name"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16dp" />
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:text="Home District Name"
+                        android:textColor="@color/Blue"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:text="    :" />
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView
+                        android:id="@+id/home_dist_name"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:text="FPS ID"
+                        android:textColor="@color/Blue"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:text="                                         :" />
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView
+                        android:id="@+id/text_fps_id"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:text="Card Type"
+                        android:textColor="@color/Blue"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:text="                                :" />
+
+                    <com.visiontek.Mantra.Utils.MyCustomTextView
+                        android:id="@+id/text_scheme_id"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="30dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TableLayout
+                        android:id="@+id/tablay1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginBottom="8dp">
+
+                        <TableRow android:background="@color/blue">
+
+                            <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                                android:background="@drawable/ben_table_cell_shape"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:text="Name"
+                                android:textColor="@color/white"
+                                android:textSize="20sp" />
+
+                            <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                                android:background="@drawable/ben_table_cell_shape"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:text="UID"
+                                android:textColor="@color/white"
+                                android:textSize="20sp" />
+                        </TableRow>
+
+                    </TableLayout>
+
+
+                </HorizontalScrollView>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/scanFP"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/mybutton"
+                        android:text="Scan FP"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/black"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="Powered by"
+                    android:background="@color/link_color"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeH"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:gravity="left"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/wblack"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/nic3" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

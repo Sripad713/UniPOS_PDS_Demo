@@ -62,6 +62,9 @@ import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
@@ -95,6 +98,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dealer_authentication);
+        try {
 
         context = DealerAuthenticationActivity.this;
         mActivity = this;
@@ -188,7 +192,10 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
         } else {
             finish();
         }
+        }catch (Exception ex){
 
+            Timber.tag("RC_DealerAuth-onCreate-").e(ex.getMessage(),"");
+        }
     }
     public interface OnClickDealerAUTH {
         void onClick(int p);
@@ -202,6 +209,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
     }
 
     private void ConsentformURL(String consentrequest) {
+        try {
+
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Consent_Form), true, false);
         Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
         request.setOnResultListener(new Json_Parsing.OnResultListener() {
@@ -215,8 +224,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                     show_error_box("Invalid Response from Server", "No Response", 0);
                     return;
                 }
-                if (code.equals("057") || code.equals("09")){
-                    Sessiontimeout(msg,  code);
+                if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+                    Sessiontimeout(msg, code);
                     return;
                 }
                 if (!code.equals("00")) {
@@ -227,6 +236,9 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             }
 
         });
+         }catch (Exception ex){
+            Timber.tag("RC_DealerAuth-CnsntRsp-").e(ex.getMessage(),"");
+        }
 
     }
 
@@ -251,6 +263,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
         alertDialog.show();
     }
     private void hitURL1(String dealerlogin) {
+        try {
+
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating), true, false);
         XML_Parsing request = new XML_Parsing(DealerAuthenticationActivity.this, dealerlogin, 15);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
@@ -265,8 +279,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                     show_error_box("Invalid Out put from Server","No Response",0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("09")){
-                    Sessiontimeout(msg,  isError);
+                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
+                    Sessiontimeout(msg, isError);
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -291,9 +305,15 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             }
         });
         request.execute();
+         }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-DAuthRsp-").e(ex.getMessage(),"");
+        }
     }
 
     private void Upload() {
+        try {
+
         String com = addComm();
         if (!com.equals("1")) {
             String stockupdate = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -325,9 +345,14 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             hitUploading(stockupdate);
 
         }
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-Upload-").e(ex.getMessage(),"");
+        }
     }
 
     private void hitUploading(String stockupdate) {
+        try {
 
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Uploading_Stock), context.getResources().getString(R.string.Processing), true, false);
         Aadhaar_Parsing request = new Aadhaar_Parsing(DealerAuthenticationActivity.this, stockupdate, 9);
@@ -347,18 +372,24 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                     return;
                 }
                 if (!error.equals("00")) {
-                    show_error_box(msg, context.getResources().getString(R.string.Uploading_Stock) + error, 2);
+                    show_error_box(msg, context.getResources().getString(R.string.Uploading_Stock)+ " : " + error, 2);
                 } else {
-                    show_error_box(msg, context.getResources().getString(R.string.Uploading_Stock) + error, 3);
+                    show_error_box(msg, context.getResources().getString(R.string.Uploading_Stock) +" : "+ error, 3);
                 }
             }
 
 
         });
         request.execute();
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-UplodRsp-").e(ex.getMessage(),"");
+        }
     }
 
     private String addComm() {
+        try {
+
         StringBuilder add = new StringBuilder();
         String str;
 
@@ -380,11 +411,18 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
             }
             return String.valueOf(add);
-        } else {
-            return "0";
         }
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-AddCom-").e(ex.getMessage(),"");
+        }
+            return "0";
+
+
     }
     private void ConsentDialog(String concent) {
+        try {
+
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCanceledOnTouchOutside(false);
@@ -417,9 +455,14 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-consent-").e(ex.getMessage(),"");
+        }
     }
 
     private void show_error_box(String msg, String title, final int i) {
+
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
         alertDialogBuilder.setTitle(title);
@@ -449,6 +492,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
     }
 
     private void prep_consent() {
+        try {
+
         String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
         currentDateTimeString="23032021163452";
         String consentrequest="{\n" +
@@ -467,10 +512,16 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                 "}";
         Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
         ConsentformURL(consentrequest);
+         }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-CnsntFmt-").e(ex.getMessage(),"");
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void print() {
+        try {
+
         /*String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());*/
         SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm dd/MM/yyyy");
         String time = sdf1.format(new Date()).substring(0, 5);
@@ -516,13 +567,13 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
             str1 =  dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
                     context.getResources().getString(R.string.Receive_Goods)+"\n\n";
-            str2=    context.getResources().getString(R.string.Date)+"           : " + date +"\n"+
-                     context.getResources().getString(R.string.Time)+"           :" + time + "\n"+
+            str2=    context.getResources().getString(R.string.Date)+"          : " + date +"\n"+
+                     context.getResources().getString(R.string.Time)+"          :" + time + "\n"+
                      "Truck Chit No   : " +  receiveGoodsModel.chit + "\n"+
                      "RO              : "+time + "\n"+
                      "Truck No        : "+receiveGoodsModel.truckno + "\n"+
                      "-------------------------------\n";
-            str3 = String.format("%-10s%-10s%-10s%-10s\n",
+            str3 = String.format("%-10s%-8s%-8s%-8s\n",
                     "ItemName",
                     "Sch",
                     "Dispt",
@@ -539,10 +590,16 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             checkandprint(str,0);
 
         }
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-Print-").e(ex.getMessage(),"");
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkandprint(String[] str, int i) {
+        try {
+
         if (Util.batterylevel(context)|| Util.adapter(context)) {
             if (mp!=null) {
                 releaseMediaPlayer(context,mp);
@@ -561,26 +618,38 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             show_error_box(context.getResources().getString(R.string.Battery_Msg),
                     context.getResources().getString(R.string.Battery),0);
         }
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-battry-").e(ex.getMessage(),"");
+        }
     }
     private void image(String content, String name,int align) {
         try {
             Util.image(content,name,align);
-        } catch (IOException e) {
-            e.printStackTrace();
-            show_error_box(e.toString(),"Image formation Error",0);
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-Image-").e(ex.getMessage(),"");
         }
+
     }
 
     private void callScanFP() {
+        try {
 
         if ("F".equals(dealerModel.DAtype)) {
             MEMBER_AUTH_TYPE = "Bio";
            // wadhverify = false;
             connectRDservice();
         }
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-ScanFP-").e(ex.getMessage(),"");
+        }
     }
 
     private void prep_Dlogin() {
+        try {
+
         if (mp!=null) {
             releaseMediaPlayer(context,mp);
         }
@@ -642,10 +711,16 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
         Util.generateNoteOnSD(context, "RGDealerAuthReq.txt", dealerlogin);
         hitURL1(dealerlogin);
+          }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-AuthFmt-").e(ex.getMessage(),"");
+        }
     }
 
     private void connectRDservice() {
         try {
+
+
             if (mp!=null) {
                 releaseMediaPlayer(context,mp);
             }
@@ -675,9 +750,9 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             System.out.println("No of activities = " + activities.size());
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act,dealerModel. RD_SERVICE);
-        } catch (Exception e) {
-            System.out.println("Error while connecting to RDService");
-            e.printStackTrace();
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-RD-").e(ex.getMessage(),"");
         }
     }
 
@@ -685,6 +760,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        try {
+
         System.out.println("OnActivityResult");
         if (requestCode ==dealerModel. RD_SERVICE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -700,12 +777,16 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                 }
             }
         }
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-ResPID-").e(ex.getMessage(),"");
+        }
     }
 
     @SuppressLint("SetTextI18n")
     public int createAuthXMLRegistered(String piddataxml) {
-
         try {
+
             InputStream is = new ByteArrayInputStream(piddataxml.getBytes());
             DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
             domFactory.setIgnoringComments(true);
@@ -748,12 +829,13 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
                 dealerModel.rdModel.skey = dealerModel.rdModel.skey.replaceAll(" ", "\n");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("createAuthXMLRegistered error= " + e);
-            dealerModel.rdModel.errinfo = String.valueOf(e);
+
+    }catch (Exception ex){
+            ex.printStackTrace();
+            dealerModel.rdModel.errinfo = String.valueOf(ex.getMessage());
+            Timber.tag("RC_DealerAuth-onCreate-").e(ex.getMessage(),"");
             return 2;
-        }
+    }
         return 0;
     }
 
@@ -761,7 +843,6 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
     @Override
     public void OnOpen() {
-        // btnConnect.setEnabled(false);
 
     }
 
@@ -771,7 +852,6 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
         if (mp != null) {
             releaseMediaPlayer(context, mp);
         }
-        //btnConnect.setEnabled(true);
         if (L.equals("hi")) {
         } else {
             mp = mp.create(context, R.raw.c100078);
@@ -781,12 +861,9 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
     @Override
     public void OnClose() {
-        // btnConnect.setEnabled(true);
         if (mUsbReceiver != null) {
             context.unregisterReceiver(mUsbReceiver);
         }
-
-        // If Close is caused because the printer is turned off. Then you need to re-enumerate it here.
         probe();
     }
 
@@ -805,6 +882,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            try {
+
             String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action)) {
                 probe();
@@ -812,11 +891,17 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                 synchronized (this) {
                 }
             }
+            }catch (Exception ex){
+
+                Timber.tag("RC_DealerAuth-Bradcst-").e(ex.getMessage(),"");
+            }
         }
     };
 
 
     private void probe() {
+        try {
+
         final UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
         HashMap<String, UsbDevice> deviceList = mUsbManager.getDeviceList();
@@ -851,12 +936,16 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                 }
             }
         }
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-probe-").e(ex.getMessage(),"");
+        }
     }
 
-    public interface OnClickListener {
-        void onClick_d(int p);
-    }
+
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -881,5 +970,9 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+
+            Timber.tag("RC_DealerAuth-Toolbar-").e(ex.getMessage(),"");
+        }
     }
 }

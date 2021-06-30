@@ -1,6 +1,5 @@
 package com.visiontek.Mantra.Activities;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
@@ -23,25 +22,29 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
-import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
 
 public class DeviceActivity extends AppCompatActivity {
-    int opt;
+
     Context context;
-    Button setlang,back;
+    Button  back,log;
     DatabaseHelper db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device);
         context = DeviceActivity.this;
+        try {
+
         db = new DatabaseHelper(context);
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
@@ -59,6 +62,12 @@ public class DeviceActivity extends AppCompatActivity {
 
         function1();
 
+        log.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,15 +75,24 @@ public class DeviceActivity extends AppCompatActivity {
                 finish();
             }
         });
+         }catch (Exception ex){
+
+            Timber.tag("Device-onCreate-").e(ex.getMessage(),"");
+        }
     }
 
     private void initilisation() {
-        back=findViewById(R.id.back);
+        back = findViewById(R.id.back);
+        log = findViewById(R.id.log);
+        TextView deviceid = findViewById(R.id.deviceid);
+        deviceid.setText(DEVICEID);
         toolbarInitilisation();
     }
 
     private void function1() {
-        String[] items = new String[]{context.getString(R.string.Set_Language),context.getString(R.string.english), context.getString(R.string.hindi)};
+        try {
+
+        String[] items = new String[]{context.getString(R.string.Set_Language), context.getString(R.string.english), context.getString(R.string.hindi)};
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, items);
         Spinner select = null;
@@ -83,7 +101,7 @@ public class DeviceActivity extends AppCompatActivity {
         select.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapter, View v, int position, long id) {
-                function(position);
+                //function(position);
             }
 
             @Override
@@ -91,9 +109,14 @@ public class DeviceActivity extends AppCompatActivity {
 
             }
         });
+        }catch (Exception ex){
+
+            Timber.tag("Device-function1-").e(ex.getMessage(),"");
+        }
     }
 
     private void function(int position) {
+        try {
 
         if (position == 2) {
             L = "hi";
@@ -116,8 +139,14 @@ public class DeviceActivity extends AppCompatActivity {
             finish();
 
         }
+        }catch (Exception ex){
+            Timber.tag("Device-function-").e(ex.getMessage(),"");
+        }
     }
+
     public void setLocal(String lang) {
+        try {
+
         if (lang != null) {
             Locale locale = new Locale(lang);
             System.out.println("++++++++++++++++++++++++++++++++SET" + lang);
@@ -126,22 +155,30 @@ public class DeviceActivity extends AppCompatActivity {
             con.locale = locale;
             getBaseContext().getResources().updateConfiguration(con, getBaseContext().getResources().getDisplayMetrics());
         }
-    }
-        private void show_error_box(String msg, String title) {
-            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-            alertDialogBuilder.setMessage(msg);
-            alertDialogBuilder.setTitle(title);
-            alertDialogBuilder.setCancelable(false);
-            alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                        }
-                    });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
+        }catch (Exception ex){
+
+            Timber.tag("Device-SetLocal-").e(ex.getMessage(),"");
         }
+    }
+
+    private void show_error_box(String msg, String title) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(msg);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -167,5 +204,8 @@ public class DeviceActivity extends AppCompatActivity {
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        } catch (Exception ex) {
+            Timber.tag("Device-Toolbar-").e(ex.getMessage(), "");
+        }
     }
 }

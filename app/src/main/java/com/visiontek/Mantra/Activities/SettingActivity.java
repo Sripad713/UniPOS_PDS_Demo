@@ -19,6 +19,8 @@ import com.visiontek.Mantra.Utils.Util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
@@ -39,6 +41,7 @@ public class SettingActivity extends AppCompatActivity {
 
         context = SettingActivity.this;
 
+        try {
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
         boolean rd_fps = RDservice(context);
@@ -87,6 +90,10 @@ public class SettingActivity extends AppCompatActivity {
                 finish();
             }
         });
+        }catch (Exception ex){
+
+            Timber.tag("Settings-onCreate-").e(ex.getMessage(),"");
+        }
 
     }
 
@@ -120,6 +127,8 @@ public class SettingActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -144,5 +153,8 @@ public class SettingActivity extends AppCompatActivity {
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+            Timber.tag("Settings-onCreate-").e(ex.getMessage(),"");
+        }
     }
 }

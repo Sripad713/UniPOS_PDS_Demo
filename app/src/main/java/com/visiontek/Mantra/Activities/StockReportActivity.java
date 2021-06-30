@@ -44,6 +44,8 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import timber.log.Timber;
+
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
@@ -73,6 +75,8 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            try {
+
             String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action)) {
                 probe();
@@ -80,6 +84,9 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                 print.setEnabled(true);
                 synchronized (this) {
                 }
+            }
+            }catch (Exception ex){
+                Timber.tag("Stock-Broadcast-").e(ex.getMessage(),"");
             }
         }
     };
@@ -90,6 +97,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
 
         setContentView(R.layout.activity_stock__report);
         context = StockReportActivity.this;
+        try {
 
         TextView toolbarRD = findViewById(R.id.toolbarRD);
         boolean rd_fps = RDservice(context);
@@ -162,7 +170,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                        checkandprint(str,1);
                    }else {
 
-                        str1 = dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
+                        str1 = //dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
                                 context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report)+ "\n\n";
                         str2 = context.getResources().getString(R.string.Date) +"        : " + date +"\n"+
                                context.getResources().getString(R.string.Time) +"        : "+ time + "\n";
@@ -228,7 +236,10 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                 "</soapenv:Envelope>";
         Util.generateNoteOnSD(context, "StockReporReq.txt", stock);
         hitURL(stock);
+ }catch (Exception ex){
 
+            Timber.tag("Stock-onCreate-").e(ex.getMessage(),"");
+        }
     }
     private void Sessiontimeout(String msg, String title) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
@@ -260,13 +271,16 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
     private void image(String content, String name,int align) {
         try {
             Util.image(content,name,align);
-        } catch (IOException e) {
-            e.printStackTrace();
-            show_error_box(e.toString(),"Image formation Error");
+        }catch (Exception ex){
+
+            Timber.tag("Stock-onCreate-").e(ex.getMessage(),"");
         }
+
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkandprint(String[] str, int i) {
+        try {
+
         if (Util.batterylevel(context)|| Util.adapter(context)) {
             if (mp!=null) {
                 releaseMediaPlayer(context,mp);
@@ -281,8 +295,14 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
         }else {
             show_error_box(context.getResources().getString(R.string.Battery_Msg),context.getResources().getString(R.string.Battery));
         }
+        }catch (Exception ex){
+
+            Timber.tag("Stock-Battery-").e(ex.getMessage(),"");
+        }
     }
     private void probe() {
+        try {
+
         final UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
         HashMap<String, UsbDevice> deviceList = mUsbManager.getDeviceList();
@@ -318,9 +338,15 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                 }
             }
         }
+        }catch (Exception ex){
+
+            Timber.tag("Stock-Probe-").e(ex.getMessage(),"");
+        }
     }
 
     private void hitURL(String stock) {
+        try {
+
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.stock), context.getResources().getString(R.string.Details), true, false);
         XML_Parsing request = new XML_Parsing(context, stock, 6);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
@@ -334,8 +360,8 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                     show_error_box("Invalid Response from Server", "No Response");
                     return;
                 }
-                if (isError.equals("057") || isError.equals("09")){
-                    Sessiontimeout(msg,  isError);
+                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
+                    Sessiontimeout(msg, isError);
                     return;
                 }
                 if (!isError.equals("00")) {
@@ -361,6 +387,10 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
             }
         });
         request.execute();
+        }catch (Exception ex){
+
+            Timber.tag("Stock-StockRes-").e(ex.getMessage(),"");
+        }
     }
 
     private void show_error_box(String msg, String title) {
@@ -390,6 +420,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
     @Override
     public void OnOpenFailed() {
         print.setEnabled(false);
+
         if (mp!=null) {
             releaseMediaPlayer(context,mp);
         }
@@ -404,6 +435,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
 
     @Override
     public void OnClose() {
+
         print.setEnabled(false);
         // btnConnect.setEnabled(true);
         if (mUsbReceiver != null) {
@@ -427,6 +459,8 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
     }
 
     private void toolbarInitilisation() {
+        try {
+
         TextView toolbarVersion = findViewById(R.id.toolbarVersion);
         TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
         TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
@@ -447,10 +481,14 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("STOCK");
+        toolbarActivity.setText("STOCK REPORT");
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
+        }catch (Exception ex){
+
+            Timber.tag("Stock-Toolbar-").e(ex.getMessage(),"");
+        }
     }
 
 }
