@@ -190,10 +190,10 @@ public class StartActivity extends AppCompatActivity {
         settings = findViewById(R.id.button_settings);
         toolbarInitilisation();
         Startbutton();
-        File file = new File("", "YourApp.apk");
+        /*File file = new File("", "YourApp.apk");
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     private void checkLanguage() {
