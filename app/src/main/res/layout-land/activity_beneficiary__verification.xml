@@ -305,7 +305,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:onClick="onRadioButtonClicked"
-                        android:text="@string/Aadhaar"
+                        android:text="@string/Aadhaar_No"
                         android:textSize="25dp" />
 
                 </RadioGroup>
@@ -331,7 +331,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:gravity="top"
-                            android:text="@string/Card_No"
+                            android:text="@string/RC_No"
                             android:textColor="@color/blackblack"
                             android:textSize="25dp"
                             android:textStyle="bold" />

@@ -54,15 +54,14 @@ public class ReportsActivity extends AppCompatActivity {
 
         initilisation();
 
-        if (diableMenu(context, 6)) {
-            daily_report.setVisibility(View.INVISIBLE);
+        if (diableMenu("getDailyReport")) {
             daily_report.setEnabled(false);
         }
 
-        if (diableMenu(context, 5)) {
-            stock_report.setVisibility(View.INVISIBLE);
+        if (diableMenu("getStockReportDetails")) {
             stock_report.setEnabled(false);
         }
+
         daily_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,7 +132,7 @@ public class ReportsActivity extends AppCompatActivity {
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("REPORTS");
+        toolbarActivity.setText( context.getResources().getString(R.string.REPORTS));
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);

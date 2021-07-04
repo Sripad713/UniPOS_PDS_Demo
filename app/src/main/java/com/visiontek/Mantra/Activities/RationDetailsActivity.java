@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -40,6 +42,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.felhr.usbserial.UsbSerialDevice;
 import com.felhr.usbserial.UsbSerialInterface;
 import com.visiontek.Mantra.Adapters.RationListAdapter;
+import com.visiontek.Mantra.Models.DATAModels.MemberListModel;
 import com.visiontek.Mantra.Models.DATAModels.RationListModel;
 import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.MemberModel;
 import com.visiontek.Mantra.R;
@@ -84,7 +87,7 @@ public class RationDetailsActivity extends AppCompatActivity {
     UsbSerialDevice serialport = null;
     UsbDeviceConnection connection = null;
     UsbDevice device = null;
-
+    String weight_Data;
     //--------------------------------------------------------------------------------
     Button confirm, back;
     Context context;
@@ -136,7 +139,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         }));
        // mProgressDlg.show();
 
-        String[] items = new String[]{"Communication", "Bluetooth", "USB"};
+        String[] items = new String[]{"Comm Mode", "Bluetooth", "USB"};
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, items);
         options.setAdapter(adapter1);
@@ -161,8 +164,9 @@ public class RationDetailsActivity extends AppCompatActivity {
                     Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
                     if (pairedDevices.size() > 0) {
                         for (BluetoothDevice device : pairedDevices) {
-                            if (device.getName().equals("APPDS_VNTK@2015") || device.getName().equals("VTWS100")) {
+                            if ((device.getName().equals("VTWS100"))) {
                                 address = (device.getAddress());
+                                break;
                             }
                         }
                     }
@@ -194,14 +198,14 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void dialog() {
 
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(RationDetailsActivity.this);
-        builderSingle.setTitle("Please Selcet below Reason");
+        builderSingle.setTitle(context.getResources().getString(R.string.Please_Select_Any_Option));
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(RationDetailsActivity.this, android.R.layout.select_dialog_singlechoice);
         int reasonBeanListssize = dealerConstants.reasonBeanLists.size();
         for (int i = 0; i < reasonBeanListssize; i++) {
             arrayAdapter.add(dealerConstants.reasonBeanLists.get(i).reasonValue);
         }
-        builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+        builderSingle.setNegativeButton(context.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -213,23 +217,7 @@ public class RationDetailsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 reasonName = arrayAdapter.getItem(which);
                 reasonid = dealerConstants.reasonBeanLists.get(which).reasonId;
-                AlertDialog.Builder builderInner = new AlertDialog.Builder(RationDetailsActivity.this);
-                builderInner.setMessage(reasonName);
-                builderInner.setTitle("Your Selected Item is");
-                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        cancelRequest();
-                    }
-                });
-                builderInner.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                builderInner.show();
+                cancelRequest();
             }
         });
         builderSingle.show();
@@ -258,24 +246,38 @@ public class RationDetailsActivity extends AppCompatActivity {
                 "   \"token\" : " + "\"9f943748d8c1ff6ded5145c59d0b2ae7\"" + "\n" +
                 "}";
         Util.generateNoteOnSD(context, "CancelRequestReq.txt", reasons);
+        Show(context.getResources().getString(R.string.Please_wait),context.getResources().getString(R.string.Processing));
+/*
         pd = ProgressDialog.show(context, "Please Wait ", context.getResources().getString(R.string.Processing), true, false);
+*/
         Json_Parsing request = new Json_Parsing(context, reasons, 2);
         request.setOnResultListener(new Json_Parsing.OnResultListener() {
 
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onCompleted(String code, String msg, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
+                Dismiss();
                 if (code == null || code.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Reasonreq),
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
                     return;
                 }
+
                 if (!code.equals("00")) {
-                    show_error_box(msg, code, 1);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Reasonreq),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            0);
                 } else {
-                    show_error_box(msg, code, 1);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Reasonreq),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            1);
                 }
             }
 
@@ -321,13 +323,25 @@ public class RationDetailsActivity extends AppCompatActivity {
             memberConstants.commDetails.get(i).amount = String.valueOf(commamount);
 
 
-            modeldata.add(new RationListModel(memberConstants.commDetails.get(i).commName +
-                    "\n(" + memberConstants.commDetails.get(i).totQty + ")",
-                    memberConstants.commDetails.get(i).price,
-                    memberConstants.commDetails.get(i).balQty,
-                    memberConstants.commDetails.get(i).closingBal,
-                    memberConstants.commDetails.get(i).requiredQty,
-                    memberConstants.commDetails.get(i).amount));
+            if(L.equals("hi")){
+                modeldata.add(new RationListModel(
+                        memberConstants.commDetails.get(i).commNamell +
+                                "\n(" + memberConstants.commDetails.get(i).totQty + ")",
+                        memberConstants.commDetails.get(i).price,
+                        memberConstants.commDetails.get(i).balQty,
+                        memberConstants.commDetails.get(i).closingBal,
+                        memberConstants.commDetails.get(i).requiredQty,
+                        memberConstants.commDetails.get(i).amount));
+            }else {
+                modeldata.add(new RationListModel(
+                        memberConstants.commDetails.get(i).commName +
+                                "\n(" + memberConstants.commDetails.get(i).totQty + ")",
+                        memberConstants.commDetails.get(i).price,
+                        memberConstants.commDetails.get(i).balQty,
+                        memberConstants.commDetails.get(i).closingBal,
+                        memberConstants.commDetails.get(i).requiredQty,
+                        memberConstants.commDetails.get(i).amount));
+            }
         }
         adapter = new RationListAdapter(context, modeldata, new OnClickRation() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -345,16 +359,28 @@ public class RationDetailsActivity extends AppCompatActivity {
                                 MESSAGE_FROM_SERIAL_PORT = 0;
                                 WeighingDialog(p);
                             } else {
-                                show_error_box("Please select Communication mode", "Communication", 0);
+                                show_AlertDialog(
+                                        context.getResources().getString(R.string.Weighing_machine),
+                                        context.getResources().getString(R.string.Please_Select_Other_Mode_of_Communication),
+                                        "",
+                                        0);
                             }
                         } else {
                             ManualDialog(p);
                         }
                     } else {
-                        show_error_box("Balance Quantity is Not Available ", (memberConstants.commDetails.get(p).commName), 0);
+                        show_AlertDialog(
+                                (memberConstants.commDetails.get(p).commName),
+                                context.getResources().getString(R.string.Commodity_Balance_Qty_not_available_for_this_Entered_Card),
+                                "",
+                                0);
                     }
                 } else {
-                    show_error_box("Closing Balance Quantity is Not Available ", (memberConstants.commDetails.get(p).commName), 0);
+                    show_AlertDialog(
+                            (memberConstants.commDetails.get(p).commName),
+                            context.getResources().getString(R.string.Commodity_Closing_balance_not_available_for_this_shop),
+                            "",
+                            0);
 
                 }
             }
@@ -371,7 +397,7 @@ public class RationDetailsActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void WeighingDialog(final int position) {
 
-
+        getflag=false;
         try {
             final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -387,7 +413,11 @@ public class RationDetailsActivity extends AppCompatActivity {
             TextView price = (TextView) dialog.findViewById(R.id.b);
             TextView balQty = (TextView) dialog.findViewById(R.id.c);
             TextView closingBal = (TextView) dialog.findViewById(R.id.d);
-
+            if(L.equals("hi")){
+                commName.setText(memberConstants.commDetails.get(position).commNamell);
+            }else {
+                commName.setText(memberConstants.commDetails.get(position).commName);
+            }
             commName.setText(memberConstants.commDetails.get(position).commName);
             price.setText(memberConstants.commDetails.get(position).price);
             balQty.setText(memberConstants.commDetails.get(position).balQty);
@@ -403,12 +433,13 @@ public class RationDetailsActivity extends AppCompatActivity {
                         MESSAGE_FROM_SERIAL_PORT = 0;
                         getweightUSB();
                     } else if (choice == 1) {
-                        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
                         if (mBluetoothAdapter.isEnabled()) {
                             if (address != null) {
                                 if (btSocket != null) {
                                     MESSAGE_FROM_SERIAL_PORT = 0;
                                     if (btSocket.isConnected()) {
+                                        getbtvalue(btSocket);
                                         getbtvalue(btSocket);
                                     } else {
                                         pd = ProgressDialog.show(context, "Connecting", "Please_Wait", true, false);
@@ -420,11 +451,16 @@ public class RationDetailsActivity extends AppCompatActivity {
                                 }
                             } else {
                                 get.setEnabled(true);
-                                show_error_box("Device Not Found", "Bluetooth Device", 0);
+                                show_AlertDialog(
+                                        context.getResources().getString(R.string.Bluetooth),
+                                        context.getResources().getString(R.string.Device_Not_Found),
+                                        "", 0);
                             }
                         } else {
                             get.setEnabled(true);
-                            show_error_box(context.getResources().getString(R.string.Enable_Bluetooth_and_pair_your_Device_Manually), context.getResources().getString(R.string.Bluetooth), 0);
+                            show_AlertDialog(context.getResources().getString(R.string.Please_check_your_bluetooth_connection),
+                                    context.getResources().getString(R.string.Bluetooth),
+                                    "",0);
                         }
                     }
                 }
@@ -442,11 +478,19 @@ public class RationDetailsActivity extends AppCompatActivity {
                         if (weighingweight.length() > 10) {
                             CheckWeight(position, weighingweight, 1);
                         } else {
-                            show_error_box("NOt a Proper Weight ", "Weighing Weight Error", 0);
+                            show_AlertDialog(
+                                    context.getResources().getString(R.string.Invalid_Weight),
+                                    context.getResources().getString(R.string.Please_try_again),
+                                    "",
+                                    0);
                         }
 
                     } else {
-                        Toast.makeText(context, "Please get Weight ", Toast.LENGTH_SHORT).show();
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Please_get_Weight_from_Weighing_Machine),
+                                "" ,
+                                "",
+                                0);
                     }
                 }
 
@@ -479,10 +523,12 @@ public class RationDetailsActivity extends AppCompatActivity {
                         device = usbService.findSerialPortDevice(context);
                     }
                     if (device != null) {
+                        connection = usbService.connection(device);
                         if (connection == null) {
                             connection = usbService.connection(device);
                         }
                         if (connection != null) {
+                            serialport = usbService.getserialport(device, connection);
                             if (serialport == null) {
                                 serialport = usbService.getserialport(device, connection);
                             }
@@ -511,29 +557,21 @@ public class RationDetailsActivity extends AppCompatActivity {
                                     MESSAGE_FROM_SERIAL_PORT = 1;
                                 }
                             } else {
-                                System.out.println("SerialPort connection failed");
-                                if (mHandler != null) {
-                                    mHandler.obtainMessage(2, "SerialPort Connection Failed").sendToTarget();
-                                }
 
-                                // getweight.setText("Failed Serialport");
+                                if (mHandler != null) {
+                                    mHandler.obtainMessage(2,  context.getResources().getString(R.string.Connection_Failed)).sendToTarget();
+                                }
                             }
                         } else {
-                            System.out.println("Failed to connect");
-                            if (mHandler != null) {
-                                mHandler.obtainMessage(2, "Failed to Connect").sendToTarget();
-                            }
 
-                            //getweight.setText("Failed to connect");
+                            if (mHandler != null) {
+                                mHandler.obtainMessage(2, context.getResources().getString(R.string.Connection_Failed)).sendToTarget();
+                            }
                         }
                     } else {
-
-                        System.out.println("Device Not Found");
                         if (mHandler != null) {
-                            mHandler.obtainMessage(2, "Device NOt Found").sendToTarget();
+                            mHandler.obtainMessage(2,  context.getResources().getString(R.string.Device_Not_Found)).sendToTarget();
                         }
-
-                        // getweight.setText("Device Not found");
                     }
                 }
             }).start();
@@ -568,7 +606,11 @@ public class RationDetailsActivity extends AppCompatActivity {
         TextView balQty = (TextView) dialog.findViewById(R.id.c);
         TextView closingBal = (TextView) dialog.findViewById(R.id.d);
 
-        commName.setText(memberConstants.commDetails.get(position).commName);
+            if(L.equals("hi")){
+                commName.setText(memberConstants.commDetails.get(position).commNamell);
+            }else {
+                commName.setText(memberConstants.commDetails.get(position).commName);
+            }
         price.setText(memberConstants.commDetails.get(position).price);
         balQty.setText(memberConstants.commDetails.get(position).balQty);
         closingBal.setText(memberConstants.commDetails.get(position).closingBal);
@@ -591,11 +633,20 @@ public class RationDetailsActivity extends AppCompatActivity {
                             CheckWeight(position, enteredweight, 0);
                         }
                     } else {
-                        show_error_box("Please Enter Valid Values", "Invalid Input", 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Invalid_Inputs),
+                                context.getResources().getString(R.string.Please_enter_a_valid_Value),
+                                "",
+                                0);
+
 
                     }
                 } else {
-                    show_error_box("Please Enter Valid values", "Invalid Input", 0);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Invalid_Inputs),
+                            context.getResources().getString(R.string.Please_enter_a_valid_Value),
+                            "",
+                            0);
 
                 }
             }
@@ -630,24 +681,47 @@ public class RationDetailsActivity extends AppCompatActivity {
                     memberConstants.commDetails.get(position).requiredQty = String.valueOf(requiredQty);
                     Display(1);
                 } else if (calculated == 2) {
-                    show_error_box(context.getResources().getString(R.string.Please_Issue_Commodity_upto_Bal_Qty_only),
-                            memberConstants.commDetails.get(position).commName, 0);
+                    show_AlertDialog(
+                            memberConstants.commDetails.get(position).commName,
+                            context.getResources().getString(R.string.Please_Issue_Commodity_upto_Bal_Qty_only)+memberConstants.commDetails.get(position).balQty,
+                            "",
+                            0);
+
                 } else if (calculated == 3) {
-                    show_error_box("Please Enter the  Quantity greater than or Equal to " + memberConstants.commDetails.get(position).minQty,
-                            memberConstants.commDetails.get(position).commName, 0);
+                    show_AlertDialog(
+                            memberConstants.commDetails.get(position).commName,
+                            context.getResources().getString(R.string.Issue_quantity_should_more_than_or_equal_to_Minimum_quantity)+memberConstants.commDetails.get(position).minQty,
+                            "",
+                            0);
                 } else if (calculated == 4){
-                    show_error_box("Please Enter the Quantity less than or Equal to " + memberConstants.commDetails.get(position).closingBal,
-                            memberConstants.commDetails.get(position).commName, 0);
+                    show_AlertDialog(
+                            memberConstants.commDetails.get(position).commName,
+                            context.getResources().getString(R.string.Please_Issue_Commodity_upto_Closing_Balance_only_Closing_Balance)+memberConstants.commDetails.get(position).closingBal,
+                            "",
+                            0);
+
                 }else {
-                    show_error_box(context.getResources().getString(R.string.Please_Enter_the_Weight), context.getResources().getString(R.string.Enter_valid_weight), 0);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Enter_valid_weight),
+                            context.getResources().getString(R.string.Please_Enter_the_Weight),
+                            "",
+                            0);
                 }
             } else {
-                show_error_box("Issue Qty should be Multiple by Minimum Qty -"
-                                + memberConstants.commDetails.get(position).minQty,
-                        memberConstants.commDetails.get(position).commName, 0);
+                show_AlertDialog(
+                        memberConstants.commDetails.get(position).commName,
+                        context.getResources().getString(R.string.Issue_Qty_Should_Be_Multiple_By_Minimum_Qty)+memberConstants.commDetails.get(position).minQty,
+                        "",
+                        0);
+
             }
         } else {
-            show_error_box(context.getResources().getString(R.string.Please_Enter_the_Weight), context.getResources().getString(R.string.Enter_valid_weight), 0);
+            show_AlertDialog(
+                    context.getResources().getString(R.string.Enter_valid_weight),
+                    context.getResources().getString(R.string.Please_Enter_the_Weight),
+                    "",
+                    0);
+
         }
         } catch (Exception ex) {
 
@@ -793,7 +867,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                     "            <memberId>" + memberModel.zmemberId + "</memberId>\n" +
                     "            <surveyEntryQuantity>0.0</surveyEntryQuantity>\n" +
                     "            <surveyStatus>N</surveyStatus>\n" +
-                    "            <trans_type>F</trans_type>\n" +
+                    "            <trans_type>"+memberModel.trans_type+"</trans_type>\n" +
                     "            <availedBenfName>" + memberModel.memberName + "</availedBenfName>\n" +
                     "        </ns1:getCommodityTransaction>\n" +
                     "    </SOAP-ENV:Body>\n" +
@@ -803,7 +877,11 @@ public class RationDetailsActivity extends AppCompatActivity {
                 Util.generateNoteOnSD(context, "RationReq.txt", ration);
                 hitURL(ration);
             } else {
-                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                show_AlertDialog(
+                        context.getResources().getString(R.string.Internet_Connection),
+                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                        "",
+                        0);
             }
         } else {
             if (mp != null) {
@@ -814,8 +892,14 @@ public class RationDetailsActivity extends AppCompatActivity {
             } else {
                 mp = mp.create(context, R.raw.c100189);
                 mp.start();
-                show_error_box("", "Please Select any Commodity for Issuance", 0);
+
+
             }
+            show_AlertDialog(
+                    context.getResources().getString(R.string.Commodity),
+                    context.getResources().getString(R.string.Please_Select_Any_Commodity_For_Issuance),
+                    "",
+                    0);
         }
         } catch (Exception ex) {
 
@@ -842,137 +926,6 @@ public class RationDetailsActivity extends AppCompatActivity {
     }
 
 
-    private void checkBTState(BluetoothAdapter mBluetoothAdapter) {
-        try {
-
-        new Thread(() -> {
-            if (btSocket == null && mBluetoothAdapter != null && address != null) {
-                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-                try {
-                    btSocket = createBluetoothSocket(device);
-                } catch (IOException e) {
-                    System.out.println("Socket_creation_failed");
-                }
-            }
-
-            if (btSocket != null && !btSocket.isConnected()) {
-                try {
-                    btSocket.connect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    try {
-                        btSocket.close();
-                    } catch (IOException ignored) {
-                        ignored.printStackTrace();
-                    }
-                }
-            }
-
-            runOnUiThread(() -> {
-                get.setEnabled(true);
-                if (btSocket.isConnected()) {
-                    Toast.makeText(context, "Bluetooth Weighing Machine is Ready"
-                            , Toast.LENGTH_SHORT).show();
-                }
-                if (pd.isShowing())
-                    pd.dismiss();
-            });
-
-            if (btSocket.isConnected()) {
-                getbtvalue(btSocket);
-            }
-
-        }).start();
-        } catch (Exception ex) {
-            Timber.tag("Ration-CheckBTState-").e(ex.getMessage(), "");
-        }
-
-    }
-
-    private void getbtvalue(BluetoothSocket socket) {
-        try {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    InputStream tmpIn = socket.getInputStream();
-                    byte[] buffer = new byte[20];
-                    int bytes;
-                    StringBuilder storeBT = new StringBuilder();
-                    storeBT.setLength(0);
-                    for (int i = 0; i < 19; i++) {
-                        bytes = tmpIn.read(buffer);
-                        String readMessage = new String(buffer, 0, bytes);
-                        System.out.println("+++++++++++++++++++++++++++++++++"+readMessage);
-                        storeBT.append(readMessage);
-                    }
-                    if (mHandler != null) {
-                        mHandler.obtainMessage(MESSAGE_FROM_SERIAL_PORT, storeBT).sendToTarget();
-
-                    }
-
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-        } catch (Exception ex) {
-
-            Timber.tag("Ration-getbtvalue-").e(ex.getMessage(), "");
-        }
-
-    }
-
-   /* private class ConnectedThread extends Thread {
-        private final InputStream mmInStream;
-
-        ConnectedThread(BluetoothSocket socket) {
-            InputStream tmpIn = null;
-            try {
-                tmpIn = socket.getInputStream();
-            } catch (IOException ignored) {
-            }
-            mmInStream = tmpIn;
-        }
-
-        public void run() {
-
-            byte[] buffer = new byte[2048];
-            int bytes;
-            StringBuilder storeBT = new StringBuilder();
-            String wt;
-            while (true) {
-                try {
-                    bytes = mmInStream.read(buffer);
-                    String readMessage = new String(buffer, 0, bytes);
-                    if (MESSAGE_FROM_SERIAL_PORT == 0) {
-                        storeBT.append(readMessage);
-                        if (storeBT.toString().contains("g")) {
-                            wt = storeBT.toString().trim();
-                            storeBT.setLength(0);
-                            final String finalWt = wt;
-                            RationDetailsActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (finalWt.length() < 12) {
-                                        getweight.setText(finalWt);
-                                    }
-                                }
-                            });
-                        }
-                    } else {
-                        usb = "";
-                        storeBTdata.setLength(0);
-                        break;
-                    }
-                } catch (IOException e) {
-                    break;
-                }
-            }
-        }
-    }*/
 
     @Override
     protected void onDestroy() {
@@ -984,12 +937,12 @@ public class RationDetailsActivity extends AppCompatActivity {
                 btSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("++++++++++++++++");
+
             }
         }
 
         unregisterReceiver(mUsbReceiver);
-        unregisterReceiver(mReceiver);
+        //unregisterReceiver(mReceiver);
     } catch (Exception ex) {
 
         Timber.tag("Ration-OnDestroy-").e(ex.getMessage(), "");
@@ -1033,21 +986,7 @@ public class RationDetailsActivity extends AppCompatActivity {
         }
     };
 
-    private void setFiltersbluetooth() {
-        try {
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        filter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
-        registerReceiver(mReceiver, filter);
-        } catch (Exception ex) {
-
-            Timber.tag("Ration-filter-").e(ex.getMessage(), "");
-        }
-    }
 
     public String address;
 
@@ -1058,25 +997,52 @@ public class RationDetailsActivity extends AppCompatActivity {
 
         setFilters();
         startService(UsbService.class, usbConnection, null);
-        setFiltersbluetooth();
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter.isEnabled()) {
+                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                if (pairedDevices.size() > 0) {
+                    for (BluetoothDevice device : pairedDevices) {
+                        if (device.getName().equals("VTWS100")){
+                            address = (device.getAddress());
+                            System.out.println("++++++++++++++==="+address);
+                            break;
+                        }
+                    }
+                }
+            }else {
+                mBluetoothAdapter.enable();
+                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                if (pairedDevices.size() > 0) {
+                    for (BluetoothDevice device : pairedDevices) {
+                        if (device.getName().equals(device.getName().equals("VTWS100"))){
+                            address = (device.getAddress());
+                            System.out.println("++++++++++++++==="+address);
+                            break;
+                        }
+                    }
+                }
+            }
+
+        /*setFiltersbluetooth();
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter.isEnabled()) {
             // Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-            /*if (pairedDevices.size() > 0) {
+            *//*if (pairedDevices.size() > 0) {
                 for (BluetoothDevice device : pairedDevices) {
                     if (device.getName().equals("APPDS_VNTK@2015") || device.getName().equals("VTWS100")) {
                         address = (device.getAddress());
                         return;
                     }
                 }
-            }*/
+            }*//*
             mBluetoothAdapter.startDiscovery();
-        }
+        }*/
         } catch (Exception ex) {
 
             Timber.tag("Ration-onResume-").e(ex.getMessage(), "");
         }
     }
+
 
     private final ServiceConnection usbConnection = new ServiceConnection() {
         @Override
@@ -1090,6 +1056,148 @@ public class RationDetailsActivity extends AppCompatActivity {
         }
     };
 
+    private void checkBTState(BluetoothAdapter mBluetoothAdapter) {
+        try {
+
+            new Thread(() -> {
+                if (btSocket == null && mBluetoothAdapter != null && address != null) {
+                    BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                    try {
+                        btSocket = createBluetoothSocket(device);
+                    } catch (IOException e) {
+                        System.out.println("Socket_creation_failed");
+                    }
+                }
+
+                if (btSocket != null && !btSocket.isConnected()) {
+                    try {
+                        btSocket.connect();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        try {
+                            btSocket.close();
+                        } catch (IOException ignored) {
+                            ignored.printStackTrace();
+                        }
+                    }
+                }
+
+                runOnUiThread(() -> {
+                    get.setEnabled(true);
+                    if (btSocket.isConnected()) {
+                        Toast.makeText(context, "Bluetooth Weighing Machine is Ready"
+                                , Toast.LENGTH_SHORT).show();
+                    }
+                    if (pd.isShowing())
+                        pd.dismiss();
+                });
+
+                if (btSocket.isConnected()) {
+                    getbtvalue(btSocket);
+                }
+
+            }).start();
+        } catch (Exception ex) {
+            Timber.tag("Ration-CheckBTState-").e(ex.getMessage(), "");
+        }
+
+    }
+
+    private void getbtvalue(BluetoothSocket socket) {
+        try {
+            System.out.println("@@In getbtvalue");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+
+                        InputStream tmpIn = socket.getInputStream();
+                        byte[] buffer = new byte[1024];
+                        int bytes;
+                        StringBuilder data = new StringBuilder();
+                        for (int i = 0; i < 50; i++) {
+                            int n = tmpIn.read(buffer);
+                            System.out.println("@@n value: " + n);
+                            if (n > 100) {
+                                i = 20;
+                            } else {
+
+                                if (n > 0) {
+                                    System.out.println("@@Value of n: " + n);
+                                    byte[] received = new byte[n];
+                                    System.arraycopy(buffer, 0, received, 0, n);
+
+                                    String receivedStr = new String(received);
+                                    data.append(receivedStr);
+
+                                    System.out.println("@@Data in storeBT" + data);
+                                }
+
+                            }
+                        }
+
+                        if (data != null) {
+                            System.out.println("@@+++++++==" + data);
+                            String temp = "";
+                            for (int i = 0; i < data.length()-11; i++) {
+                                temp = "";
+                                if (data.charAt(i) == '+') {
+                                    System.out.println("@@fOUND +");
+                                    temp = data.substring(i, i + 4);
+                                    i = i + 4;
+                                    if (data.charAt(i) == '.') {
+                                        System.out.println("@@Found .");
+                                        temp = temp + data.substring(i, i + 4);
+                                        i = i + 4;
+                                        if (data.charAt(i) == ' ' ) {
+                                            System.out.println("@@Found  ");
+                                            temp = temp + data.substring(i, i + 3);
+                                            i = i + 3;
+                                            System.out.println("@@Data in temp: " + temp);
+                                            weight_Data = temp;
+                                            System.out.println("@@Data in weight_Data: " + weight_Data);
+                                            getweight.setText(weight_Data);
+                                            i =data.length();
+                                        } else {
+                                            System.out.println("@@Data ---  " + data.charAt(i));
+                                        }
+                                    }
+                                }
+                            }
+
+
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        System.out.println("@@Updatng weight: " + weight_Data + " in UI");
+                                        getweight.setText(weight_Data);
+//serialport.close();
+                                        get.setEnabled(true);
+                                    } catch (Exception ex) {
+                                        Timber.tag("Ration-myhandler1-").e(ex.getMessage(), "");
+                                    }
+
+                                }
+                            });
+                        }
+
+/* if (mHandler != null) {
+                        System.out.println("@@Sending to handler");
+                        //mHandler.obtainMessage(MESSAGE_FROM_SERIAL_PORT, storeBT).sendToTarget();
+                    }*/
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        } catch (Exception ex) {
+
+            Timber.tag("Ration-getbtvalue-").e(ex.getMessage(), "");
+        }
+
+    }
     private class MyHandler extends Handler {
 
         private final WeakReference<RationDetailsActivity> mActivity;
@@ -1106,26 +1214,31 @@ public class RationDetailsActivity extends AppCompatActivity {
                     MESSAGE_FROM_SERIAL_PORT = 1;
                     final StringBuilder data = (StringBuilder) msg.obj;
                     if (data != null) {
-                        System.out.println("+++++++==" + data);
+                        System.out.println("@@+++++++==" + data);
                         StringBuilder value = new StringBuilder();
-                        for (int i = 0; i < data.length(); i++) {
-                            String j = String.valueOf(data.charAt(i));
-                            if (j.equals("+")) {
-                                for (int k = i; k < data.length(); k++) {
-                                    j = String.valueOf(data.charAt(k));
-                                    value.append(j);
-                                    if (j.equals("g")) {
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
+
+                        int index = data.lastIndexOf("g");
+                        int index1 = data.lastIndexOf("+");
+                        System.out.println("@@index of +: "+index1);
+                        System.out.println("@@index of g: "+index);
+
+                        if(index1>index)
+                        {
+                            String data_1 = data.substring(0,index+1);
+                            index1 = data_1.lastIndexOf("+");
+                            index = data_1.lastIndexOf("g");
+                            weight_Data  = data_1.substring(index1,index+1);
                         }
+                        else{
+                            weight_Data  = data.substring(index1,index+1);
+                            System.out.println("@@weight_Data in else: " +weight_Data);
+                        }
+                        System.out.println("@@Data in weight: "+weight);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    getweight.setText(value);
+                                    getweight.setText(weight_Data);
                                     get.setEnabled(true);
                                 } catch (Exception ex) {
                                     Timber.tag("Ration-myhandler1-").e(ex.getMessage(), "");
@@ -1141,9 +1254,12 @@ public class RationDetailsActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-
                                 get.setEnabled(true);
-                                show_error_box(data, "USB", 0);
+                                show_AlertDialog(
+                                        "USB",
+                                        data,
+                                       "",
+                                        0);
                             } catch (Exception ex) {
                                 Timber.tag("Ration-Myhandler2-").e(ex.getMessage(), "");
                             }
@@ -1164,29 +1280,22 @@ public class RationDetailsActivity extends AppCompatActivity {
 
             switch (Objects.requireNonNull(intent.getAction())) {
                 case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
-                    Toast.makeText(context, "Ready", Toast.LENGTH_SHORT).show();
                     break;
                 case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
-                    Toast.makeText(context, "NOt granted", Toast.LENGTH_SHORT).show();
                     break;
                 case UsbService.ACTION_NO_USB: // NO USB CONNECTED
-                    Toast.makeText(context, "No_USB_connected", Toast.LENGTH_SHORT).show();
                     break;
                 case UsbService.ACTION_USB_DISCONNECTED: // USB DISCONNECTED
                     device = null;
-                    Toast.makeText(context, "USB_disconnected", Toast.LENGTH_SHORT).show();
                     break;
                 case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
                     device = null;
-                    Toast.makeText(context, "USB_device_not_supported", Toast.LENGTH_SHORT).show();
                     break;
                 case UsbService.ACTION_USB_DETACHED: // USB NOT SUPPORTED
                     device = null;
-                    Toast.makeText(context, "USB_device_not_supported", Toast.LENGTH_SHORT).show();
                     break;
                 case UsbService.ACTION_USB_ATTACHED: // USB NOT SUPPORTED
                     usbService.findSerialPortDevice(context);
-                    Toast.makeText(context, "USB_device_not_supported", Toast.LENGTH_SHORT).show();
                     break;
             }
             } catch (Exception ex) {
@@ -1243,28 +1352,6 @@ public class RationDetailsActivity extends AppCompatActivity {
         return device.createRfcommSocketToServiceRecord(BTMODULEUUID);
     }
 
-
-    private void show_error_box(String msg, String title, final int i) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        if (pd.isShowing()) {
-                            pd.dismiss();
-                        }
-                        if (i == 1) {
-                            finish();
-                        }
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void toolbarInitilisation() {
         try {
@@ -1289,7 +1376,7 @@ public class RationDetailsActivity extends AppCompatActivity {
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("ISSUE GOODS");
+        toolbarActivity.setText( context.getResources().getString(R.string.ISSUE_GOODS));
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
@@ -1297,5 +1384,110 @@ public class RationDetailsActivity extends AppCompatActivity {
             Timber.tag("Ration-Toolbar-").e(ex.getMessage(), "");
         }
     }
+    private void show_Dialogbox(String msg,String header) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                if (pd.isShowing()) {
+                    pd.dismiss();
+                }
+                if (i == 1) {
+                    finish();
+                }
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
+
+    }
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
+    }
+
 }
 

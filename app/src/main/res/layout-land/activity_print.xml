@@ -268,7 +268,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
 
-                android:text="MemberName : "
+                android:text="@string/MemberName"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/TextsizeB"
                 android:textStyle="bold" />
@@ -288,7 +288,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:text="Aadhar No : "
+                android:text="@string/Aadhaar_No"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/TextsizeB"
                 android:textStyle="bold" />
@@ -376,7 +376,7 @@
                     android:background="@drawable/bblack"
                     android:gravity="center_horizontal"
                     android:padding="@dimen/TextsizeP"
-                    android:text="Amount"
+                    android:text="@string/Amount"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="30dp"
@@ -418,7 +418,7 @@
                     android:layout_gravity="end"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:text="@string/Total_Amount"
+                    android:text="@string/TOTAL_AMOUNT"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold" />

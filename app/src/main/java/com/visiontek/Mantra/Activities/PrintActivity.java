@@ -1,6 +1,7 @@
 package com.visiontek.Mantra.Activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -13,7 +14,10 @@ import android.hardware.usb.UsbManager;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -94,7 +98,9 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service),1);
+            show_AlertDialog(context.getResources().getString(R.string.Print),
+                    context.getResources().getString(R.string.RD_Service),
+                    context.getResources().getString(R.string.RD_Service_Msg),0);
             return;
         }
 
@@ -114,7 +120,10 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                     Util.generateNoteOnSD(context, "RationReq.txt", ration);
                     hitURL(ration);
                 } else {
-                    show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
+                    show_AlertDialog(context.getResources().getString(R.string.Print),
+                            context.getResources().getString(R.string.Internet_Connection),
+                            context.getResources().getString(R.string.Internet_Connection_Msg),
+                            0);
                 }
 
             }
@@ -173,28 +182,42 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             mp.start();
         }
 
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Confirm), context.getResources().getString(R.string.Please_Wait), true, false);
+        Show( context.getResources().getString(R.string.Confirm),
+                context.getResources().getString(R.string.Please_Wait) );
+/*
+        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Confirm),
+         context.getResources().getString(R.string.Please_Wait), true, false);
+*/
         XML_Parsing request = new XML_Parsing(PrintActivity.this, ration, 11);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
-            public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (isError == null || isError.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 1);
+            public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                Dismiss();
+                if (code == null || code.isEmpty()) {
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Print),
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                    Sessiontimeout(msg, isError);
-                    return;
-                }
-                if (!isError.equals("00")) {
-                    show_error_box(msg, "Commodity : " + isError, 1);
+
+                if (!code.equals("00")) {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Print),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            1);
                 } else {
                     printReceipt = (Print) object;
-                    show_error_box("","Transaction Successful Printing Please wait",2);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Transaction_Successfull_Printing_Please_Wait),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            2);
+
                 }
             }
         });
@@ -233,7 +256,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             startActivity(home);
             finish();
         }else {
-            printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery),str,i);
+            printbox(str,i);
         }
         }catch (Exception ex){
 
@@ -241,7 +264,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         }
     }
 
-    private void printbox(String msg, String title, final String[] str, final int type) {
+   /* private void printbox(String msg, String title, final String[] str, final int type) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
         alertDialogBuilder.setTitle(title);
@@ -266,7 +289,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-    }
+    }*/
 
 
     private void probe() {
@@ -312,30 +335,6 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         }
     }
 
-    private void show_error_box(String msg, String title, final int i) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        if (i==1) {
-                            Intent home = new Intent(context, HomeActivity.class);
-                            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(home);
-                            finish();
-                        }else if (i==2){
-                            calPrint();
-                        }
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void calPrint() {
         try {
@@ -344,12 +343,21 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         StringBuilder add = new StringBuilder();
         int printReceiptsize= printReceipt.printBeans.size();
         for (int i = 0; i <printReceiptsize ; i++) {
+            if(L.equals("hi")){
+                app =  String.format("%-10s%-8s%-8s%-8s\n",
+                        printReceipt.printBeans.get(i).comm_name_ll,
+                        printReceipt.printBeans.get(i).carry_over ,
+                        printReceipt.printBeans.get(i).retail_price ,
+                        printReceipt.printBeans.get(i).commIndividualAmount);
 
-            app =  String.format("%-10s%-8s%-8s%-8s\n",
-                    printReceipt.printBeans.get(i).comm_name,
-                    printReceipt.printBeans.get(i).carry_over ,
-                    printReceipt.printBeans.get(i).retail_price ,
-                    printReceipt.printBeans.get(i).commIndividualAmount);
+            }else {
+                app =  String.format("%-10s%-8s%-8s%-8s\n",
+                        printReceipt.printBeans.get(i).comm_name,
+                        printReceipt.printBeans.get(i).carry_over ,
+                        printReceipt.printBeans.get(i).retail_price ,
+                        printReceipt.printBeans.get(i).commIndividualAmount);
+            }
+
             add.append(app);
         }
 
@@ -358,25 +366,31 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         String str1,str2,str3,str4,str5;
         String[] str = new String[4];
         if (L.equals("hi")) {
-
-            str1 = context.getResources().getString(R.string.Chhattisgarh) + "\n"
-                    + context.getResources().getString(R.string.Department) + "\n"
-                    + context.getResources().getString(R.string.RECEIPT) + "\n";
+            str1 = dealerConstants.stateBean.stateReceiptHeaderLl+"\n";
 
             image(str1,"header.bmp",1);
-            str2 = context.getResources().getString(R.string.FPS_Owner_Name) + " :" + Dealername + "\n"
-                    + context.getResources().getString(R.string.FPS_No) + " :" +dealerConstants.stateBean.statefpsId + "\n"
-                    + context.getResources().getString(R.string.Name_of_Consumer) + " :" +printReceipt.printBeans.get(0).comm_name+ "\n"
-                    + context.getResources().getString(R.string.Card_No) + " :" + printReceipt.rcId + "\n"
-                    + context.getResources().getString(R.string.TransactionID) + " :" + printReceipt.receiptId + "\n"
-                    + context.getResources().getString(R.string.Date) + " :" + date + "\n"
-                    + context.getResources().getString(R.string.commodity) + " " + context.getResources().getString(R.string.lifted) + "   " + context.getResources().getString(R.string.rate) + "    " + context.getResources().getString(R.string.price) ;
+            str2 =  context.getResources().getString(R.string.FPS_Owner_Name) + " : " + Dealername + "\n"
+                    + context.getResources().getString(R.string.FPS_No) + " : " + dealerConstants.stateBean.statefpsId + "\n"
+                    + context.getResources().getString(R.string.Name_of_Consumer) + " : " + printReceipt.printBeans.get(0).member_name_ll+ "\n"
+                    + context.getResources().getString(R.string.Card_No) + "/"+context.getResources().getString(R.string.sch)+ " : "+ printReceipt.rcId  + "/"+printReceipt.printBeans.get(0).scheme_desc_ll+"\n"
+                    + context.getResources().getString(R.string.TransactionID) + " : " + printReceipt.receiptId + "\n"
+                    + context.getResources().getString(R.string.Date) + " : " + date + "\n"
+                    + context.getResources().getString(R.string.AllotmentMonth) +" : "+
+                    menuConstants.fpsPofflineToken.allocationMonth+"\n"
+                    +context.getResources().getString(R.string.AllotmentYear) +" : "+
+                    menuConstants.fpsPofflineToken.allocationYear+"\n"
+                    +
+                    String.format("%-10s%-8s%-8s%-8s\n",
+                            context.getResources().getString(R.string.commodity) ,
+                            context.getResources().getString(R.string.lifted) ,
+                            context.getResources().getString(R.string.rate) ,
+                            context.getResources().getString(R.string.price));
 
 
             str3 = (add)+"";
 
 
-            str4 = context.getResources().getString(R.string.Total_Amount) + " :" + printReceipt.printBeans.get(0).tot_amount ;
+            str4 = context.getResources().getString(R.string.TOTAL_AMOUNT) + " :" + printReceipt.printBeans.get(0).tot_amount ;
 
             image(str2+str3+str4,"body.bmp",0);
 
@@ -413,7 +427,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             str3 = (add)
                     + "\n";
 
-            str4 = context.getResources().getString(R.string.Total_Amount) + "      : " + printReceipt.printBeans.get(0).tot_amount+ "\n"
+            str4 = context.getResources().getString(R.string.TOTAL_AMOUNT) + "      : " + printReceipt.printBeans.get(0).tot_amount+ "\n"
                     + "\n";
 
 
@@ -533,12 +547,23 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             commqty= Float.parseFloat((memberConstants.commDetails.get(i).requiredQty));
             required= String.valueOf(commbal-commqty);
             if (commqty>0.0) {
-                data.add(new PrintListModel(memberConstants.commDetails.get(i).commName +
-                        "\n(" + memberConstants.commDetails.get(i).totQty + ")",
-                        memberConstants.commDetails.get(i).price,
-                        required,
-                        memberConstants.commDetails.get(i).requiredQty,
-                        memberConstants.commDetails.get(i).amount));
+                if(L.equals("hi")){
+                    data.add(new PrintListModel(
+                            memberConstants.commDetails.get(i).commNamell +
+                                    "\n(" + memberConstants.commDetails.get(i).totQty + ")",
+                            memberConstants.commDetails.get(i).price,
+                            required,
+                            memberConstants.commDetails.get(i).requiredQty,
+                            memberConstants.commDetails.get(i).amount));
+                }else {
+                    data.add(new PrintListModel(
+                            memberConstants.commDetails.get(i).commName +
+                                    "\n(" + memberConstants.commDetails.get(i).totQty + ")",
+                            memberConstants.commDetails.get(i).price,
+                            required,
+                            memberConstants.commDetails.get(i).requiredQty,
+                            memberConstants.commDetails.get(i).amount));
+                }
             }
         }
         RecyclerView.Adapter adapter = new PrintListAdapter(this, data);
@@ -579,7 +604,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("PRINT RECEIPT");
+        toolbarActivity.setText( context.getResources().getString(R.string.Print));
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
@@ -587,5 +612,144 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
             Timber.tag("Print-Toolbar-").e(ex.getMessage(),"");
         }
+    }
+    private void show_Dialogbox(String msg,String header) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (i==1) {
+                    Intent home = new Intent(context, HomeActivity.class);
+                    home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(home);
+                    finish();
+                }else if (i==2){
+                    calPrint();
+                }
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+
+            }
+        });
+
+    }
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
+    }
+    private void printbox( final String[] str, final int type) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(context.getResources().getString(R.string.Battery));
+        status.setText( context.getResources().getString(R.string.Battery_Msg));
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                checkandprint(str,type);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
     }
 }

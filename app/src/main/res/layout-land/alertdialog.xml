@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="500dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_marginVertical="5dp"
+            android:id="@+id/alertdialoghead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blackblack"
+            android:textSize="@dimen/TextsizeT"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_marginVertical="5dp"
+            android:id="@+id/alertdialogbody"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/blackblack"
+            android:textSize="25dp" />
+        <TextView
+            android:layout_marginVertical="5dp"
+            android:id="@+id/alertdialogtale"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/blackblack"
+            android:textSize="25dp" />
+        <LinearLayout
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="@dimen/LayoutP"
+            tools:ignore="MissingConstraints">
+
+            <Button
+                android:id="@+id/alertdialogok"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@color/ok"
+                android:text="@string/Ok"
+                android:foreground="@drawable/custom_ripple"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/TextsizeB"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

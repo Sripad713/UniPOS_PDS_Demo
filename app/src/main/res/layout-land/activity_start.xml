@@ -272,7 +272,7 @@
                 android:layout_marginHorizontal="200dp"
                 android:layout_marginVertical="@dimen/LayoutMV"
                 android:background="@color/colorPrimary"
-                android:text="@string/Start"
+                android:text="@string/Login"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeB"
                 android:shadowRadius="20"

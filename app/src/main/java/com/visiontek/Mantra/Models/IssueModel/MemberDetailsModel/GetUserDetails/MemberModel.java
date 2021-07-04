@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class MemberModel implements Serializable {
     public String
+            memberNamell,
             memberName,
             member_fusion,
             uid,
@@ -26,7 +27,8 @@ public class MemberModel implements Serializable {
     //-----------------------
             Aadhaar,
     //----------------------
-            Enter_UID;
+            Enter_UID,
+            trans_type;
 
     public int RD_SERVICE = 0;
 

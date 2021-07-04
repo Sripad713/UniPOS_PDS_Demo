@@ -148,7 +148,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="15"
-                    android:hint="Enter Received"
+                    android:hint="@string/Enter_Received"
                     android:inputType="numberDecimal"
                     android:textSize="@dimen/TextsizeB" />
             </LinearLayout>

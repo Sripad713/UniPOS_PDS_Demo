@@ -1,10 +1,14 @@
 package com.visiontek.Mantra.Activities;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -92,7 +96,7 @@ public class DeviceActivity extends AppCompatActivity {
     private void function1() {
         try {
 
-        String[] items = new String[]{context.getString(R.string.Set_Language), context.getString(R.string.english), context.getString(R.string.hindi)};
+        String[] items = new String[]{context.getString(R.string.Language), context.getString(R.string.english), context.getString(R.string.hindi)};
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, items);
         Spinner select = null;
@@ -101,7 +105,7 @@ public class DeviceActivity extends AppCompatActivity {
         select.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapter, View v, int position, long id) {
-                //function(position);
+                function(position);
             }
 
             @Override
@@ -200,7 +204,7 @@ public class DeviceActivity extends AppCompatActivity {
         toolbarFpsidValue.setText(DEVICEID);
         //toolbarFpsid.setText("FPS ID");
 //        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("DEVICE");
+        toolbarActivity.setText( context.getResources().getString(R.string.DEVICE));
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
@@ -208,4 +212,84 @@ public class DeviceActivity extends AppCompatActivity {
             Timber.tag("Device-Toolbar-").e(ex.getMessage(), "");
         }
     }
+    private void show_Dialogbox(String msg,String header) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
+
+    }
+
 }

@@ -45,7 +45,7 @@
                 android:textSize="25sp" />
 
             <TextView
-                android:background="@drawable/wblack"
+                android:background="@drawable/spinner_background_color"
                 android:id="@+id/C"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

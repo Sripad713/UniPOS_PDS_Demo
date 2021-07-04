@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -238,6 +240,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             tcCommDetailssize=0;
         }*/
         for (int k = 0; k <tcCommDetailssize ; k++) {
+
             modeldata.add(new ReceiveGoodsListModel(
                     receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).commName,
                     receiveGoodsDetails.infoTCDetails.get(position).tcCommDetails.get(k).schemeName,
@@ -369,7 +372,7 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("RECEIVE GOODS");
+        toolbarActivity.setText( context.getResources().getString(R.string.RECEIVE_GOODS));
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
@@ -377,5 +380,70 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
 
             Timber.tag("ReceiveGoods-ToolBar-").e(ex.getMessage(),"");
         }
+    }
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
+
+    }
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
     }
 }

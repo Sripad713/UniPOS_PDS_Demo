@@ -124,7 +124,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="Please Enter Issue Qty"
+            android:text="@string/Please_Enter_Issue_Qty"
             android:textAlignment="center"
             android:textColor="@color/button"
             android:textSize="@dimen/TextsizeB"

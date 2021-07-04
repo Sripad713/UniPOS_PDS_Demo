@@ -1,6 +1,7 @@
 package com.visiontek.Mantra.Activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -13,7 +14,11 @@ import android.hardware.usb.UsbManager;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -53,6 +58,7 @@ import static com.visiontek.Mantra.Activities.StartActivity.mp;
 
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
@@ -105,7 +111,9 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service));
+            show_AlertDialog(context.getResources().getString(R.string.Stock_Report),
+                    context.getResources().getString(R.string.RD_Service),
+                    context.getResources().getString(R.string.RD_Service_Msg),0);
             return;
         }
 
@@ -125,9 +133,10 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-                preventTwoClick(view);
-               if (flag_print==1) {
 
+               if (flag_print==1) {
+                   print.setEnabled(false);
+                   preventTwoClick(view);
                    String app;
                    String time = sdf1.format(new Date()).substring(0, 5);
                    String date = sdf1.format(new Date()).substring(6, 16);
@@ -135,26 +144,42 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                    int astockBeansize= stockDetails.astockBean.size();
                    for (int i = 0; i < astockBeansize; i++) {
 
-                       app = String.format("%-6s%-6s%-6s%-6s%-8s\n",
-                               stockDetails.astockBean.get(i).comm_name,
-                               stockDetails.astockBean.get(i).scheme_desc_en ,
-                               stockDetails.astockBean.get(i).opening_balance,
-                               stockDetails.astockBean.get(i).issued_qty,
-                               stockDetails.astockBean.get(i).closing_balance);
+                       if (L.equals("hi")) {
+                           app = String.format("%-6s%-6s%-6s%-6s%-8s\n",
+                                   stockDetails.astockBean.get(i).commNamell,
+                                   stockDetails.astockBean.get(i).scheme_desc_ll,
+                                   stockDetails.astockBean.get(i).opening_balance,
+                                   stockDetails.astockBean.get(i).issued_qty,
+                                   stockDetails.astockBean.get(i).closing_balance);
+                       } else {
+                           app = String.format("%-6s%-6s%-6s%-6s%-8s\n",
+                                   stockDetails.astockBean.get(i).comm_name,
+                                   stockDetails.astockBean.get(i).scheme_desc_en,
+                                   stockDetails.astockBean.get(i).opening_balance,
+                                   stockDetails.astockBean.get(i).issued_qty,
+                                   stockDetails.astockBean.get(i).closing_balance);
+                       }
                        add.append(app);
                    }
 
                    String str1,str2,str3,str4,str5,str6;
                    String[] str = new String[4];
                    if (L.equals("hi")){
-                    str1 = context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report);
+                       str1 = dealerConstants.stateBean.stateReceiptHeaderLl+"\n"+
+                               context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report)+ "\n";
                        image(str1,"header.bmp",1);
                     str2 = context.getResources().getString(R.string.Date)+" : " + date +"\n"+
                            context.getResources().getString(R.string.Time) +" : "+ time + "\n";
                     str3 = context.getResources().getString(R.string.Report_Type) + " : PDS\n"
-                           + context.getResources().getString(R.string.FPS_ID)+" : " + dealerConstants.stateBean.statefpsId + "\n";
+                           + context.getResources().getString(R.string.FPS_ID)+" : " + dealerConstants.stateBean.statefpsId + "\n\n";
 
-                    str4 = context.getResources().getString(R.string.name)+"  "+context.getResources().getString(R.string.sch)+"  " +context.getResources().getString(R.string.stock)+"  "+context.getResources().getString(R.string.issued)+"  "+context.getResources().getString(R.string.cb);
+                       str4 = String.format("%-6s%-8s%-4s%-8s%-8s\n",
+                               context.getResources().getString(R.string.name),
+                               context.getResources().getString(R.string.sch),
+                               context.getResources().getString(R.string.OB),
+                               context.getResources().getString(R.string.issued),
+                               context.getResources().getString(R.string.cb))
+                               + "\n";
 
                     str5 = String.valueOf(add);
                        image(str2+str3+str4+str5,"body.bmp",0);
@@ -170,20 +195,20 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                        checkandprint(str,1);
                    }else {
 
-                        str1 = //dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
+                        str1 = dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
                                 context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report)+ "\n\n";
                         str2 = context.getResources().getString(R.string.Date) +"        : " + date +"\n"+
                                context.getResources().getString(R.string.Time) +"        : "+ time + "\n";
                         str3 = context.getResources().getString(R.string.Report_Type) +" : PDS\n"+
-                                context.getResources().getString(R.string.FPS_ID) +"      : " + dealerConstants.stateBean.statefpsId + "\n"
-                               + "-------------------------------\n";
+                                context.getResources().getString(R.string.FPS_ID) +"      : " + dealerConstants.stateBean.statefpsId + "\n\n"
+                               + "\n";
                         str4 = String.format("%-6s%-8s%-4s%-8s%-8s\n",
                                 context.getResources().getString(R.string.name),
                                 context.getResources().getString(R.string.sch),
-                                "OB",
+                                context.getResources().getString(R.string.OB),
                                 context.getResources().getString(R.string.issued),
-                                "Clbal")
-                               + "-------------------------------\n";
+                                context.getResources().getString(R.string.cb))
+                               + "\n";
                         str5 = String.valueOf(add);
 
                         str6 = "\n"+context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
@@ -196,7 +221,6 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                        checkandprint(str,0);
 
                    }
-
                }
             }
         });
@@ -234,9 +258,16 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                 "        </ser:getStockReportDetails>\n" +
                 "    </soapenv:Body>\n" +
                 "</soapenv:Envelope>";
-        Util.generateNoteOnSD(context, "StockReporReq.txt", stock);
-        hitURL(stock);
- }catch (Exception ex){
+            if (networkConnected(context)) {
+                Util.generateNoteOnSD(context, "StockReporReq.txt", stock);
+                hitURL(stock);
+            } else{
+                show_AlertDialog(context.getResources().getString(R.string.Stock_Report),
+                        context.getResources().getString(R.string.Internet_Connection),
+                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                        0);
+            }
+        }catch (Exception ex){
 
             Timber.tag("Stock-onCreate-").e(ex.getMessage(),"");
         }
@@ -293,7 +324,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
             es.submit(new TaskPrint(mTerminal100API,str,mActivity,context,i));
             finish();
         }else {
-            show_error_box(context.getResources().getString(R.string.Battery_Msg),context.getResources().getString(R.string.Battery));
+            printbox(str,i);
         }
         }catch (Exception ex){
 
@@ -347,26 +378,35 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
     private void hitURL(String stock) {
         try {
 
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.stock), context.getResources().getString(R.string.Details), true, false);
+            Show(context.getResources().getString(R.string.stock),
+                    context.getResources().getString(R.string.Details));
+/*
+        pd = ProgressDialog.show(context,
+         context.getResources().getString(R.string.stock),
+          context.getResources().getString(R.string.Details), true, false);
+*/
         XML_Parsing request = new XML_Parsing(context, stock, 6);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
             @Override
-            public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (isError == null || isError.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response");
+            public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                Dismiss();
+                if (code == null || code.isEmpty()) {
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Stock_Report),
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                    Sessiontimeout(msg, isError);
-                    return;
-                }
-                if (!isError.equals("00")) {
-                    System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                    show_error_box(msg, context.getResources().getString(R.string.Dealer_Details) + isError);
+
+                if (!code.equals("00")) {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Stock_Report),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            0);
 
                 } else {
                     stockDetails= (StockDetails) object;
@@ -374,12 +414,21 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
                     int astockBeansize= stockDetails.astockBean.size();
                     data = new ArrayList<>();
                     for (int i = 0; i < astockBeansize; i++) {
-                        data.add(new StockListModel(
-                                stockDetails.astockBean.get(i).comm_name,
-                                stockDetails.astockBean.get(i).scheme_desc_en,
-                                stockDetails.astockBean.get(i).opening_balance,
-                                stockDetails.astockBean.get(i).issued_qty,
-                                stockDetails.astockBean.get(i).closing_balance));
+                        if(L.equals("hi")){
+                            data.add(new StockListModel(
+                                    stockDetails.astockBean.get(i).commNamell,
+                                    stockDetails.astockBean.get(i).scheme_desc_ll,
+                                    stockDetails.astockBean.get(i).opening_balance,
+                                    stockDetails.astockBean.get(i).issued_qty,
+                                    stockDetails.astockBean.get(i).closing_balance));
+                        }else {
+                            data.add(new StockListModel(
+                                    stockDetails.astockBean.get(i).comm_name,
+                                    stockDetails.astockBean.get(i).scheme_desc_en,
+                                    stockDetails.astockBean.get(i).opening_balance,
+                                    stockDetails.astockBean.get(i).issued_qty,
+                                    stockDetails.astockBean.get(i).closing_balance));
+                        }
                     }
                     adapter = new StockListAdapter(context, data);
                     recyclerView.setAdapter(adapter);
@@ -392,22 +441,6 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
             Timber.tag("Stock-StockRes-").e(ex.getMessage(),"");
         }
     }
-
-    private void show_error_box(String msg, String title) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
 
 
     @Override
@@ -481,14 +514,141 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("STOCK REPORT");
+        toolbarActivity.setText( context.getResources().getString(R.string.Stock_Report));
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
         }catch (Exception ex){
-
             Timber.tag("Stock-Toolbar-").e(ex.getMessage(),"");
         }
     }
+    private void show_Dialogbox(String msg,String header) {
 
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
+
+    }
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
+    }
+    private void printbox( final String[] str, final int type) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(context.getResources().getString(R.string.Battery));
+        status.setText( context.getResources().getString(R.string.Battery_Msg));
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                checkandprint(str,type);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
 }

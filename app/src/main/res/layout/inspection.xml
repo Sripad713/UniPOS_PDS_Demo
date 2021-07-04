@@ -49,7 +49,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/bblack"
                 android:gravity="center_horizontal"
-                android:text="Observation"
+                android:text="@string/OBSERVATION"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeV" />
@@ -60,7 +60,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/bblack"
                 android:gravity="center_horizontal"
-                android:text="Variation"
+                android:text="@string/VARIATION"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeV" />
@@ -148,7 +148,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="15"
-                    android:hint="Enter Observation"
+                    android:hint="@string/Enter_Observation"
                     android:inputType="numberDecimal"
                     android:textSize="@dimen/TextsizeB" />
             </LinearLayout>

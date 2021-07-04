@@ -293,6 +293,18 @@
             android:background="@color/colorPrimary"
             android:textColor="@color/white"
             android:textStyle="bold"/>
+        <Button
+            android:id="@+id/pairdevice"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Pairing"
+            android:textAllCaps="false"
+            android:textSize="@dimen/TextsizeB"
+            android:foreground="@drawable/custom_ripple"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 

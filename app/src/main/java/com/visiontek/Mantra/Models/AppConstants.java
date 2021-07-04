@@ -5,7 +5,8 @@ import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetURLDetails.M
 import com.visiontek.Mantra.Models.MenuDetailsModel.Menus;
 
 public class AppConstants {
-    public static String DEVICEID = "0110000106";
+    /*public static String DEVICEID = "0110000106";*/
+    public static String DEVICEID = "";
     public static Dealer dealerConstants;
     public static Member memberConstants;
     public static Menus menuConstants;

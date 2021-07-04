@@ -56,6 +56,7 @@ import javax.crypto.NoSuchPaddingException;
 import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
+import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 
 
 public class Util {
@@ -78,36 +79,36 @@ public class Util {
     }
 
     public static void releaseMediaPlayer(Context context, MediaPlayer mp) {
-        mp.stop();
+        /*mp.stop();
         mp.release();
-        mp = null;
+        mp = null;*/
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static boolean batterylevel(Context context) {
         BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
-        return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) >= 30;
+        return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) >= 50;
     }
 
-    public static String ConsentForm(Context context) {
-        String concent = context.getResources().getString(R.string.part1) + dealerConstants.stateBean.stateReceiptHeaderEn +
-                context.getResources().getString(R.string.part2) + dealerConstants.stateBean.stateReceiptHeaderEn +
-                context.getResources().getString(R.string.part3);
+    public static String ConsentForm(Context context, int i) {
+        String concent;
+        if (i==1) {
+             concent = context.getResources().getString(R.string.part1) + dealerConstants.stateBean.stateReceiptHeaderEn +
+                    context.getResources().getString(R.string.part2);
+        }else {
+             concent = context.getResources().getString(R.string.part1) + dealerConstants.stateBean.stateReceiptHeaderEn +
+                    context.getResources().getString(R.string.part2) + dealerConstants.stateBean.stateReceiptHeaderEn +
+                    context.getResources().getString(R.string.part3);
+        }
         return concent;
     }
 
 
-    public static boolean diableMenu(Context context, int val) {
-        int len;
-        ArrayList<String> serialno;
-        ArrayList<String> status;
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        serialno = databaseHelper.get_MENU(2);
-        status = databaseHelper.get_MENU(3);
-        for (int i = 0; i < serialno.size(); i++) {
-            len = Integer.parseInt(serialno.get(i));
-            if (val == len && status.get(i).equals("N")) {
+    public static boolean diableMenu( String val) {
+        for (int i = 0; i < menuConstants.mBean.size(); i++) {
+            if (menuConstants.mBean.get(i).service.equals(val)&&
+                    menuConstants.mBean.get(i).status.equals("N")){
                 return true;
             }
         }

@@ -295,7 +295,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onRadioButtonClicked"
-                    android:text="@string/Aadhaar"
+                    android:text="@string/Aadhaar_No"
                     android:textSize="25dp"
                     android:layout_marginStart="@dimen/LayoutMV" />
 
@@ -319,7 +319,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="@string/Card_No"
+                        android:text="@string/RC_No"
                         android:textColor="@color/blackblack"
                         android:textSize="25dp"
                         android:textStyle="bold" />

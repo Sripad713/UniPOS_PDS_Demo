@@ -2,17 +2,16 @@ package com.visiontek.Mantra.Activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -65,7 +64,6 @@ import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.Mdealer;
 import static com.visiontek.Mantra.Models.AppConstants.MemberName;
 import static com.visiontek.Mantra.Models.AppConstants.MemberUid;
-
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
@@ -99,8 +97,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
-                    context.getResources().getString(R.string.RD_Service),0);
+            show_AlertDialog(context.getResources().getString(R.string.Member),
+                    context.getResources().getString(R.string.RD_Service),
+                    context.getResources().getString(R.string.RD_Service_Msg),0);
             return;
         }
 
@@ -121,14 +120,23 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 preventTwoClick(view);
                 if (memberModel.click) {
                     if (memberModel.uid.equals("NA")){
-                        show_error_box(context.getResources().getString(R.string.NA_MSG), context.getResources().getString(R.string.NA), 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Mem)+MemberName,
+                                context.getResources().getString(R.string.NA),
+                                context.getResources().getString(R.string.NA_MSG),
+                                0);
+
                         return;
                     }
                     if (networkConnected(context)) {
-                        ConsentDialog(ConsentForm(context));
+                        ConsentDialog(ConsentForm(context, 1));
 
                     } else {
-                        show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Member),
+                                context.getResources().getString(R.string.Internet_Connection),
+                                context.getResources().getString(R.string.Internet_Connection_Msg),
+                                0);
                     }
                 } else {
                     if (mp!=null) {
@@ -139,7 +147,11 @@ public class MemberDetailsActivity extends AppCompatActivity {
                         mp = mp.create(context, R.raw.c100065);
                         mp.start();
                     }
-                    show_error_box(context.getResources().getString(R.string.Please_Select_Member_Name), context.getResources().getString(R.string.Member), 0);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Member),
+                            context.getResources().getString(R.string.Please_Select_Member_Name),
+                            "",
+                            0);
                 }
             }
         });
@@ -156,8 +168,15 @@ public class MemberDetailsActivity extends AppCompatActivity {
         ArrayList<MemberListModel> data = new ArrayList<>();
         int memberdetailssize=memberConstants.memberdetails.size();
         for (int i = 0; i <memberdetailssize ; i++) {
-            data.add(new MemberListModel(memberConstants.memberdetails.get(i).memberName,
-                    memberConstants.memberdetails.get(i).uid));
+            if(L.equals("hi")){
+                data.add(new MemberListModel(
+                        memberConstants.memberdetails.get(i).memberNamell,
+                        memberConstants.memberdetails.get(i).uid));
+            }else {
+                data.add(new MemberListModel(
+                        memberConstants.memberdetails.get(i).memberName,
+                        memberConstants.memberdetails.get(i).uid));
+            }
         }
         RecyclerView.Adapter adapter = new MemberListAdapter(context, data, new OnClickMember() {
             @Override
@@ -168,7 +187,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 memberModel.FIRflag = 0;
                 memberModel.fusionflag = 0;
 
-
+                memberModel.memberNamell = memberConstants.memberdetails.get(p).memberNamell;
                 memberModel.memberName = memberConstants.memberdetails.get(p).memberName;
                 memberModel.uid = memberConstants.memberdetails.get(p).uid;
                 memberModel.zmemberId = memberConstants.memberdetails.get(p).zmemberId;
@@ -177,7 +196,12 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 memberModel.zmanual = memberConstants.memberdetails.get(p).zmanual;
                 memberModel.member_fusion = memberConstants.memberdetails.get(p).member_fusion;
                 memberModel.w_uid_status = memberConstants.memberdetails.get(p).w_uid_status;
-                MemberName=memberConstants.memberdetails.get(p).memberName;
+                if(L.equals("hi")){
+                    MemberName=memberModel.memberNamell;
+                }else {
+                    MemberName=memberModel.memberName;
+                }
+
                 MemberUid=memberConstants.memberdetails.get(p).uid;
                 if (memberModel.xfinger.equals("Y")) {
                     memberModel.mBIO = true;
@@ -200,7 +224,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
             Timber.tag("Member-onCreate-").e(ex.getMessage(),"");
         }
     }
-    private void Sessiontimeout(String msg, String title) {
+    /*private void Sessiontimeout(String msg, String title) {
 
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(title);
@@ -219,7 +243,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-    }
+    }*/
     private void initilisation() {
         pd = new ProgressDialog(context);
         scanfp = findViewById(R.id.member_scanFP);
@@ -281,7 +305,12 @@ public class MemberDetailsActivity extends AppCompatActivity {
                     memberModel.fCount="1";
                     callScanFP();
                 } else {
-                    show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 4);
+                    show_AlertDialog(
+                            MemberName,
+                            context.getResources().getString(R.string.Consent_Form),
+                            context.getResources().getString(R.string.Please_check_Consent_Form),
+                            4);
+
                 }
             }
         });
@@ -310,21 +339,32 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onCompleted(String code, String msg, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
+                Dismiss();
                 if (code == null || code.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Mem)+MemberName,
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
                     return;
                 }
-                if (code.equals("057") || code.equals("008") || code.equals("09D")) {
-                    Sessiontimeout(msg, code);
-                    return;
-                }
+
+
                 if (!code.equals("00")) {
-                    show_error_box(msg,  code,0);
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Consent_Form),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            0);
+
                 } else {
-                    show_error_box(msg,  code,0);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Consent_Form),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            0);
                 }
             }
         });
@@ -335,7 +375,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
     }
 
-    private  void show_AfterEkyc(String msg, String title, final String flow) {
+   /* private  void show_AfterEkyc(String msg, String title, final String flow) {
         try {
 
          final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
@@ -351,6 +391,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                         } else if (flow.equals("M")) {
                             ManualAuth();
                         }else if (flow.equals("F")){
+                            memberModel.trans_type="E";
                             Intent ration = new Intent(context, RationDetailsActivity.class);
                             ration.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             ration.putExtra("OBJ", memberModel);
@@ -368,9 +409,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
             Timber.tag("Member-ekycflow-").e(ex.getMessage(),"");
         }
     }
+*/
 
-
-    private void show_error_box(String msg, String title, final int type) {
+ /*   private void show_error_box(String msg, String title, final int type) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(msg);
         alertDialogBuilder.setTitle(title);
@@ -384,6 +425,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                         }else if (type==2){
                             AadhaarDialog();
                         }else if (type==3){
+                            memberModel.trans_type="F";
                             Intent ration = new Intent(context, RationDetailsActivity.class);
                             ration.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             ration.putExtra("OBJ", memberModel);
@@ -398,7 +440,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-    }
+    }*/
 
     private void callScanFP() {
         try {
@@ -406,23 +448,28 @@ public class MemberDetailsActivity extends AppCompatActivity {
         if (memberModel.mBIO) {
             memberModel.MEMBER_AUTH_TYPE = "Bio";
             if (memberModel.zwgenWadhAuth.equals("Y")) {
-                System.out.println("In MEMBER AUTH WADH_EKYC Request");
+
                 connectRDserviceEKYC(memberConstants.carddetails.zwadh);
             } else {
                 if (memberModel.member_fusion.equals("0")) {
                     memberModel.fCount = "2";
                 }
-                System.out.println("In MEMBER AUTH NORMAL Request");
+
                 connectRDservice();
             }
         } else if (memberModel.mMan) {
-            System.out.println("Requesting Manual Authentication");
+
             ManualAuth();
         } else if (memberModel.mDeal) {
-            System.out.println("Requesting Dealer Authentication");
+
             DealerAuth();
         } else {
-            show_error_box(context.getResources().getString(R.string.Authentication_Type_Not_Specified), context.getResources().getString(R.string.Authentication_Type), 0);
+            show_AlertDialog(
+                    context.getResources().getString(R.string.Member),
+                    context.getResources().getString(R.string.Authentication_Type),
+                    context.getResources().getString(R.string.Authentication_Type_Not_Specified),
+                    0);
+
         }
          }catch (Exception ex){
 
@@ -471,8 +518,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
         if (networkConnected(context)) {
             hitManual(manual);
         } else {
-            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
-        }
+            show_AlertDialog(context.getResources().getString(R.string.Manual),
+                    context.getResources().getString(R.string.Internet_Connection),
+                    context.getResources().getString(R.string.Internet_Connection_Msg),
+                    0);        }
          }catch (Exception ex){
 
             Timber.tag("Member-Manual-").e(ex.getMessage(),"");
@@ -482,26 +531,36 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private void hitManual(String manual) {
         try {
 
+            Show(context.getResources().getString(R.string.Member),
+                    context.getResources().getString(R.string.Authenticating) );
+/*
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating), true, false);
+*/
         XML_Parsing request = new XML_Parsing(MemberDetailsActivity.this, manual, 10);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
             @Override
-            public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (isError == null || isError.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
+            public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+               Dismiss();
+                if (code == null || code.isEmpty()) {
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Manual)+MemberName,
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                    Sessiontimeout(msg, isError);
-                    return;
-                }
-                if (!isError.equals("00")) {
-                    show_error_box(msg, context.getResources().getString(R.string.Member_EKYC) + isError, 0);
+
+
+                if (!code.equals("00")) {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Man)+MemberName,
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            0);
                 } else {
+                    memberModel.trans_type="F";
                     Intent ration = new Intent(context, RationDetailsActivity.class);
                     ration.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     ration.putExtra("OBJ",  memberModel);
@@ -520,33 +579,46 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private void hitURL1(String memberlogin) {
         try {
 
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member_Authentication), context.getResources().getString(R.string.Processing), true, false);
+            Show(context.getResources().getString(R.string.Member_Authentication),
+                    context.getResources().getString(R.string.Processing));
+/*
+        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member_Authentication),
+         context.getResources().getString(R.string.Processing), true, false);
+*/
         XML_Parsing request = new XML_Parsing(MemberDetailsActivity.this, memberlogin, 4);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
             @Override
-            public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (isError == null || isError.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
+            public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                Dismiss();
+                if (code == null || code.isEmpty()) {
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Manual)+MemberName,
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                    Sessiontimeout(msg, isError);
-                    return;
-                }
-                if (!isError.equals("00")) {
-                    if (isError.equals("300") && flow.equals("F")) {
+
+
+                if (!code.equals("00")) {
+                    if (code.equals("300") && flow.equals("F")) {
                         if (memberModel.zwgenWadhAuth.equals("Y")) {
                             if (memberModel.wadhflag != 1) {
                                 memberModel.wadhflag = 1;
-                                show_error_box(msg, isError, 1);
+                                show_AlertDialog(context.getResources().getString(R.string.Member_Wadh)+MemberName,
+                                        context.getResources().getString(R.string.ResponseCode) + code,
+                                        context.getResources().getString(R.string.ResponseMsg)+ msg,
+                                        1);
                             } else {
                                 memberModel.EKYC = 1;
                                 memberModel.fCount = "1";
-                                show_error_box(msg,  isError, 2);
+                                show_AlertDialog(context.getResources().getString(R.string.ekyc)+MemberName,
+                                        context.getResources().getString(R.string.ResponseCode) + code,
+                                        context.getResources().getString(R.string.ResponseMsg)+ msg,
+                                        2);
+
                             }
                         } /*else if (fpsCommonInfo.firauthFlag.equals("Y")) {
                             if (memberModel.FIRflag != 1) {
@@ -562,27 +634,43 @@ public class MemberDetailsActivity extends AppCompatActivity {
                             if (memberModel.Fusionflag != 1) {
                                 memberModel.fCount = "2";
                                 memberModel.Fusionflag = 1;
-                                show_error_box(msg,   isError, 1);
+                                show_AlertDialog(context.getResources().getString(R.string.Member_Fusion)+MemberName,
+                                        context.getResources().getString(R.string.ResponseCode) + code,
+                                        context.getResources().getString(R.string.ResponseMsg)+ msg,
+                                        1);
+
                             } else {
                                 memberModel.EKYC = 1;
                                 memberModel.fCount = "1";
-                                show_error_box(msg, isError, 2);
+                                show_AlertDialog(context.getResources().getString(R.string.ekyc)+MemberName,
+                                        context.getResources().getString(R.string.ResponseCode) + code,
+                                        context.getResources().getString(R.string.ResponseMsg)+ msg,
+                                        2);
                             }
                         } else {
                             if (memberModel.fusionflag != 1) {
                                 memberModel.fCount = "2";
                                 memberModel.fusionflag = 1;
-                                show_error_box(msg,  isError, 1);
+                                show_AlertDialog(context.getResources().getString(R.string.Member_Fusion)+MemberName,
+                                        context.getResources().getString(R.string.ResponseCode) + code,
+                                        context.getResources().getString(R.string.ResponseMsg)+ msg,
+                                        1);
                             } else {
                                 memberModel.EKYC = 1;
                                 memberModel.fCount = "1";
-                                show_error_box(msg,  isError, 2);
+                                show_AlertDialog(context.getResources().getString(R.string.ekyc)+MemberName,
+                                        context.getResources().getString(R.string.ResponseCode) + code,
+                                        context.getResources().getString(R.string.ResponseMsg)+ msg,
+                                        2);
                             }
                         }
                         return;
                     }
                     memberModel.fCount = "1";
-                    show_error_box(msg,  isError, 0);
+                    show_AlertDialog(context.getResources().getString(R.string.Mem)+MemberName,
+                            context.getResources().getString(R.string.ResponseCode) + code,
+                            context.getResources().getString(R.string.ResponseMsg)+ msg,
+                            0);
                 } else {
                     if (memberModel.fusionflag == 1) {
                         memberModel.fusionflag = 0;
@@ -610,9 +698,13 @@ public class MemberDetailsActivity extends AppCompatActivity {
                             hitURLfusion(fusion);
 
                         } else {
-                            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
+                            show_AlertDialog(context.getResources().getString(R.string.Member),
+                                    context.getResources().getString(R.string.Internet_Connection),
+                                    context.getResources().getString(R.string.Internet_Connection_Msg),
+                                    0);
                         }
                     }
+                    memberModel.trans_type="F";
                     Intent ration = new Intent(getApplicationContext(), RationDetailsActivity.class);
                     ration.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     ration.putExtra("REF",ref);
@@ -713,7 +805,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
         if (networkConnected(context)) {
             hiteKyc(memeKyc);
         } else {
-            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection),0);
+            show_AlertDialog(context.getResources().getString(R.string.Member),
+                    context.getResources().getString(R.string.Internet_Connection),
+                    context.getResources().getString(R.string.Internet_Connection_Msg),
+                    0);
         }
   }catch (Exception ex){
 
@@ -724,27 +819,37 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private void hiteKyc(String memeKyc) {
         try {
 
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member), context.getResources().getString(R.string.Authenticating_EKYC), true, false);
+            Show(context.getResources().getString(R.string.Member),
+                    context.getResources().getString(R.string.Member));
+/*
+        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Member)
+         context.getResources().getString(R.string.Authenticating_EKYC), true, false);
+*/
         XML_Parsing request = new XML_Parsing(MemberDetailsActivity.this, memeKyc, 8);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
             @Override
-            public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (isError == null || isError.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
+            public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                Dismiss();
+                if (code == null || code.isEmpty()) {
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.ekyc)+MemberName,
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                    Sessiontimeout(msg, isError);
-                    return;
-                }
+
                 Ekyc= (Ekyc) object;
 
-                if (!isError.equals("E00")) {
-                    show_error_box(msg, context.getResources().getString(R.string.Member_EKYC) + isError, 0);
+                if (!code.equals("E00")) {
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.ekyc)+MemberName,
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            0);
                 } else {
                     String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
                     String details = "\n"+
@@ -754,7 +859,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
                             context.getResources().getString(R.string.Gender) +" : "+ Ekyc.eKYCGeneder+ "\n" +
                             context.getResources().getString(R.string.Date) +" : "+  currentDateTimeString + "\n";
 
-                    show_AfterEkyc(msg + details, isError,flow);
+                    show_EKYCAlertDialog(
+                            context.getResources().getString(R.string.ekyc) +code,
+                            msg + details,
+                            flow);
                 }
             }
         });
@@ -859,9 +967,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
             PackageManager packageManager = getPackageManager();
             List<ResolveInfo> activities = packageManager.queryIntentActivities(act, PackageManager.MATCH_DEFAULT_ONLY);
             final boolean isIntentSafe = activities.size() > 0;
-            if (!isIntentSafe) {
-                Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.No_RD_Service_Available), Toast.LENGTH_SHORT).show();
-            }
+
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act, memberModel.RD_SERVICE);
 
@@ -898,9 +1004,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
             PackageManager packageManager = getPackageManager();
             List<ResolveInfo> activities = packageManager.queryIntentActivities(act, PackageManager.MATCH_DEFAULT_ONLY);
             final boolean isIntentSafe = activities.size() > 0;
-            if (!isIntentSafe) {
-                Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.No_RD_Service_Available), Toast.LENGTH_SHORT).show();
-            }
+
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act, memberModel.RD_SERVICE);
 
@@ -920,9 +1024,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
         Button confirm = (Button) dialog.findViewById(R.id.confirm);
         TextView tv = (TextView) dialog.findViewById(R.id.status);
         TextView dialogbox = (TextView) dialog.findViewById(R.id.dialog);
-        dialogbox.setText("EKYC");
+        dialogbox.setText(context.getResources().getString(R.string.EKYC));
         final EditText enter = (EditText) dialog.findViewById(R.id.enter);
-        tv.setText("Please Enter Member UID");
+        tv.setText(context.getResources().getString(R.string.Please_Enter_Member_UID_Number));
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -946,8 +1050,12 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
                 } else {
                     memberModel.EKYC = 0;
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Mem)+memberModel.Enter_UID,
+                            context.getResources().getString(R.string.Invalid_UID),
+                            context.getResources().getString(R.string.Please_enter_a_valid_Value),
+                            0);
 
-                    show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_UID),0);
                 }
             }
         });
@@ -988,9 +1096,19 @@ public class MemberDetailsActivity extends AppCompatActivity {
                         prep_Mlogin();
                     }
                 } else {
-                    show_error_box(memberModel.rdModel.errinfo, context.getResources().getString(R.string.PID_Exception), 0);
-                    System.out.println("ERROR PID DATA = " + piddata);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Dealer),
+                            memberModel.err_code,
+                            memberModel.rdModel.errinfo,
+                            0);
                 }
+            } else {
+                show_AlertDialog(
+                        context.getResources().getString(R.string.RD_Service),
+                        memberModel.err_code,
+                        memberModel.rdModel.errinfo,
+                        0);
+
             }
         } else {
             Intent ration = new Intent(getApplicationContext(), RationDetailsActivity.class);
@@ -1012,7 +1130,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
             Document doc = builder.parse(is);
 
             memberModel.err_code = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errCode").getTextContent();
-            if (memberModel.err_code.equals("1")) {
+            if (!memberModel.err_code.equals("0")) {
                 memberModel.rdModel.errinfo = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errInfo").getTextContent();
                 return 1;
             } else {
@@ -1078,7 +1196,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("MEMBER DETAILS");
+        toolbarActivity.setText( context.getResources().getString(R.string.MEMEBER_DETAILS));
 
         toolbarCard.setText(memberConstants.carddetails.rcId);
         toolbarLatitudeValue.setText(latitude);
@@ -1088,4 +1206,156 @@ public class MemberDetailsActivity extends AppCompatActivity {
             Timber.tag("Member-Toolbar-").e(ex.getMessage(),"");
         }
     }
+    private void show_Dialogbox(String msg,String header) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+    private void show_EKYCAlertDialog(String headermsg,String bodymsg,String flow) {
+
+            final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setContentView(R.layout.alertdialog);
+            Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+            TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+            TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+
+
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (flow.equals("D")) {
+                    DealerAuth();
+                } else if (flow.equals("M")) {
+                    ManualAuth();
+                }else if (flow.equals("F")){
+                    memberModel.trans_type="E";
+                    Intent ration = new Intent(context, RationDetailsActivity.class);
+                    ration.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ration.putExtra("OBJ", memberModel);
+                    ration.putExtra("REF", Ekyc.zdistrTxnId);
+                    startActivity(ration);
+                    finish();
+                }
+
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (i == 1) {
+                    callScanFP();
+                }else if (i==2){
+                    AadhaarDialog();
+                }else if (i==3){
+                    memberModel.trans_type="F";
+                    Intent ration = new Intent(context, RationDetailsActivity.class);
+                    ration.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ration.putExtra("OBJ", memberModel);
+                    ration.putExtra("REF", Ekyc.zdistrTxnId);
+                    startActivity(ration);
+                    finish();
+                }else if (i==4){
+                    prep_consent();
+                }
+
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
+
+    }
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
+    }
+
 }

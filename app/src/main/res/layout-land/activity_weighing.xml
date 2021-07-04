@@ -122,7 +122,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Get Weight"
+        android:text="@string/Get_Weight"
         android:textAlignment="center"
         android:textColor="@color/button"
         android:textSize="@dimen/TextsizeH"

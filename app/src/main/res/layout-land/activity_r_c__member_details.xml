@@ -261,13 +261,14 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_marginHorizontal="30dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
@@ -279,17 +280,17 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
-                        android:text="Home State Name"
+                        android:text="@string/Home_State_Name"
                         android:textColor="@color/Blue"
                         android:textSize="18dp"
                         android:textStyle="bold" />
 
-                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                   <!-- <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="42dp"
-                        android:text=" :" />
+                        android:text=" :" />-->
 
                     <com.visiontek.Mantra.Utils.MyCustomTextView
                         android:id="@+id/home_state_name"
@@ -298,13 +299,13 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
                         android:text=""
-                        android:textColor="@color/black"
+                        android:textColor="@color/blackblack"
                         android:textSize="16dp" />
 
 
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="5dp"
@@ -315,17 +316,17 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
-                        android:text="Home District Name"
+                        android:text="@string/Home_District_Name"
                         android:textColor="@color/Blue"
                         android:textSize="18dp"
                         android:textStyle="bold" />
 
-                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                   <!-- <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
-                        android:text="    :" />
+                        android:text="    :" />-->
 
                     <com.visiontek.Mantra.Utils.MyCustomTextView
                         android:id="@+id/home_dist_name"
@@ -334,14 +335,14 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
                         android:text=""
-                        android:textColor="@color/black"
+                        android:textColor="@color/blackblack"
                         android:textSize="16dp" />
 
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="5dp"
@@ -352,18 +353,18 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
-                        android:text="FPS ID"
+                        android:text="@string/FPS_ID"
                         android:textColor="@color/Blue"
                         android:textSize="18dp"
                         android:textStyle="bold" />
 
-                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                  <!--  <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
                         android:text="                                         :" />
-
+-->
                     <com.visiontek.Mantra.Utils.MyCustomTextView
                         android:id="@+id/text_fps_id"
                         android:layout_width="300dp"
@@ -371,13 +372,13 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
                         android:text=""
-                        android:textColor="@color/black"
+                        android:textColor="@color/blackblack"
                         android:textSize="16dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="5dp"
@@ -388,18 +389,18 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
-                        android:text="Card Type"
+                        android:text="@string/Card_Type"
                         android:textColor="@color/Blue"
                         android:textSize="18dp"
                         android:textStyle="bold" />
 
-                    <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                 <!--   <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
                         android:text="                                :" />
-
+-->
                     <com.visiontek.Mantra.Utils.MyCustomTextView
                         android:id="@+id/text_scheme_id"
                         android:layout_width="300dp"
@@ -407,7 +408,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="30dp"
                         android:text=""
-                        android:textColor="@color/black"
+                        android:textColor="@color/blackblack"
                         android:textSize="16dp" />
 
                 </LinearLayout>
@@ -432,7 +433,7 @@
                                 android:background="@drawable/ben_table_cell_shape"
                                 android:gravity="center"
                                 android:padding="8dp"
-                                android:text="Name"
+                                android:text="@string/NAME"
                                 android:textColor="@color/white"
                                 android:textSize="20sp" />
 
@@ -440,7 +441,7 @@
                                 android:background="@drawable/ben_table_cell_shape"
                                 android:gravity="center"
                                 android:padding="8dp"
-                                android:text="UID"
+                                android:text="@string/UID"
                                 android:textColor="@color/white"
                                 android:textSize="20sp" />
                         </TableRow>
@@ -464,7 +465,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/mybutton"
-                        android:text="Scan FP"
+                        android:text="@string/Scan_FP"
                         android:textColor="@color/white" />
 
                 </LinearLayout>

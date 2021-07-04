@@ -324,7 +324,7 @@
                     android:background="@drawable/bblack"
                     android:gravity="center_horizontal"
                     android:padding="@dimen/TextsizeP"
-                    android:text="SCHEME"
+                    android:text="@string/scheme"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="30sp"

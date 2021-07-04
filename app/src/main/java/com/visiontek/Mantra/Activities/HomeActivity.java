@@ -1,14 +1,17 @@
 package com.visiontek.Mantra.Activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,11 +23,9 @@ import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
 import com.visiontek.Mantra.Utils.Json_Parsing;
 import com.visiontek.Mantra.Utils.Util;
-import com.visiontek.Mantra.Utils.XML_Parsing;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import timber.log.Timber;
@@ -34,152 +35,151 @@ import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
-
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
-
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.diableMenu;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
-import static com.visiontek.Mantra.Utils.Util.toast;
 
 public class HomeActivity extends AppCompatActivity {
     String token = "9f943748d8c1ff6ded5145c59d0b2ae7";
     String mode = "PDS";
-    Button issue, inspection, aadhar, receive, reports, others,logout;
+    Button issue, inspection, aadhar, receive, reports, others, logout;
     Intent i;
     Context context;
     ProgressDialog pd = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         try {
 
-        context = HomeActivity.this;
+            context = HomeActivity.this;
 
-        TextView toolbarRD = findViewById(R.id.toolbarRD);
-        boolean rd_fps = RDservice(context);
-        if (rd_fps) {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
-                    context.getResources().getString(R.string.RD_Service),0);
-            return;
-        }
-
-        initilisation();
-
-        if (diableMenu(context, 10)) {
-            inspection.setVisibility(View.INVISIBLE);
-            inspection.setEnabled(false);
-        }
-
-        if (diableMenu(context, 3)) {
-            aadhar.setVisibility(View.INVISIBLE);
-            aadhar.setEnabled(false);
-        }
-        if (diableMenu(context, 11)) {
-            receive.setVisibility(View.INVISIBLE);
-            receive.setEnabled(false);
-        }
-
-        issue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                memberConstants=null;
-                i = new Intent(context, IssueActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                startActivityForResult(i, 1);
+            TextView toolbarRD = findViewById(R.id.toolbarRD);
+            boolean rd_fps = RDservice(context);
+            if (rd_fps) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+            } else {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
+                show_AlertDialog(
+                        context.getResources().getString(R.string.Home),
+                        context.getResources().getString(R.string.RD_Service),
+                        context.getResources().getString(R.string.RD_Service_Msg), 0);
+                return;
             }
-        });
-        inspection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                memberConstants=null;
-                if (networkConnected(context)){
-                   FrameXMLforInspection();
-               }else {
-                   show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
-               }
 
+            initilisation();
+
+            if (diableMenu("getFpsStockDetails")) {
+                receive.setEnabled(false);
             }
-        });
-        aadhar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                memberConstants=null;
-                i = new Intent(context, AadhaarServicesActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivityForResult(i, 1);
+
+            if (diableMenu("getInspectorDetails")) {
+                inspection.setEnabled(false);
             }
-        });
-        receive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                memberConstants=null;
-                if(networkConnected(context))
-                {
-                    FrameJsonforReceiveGoods();
+
+            issue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    memberConstants = null;
+                    i = new Intent(context, IssueActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    startActivityForResult(i, 1);
                 }
-                else {
-                    show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
+            });
+            inspection.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    memberConstants = null;
+                    if (networkConnected(context)) {
+                        FrameXMLforInspection();
+                    } else {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Home),
+                                context.getResources().getString(R.string.Internet_Connection_Msg),
+                                context.getResources().getString(R.string.Internet_Connection),
+                                0);
+                    }
+
                 }
+            });
+            aadhar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    memberConstants = null;
+                    i = new Intent(context, AadhaarServicesActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivityForResult(i, 1);
+                }
+            });
+            receive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    memberConstants = null;
+                    if (networkConnected(context)) {
+                        FrameJsonforReceiveGoods();
+                    } else {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Home),
+                                context.getResources().getString(R.string.Internet_Connection_Msg),
+                                context.getResources().getString(R.string.Internet_Connection),
+                                0);
+                    }
 
 
-            }
-        });
-        reports.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                i = new Intent(context, ReportsActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivityForResult(i, 1);
-            }
-        });
-        others.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                toast(context, context.getResources().getString(R.string.Not_Enabled));
-            }
-        });
+                }
+            });
+            reports.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    i = new Intent(context, ReportsActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivityForResult(i, 1);
+                }
+            });
+            others.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                }
+            });
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                memberConstants=null;
-              String logoutreq="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                      "<SOAP-ENV:Envelope\n" +
-                      "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
-                      "    xmlns:ser=\"http://service.fetch.rationcard/\">\n" +
-                      "    <SOAP-ENV:Body>\n" +
-                      "        <ser:logOut>\n" +
-                      "            <fpsId>"+dealerConstants.stateBean.statefpsId+"</fpsId>\n" +
-                      "            <fpsSessionId>"+dealerConstants.fpsCommonInfo.fpsSessionId+"</fpsSessionId>\n" +
-                      "            <password>"+dealerConstants.fpsURLInfo.token +"</password>\n" +
-                      "            <deviceId>"+DEVICEID+"</deviceId>\n" +
-                      "            <stateCode>"+dealerConstants.stateBean.stateCode+"</stateCode>\n" +
-                      "        </ser:logOut>\n" +
-                      "    </SOAP-ENV:Body>\n" +
-                      "</SOAP-ENV:Envelope>";
-                logout(logoutreq);
+            logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    memberConstants = null;
+                    String logoutreq = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                            "<SOAP-ENV:Envelope\n" +
+                            "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
+                            "    xmlns:ser=\"http://service.fetch.rationcard/\">\n" +
+                            "    <SOAP-ENV:Body>\n" +
+                            "        <ser:logOut>\n" +
+                            "            <fpsId>" + dealerConstants.stateBean.statefpsId + "</fpsId>\n" +
+                            "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
+                            "            <password>" + dealerConstants.fpsURLInfo.token + "</password>\n" +
+                            "            <deviceId>" + DEVICEID + "</deviceId>\n" +
+                            "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
+                            "        </ser:logOut>\n" +
+                            "    </SOAP-ENV:Body>\n" +
+                            "</SOAP-ENV:Envelope>";
+                    logout(logoutreq);
 
-            }
-        });
-         }catch (Exception ex){
+                }
+            });
+        } catch (Exception ex) {
 
-            Timber.tag("Home-onCreate-").e(ex.getMessage(),"");
+            Timber.tag("Home-onCreate-").e(ex.getMessage(), "");
         }
     }
 
@@ -197,36 +197,50 @@ public class HomeActivity extends AppCompatActivity {
 
     private void logout(String logoutrequest) {
         try {
-
+            Show(context.getResources().getString(R.string.Logout),
+                    "");
+/*
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating), true, false);
-        Aadhaar_Parsing request = new Aadhaar_Parsing(context, logoutrequest, 10);
-        request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
+*/
+            Aadhaar_Parsing request = new Aadhaar_Parsing(context, logoutrequest, 10);
+            request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
-            @Override
-            public void onCompleted(String error, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (error == null || error.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
-                    return;
-                }
-                if (error.equals("057") || error.equals("008") || error.equals("09D")) {
-                    Sessiontimeout(msg, error);
-                    return;
-                }
-                if (!error.equals("00")) {
-                    show_error_box(msg,  error, 0);
-                } else {
-                    show_error_box(msg,"Response Code :"+  error,1);
-                }
-            }
+                @Override
+                public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                    Dismiss();
+                    if (code == null || code.isEmpty()) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Logout),
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
+                        return;
+                    }
 
-        });
-        request.execute();
-        }catch (Exception ex){
 
-            Timber.tag("Home-logout-").e(ex.getMessage(),"");
+                    if (!code.equals("00")) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Logout),
+                                context.getResources().getString(R.string.ResponseCode) + code,
+                                context.getResources().getString(R.string.ResponseMsg) + msg,
+                                1);
+
+                    } else {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Logout),
+                                context.getResources().getString(R.string.ResponseCode) + code,
+                                context.getResources().getString(R.string.ResponseMsg) + msg,
+                                1);
+
+
+                    }
+                }
+
+            });
+            request.execute();
+        } catch (Exception ex) {
+
+            Timber.tag("Home-logout-").e(ex.getMessage(), "");
         }
     }
 
@@ -249,186 +263,300 @@ public class HomeActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
     private void FrameXMLforInspection() {
         try {
 
-        String inspection = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
-                "<soapenv:Envelope\n" +
-                "    xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
-                "    xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n" +
-                "    xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
-                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "    xmlns:ser=\"http://service.fetch.rationcard/\">\n" +
-                "    <soapenv:Header/>\n" +
-                "    <soapenv:Body>\n" +
-                "        <ser:getInspectorDetails>\n" +
-                "            <fpsId>" + dealerConstants.stateBean.statefpsId + "</fpsId>\n" +
-                "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
-                "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
-                "            <password>" +dealerConstants. fpsURLInfo.token + "</password>\n" +
-                "        </ser:getInspectorDetails>\n" +
-                "    </soapenv:Body>\n" +
-                "</soapenv:Envelope>";
-        if(networkConnected(context))
-        {
-            Util.generateNoteOnSD(context, "InspectionDetailsReq.txt", inspection);
-            hit_Inspection(inspection);
-        }else {
+            String inspection = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
+                    "<soapenv:Envelope\n" +
+                    "    xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
+                    "    xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n" +
+                    "    xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
+                    "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                    "    xmlns:ser=\"http://service.fetch.rationcard/\">\n" +
+                    "    <soapenv:Header/>\n" +
+                    "    <soapenv:Body>\n" +
+                    "        <ser:getInspectorDetails>\n" +
+                    "            <fpsId>" + dealerConstants.stateBean.statefpsId + "</fpsId>\n" +
+                    "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
+                    "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
+                    "            <password>" + dealerConstants.fpsURLInfo.token + "</password>\n" +
+                    "        </ser:getInspectorDetails>\n" +
+                    "    </soapenv:Body>\n" +
+                    "</soapenv:Envelope>";
+            if (networkConnected(context)) {
+                Util.generateNoteOnSD(context, "InspectionDetailsReq.txt", inspection);
+                hit_Inspection(inspection);
+            } else {
+                show_AlertDialog(
+                        context.getResources().getString(R.string.Home),
+                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                        context.getResources().getString(R.string.Internet_Connection),
+                        0);
+            }
+        } catch (Exception ex) {
 
-            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection), 0);
-        }
-        }catch (Exception ex){
-
-            Timber.tag("Home-InspFrmt-").e(ex.getMessage(),"");
+            Timber.tag("Home-InspFrmt-").e(ex.getMessage(), "");
         }
     }
 
     private void FrameJsonforReceiveGoods() {
         try {
 
-        if (mp!=null) {
-            releaseMediaPlayer(context,mp);
-        }
-        if (L.equals("hi")) {
-        } else {
-            mp = mp.create(context, R.raw.c100075);
-            mp.start();
-        }
-        String receiveGoods = " {\n" +
-                "  \"fps_id\" : " + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
-                "  \"mode\" :" + "\"" + mode + "\"" + ",\n" +
-                "  \"stateCode\"  :" + "\"" + dealerConstants.stateBean.stateCode + "\"" + ",\n" +
-                "  \"token\" :  " + "\"" + token + "\"" + "\n" +
-                "} ";
-        Util.generateNoteOnSD(context, "ReceiveGoodsReq.txt", receiveGoods);
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Receive_Goods), context.getResources().getString(R.string.Processing), true, false);
-        Json_Parsing request = new Json_Parsing(context, receiveGoods, 1);
-        request.setOnResultListener(new Json_Parsing.OnResultListener() {
-
-            @Override
-            public void onCompleted(String code, String msg, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (code == null || code.isEmpty()){
-                    show_error_box("Invalid Out put from Server","No Response",0);
-                    return;
-                }
-                if (code.equals("057") || code.equals("008") || code.equals("09D")) {
-                    Sessiontimeout(msg, code);
-                    return;
-                }
-                if (!code.equals("00")) {
-                    show_error_box(msg, context.getResources().getString(R.string.Commodities_Error) + code, 0);
-                } else {
-                    ReceiveGoodsDetails receiveGoodsDetails= (ReceiveGoodsDetails) object;
-                    i = new Intent(context, ReceiveGoodsActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    i.putExtra("OBJ", (Serializable) receiveGoodsDetails);
-                    startActivityForResult(i, 1);
-                }
+            if (mp != null) {
+                releaseMediaPlayer(context, mp);
             }
+            if (L.equals("hi")) {
+            } else {
+                mp = mp.create(context, R.raw.c100075);
+                mp.start();
+            }
+            String receiveGoods = " {\n" +
+                    "  \"fps_id\" : " + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
+                    "  \"mode\" :" + "\"" + mode + "\"" + ",\n" +
+                    "  \"stateCode\"  :" + "\"" + dealerConstants.stateBean.stateCode + "\"" + ",\n" +
+                    "  \"token\" :  " + "\"" + token + "\"" + "\n" +
+                    "} ";
+            Util.generateNoteOnSD(context, "ReceiveGoodsReq.txt", receiveGoods);
+/*
+        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Receive_Goods), context.getResources().getString(R.string.Processing), true, false);
+*/
+            Show(context.getResources().getString(R.string.Receive_Goods),
+                    context.getResources().getString(R.string.Processing)
+            );
 
-        });
-        }catch (Exception ex){
 
-            Timber.tag("Home-RGReq-").e(ex.getMessage(),"");
+            Json_Parsing request = new Json_Parsing(context, receiveGoods, 1);
+
+            request.setOnResultListener(new Json_Parsing.OnResultListener() {
+
+                @Override
+                public void onCompleted(String code, String msg, Object object) {
+                    Dismiss();
+                    if (code == null || code.isEmpty()) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Logout),
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
+                        return;
+                    }
+
+
+                    if (!code.equals("00")) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Receive_Goods),
+                                context.getResources().getString(R.string.ResponseCode) + code,
+                                context.getResources().getString(R.string.ResponseMsg) + msg,
+                                0);
+                    } else {
+                        ReceiveGoodsDetails receiveGoodsDetails = (ReceiveGoodsDetails) object;
+                        i = new Intent(context, ReceiveGoodsActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.putExtra("OBJ", (Serializable) receiveGoodsDetails);
+                        startActivityForResult(i, 1);
+                    }
+                }
+
+            });
+        } catch (Exception ex) {
+
+            Timber.tag("Home-RGReq-").e(ex.getMessage(), "");
         }
     }
 
     private void hit_Inspection(String inspection) {
         try {
 
-        if (mp!=null) {
-            releaseMediaPlayer(context,mp);
-        }
-        if (L.equals("hi")) {
-        } else {
-            mp = mp.create(context, R.raw.c100075);
-            mp.start();
-        }
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Members), context.getResources().getString(R.string.Fetching_Members), true, false);
-        Aadhaar_Parsing request = new Aadhaar_Parsing(context, inspection,5 );
-        request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
-
-            @Override
-            public void onCompleted(String error, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (error == null || error.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
-                    return;
-                }
-                if (error.equals("057") || error.equals("008") || error.equals("09D")) {
-                    Sessiontimeout(msg, error);
-                    return;
-                }
-                if (!error.equals("00")) {
-                    show_error_box(msg, context.getResources().getString(R.string.Inspection_Details)+ error, 0);
-                } else {
-                    InspectionDetails inspectionDetails= (InspectionDetails) object;
-                    Intent in = new Intent(context, InspectionActivity.class);
-                    in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    in.putExtra("OBJ", (Serializable) inspectionDetails);
-                    startActivity(in);
-                }
+            if (mp != null) {
+                releaseMediaPlayer(context, mp);
             }
+            if (L.equals("hi")) {
+            } else {
+                mp = mp.create(context, R.raw.c100075);
+                mp.start();
+            }
+            Show(context.getResources().getString(R.string.Inspection),
+                    context.getResources().getString(R.string.Fetching_Details));
+/*
+        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Members),
+        context.getResources().getString(R.string.Fetching_Members), true, false);
+*/
+            Aadhaar_Parsing request = new Aadhaar_Parsing(context, inspection, 5);
+            request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
-        });
-        request.execute();
-        }catch (Exception ex){
+                @Override
+                public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                    Dismiss();
+                    if (code == null || code.isEmpty()) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Logout),
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
+                        return;
+                    }
 
-            Timber.tag("Home-InspReq-").e(ex.getMessage(),"");
+
+                    if (!code.equals("00")) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Receive_Goods),
+                                context.getResources().getString(R.string.Inspection_Details) + code,
+                                context.getResources().getString(R.string.ResponseMsg) + msg,
+                                0);
+                    } else {
+                        InspectionDetails inspectionDetails = (InspectionDetails) object;
+                        Intent in = new Intent(context, InspectionActivity.class);
+                        in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        in.putExtra("OBJ", (Serializable) inspectionDetails);
+                        startActivity(in);
+                    }
+                }
+
+            });
+            request.execute();
+        } catch (Exception ex) {
+
+            Timber.tag("Home-InspReq-").e(ex.getMessage(), "");
         }
     }
 
-    private void show_error_box(String msg, String title, final int i) {
-         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        if (i==1){
-                            finish();
-                        }
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
+
     private void toolbarInitilisation() {
         try {
 
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+            TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+            TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+            TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+            TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+            TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+            TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+            TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
 
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
+            String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+            System.out.println(appversion);
+            toolbarVersion.setText("V" + appversion);
 
 
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
+            SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+            String date = dateformat.format(new Date()).substring(6, 16);
+            toolbarDateValue.setText(date);
+            System.out.println(date);
 
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("HOME");
+            toolbarFpsid.setText("FPS ID");
+            toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+            toolbarActivity.setText( context.getResources().getString(R.string.HOME));
 
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
-        }catch (Exception ex){
-            Timber.tag("Home-Toolbar-").e(ex.getMessage(),"");
+            toolbarLatitudeValue.setText(latitude);
+            toolbarLongitudeValue.setText(longitude);
+        } catch (Exception ex) {
+            Timber.tag("Home-Toolbar-").e(ex.getMessage(), "");
         }
     }
+
+    private void show_Dialogbox(String header, String msg) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void show_AlertDialog(String headermsg, String bodymsg, String talemsg, int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (i == 1) {
+                    finish();
+                }
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void SessionAlert(String headermsg, String bodymsg, String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
+
+    }
+
+    public void Dismiss() {
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+
+    public void Show(String title, String msg) {
+        SpannableString ss1 = new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2 = new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
+    }
+
+
 }

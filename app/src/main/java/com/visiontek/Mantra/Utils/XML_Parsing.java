@@ -80,6 +80,7 @@ public class XML_Parsing extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... param) {
         String url = "http://epos.nic.in/ePosServiceJDN2_3/jdCommoneposServiceRes?wsdl";
+        //String url = "http://epos.nic.in/ePosServiceJDN2_4Test/jdCommoneposServiceRes?wsdl";
         //String url = "http://epos.nic.in/ePosServiceCTG/jdCommoneposServiceRes?wsdl";
         runRequest(xmlformat, url, type);
         return null;

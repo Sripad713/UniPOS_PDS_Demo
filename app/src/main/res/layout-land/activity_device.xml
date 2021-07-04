@@ -294,7 +294,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Language"
+                android:text="@string/Language"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/TextsizeB"
                 android:textStyle="bold" />
@@ -321,7 +321,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Upload Log"
+                android:text="@string/Upload_Log"
                 android:background="@color/button"
                 android:textSize="@dimen/TextsizeB"
                 android:textColor="@color/white"

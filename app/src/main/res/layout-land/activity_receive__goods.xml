@@ -257,6 +257,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/wblack"
+            android:drawableLeft="@drawable/btn_dropdown"/>
 
         <Spinner
             style="@style/Widget.AppCompat.DropDownItem.Spinner"
@@ -264,7 +269,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:background="@drawable/white"
+            android:background="@drawable/wblack"
             android:gravity="center_horizontal"
             android:inputType="text"
             android:singleLine="true"
@@ -319,7 +324,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="SCHEME"
+                android:text="@string/SCHEME"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="30sp"
@@ -331,7 +336,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="RO Quantity"
+                android:text="@string/RO_Quantity"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="30sp"
@@ -343,7 +348,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="DISPATCH"
+                android:text="@string/DISPATCH"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="30sp"
@@ -355,7 +360,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="RECEIVED"
+                android:text="@string/Received"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="30sp"

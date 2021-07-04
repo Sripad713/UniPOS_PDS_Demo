@@ -12,6 +12,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -116,7 +118,7 @@ public class UIDDetailsActivity extends AppCompatActivity {
                     if (Util.networkConnected(context)) {
 
                             if (uidModel.bfd_1.equals("Y")) {
-                                ConsentDialog(ConsentForm(context));
+                                ConsentDialog(ConsentForm(context, 1));
                             } else {
                                 show_error_box(context.getResources().getString(R.string.Member_is_already_Verified), context.getResources().getString(R.string.Already_Verified),0);
                             }
@@ -615,5 +617,21 @@ public class UIDDetailsActivity extends AppCompatActivity {
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
     }
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
 
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
+    }
 }

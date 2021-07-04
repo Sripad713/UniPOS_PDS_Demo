@@ -276,7 +276,7 @@
                 android:background="#659867"
                 android:textColor="#FFFF"
                 android:layout_margin="20dp"
-                android:text="MDM"/>
+                android:text="@string/MDM"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

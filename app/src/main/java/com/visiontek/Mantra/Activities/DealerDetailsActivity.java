@@ -12,6 +12,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,7 +21,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,7 +41,6 @@ import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.sql.SQLOutput;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,8 +91,9 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
             } else {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
-                        context.getResources().getString(R.string.RD_Service), 0);
+                show_AlertDialog(context.getResources().getString(R.string.Dealer),
+                        context.getResources().getString(R.string.RD_Service),
+                        context.getResources().getString(R.string.RD_Service_Msg),0);
                 return;
             }
 
@@ -114,10 +115,13 @@ public class DealerDetailsActivity extends AppCompatActivity {
                             if (dealerModel.DAtype.equals("P")) {
                                 password_Dialog();
                             } else {
-                                ConsentDialog(ConsentForm(context));
+                                ConsentDialog(ConsentForm(context, 1));
                             }
                         } else {
-                            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                            show_AlertDialog(context.getResources().getString(R.string.Dealer),
+                                    context.getResources().getString(R.string.Internet_Connection),
+                                    context.getResources().getString(R.string.Internet_Connection_Msg),
+                                    0);
                         }
                     } else {
                         if (mp != null) {
@@ -127,8 +131,12 @@ public class DealerDetailsActivity extends AppCompatActivity {
                         } else {
                             mp = mp.create(context, R.raw.c100176);
                             mp.start();
-                            show_error_box(context.getResources().getString(R.string.Please_Select_Dealer_Name), context.getResources().getString(R.string.Dealer), 0);
+
                         }
+                        show_AlertDialog(context.getResources().getString(R.string.Dealer),
+                                context.getResources().getString(R.string.Please_Select_Dealer_Name),
+                                ""
+                                ,0);
                     }
                 }
             });
@@ -136,36 +144,25 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     preventTwoClick(view);
-                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                    alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
-                    alertDialogBuilder.setCancelable(false);
-                    alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    finish();
-                                }
-                            });
-                    alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-
-                                }
-                            });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-
+                    show_Dialogbox(context.getResources().getString(R.string.Dealer),
+                            context.getResources().getString(R.string.Do_you_want_to_Quit));
                 }
             });
 
             ArrayList<DealerListModel> data = new ArrayList<>();
             int dealerlistsize = dealerConstants.fpsCommonInfo.fpsDetails.size();
             for (int i = 0; i < dealerlistsize; i++) {
-                System.out.println(dealerConstants.fpsCommonInfo.fpsDetails.get(i).delName);
-                data.add(new DealerListModel(dealerConstants.fpsCommonInfo.fpsDetails.get(i).delName,
-                        dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type,
-                        dealerConstants.fpsCommonInfo.fpsDetails.get(i).delUid));
+                if(L.equals("hi")){
+                    data.add(new DealerListModel(
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delNamell,
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type,
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delUid));
+                }else {
+                    data.add(new DealerListModel(
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delName,
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type,
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delUid));
+                }
             }
             adapter = new DealerListAdapter(context, data, new OnClickDealer() {
                 @Override
@@ -181,12 +178,14 @@ public class DealerDetailsActivity extends AppCompatActivity {
                     dealerModel.DAtype = dealerConstants.fpsCommonInfo.fpsDetails.get(p).authType;
                     dealerModel.Dfusion = dealerConstants.fpsCommonInfo.fpsDetails.get(p).dealerFusion;
                     dealerModel.Dnamell = dealerConstants.fpsCommonInfo.fpsDetails.get(p).delNamell;
+                    dealerModel.Dwadh = dealerConstants.fpsCommonInfo.fpsDetails.get(p).wadhStatus;
 
-                       // dealerModel.Dwadh = "Y";
+                    if(L.equals("hi")){
+                        Dealername = dealerModel.Dnamell;
+                    }else {
+                        Dealername = dealerModel.DName;
+                    }
 
-                        dealerModel.Dwadh = dealerConstants.fpsCommonInfo.fpsDetails.get(p).wadhStatus;
-
-                    Dealername = dealerModel.DName;
                     switch (dealerModel.DAtype) {
                         case "F":
                             dealerModel.DEALER_AUTH_TYPE = "Bio";
@@ -214,28 +213,39 @@ public class DealerDetailsActivity extends AppCompatActivity {
 
     private void ConsentformURL(String consentrequest) {
         try {
-
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Consent_Form), true, false);
+            Show(context.getResources().getString(R.string.Dealer),
+                    context.getResources().getString(R.string.Consent_Form));
+/*
+            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer),
+             context.getResources().getString(R.string.Consent_Form), true, false);
+*/
             Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
             request.setOnResultListener(new Json_Parsing.OnResultListener() {
 
                 @Override
                 public void onCompleted(String code, String msg, Object object) {
-                    if (pd.isShowing()) {
-                        pd.dismiss();
-                    }
+                   Dismiss();
                     if (code == null || code.isEmpty()) {
-                        show_error_box("Invalid Response from server", "No Response", 0);
-                        return;
-                    }
-                    if (code.equals("057") || code.equals("008") || code.equals("09D")) {
-                        Sessiontimeout(msg, code);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Dealer)+Dealername,
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
                         return;
                     }
                     if (!code.equals("00")) {
-                        show_error_box(msg, code, 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Consent_Form)+Dealername,
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseCode)+msg,
+                                 0);
+
                     } else {
-                        show_error_box(msg, code, 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Consent_Form)+Dealername,
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                0);
                     }
                 }
 
@@ -267,8 +277,8 @@ public class DealerDetailsActivity extends AppCompatActivity {
             TextView tv = (TextView) dialog.findViewById(R.id.dialog);
             TextView status = (TextView) dialog.findViewById(R.id.status);
             final EditText enter = (EditText) dialog.findViewById(R.id.enter);
-            tv.setText("PASSWORD");
-            status.setText("Please Enter Dealer Password");
+            tv.setText(context.getResources().getString(R.string.Password));
+            status.setText(context.getResources().getString(R.string.Please_Enter_Dealer_Authentication_Password));
             confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -279,6 +289,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                             releaseMediaPlayer(context, mp);
                         }
                         if (L.equals("hi")) {
+
                         } else {
                             mp = mp.create(context, R.raw.c100178);
                             mp.start();
@@ -312,7 +323,10 @@ public class DealerDetailsActivity extends AppCompatActivity {
                         Util.generateNoteOnSD(context, "DealerPasswordReq.txt", pdealerlogin);
                         hitURLDealerAuthentication(pdealerlogin);
                     } else {
-                        show_error_box(context.getResources().getString(R.string.Please_Enter_a_valid_Password), context.getResources().getString(R.string.Invalid_Password), 0);
+                        show_AlertDialog(Dealername,
+                                context.getResources().getString(R.string.Invalid_Password),
+                                context.getResources().getString(R.string.Please_Enter_a_valid_Password),
+                               0);
                     }
                 }
             });
@@ -356,29 +370,33 @@ public class DealerDetailsActivity extends AppCompatActivity {
     private void hitURLDealerAuthentication(String dealerlogin) {
         try {
 
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
-                    context.getResources().getString(R.string.Authenticating), true, false);
+            Show( context.getResources().getString(R.string.Please_wait),
+                    context.getResources().getString(R.string.Authenticating));
+           /* pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
+                    context.getResources().getString(R.string.Authenticating), true, false);*/
             XML_Parsing request = new XML_Parsing(DealerDetailsActivity.this, dealerlogin, 2);
             request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
                 @Override
-                public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                    if (pd.isShowing()) {
-                        pd.dismiss();
-                    }
-                    if (isError == null || isError.isEmpty()) {
-                        show_error_box("Invalid Response from server", "No Response", 0);
+                public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                   Dismiss();
+                    if (code == null || code.isEmpty()) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Dealer),
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
                         return;
                     }
-                    if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                        Sessiontimeout(msg, isError);
-                        return;
-                    }
-                    if (!isError.equals("00")) {
-                        if (isError.equals("300") && flow.equals("F")) {
+                    
+                    if (!code.equals("00")) {
+                        if (code.equals("300") && flow.equals("F")) {
                             if (dealerModel.Dwadh.equals("Y") && dealerModel.wadhflag != 1) {
                                 dealerModel.wadhflag = 1;
-                                show_error_box(msg, context.getResources().getString(R.string.Dealer_Authentication) + isError, 1);
+                                show_AlertDialog(Dealername,
+                                        context.getResources().getString(R.string.Dealer_Wadh) + code,
+                                        context.getResources().getString(R.string.ResponseMsg)+ msg,
+                                         1);
                                 return;
                             } /*else if (dealerConstants.fpsCommonInfo.firauthFlag.equals("Y") && dealerModel.FIRflag != 1) {
                             dealerModel.FIRflag = 1;
@@ -387,20 +405,33 @@ public class DealerDetailsActivity extends AppCompatActivity {
                         }*/ else if (dealerModel.Dfusion.equals("1") && dealerModel.Fusionflag != 1) {
                                 dealerModel.Fusionflag = 1;
                                 dealerModel.fCount = "2";
-                                show_error_box(msg, context.getResources().getString(R.string.Dealer_Fusion_Authentication) + isError, 1);
+                                show_AlertDialog(
+                                        Dealername,
+                                        context.getResources().getString(R.string.Dealer_Fusion)+code,
+                                        context.getResources().getString(R.string.ResponseMsg)+ msg,
+                                          1);
                                 return;
                             } else {
                                 if (dealerModel.fCount.equals("1") && dealerModel.fusionflag != 1) {
                                     dealerModel.fusionflag = 1;
                                     dealerModel.fCount = "2";
-                                    show_error_box(msg, context.getResources().getString(R.string.Dealer_FP_Authentication) + isError, 1);
+                                    show_AlertDialog(
+                                            Dealername,
+                                            context.getResources().getString(R.string.Dealer_FP_Authentication)+code,
+                                            context.getResources().getString(R.string.ResponseMsg)+ msg,
+                                            1);
                                     return;
                                 }
                             }
                         }
 
                         dealerModel.fCount = "1";
-                        show_error_box(msg, context.getResources().getString(R.string.Dealer_Authentication) + isError, 0);
+                        show_AlertDialog(
+                                Dealername,
+                                context.getResources().getString(R.string.Dealer_Authentication)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+ msg,
+                                0);
+
                     } else {
                         if (Mdealer == 1) {
                             Mdealer = 0;
@@ -500,26 +531,40 @@ public class DealerDetailsActivity extends AppCompatActivity {
     private void hitURLMENU(String menu) {
         try {
 
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
-                context.getResources().getString(R.string.Downloading_Menus), true, false);
+            Show( context.getResources().getString(R.string.Please_wait),
+                    context.getResources().getString(R.string.Downloading_Menus) );
+       /* pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
+                context.getResources().getString(R.string.Downloading_Menus), true, false);*/
         XML_Parsing request = new XML_Parsing(DealerDetailsActivity.this, menu, 7);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
             @Override
-            public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (isError == null || isError.isEmpty()) {
-                    show_error_box("Invalid Out put from Server", "No Response", 0);
+            public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+              Dismiss();
+                if (code == null || code.isEmpty()) {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Dealer),
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                    Sessiontimeout(msg, isError);
+
+                if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+                    SessionAlert(
+                            context.getResources().getString(R.string.Dealer),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg);
+
                     return;
                 }
-                if (!isError.equals("00")) {
-                    show_error_box(msg, context.getResources().getString(R.string.MenuList) + isError, 0);
+                if (!code.equals("00")) {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Menus),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            0);
+
                 } else {
                     Intent home = new Intent(context, HomeActivity.class);
                     home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -533,28 +578,6 @@ public class DealerDetailsActivity extends AppCompatActivity {
 
             Timber.tag("DealerAuth-Menus-").e(ex.getMessage(), "");
         }
-    }
-
-    private void show_error_box(String msg, String title, final int i) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        if (i == 1) {
-                            callScanFP();
-                        } else if (i == 2) {
-                            prep_consent();
-                        }
-                    }
-                });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-
     }
 
     private void prep_consent() {
@@ -609,7 +632,11 @@ public class DealerDetailsActivity extends AppCompatActivity {
                     callScanFP();
                     dialog.dismiss();
                 } else {
-                    show_error_box("Please Check the Consent Message", context.getResources().getString(R.string.Consent_Form), 2);
+                    show_AlertDialog(
+                            Dealername,
+                            context.getResources().getString(R.string.Consent_Form),
+                            context.getResources().getString(R.string.Please_check_Consent_Form),
+                            2);
                 }
             }
         });
@@ -634,12 +661,12 @@ public class DealerDetailsActivity extends AppCompatActivity {
         try {
 
         if (dealerModel.Dwadh.equals("Y")) {
-            System.out.println(">>>>>>>>>>>"+dealerConstants.fpsCommonInfo.wadhValue);
+
             connectRDservice(dealerConstants.fpsCommonInfo.wadhValue, 1);
-            System.out.println("WADH_EKYC Request");
+
         } else {
             if (dealerModel.Dfusion.equals("1")) {
-                System.out.println("FUSION Request");
+
                 dealerModel.fCount = "2";
             }
             connectRDservice("", 0);
@@ -714,7 +741,12 @@ public class DealerDetailsActivity extends AppCompatActivity {
             Util.generateNoteOnSD(context, "DealerAuthReq.txt", dealerlogin);
             hitURLDealerAuthentication(dealerlogin);
         } else {
-            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+            show_AlertDialog(
+                    context.getResources().getString(R.string.Dealer),
+                    context.getResources().getString(R.string.Internet_Connection),
+                    context.getResources().getString(R.string.Internet_Connection_Msg),
+                    0);
+
         }
         } catch (Exception ex) {
 
@@ -731,9 +763,6 @@ public class DealerDetailsActivity extends AppCompatActivity {
             PackageManager packageManager = getPackageManager();
             List<ResolveInfo> activities = packageManager.queryIntentActivities(act, PackageManager.MATCH_DEFAULT_ONLY);
             final boolean isIntentSafe = activities.size() > 0;
-            if (!isIntentSafe) {
-                Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.No_RD_Service_Available), Toast.LENGTH_SHORT).show();
-            }
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act, dealerModel.RD_SERVICE);
 
@@ -763,7 +792,6 @@ public class DealerDetailsActivity extends AppCompatActivity {
 
             dealerModel.fCount = "1";
             dealerModel.fType = "0";
-            System.out.println("++++++++++++=====++++++++++++");
             xmplpid = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                     "<PidOptions ver =\"1.0\">\n" +
                     "    <Opts env=\"P\" fCount=\"" + dealerModel.fCount + "\" iCount=\"" + dealerModel.iCount + "\" iType=\"" + dealerModel.iType + "\" fType=\"" + dealerModel.fType + "\" pCount=\"0\" pType=\"0\" format=\"0\" pidVer=\"2.0\" timeout=\"10000\" otp=\"\" wadh=\"" + wadhvalue + "\" posh=\"UNKNOWN\"/>\n" +
@@ -811,16 +839,25 @@ public class DealerDetailsActivity extends AppCompatActivity {
         if (requestCode == dealerModel.RD_SERVICE) {
             if (resultCode == Activity.RESULT_OK) {
                 String piddata = data.getStringExtra("PID_DATA");
+                int code = createAuthXMLRegistered(piddata);
                 if (piddata != null && piddata.contains("errCode=\"0\"")) {
-                    int code = createAuthXMLRegistered(piddata);
                     if (code == 0) {
                         System.out.println("PID DATA = " + piddata);
                         prep_Dlogin();
                     } else {
-                        show_error_box(dealerModel.rdModel.errinfo, context.getResources().getString(R.string.PID_Exception), 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Dealer),
+                                dealerModel.err_code,
+                                dealerModel.rdModel.errinfo,
+                                0);
                     }
                 } else {
-                    show_error_box(dealerModel.rdModel.errinfo, context.getResources().getString(R.string.PID_Exception), 0);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.RD_Service),
+                            dealerModel.err_code,
+                            dealerModel.rdModel.errinfo,
+                            0);
+
                 }
             }
         }
@@ -842,7 +879,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
             Document doc = builder.parse(is);
 
             dealerModel.err_code = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errCode").getTextContent();
-            if (dealerModel.err_code.equals("1")) {
+            if (!dealerModel.err_code.equals("0")) {
                 dealerModel.rdModel.errinfo = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errInfo").getTextContent();
                 return 1;
             } else {
@@ -913,13 +950,117 @@ public class DealerDetailsActivity extends AppCompatActivity {
         toolbarDateValue.setText(date);
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("DEALER DETAILS");
+        toolbarActivity.setText( context.getResources().getString(R.string.DEALER_DETAILS));
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
         } catch (Exception ex) {
 
             Timber.tag("DealerAuth-Toolbar-").e(ex.getMessage(), "");
         }
+    }
+    private void show_Dialogbox(String header,String msg ) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (i == 1) {
+                    callScanFP();
+                } else if (i == 2) {
+                    prep_consent();
+                }
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                finish();
+
+            }
+        });
+        return;
+    }
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String title,String msg){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
     }
 }
 

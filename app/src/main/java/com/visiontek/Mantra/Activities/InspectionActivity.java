@@ -18,6 +18,8 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -483,19 +485,28 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                         String app;
                         int size = inspectionDetails.commDetails.size();
                         for (int i = 0; i < size; i++) {
+                            if(L.equals("hi")){
+                                app = String.format("%-8s%-8s%-8s%-8s\n",
+                                        inspectionDetails.commDetails.get(i).commNamell,
+                                        inspectionDetails.commDetails.get(i).closingBalance,
+                                        inspectionDetails.commDetails.get(i).entered,
+                                        inspectionDetails.commDetails.get(i).variation);
+                            }else {
+                                app = String.format("%-8s%-8s%-8s%-8s\n",
+                                        inspectionDetails.commDetails.get(i).commNameEn,
+                                        inspectionDetails.commDetails.get(i).closingBalance,
+                                        inspectionDetails.commDetails.get(i).entered,
+                                        inspectionDetails.commDetails.get(i).variation);
+                            }
 
-                            app = String.format("%-8s%-8s%-8s%-8s\n",
-                                    inspectionDetails.commDetails.get(i).commNameEn,
-                                    inspectionDetails.commDetails.get(i).closingBalance,
-                                    inspectionDetails.commDetails.get(i).entered,
-                                    inspectionDetails.commDetails.get(i).variation);
                             add.append(app);
 
                         }
                         String str1, str2, str3, str4, str5;
                         String[] str = new String[4];
                         if (L.equals("hi")) {
-                            str1 = context.getResources().getString(R.string.Inspection) + "\n" +
+                            str1 = dealerConstants.stateBean.stateReceiptHeaderLl + "\n" +
+                                    context.getResources().getString(R.string.Inspection) + "\n" +
                                     context.getResources().getString(R.string.Receipt) + "\n";
                             image(str1, "header.bmp", 1);
                             str2 = context.getResources().getString(R.string.FPS_ID) + dealerConstants.fpsCommonInfo.fpsId + "\n"
@@ -606,7 +617,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                             Aadhaar = encrypt(Enter_UID, menuConstants.skey);
 
                             if (Util.networkConnected(context)) {
-                                ConsentDialog(ConsentForm(context));
+                                ConsentDialog(ConsentForm(context, 1));
                             } else {
                                 show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
                             }
@@ -1144,12 +1155,113 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("INSPECTION");
+        toolbarActivity.setText( context.getResources().getString(R.string.INSPECTION));
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
         } catch (Exception ex) {
             Timber.tag("Inspection-Toolbar-").e(ex.getMessage(), "");
         }
+    }
+
+    private void show_Dialogbox(String msg,String header) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (i == 2) {
+                    prep_consent();
+                }
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
+
+    }
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
     }
 }

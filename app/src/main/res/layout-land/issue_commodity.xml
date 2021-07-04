@@ -17,7 +17,7 @@
 
             <com.visiontek.Mantra.Utils.MyCustomTextView
                 android:id="@+id/text_comm_name"
-                android:text="Commodity"
+                android:text="@string/Commodity"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ben_table_cell_shape"
@@ -30,7 +30,7 @@
                 android:id="@+id/text_units"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="Units"
+                android:text="@string/Unit"
                 android:maxLines="1"
                 android:background="@drawable/ben_table_cell_shape"
                 android:textSize="16sp"
@@ -45,13 +45,13 @@
                 android:inputType="numberDecimal"
                 android:padding="10dp"
                 android:maxLines="1"
-                android:text="Issued Qty"
+                android:text="@string/issueQty"
                 android:textColor="@color/blackblack"
                 android:textSize="16sp" />
 
             <com.visiontek.Mantra.Utils.MyCustomEditText
                 android:id="@+id/text_issue_qty"
-                android:text="Issued Qty"
+                android:text="@string/issueQty"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ben_table_cell_shape"
@@ -66,7 +66,7 @@
 
             <com.visiontek.Mantra.Utils.MyCustomTextView
                 android:id="@+id/text_clos_bal"
-                android:text="CB"
+                android:text="@string/CB"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ben_table_cell_shape"
@@ -78,7 +78,7 @@
 
             <com.visiontek.Mantra.Utils.MyCustomTextView
                 android:id="@+id/text_price"
-                android:text="Price"
+                android:text="@string/Price"
                 android:layout_width="100dp"
                 android:maxLines="1"
                 android:layout_height="wrap_content"

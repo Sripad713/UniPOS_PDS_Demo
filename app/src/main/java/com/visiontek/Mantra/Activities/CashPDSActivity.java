@@ -1,6 +1,7 @@
 package com.visiontek.Mantra.Activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -17,7 +18,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -59,6 +64,7 @@ import static com.visiontek.Mantra.Models.AppConstants.Dealername;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Utils.Util.diableMenu;
 import static com.visiontek.Mantra.Utils.Util.encrypt;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
@@ -92,28 +98,23 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
             context = CashPDSActivity.this;
             mActivity = this;
             ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
-            mProgressDlg = new ProgressDialog(this);
-            mProgressDlg.setMessage("Scanning...");
-            mProgressDlg.setCancelable(false);
-            mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", ((dialog, which) -> {
-                dialog.dismiss();
-                if (mBluetoothAdapter != null)
-                    mBluetoothAdapter.cancelDiscovery();
-            }));
-            //  mProgressDlg.show();
+
             TextView toolbarRD = findViewById(R.id.toolbarRD);
             boolean rd_fps = RDservice(context);
             if (rd_fps) {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
             } else {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
-                        context.getResources().getString(R.string.RD_Service));
+                show_AlertDialog(context.getResources().getString(R.string.Cash_PDS),
+                        context.getResources().getString(R.string.RD_Service),
+                        context.getResources().getString(R.string.RD_Service_Msg),0);
                 return;
             }
 
             initilisation();
-
+            if (diableMenu("getePDSRationCardDetails")) {
+                get_details.setEnabled(false);
+            }
 
             get_details.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -124,9 +125,19 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         member_details();
                     } else {
                         if (select == 2) {
-                            show_error_box(context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID), context.getResources().getString(R.string.Invalid_UID));
+                            show_AlertDialog(
+                                    context.getResources().getString(R.string.Aadhaar)+Cash_ID,
+                                    context.getResources().getString(R.string.Invalid_UID),
+                                    context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID)
+                                    ,0);
+
                         } else {
-                            show_error_box(context.getResources().getString(R.string.Please_Enter_a_Valid_Number_RC), context.getResources().getString(R.string.Invalid_ID));
+                            show_AlertDialog(
+                                    context.getResources().getString(R.string.RC_No)+Cash_ID,
+                                    context.getResources().getString(R.string.Invalid_ID),
+                                    context.getResources().getString(R.string.Please_Enter_a_Valid_Number_RC),
+                                    0);
+
                         }
                     }
                 }
@@ -148,9 +159,19 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         lastReceipt_frame();
                     } else {
                         if (select == 2) {
-                            show_error_box(context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID), context.getResources().getString(R.string.Invalid_UID));
+                            show_AlertDialog(
+                                    context.getResources().getString(R.string.Aadhaar)+Cash_ID,
+                                    context.getResources().getString(R.string.Invalid_UID),
+                                    context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID)
+                                    ,0);
+
                         } else {
-                            show_error_box(context.getResources().getString(R.string.Please_Enter_a_Valid_Number_RC), context.getResources().getString(R.string.Invalid_ID));
+                            show_AlertDialog(
+                                    context.getResources().getString(R.string.RC_No)+Cash_ID,
+                                    context.getResources().getString(R.string.Invalid_ID),
+                                    context.getResources().getString(R.string.Please_Enter_a_Valid_Number_RC),
+                                    0);
+
                         }
                     }
                 }
@@ -169,27 +190,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
             Timber.tag("CashPDS-onCreate-").e(ex.getMessage(), "");
         }
 
-    }
-
-    private void Sessiontimeout(String msg, String title) {
-
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(title);
-        alertDialogBuilder.setTitle(msg);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-                        Intent i = new Intent(context, StartActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
     }
 
     private void initilisation() {
@@ -226,29 +226,39 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 mp = mp.create(context, R.raw.c100075);
                 mp.start();
             }
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Processing), context.getResources().getString(R.string.Fetching_Details), true, false);
+
+            Show(context.getResources().getString(R.string.Processing),
+                    context.getResources().getString(R.string.Fetching_Details));
+/*
+            pd = ProgressDialog.show(context,
+            context.getResources().getString(R.string.Processing),
+             context.getResources().getString(R.string.Fetching_Details), true, false);
+*/
             XML_Parsing request = new XML_Parsing(context, lastRecipt, 9);
             request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                 @Override
-                public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                    if (pd.isShowing()) {
-                        pd.dismiss();
+                public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                   Dismiss();
+                    if (code == null || code.isEmpty()) {
+                        id.setText("");
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Last_Recp)+Cash_ID,
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
+                        return;
                     }
 
-                    if (isError == null || isError.isEmpty()) {
+
+                    if (!code.equals("00")) {
                         id.setText("");
-                        show_error_box("Invalid Response from Server", "No Response");
-                        return;
-                    }
-                    if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                        Sessiontimeout(msg, isError);
-                        return;
-                    }
-                    if (!isError.equals("00")) {
-                        id.setText("");
-                        show_error_box(msg, context.getResources().getString(R.string.Member_Details) + isError);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Last_Recp)+Cash_ID,
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                0);
                     } else {
                         LastReceipt lastReceipt = (LastReceipt) object;
 
@@ -257,11 +267,19 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         int lastReceiptCommsize = lastReceipt.lastReceiptComm.size();
                         for (int i = 0; i < lastReceiptCommsize; i++) {
 
-                            app = String.format("%-10s%-10s%-8s%-8s\n",
-                                    lastReceipt.lastReceiptComm.get(i).comm_name,
-                                    lastReceipt.lastReceiptComm.get(i).carry_over,
-                                    lastReceipt.lastReceiptComm.get(i).retail_price,
-                                    lastReceipt.lastReceiptComm.get(i).commIndividualAmount);
+                            if(L.equals("hi")){
+                                app = String.format("%-10s%-10s%-8s%-8s\n",
+                                        lastReceipt.lastReceiptComm.get(i).comm_name_ll,
+                                        lastReceipt.lastReceiptComm.get(i).carry_over,
+                                        lastReceipt.lastReceiptComm.get(i).retail_price,
+                                        lastReceipt.lastReceiptComm.get(i).commIndividualAmount);
+                            }else {
+                                app = String.format("%-10s%-10s%-8s%-8s\n",
+                                        lastReceipt.lastReceiptComm.get(i).comm_name,
+                                        lastReceipt.lastReceiptComm.get(i).carry_over,
+                                        lastReceipt.lastReceiptComm.get(i).retail_price,
+                                        lastReceipt.lastReceiptComm.get(i).commIndividualAmount);                            }
+
                             add.append(app);
                         }
                         String date = lastReceipt.lastReceiptComm.get(0).transaction_time.substring(0, 19);
@@ -271,20 +289,26 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         String str1, str2, str3, str4, str5;
                         String[] str = new String[4];
                         if (L.equals("hi")) {
-                            str1 = context.getResources().getString(R.string.LAST_RECEIPT);
+                            str1 = dealerConstants.stateBean.stateReceiptHeaderLl + "\n" +
+                                    context.getResources().getString(R.string.LAST_RECEIPT) + "\n";
                             image(str1, "header.bmp", 1);
-                            str2 = context.getResources().getString(R.string.FPS_Owner_Name) + " : " + Dealername + "\n"
+                            str2 =  context.getResources().getString(R.string.FPS_Owner_Name) + " : " + Dealername + "\n"
                                     + context.getResources().getString(R.string.FPS_No) + " : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
                                     + context.getResources().getString(R.string.Availed_FPS_No) + " : " + lastReceipt.lastReceiptComm.get(0).availedFps + "\n"
-                                    + context.getResources().getString(R.string.Name_of_Consumer) + " : " + lastReceipt.lastReceiptComm.get(0).member_name + "\n"
-                                    + context.getResources().getString(R.string.Card_No) + " :" + lastReceipt.lastReceiptComm.get(0).rcId + "\n"
-                                    + context.getResources().getString(R.string.TransactionID) + " :" + lastReceipt.lastReceiptComm.get(0).reciept_id + "\n"
-                                    + context.getResources().getString(R.string.Date) + " :" + date + "\n"
+                                    + context.getResources().getString(R.string.Name_of_Consumer) + " : " + lastReceipt.lastReceiptComm.get(0).member_name_ll + "\n"
+                                    + context.getResources().getString(R.string.Card_No) + "/"+context.getResources().getString(R.string.sch)+" : " + lastReceipt.lastReceiptComm.get(0).rcId + "/" + lastReceipt.lastReceiptComm.get(0).scheme_desc_ll + "\n"
+                                    + context.getResources().getString(R.string.TransactionID) + " : " + lastReceipt.lastReceiptComm.get(0).reciept_id + "\n"
+                                    + context.getResources().getString(R.string.Date) + " : " + date + "\n"
                                     + context.getResources().getString(R.string.AllotmentMonth) + " : " + month + "\n"
-                                    + context.getResources().getString(R.string.AllotmentYear) + " : " + year + "\n"
-                                    + context.getResources().getString(R.string.commodity) + " " + context.getResources().getString(R.string.lifted) + "   " + context.getResources().getString(R.string.rate) + "    " + context.getResources().getString(R.string.price) + "\n";
-                            str3 = (add) + "";
-                            str4 = context.getResources().getString(R.string.Total_Amount) + "    :" + lastReceipt.lastReceiptComm.get(0).tot_amount;
+                                    + context.getResources().getString(R.string.AllotmentYear) + " : " + year + "\n\n"
+                                    + String.format("%-10s%-10s%-10s%-10s\n",
+                                    context.getResources().getString(R.string.commodity),
+                                    context.getResources().getString(R.string.lifted),
+                                    context.getResources().getString(R.string.rate),
+                                    context.getResources().getString(R.string.price)) + "\n";
+                            str3 = (add)
+                                    + "\n";
+                            str4 = context.getResources().getString(R.string.TOTAL_AMOUNT) + "    : " + lastReceipt.lastReceiptComm.get(0).tot_amount;
                             image(str2 + str3 + str4, "body.bmp", 0);
 
                             str5 = context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
@@ -318,7 +342,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                             str3 = (add)
                                     + "\n";
 
-                            str4 = context.getResources().getString(R.string.Total_Amount) + "    : " + lastReceipt.lastReceiptComm.get(0).tot_amount + "\n"
+                            str4 = context.getResources().getString(R.string.TOTAL_AMOUNT) + "    : " + lastReceipt.lastReceiptComm.get(0).tot_amount + "\n"
                                     + "\n";
 
 
@@ -341,79 +365,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         }
     }
 
-    private BluetoothAdapter mBluetoothAdapter;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //setFiltersbluetooth();
-      /*  mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter.isEnabled()) {
-            // Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-            *//*if (pairedDevices.size() > 0) {
-                for (BluetoothDevice device : pairedDevices) {
-                    if (device.getName().equals("APPDS_VNTK@2015") || device.getName().equals("VTWS100")) {
-                        address = (device.getAddress());
-                        return;
-                    }
-                }
-            }*//*
-            mBluetoothAdapter.startDiscovery();
-        }*/
-    }
-
-    private void setFiltersbluetooth() {
-        try {
-
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.addAction(BluetoothDevice.ACTION_FOUND);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-            filter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
-            registerReceiver(mReceiver, filter);
-        } catch (Exception ex) {
-            Timber.tag("CashPDS-Filter-").e(ex.getMessage(), "");
-        }
-    }
-
-    private ProgressDialog mProgressDlg;
-    private ArrayList<BluetoothDevice> mDeviceList = new ArrayList<BluetoothDevice>();
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-        public void onReceive(Context context, Intent intent) {
-            try {
-
-                String action = intent.getAction();
-                if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
-                    final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-                } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                    mDeviceList = new ArrayList<BluetoothDevice>();
-                    mProgressDlg.show();
-                } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                    mProgressDlg.dismiss();
-                    System.out.println("Device Not Found");
-                } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                    BluetoothDevice device1 = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    mDeviceList.add(device1);
-                    if (device1 != null) {
-                        if (device1.getName() != null) {
-                            if (device1.getName().equalsIgnoreCase("APPDS_VNTK@2015") ||
-                                    device1.getName().equalsIgnoreCase("VTWS100")) {
-                                device1.createBond();
-                                mBluetoothAdapter.cancelDiscovery();
-                                mProgressDlg.dismiss();
-                            }
-                        }
-                    }
-                }
-
-            } catch (Exception ex) {
-
-                Timber.tag("CashPDS-Broadcast-").e(ex.getMessage(), "");
-            }
-        }
-    };
 
     private void image(String content, String name, int align) {
         try {
@@ -441,7 +392,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 es.submit(new TaskPrint(mTerminal100API, str, mActivity, context, i));
                 id.setText("");
             } else {
-                show_error_box(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery));
+                printbox(str,i);
             }
         } catch (Exception ex) {
 
@@ -499,7 +450,11 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         mp = mp.create(context, R.raw.c100047);
                         mp.start();
                     }
-                    show_error_box(context.getResources().getString(R.string.Please_Enter_Valid_Number), context.getResources().getString(R.string.Invalid_UID));
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Member_Details)+Cash_ID,
+                            context.getResources().getString(R.string.Invalid_UID),
+                            context.getResources().getString(R.string.Please_Enter_Valid_Number),
+                            0);
                     id.setText("");
                     return;
                 }
@@ -529,7 +484,10 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
             if (networkConnected(context)) {
                 hitURL(members);
             } else {
-                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection));
+                show_AlertDialog(context.getResources().getString(R.string.Cash_PDS),
+                        context.getResources().getString(R.string.Internet_Connection),
+                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                        0);
             }
         } catch (Exception ex) {
 
@@ -550,28 +508,35 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 mp = mp.create(context, R.raw.c100183);
                 mp.start();
             }
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Members), context.getResources().getString(R.string.Fetching_Members), true, false);
+            Show(context.getResources().getString(R.string.Members),
+                    context.getResources().getString(R.string.Fetching_Members)  );
+/*
+            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Members),
+             context.getResources().getString(R.string.Fetching_Members), true, false);
+*/
             XML_Parsing request = new XML_Parsing(context, members, 3);
             request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
                 @Override
-                public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                    if (pd.isShowing()) {
-                        pd.dismiss();
+                public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                    Dismiss();
+                    if (code == null || code.isEmpty()) {
+                        id.setText("");
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Member_Details)+Cash_ID,
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
+                        return;
                     }
 
-                    if (isError == null || isError.isEmpty()) {
+                    if (!code.equals("00")) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Member_Details)+Cash_ID,
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,0);
+
                         id.setText("");
-                        show_error_box("Invalid Response from Server", "No Response");
-                        return;
-                    }
-                    if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                        Sessiontimeout(msg, isError);
-                        return;
-                    }
-                    if (!isError.equals("00")) {
-                        id.setText("");
-                        show_error_box(msg, context.getResources().getString(R.string.Member_Details) + isError);
                     } else {
                         Intent members = new Intent(getApplicationContext(), MemberDetailsActivity.class);
                         members.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -587,20 +552,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         }
     }
 
-    private void show_error_box(String msg, String title) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
 
     public void onRadioButtonClicked(View v) {
         try {
@@ -611,7 +562,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
             if (checked) {
                 switch (v.getId()) {
                     case R.id.radio_rc_no:
-                        cardno.setText("RC No :");
+                        cardno.setText(context.getResources().getString(R.string.RC_No));
                         if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")) {
                             id.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                         } else {
@@ -639,7 +590,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         break;
 
                     case R.id.radio_aadhaar:
-                        cardno.setText("Aadhar No :");
+                        cardno.setText(context.getResources().getString(R.string.Aadhaar_No));
                         id.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD | InputType.TYPE_CLASS_NUMBER);
                         InputFilter[] FilterArray1 = new InputFilter[1];
                         FilterArray1[0] = new InputFilter.LengthFilter(12);
@@ -658,9 +609,6 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
         }
     }
 
-    private void setradio() {
-
-    }
 
     private void lastReceipt_frame() {
         try {
@@ -711,7 +659,12 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                         mp = mp.create(context, R.raw.c100047);
                         mp.start();
                     }
-                    show_error_box(context.getResources().getString(R.string.Please_Enter_Valid_Number), context.getResources().getString(R.string.Invalid_UID));
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Last_Recp)+Cash_ID,
+                            context.getResources().getString(R.string.Invalid_UID),
+                            context.getResources().getString(R.string.Please_Enter_Valid_Number),
+                            0);
+
                     id.setText("");
                     return;
                 }
@@ -740,7 +693,10 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
                 Util.generateNoteOnSD(context, "LastReceiptReq.txt", lastRecipt);
                 hitURL_LastRecipt(lastRecipt);
             } else {
-                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection));
+                show_AlertDialog(context.getResources().getString(R.string.Last_Reciept),
+                        context.getResources().getString(R.string.Internet_Connection),
+                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                        0);
             }
         } catch (Exception ex) {
 
@@ -868,7 +824,7 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
 
             toolbarFpsid.setText("FPS ID");
             toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-            toolbarActivity.setText("CASH PDS");
+            toolbarActivity.setText( context.getResources().getString(R.string.CASH_PDS));
 
             toolbarLatitudeValue.setText(latitude);
             toolbarLongitudeValue.setText(longitude);
@@ -876,6 +832,113 @@ public class CashPDSActivity extends AppCompatActivity implements PrinterCallBac
 
             Timber.tag("CashPDS-ToolBar-").e(ex.getMessage(), "");
         }
+    }
+
+    private void show_Dialogbox(String msg,String header) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
+    }
+    private void printbox( final String[] str, final int type) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(context.getResources().getString(R.string.Battery));
+        status.setText( context.getResources().getString(R.string.Battery_Msg));
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                checkandprint(str,type);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
     }
 }
 

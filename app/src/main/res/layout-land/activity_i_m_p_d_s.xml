@@ -280,7 +280,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="20dp"
-                        android:text="Please Select Any Option"
+                        android:text="@string/Please_Select_Any_Option"
                         android:textColor="@color/Blue"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -299,7 +299,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:checked="true"
-                            android:text="Ration Card No"
+                            android:text="@string/RC_No"
                             android:textColor="@color/blackblack"
                             android:textSize="18dp" />
 
@@ -307,7 +307,7 @@
                             android:id="@+id/rd_type_uid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Aadhaar No"
+                            android:text="@string/Aadhaar_No"
                             android:textColor="@color/blackblack"
                             android:textSize="18dp" />
 
@@ -342,7 +342,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="30dp"
                             android:layout_weight="1"
-                            android:text="Ration Card No."
+                            android:text="@string/RC_No"
                             android:textColor="@color/blackblack"
                             android:textSize="18dp"
                             android:textStyle="bold" />
@@ -357,6 +357,7 @@
                             android:layout_weight="1"
                             android:hint="Enter Ration Card No."
                             android:inputType="number"
+                            android:text="066000000000"
                             android:maxLength="12"
                             android:textSize="15dp" />
 
@@ -370,7 +371,7 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginBottom="@dimen/margin_size_10dp"
                         android:background="@drawable/mybutton"
-                        android:text="Submit"
+                        android:text="@string/Submit"
                         android:textStyle="bold"
                         android:textColor="@color/white" />
 

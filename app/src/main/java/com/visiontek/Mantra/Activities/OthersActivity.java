@@ -53,7 +53,7 @@ public class OthersActivity extends AppCompatActivity {
         toolbarFpsid.setText("DeviceID");
         toolbarFpsidValue.setText(DEVICEID);
 
-        toolbarActivity.setText(context.getResources().getText(R.string.Start));
+        toolbarActivity.setText(context.getResources().getText(R.string.Login));
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);

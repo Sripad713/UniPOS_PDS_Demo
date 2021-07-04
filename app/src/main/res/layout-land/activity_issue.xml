@@ -292,7 +292,7 @@
                     android:layout_weight="1"
                     android:foreground="@drawable/custom_ripple"
                     android:background="@color/button"
-                    android:text="@string/Cashless_PDS"
+                    android:text="@string/Cash_PDS"
                     android:textColor="@color/white"
                     android:textSize="@dimen/TextsizeB"
                     android:textStyle="bold"

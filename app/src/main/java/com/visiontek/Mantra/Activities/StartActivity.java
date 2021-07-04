@@ -3,11 +3,13 @@ package com.visiontek.Mantra.Activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
@@ -17,12 +19,17 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -98,7 +105,10 @@ public class StartActivity extends AppCompatActivity {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
             } else {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
+                show_AlertDialog(
+                        context.getResources().getString(R.string.Login),
+                        context.getResources().getString(R.string.RD_Service),
+                        context.getResources().getString(R.string.RD_Service_Msg),0);
                 return;
             }
 
@@ -125,10 +135,15 @@ public class StartActivity extends AppCompatActivity {
                             }
                             FramexmlforDealerDetails();
                         } else {
-                            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                            show_AlertDialog(
+                                    context.getResources().getString(R.string.Login),
+                                    context.getResources().getString(R.string.Internet_Connection),
+                                    context.getResources().getString(R.string.Internet_Connection_Msg),0);
                         }
                     } else {
-                        show_error_box("Please Grant All Permission", "Permissions", 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Login),
+                                "Permissions","Please Grant All Permission", 0);
                     }
                 }
             });
@@ -137,7 +152,9 @@ public class StartActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     preventTwoClick(view);
-                    show_box();
+                    show_Dialogbox(context.getResources().getString(R.string.CHHATISGARHPDS),
+                            context.getResources().getString(R.string.Do_you_want_to_Cancel)
+                              );
                 }
             });
 
@@ -177,7 +194,7 @@ public class StartActivity extends AppCompatActivity {
         System.out.println(date);
         toolbarFpsid.setText("DEVICE ID");
         toolbarFpsidValue.setText(DEVICEID);
-        toolbarActivity.setText("LOGIN");
+        toolbarActivity.setText( context.getResources().getString(R.string.Login));
         DisplayGPS();
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
@@ -190,10 +207,7 @@ public class StartActivity extends AppCompatActivity {
         settings = findViewById(R.id.button_settings);
         toolbarInitilisation();
         Startbutton();
-        /*File file = new File("", "YourApp.apk");
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-        startActivity(intent);*/
+
     }
 
     private void checkLanguage() {
@@ -205,7 +219,6 @@ public class StartActivity extends AppCompatActivity {
                 setLocal(L);
             }
         } catch (Exception ex) {
-
             Timber.tag("StartActivity-checklng-").e(ex.getMessage(), "");
         }
     }
@@ -245,28 +258,35 @@ public class StartActivity extends AppCompatActivity {
 
     private void hitURLforDealer(String dealers) {
         try {
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer_Details), context.getResources().getString(R.string.Please_wait), true, false);
+            Show(context.getResources().getString(R.string.Please_wait),
+                    context.getResources().getString(R.string.Dealer_Details));
+/*
+            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer_Details),
+            context.getResources().getString(R.string.Please_wait), true, false);
+*/
             XML_Parsing request = new XML_Parsing(StartActivity.this, dealers, 1);
             request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
                 @Override
                 public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                    if (pd.isShowing()) {
-                        pd.dismiss();
-                    }
-
+                    Dismiss();
                     if (isError == null || isError.isEmpty()) {
-                        show_error_box("Invalid Response from Server" + isError, "No Response", 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Login),
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "", 0);
                         return;
                     }
 
                     if (!isError.equals("00")) {
-                        show_error_box(msg, isError, 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Login),
+                                context.getResources().getString(R.string.ResponseCode)+isError,
+                                context.getResources().getString(R.string.ResponseCode)+msg,0);
                     } else {
                         Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
-                        //show_error_box(msg,  isError,1);
 
                     }
                 }
@@ -276,52 +296,6 @@ public class StartActivity extends AppCompatActivity {
 
             Timber.tag("StartActivity-Request-").e(ex.getMessage(), "");
         }
-    }
-
-
-    private void show_error_box(String msg, String title, final int i) {
-
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(title);
-        alertDialogBuilder.setTitle(msg);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        if (i == 1) {
-                            Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(i);
-                        }
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-    private void show_box() {
-
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
-        alertDialogBuilder.setTitle(context.getResources().getString(R.string.CHHATISGARHPDS));
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        finish();
-                    }
-                });
-        alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
     }
 
     @Override
@@ -469,11 +443,7 @@ public class StartActivity extends AppCompatActivity {
     @SuppressLint("HardwareIds")
     @RequiresApi(api = Build.VERSION_CODES.M)
     private String get_Imei() {
-        try {
-        } catch (Exception ex) {
-            show_error_box(ex.getMessage(), "Start", 0);
-            Timber.tag("StartActivity-onCreate-").e(ex.getMessage(), "");
-        }
+
         String imei = null;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -559,8 +529,10 @@ public class StartActivity extends AppCompatActivity {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-           /* DEVICEID = Build.getSerial();
-            toolbarFpsidValue.setText(DEVICEID);*/
+           // DEVICEID = Build.getSerial();
+            //DEVICEID = "MTR4361880";
+            DEVICEID = "0110000106";
+            toolbarFpsidValue.setText(DEVICEID);
             toolbarLatitudeValue.setText(latitude);
             toolbarLongitudeValue.setText(longitude);
         }
@@ -612,4 +584,112 @@ public class StartActivity extends AppCompatActivity {
             System.out.println("*********Status Changed");
         }
     }
+
+
+    private void show_Dialogbox(String header,String msg ) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (i == 1) {
+                    Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                }
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String title,String msg){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
+    }
+
+    /*public void setLang(String language) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        Configuration config = getBaseContext().getResources().getConfiguration();
+
+        *//* String lang = settings.getString("language", language);*//*
+        String lang = null;
+
+        if (language.equals("ENGLISH")) {
+            lang = "en";
+        } else if (language.equals("TAMIL")) {
+            lang = "tl";
+        }
+        else
+            lang="en";
+
+
+        if (!"".equals(lang) && !config.locale.getLanguage().equals(lang)) {
+            Locale locale = new Locale(lang);
+            Locale.setDefault(locale);
+            config.locale = locale;
+            getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+            dbc.setPropValue(selected_lang, "LANGUAGE");
+            LoginActivity.LANGUAGE = selected_lang;
+        }
+    }*/
 }

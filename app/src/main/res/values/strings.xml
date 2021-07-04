@@ -34,40 +34,65 @@
 
     <string name="printsuccess">Print Success</string>
     <string name="printfailed">Print Failed</string>
-
+    <string name="Device_Not_Found">Device Not Found</string>
 
     //start
+
     <string name="CHHATISGARHPDS">CHHATTISGARH  AePDS</string>
     <string name="SET">SET</string>
     <string name="UID_DETAILS">UID DETAILS</string>
-    <string name="Start">Login</string>
+    <string name="Login">LOGIN</string>
     <string name="RD"> RD</string>
     <string name="COMMODITY_WEIGHT">COMMODITY WEIGHT</string>
     <string name="COMMODITY_WEIGHING">COMMODITY WEIGHING</string>
     <string name="Iris">I</string>
     <string name="Quit">Quit</string>
     <string name="Settings">Settings</string>
-
+    <string name="ResponseCode">ResponseCode :</string>
+    <string name="Reasonreq">Reason Request</string>
+    <string name="ResponseMsg">ResponseMsg :</string>
+    <string name="Last_Recp">Last Reciept :</string>
+    <string name="Mem">Member :</string>
+    <string name="Member_Fusion">Member Fusion :</string>
+    <string name="Man">Manual :</string>
+    <string name="Member_Wadh">Member Wadh :</string>
+    <string name="ekyc">EKYC :</string>
+    <string name="Weighing_machine">Weighing Machine</string>
+    <string name="Do_you_want_to_Quit">Do you want to Quit</string>
+    <string name="Selected_option">Selected Option</string>
 
     //dealers_details
     <string name="Dealer_Details">Downloading Dealer Details</string>
     <string name="NAME">NAME</string>
     <string name="TYPE">TYPE</string>
-    <string name="Consent_Form">Consent Form</string>
+    <string name="Consent_Form">Consent Form </string>
     <string name="Back">Back</string>
     <string name="Scan_FP">Scan FP</string>
     <string name="Next">NEXT </string>
-    <string name="Agree">Agree</string>
+    <string name="Agree">I Agree</string>
     <string name="Disagree">Disagree</string>
+    <string name="SCHEME">SCHEME</string>
+    <string name="RO_Quantity">RO Quantity</string>
+    <string name="DISPATCH">DISPATCH</string>
+
+    <string name="ISSUE_GOODS">ISSUE GOODS</string>
+    <string name="OB">OB</string>
+    <string name="Get_Weight">Get Weight</string>
+    <string name="Enter_Observation">Enter Observation</string>
+    <string name="Enter_Received">Enter Received</string>
 
     //cash_pds
     <string name="CASH_PDS">CASH PDS</string>
     <string name="RC_No">RC No</string>
-    <string name="Aadhaar">Aadhaar No</string>
+    <string name="Aadhaar">Aadhaar </string>
     <string name="Card_No">RC No.</string>
     <string name="Get_Details">Get Details</string>
     <string name="Home">Home</string>
     <string name="Last_Reciept">Last Reciept</string>
+    <string name="Home_State_Name">Home State Name</string>
+    <string name="Home_District_Name">Home District Name</string>
+    <string name="Card_Type">Card Type</string>
+    <string name="Menus">Menus</string>
 
     //home
     <string name="HOME">HOME</string>
@@ -81,7 +106,7 @@
 
     //issue
     <string name="ISSUE">ISSUE</string>
-    <string name="Cash_PDS">Cash PDS</string>
+    <string name="Cash_PDS">Cash PDS </string>
     <string name="Cashless_PDS">Cashless PDS</string>
     <string name="IMPDS">IMPDS</string>
 
@@ -99,6 +124,10 @@
     <string name="ClBal">ClBal</string>
     <string name="Get">Get</string>
     <string name="Confirm">Confirm</string>
+    <string name="Please_Enter_Issue_Qty">Please Enter Issue Qty</string>
+    <string name="Unit">Unit</string>
+    <string name="Balance">Balance</string>
+    <string name="Unit_Price">Unit Price</string>
 
     //print
     <string name="CommTot">Comm</string>
@@ -109,6 +138,8 @@
     <string name="Please_connect_to_the_Bluetooth_printer_to_print">Please connect to the Bluetooth printer to print</string>
     <string name="Connect">Connect</string>
     <string name="Print">Print</string>
+    <string name="Amount">Amount</string>
+    <string name="MDM">MDM</string>
 
     //daily_sales_report
     <string name="DAILY_SALES_REPORT">DAILY SALES REPORT</string>
@@ -119,6 +150,7 @@
     <string name="SFY">SFY</string>
     <string name="PHH">PHH</string>
     <string name="TOTAL">TOTAL</string>
+    <string name="TOTAL_AMOUNT">TOTAL AMOUNT</string>
 
     //stock_report
     <string name="CURRENT_STOCK">CURRENT STOCK</string>
@@ -135,14 +167,16 @@
     <string name="SETTINGS">SETTINGS</string>
     <string name="Device">Device</string>
     <string name="Update">Update</string>
+
     <string name="Device_Info">Device Info</string>
+    <string name="Pairing">Pairing</string>
 
     //device
     <string name="DEVICE">DEVICE</string>
-    <string name="Device_ID">Device ID :</string>
+    <string name="Device_ID">Device ID</string>
     <string name="RD_Service">RD Service :</string>
     <string name="selected_language">Selected Language</string>
-    <string name="Set_Language">SET  Language</string>
+    <string name="Language">Language</string>
     <string name="english">ENGLISH</string>
     <string name="hindi">हिंदी</string>
 
@@ -151,29 +185,34 @@
     <string name="UPDATE">UPDATE</string>
     <string name="USB">USB</string>
     <string name="GPRS">GPRS</string>
+    <string name="Upload_Log">Upload Log</string>
+    <string name="Please_Select_Any_Option">Please Select Any Option</string>
+    <string name="Submit">Submit</string>
 
     //beneficary_verification
     <string name="BENEFICIARY_VERIFY">BENEFICIARY VERIFY</string>
     <string name="CardNo">Card No.</string>
-    <string name="Aadhaar_No">Aadhaar No. :</string>
+    <string name="Aadhaar_No">Aadhaar No. </string>
     <string name="Ok">Ok</string>
     <string name="Member_ID">Member ID</string>
 
     //icds
     <string name="Image">Image</string>
     <string name="ICDS">ICDS</string>
-    <string name="AWCID">AWC ID :</string>
+    <string name="AWCID">AWC ID</string>
     <string name="Details">Details</string>
-    <string name="RCNO">RC NO :</string>
+    <string name="RCNO">RC NO. </string>
     <string name="B1">B1</string>
 
     //start
     <string name="Rd_Service">No RD Service</string>
+    <string name="RD_Service_Not_Started">RD Service Not Started ...</string>
+    <string name="RD_service_discovery_Failed">RD service discovery Failed</string>
     <string name="RD_Service_Msg">Fingerprint RD Service Application is not avaliable in Device</string>
     <string name="Please_Check_Device_Internet_Connection">Please Check Device Internet Connection</string>
     <string name="Dealers">Dealers</string>
     <string name="Fetching_Dealers">Fetching Dealers ...</string>
-    <string name="DealerDetails">Dealer Details: </string>
+    <string name="DealerDetails">Dealer Details</string>
     <string name="Application">Application</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
@@ -202,6 +241,7 @@
     <string name="Authenticating">Authenticating...</string>
     <string name="Downloading_Menus">Downloading Menus</string>
     <string name="Dealer_Authentication">Dealer Authentication: </string>
+    <string name="Dealer_Wadh">Dealer Wadh : </string>
     <string name="RD_SERVICE_ERROR">RD SERVICE ERROR</string>
     <string name="PID_Exception">PID Exception</string>
 
@@ -209,8 +249,8 @@
     <string name="NA_MSG">Please Select Other Member</string>
 
 
-    <string name="Battery">Unable To Print Recipt due to Low Battery</string>
-    <string name="Battery_Msg"> Please charge the Battery</string>
+    <string name="Battery">Battery</string>
+    <string name="Battery_Msg">Unable To Print Recipt due to Low Battery</string>
 
 
     //Issue
@@ -218,7 +258,7 @@
     <string name="IMPDS_function_is_Not_Available">IMPDS function is Not Available</string>
     <string name="Members">Downloading Members Details</string>
     <string name="Fetching_Members">Fetching Members ...</string>
-    <string name="Member_Details">Member Details: </string>
+    <string name="Member_Details">Member Details :</string>
 
     //Cash pds
     <string name="Please_Enter_a_Valid_Number_RC">Please Enter RC Number</string>
@@ -252,7 +292,7 @@
     <string name="Enable_Bluetooth_and_pair_your_Device_Manually">Enable Bluetooth and pair your Device Manually</string>
     <string name="Please_Select_USB_or_Bluetooth">Please Select USB or Bluetooth</string>
     <string name="Please_give_Quantity_between_Min_bal_and_Close_bal">Please Enter required Qty less than or equal</string>
-    <string name="Please_Issue_Commodity_upto_Bal_Qty_only">Please Issue Commodity upto Bal Qty only</string>
+    <string name="Please_Issue_Commodity_upto_Bal_Qty_only">Please Issue Commodity upto Bal Qty only </string>
     <string name="Please_Wait">Please Wait...</string>
     <string name="USB_Ready">USB Ready</string>
     <string name="USB_Permission_not_granted">USB Permission not granted</string>
@@ -296,7 +336,6 @@
     <string name="lifted">Lifted</string>
     <string name="rate">Rate</string>
     <string name="price">Price</string>
-    <string name="Total_Amount">Total Amount</string>
     <string name="Public_Distribution_Dept">Public Distribution Dept</string>
     <string name="Note_Qualitys_in_KgsLtrs">(Note : Qualitys in Kgs/Ltrs)</string>
     <string name="LOGOUT_SUCCESS">LOGOUT SUCCESS</string>
@@ -307,15 +346,15 @@
     <string name="Already_Verified">UID Already Seeded</string>
     <string name="Processing">Processing ...</string>
     <string name="Fetching_Details">Fetching Details</string>
-    <string name="Beneficiary_Verification">Beneficiary Verification : </string>
+    <string name="Beneficiary_Verification">Beneficiary Verification </string>
     <string name="Government_of_Chattisgarh">Government of Chattisgarh</string>
     <string name="Permission_denied">Permission denied</string>
     <string name="ConnectUSB">ConnectUSB</string>
     <string name="MemberName">MemberName</string>
-    <string name="DOB">DOB : </string>
+    <string name="DOB">DOB</string>
     <string name="PindCode">PindCode</string>
     <string name="Gender">Gender</string>
-    <string name="Beneficiary_Details">Beneficiary Details</string>
+    <string name="Beneficiary_Details">Beneficiary Details </string>
     <string name="LAST_RECEIPT">LAST RECEIPT</string>
     <string name="Please_Enter_date_in_Edit_text_to_view_Stock">Please Enter date in Edit text to view Stock</string>
     <string name="Enter_Date">Enter Date</string>
@@ -326,7 +365,7 @@
     <string name="VERIFICATION_RECEIPT">VERIFICATION RECEIPT</string>
     <string name="Ration_Card_Number">Ration Card No</string>
     <string name="Commodity_Scheme_Sale">Commodity     Scheme      Sale</string>
-    <string name="scheme">Scheme</string>
+    <string name="scheme">SCHEME</string>
     <string name="sale">Sale</string>
     <string name="Note_Quantitys_In_KgsLtrsPackets">Note:Quantitys In Kgs/Ltrs/Packets</string>
     <string name="No_Data_to_Print">No Data to Print</string>
@@ -367,6 +406,7 @@
 Aadhaar based authentication system and consent to providing my Aadhaar number
 Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
 "for the purposes of availing of the Ration/PDS Service from</string>
+
     <string name="part2">.I understand that the Biometrics and/or OTP I provide for authentication shall be
     used only for authenticating my identity through the Aadhaar Authentication system
                             for that specific transaction and for no other purposes.Iunderstand that </string>
@@ -393,20 +433,21 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="cb">CB</string>
 
     <string name="Please_Select_a_Member">Please Select a Member</string>
-    <string name="UID_Seeding">UID Seeding : </string>
+    <string name="UID_Seeding">UID Seeding</string>
     <string name="Not_a_Valid_Weight">Not a Valid Weight</string>
     <string name="Enter_valid_weight">Enter valid weight</string>
     <string name="Please_try_again">Please try again</string>
     <string name="Please_Enter_a_valid_Password">Please Enter a valid Password</string>
-    <string name="Dealer_FIR_Authentication">Dealer FIR Authentication: </string>
-    <string name="Dealer_Fusion_Authentication">Dealer Fusion Authentication: </string>
-    <string name="Dealer_FP_Authentication">Dealer FP Authentication: </string>
+    <string name="Dealer_FIR_Authentication">Dealer FIR Authentication</string>
+    <string name="Dealer_Fusion_Authentication">Dealer Fusion Authentication :</string>
+    <string name="Dealer_Fusion">Dealer Fusion :</string>
+    <string name="Dealer_FP_Authentication">Dealer FP Authentication :</string>
     <string name="Connect_your_device_to_the_usb_Port">Connect your device to the usb Port</string>
     <string name="USB_Connection">USB Connection</string>
     <string name="Not_Enabled">Not Enabled</string>
-    <string name="Inspection_Details">Inspection Details: </string>
+    <string name="Inspection_Details">Inspection Details</string>
     <string name="Enter_UID">Enter UID</string>
-    <string name="Truck_No">Truck No :</string>
+    <string name="Truck_No">Truck No</string>
     <string name="Invalid_Aadhaar">Invalid Aadhaar</string>
 
 
@@ -426,12 +467,161 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="RECEIVE_GOODS">RECEIVE GOODS</string>
     <string name="Allot">Allot</string>
     <string name="dispatch">Dispatch</string>
-    <string name="Receive">Receive</string>
+    <string name="Received">Receive</string>
     <string name="Weighing">Weighing</string>
     <string name="Devices_LIST">DEVICE LIST</string>
     <string name="Commodity">Commodity</string>
     <string name="Issued">Issued</string>
     <string name="Sno">S.no</string>
 
+
+
+
+
+    <string name="Please_Put_Paper">Please Put Paper</string>
+    <string name="Please_Enter_RC_Number">Please Enter RC Number</string>
+    <string name="Please_enter_12_digit_uid_number">Please enter 12 digit uid number</string>
+    <string name="Offline_Data_Uploading_Failed_Please_Try_again">Offline Data Uploading Failed\Please Try again ..</string>
+    <string name="Members_Details_Not_Found_For_The_Card">Members Details Not Found For The Card</string>
+    <string name="UID_Already_Seeded">UID Already Seeded</string>
+    <string name="Please_accept_consent_form">Please accept consent form</string>
+    <string name="Transaction_linked_to_dealer">Transaction linked to dealer</string>
+    <string name="UID_is_Not_Present_Please_seed_the_UID_using_UID_seeding">UID is Not Present...\Please seed the UID using UID seeding...</string>
+    <string name="UID_is_Not_Present_Please_Select_Other_Member">UID is Not Present...\Please Select Other Member</string>
+    <string name="Transaction_linked_to_Manual">Transaction linked to Manual </string>
+    <string name="please_enter_numeric_value_only">please enter numeric value only </string>
+    <string name="please_enter_10_Digit_Mobile_Number_only">please enter 10 Digit Mobile Number only </string>
+    <string name="Manual_Transaction_not_allowd_for_this_Beneficiary">Manual Transaction not allowd for this Beneficiary </string>
+    <string name="Please_Select_Any_Commodity_For_Issuance">Please Select Any Commodity For Issuance </string>
+    <string name="Please_Enter_required_Qty_less_than_or_equal_to">Please Enter required Qty less than or equal to </string>
+    <string name="Unable_To_Print_Recipt_due_to_Low_Battery_Please_charge_the_Battery">Unable To Print Recipt due to Low Battery  \Please charge the Battery</string>
+    <string name="Please_Select_Other_Mode_of_Communication">Please Select Other Mode of Communication </string>
+    <string name="Invalid_Weight">Invalid Weight...</string>
+    <string name="USB_Port_Opening_Failed_Please_Select_Other_Mode_of_Communication">USB Port Opening Failed...\Please Select Other Mode of Communication...</string>
+    <string name="Enter_the_Quantity_greater_than_zero">Enter the Quantity greater than zero </string>
+    <string name="Please_Issue_Commodity_upto_BalQty_only">Please Issue Commodity upto Bal Qty only </string>
+    <string name="Issue_quantity_should_more_than_or_equal_to_Minimum_quantity">Issue quantity should more than or equal to Minimum quantity </string>
+    <string name="please_take_all_quantity">please take all quantity</string>
+    <string name="Please_Issue_Commodity_upto_Closing_Balance_only_Closing_Balance">Please Issue Commodity upto Closing Balance only\Closing Balance </string>
+    <string name="Issue_Qty_Should_Be_Multiple_By_Minimum_Qty">Issue Qty Should Be Multiple By Minimum Qty </string>
+    <string name="Exceeded_Attempts_for_Iris_Authentication_Please_Opt_for_ScanFP">Exceeded Attempts for Iris Authentication...\Please Opt for Scan-FP</string>
+    <string name="Invalid_Dealer_type">Invalid Dealer type...</string>
+    <string name="Entered_Wrong_Password">Entered Wrong Password...</string>
+    <string name="Enter_Correct_Password">Enter Correct Password ...</string>
+    <string name="Please_Select_Dealer_Nominee">Please Select Dealer/Nominee</string>
+    <string name="UID_is_Empty_Please_Select_Other_Member">UID is Empty...\Please Select Other Member</string>
+    <string name="Finger_Not_Placed_On_Scanner">Finger Not Placed On Scanner...</string>
+    <string name="No_Response_From_Server_Please_Try_Again">No Response From Server...\Please Try Again</string>v
+    <string name="Server_is_Busy_Please_Try_Again">Server is Busy...\Please Try Again...</string>
+    <string name="String_index_out_of_range_Invalid_Response">String index out of range - Invalid Response</string>
+    <string name="Server_is_Not_Active">Server is Not Active</string>
+    <string name="Server_error_Invalid_Response">Server error - Invalid Response</string>
+    <string name="Please_Call_PMU">Please Call PMU</string>
+    <string name="UID_Status">UID Status</string>
+    <string name="Incorrect_XML">Incorrect XML</string>
+    <string name="Finger_Not_Placed_on_Scanner">Finger Not Placed on Scanner</string>
+    <string name="Invalid_Response_Please_Try_Again">Invalid Response...\Please Try Again...</string>
+    <string name="Request_Timeout_Please_Try_again">Request Timeout. Please Try again..</string>
+    <string name="Server_Connection_Error_Please_Try_Again_After_SomeTime">Server Connection Error...\Please Try Again After SomeTime...</string>
+    <string name="Please_download_Bank_Master_Data_From_Settings">Please download Bank Master Data From Settings</string>
+    <string name="Please_download_Beneficiary_Master_Data_From_Settings">Please download Beneficiary Master Data From Settings</string>
+    <string name="Please_Download_HTTPS_Certificate_from_Settings">Please Download HTTPS Certificate\from Settings</string>
+    <string name="Dealer_Details_is_not_registered_at_PDS_server">Dealer Details is not registered at PDS server...</string>
+    <string name="Recieved_Invalid_Quantity_From_ePDS_Server">Recieved Invalid Quantity From ePDS Server</string>
+    <string name="No_Commodities_For_This_Card">No Commodities For This Card</string>
+    <string name="Card_Type_Not_Found">Card Type Not Found</string>
+    <string name="Dealer_Auth_Response_File_Not_Found">Dealer Auth Response File Not Found...</string>
+    <string name="File_Not_Present_in_USB_Press_OK_to_Exit">File Not Present in USB...\Press OK to Exit...</string>
+    <string name="Updating_New_Application_Failed_Press_OK_to_Exit">Updating New Application Failed...\Press OK to Exit...</string>
+    <string name="USB_Not_Mounted_Press_OK_to_Exit">USB Not Mounted...\Press OK to Exit...</string>
+    <string name="New_Application_Copied_Press_OK_to_Exit">New Application Copied...\Press OK to Exit...</string>
+    <string name="File_Not_Found_On_Server">File Not Found On Server...</string>
+    <string name="Download_Unsuccessful_Please_Try_Again">Download Unsuccessful...\Please Try Again...</string>
+    <string name="Updated_With_New_Application_Press_OK_to_Exit">Updated With New Application...\Press OK to Exit...</string>
+    <string name="File_Not_Downloaded_Properly_Please_Try_Again">File Not Downloaded Properly...\Please Try Again...</string>
+    <string name="Bluetooth_Initialising_Failed">Bluetooth Initialising Failed...</string>
+    <string name="Bluetooth_Scanning_Failed">Bluetooth Scanning Failed...</string>
+    <string name="Weighing_Scale_Not_Found">Weighing Scale Not Found</string>
+    <string name="Pairing_With_Weighing_Machine_Failed">Pairing With Weighing Machine Failed...</string>
+    <string name="Weighing_Machine_Not_Connected">Weighing Machine Not Connected...</string>
+    <string name="Start_the_Biomatiques_RD_Service">Start the Biomatiques RD Service</string>
+    <string name="Invalid_Response_Data_Recieved">Invalid Response Data Recieved...</string>
+    <string name="Stock_Details_Insertion_Failed">Stock Details Insertion Failed</string>
+    <string name="Please_Wait_Uploading_Recieved_Stock_Data_to_Server">Please Wait...\Uploading Recieved Stock Data to Server...</string>
+    <string name="Please_Receive_the_Qty_upto_Dispatched_Qty_only">Please Receive the Qty upto Dispatched Qty only</string>
+    <string name="Entered_Qty_is_Very_Less_Kindly_Check">Entered Qty is Very Less...\Kindly Check...</string>
+    <string name="File_Not_Downloaded">File Not Downloaded</string>
+    <string name="Server_Error">Server Error</string>
+    <string name="Please_Select_Truck_Chit_No">Please Select Truck Chit No</string>
+    <string name="Please_Enter_Customer_Aadhaar_No">Please Enter Customer Aadhaar No</string>
+    <string name="Please_Enter_Customer_Mobile_No">Please Enter Customer Mobile No</string>
+    <string name="Please_Enter_OTP">Please Enter OTP</string>
+    <string name="Mobile_Number_Updation_Request_Failed">Mobile Number Updation Request Failed</string>
+    <string name="Mobile_Number_Updation_Request_Successfully_Posted">Mobile Number Updation Request Successfully Posted</string>
+    <string name="Inspector_Details_is_not_registered_at_AePDS_server">Inspector Details is not registered at AePDS server...</string>
+    <string name="Please_Receive_the_Qty_upto_ReleasedQty_only">Please Receive the Qty upto ReleasedQty only</string>
+    <string name="Invalid_XML">Invalid XML</string>
+    <string name="Please_Scan_RC_Number">Please Scan RC Number</string>
+    <string name="Please_login_in_online_mode">Please login in online mode</string>
+    <string name="All_offline_txn_records_were_uploaded_to_server">All offline txn records were uploaded to server</string>
+    <string name="Acknowledgement_sending_Failed_Please_Try_again">Acknowledgement sending Failed\Please Try again ..</string>
+    <string name="Pending_data_unavailable">Pending data unavailable</string>
+    <string name="Offline_Data_Downloaded_Successfully">Offline Data Downloaded Successfully</string>
+    <string name="KeyRegister_Data_not_found_Please_try_again">KeyRegister Data not found\Please try again</string>
+    <string name="Invalid_KeyRegister_Data_Please_try_again">Invalid KeyRegister Data\Please try again</string>
+    <string name="Pos_Ob_Data_not_found_Please_try_again">Pos Ob Data not found\Please try again</string>
+    <string name="Invalid_PosOb_Data_found_Please_try_again">Invalid PosOb Data found\Please try again</string>
+    <string name="Commodity_Master_Data_not_found_Please_try_again">Commodity Master Data not found\Please try again</string>
+    <string name="Invalid_Commodity_Master_Data_Please_try_again">Invalid Commodity Master Data\Please try again</string>
+    <string name="Scheme_Master_Data_not_found">Scheme Master Data not found</string>
+    <string name="Invalid_Scheme_Master_Data_Please_try_again">Invalid Scheme Master Data\Please try again</string>
+    <string name="Invalid_Recive_Goods_Master_Please_try_again">Invalid Recive Goods Master\Please try again</string>
+    <string name="Invalid_Response_Please_try_again">Invalid Response\Please try again</string>
+    <string name="Invalid_Response_from_Server_Please_try_again">Invalid Response from Server\Please try again</string>
+    <string name="Invalid_Response_From_Server_for_Txn_Upload">Invalid Response From Server for Txn Upload</string>
+    <string name="UpdatedReceipts_Id_not_sent_From_Server_for_Txn_Upload">UpdatedReceipts Id not sent From Server for Txn Upload</string>
+    <string name="Commodity_Balance_Qty_not_available_for_this_Entered_Card">Commodity Balance Qty not available for this Entered Card</string>
+    <string name="Commodity_Closing_balance_not_available_for_this_shop">Commodity Closing balance not available for this shop</string>
+    <string name="Network_Avalible_Please_login_by_dealer_authentication">Network Avalible\Please login by dealer authentication</string>
+    <string name="Offline_Data_Not_available">Offline Data Not available</string>
+    <string name="Invalid_Txns_Time">Invalid Txns Time</string>
+    <string name="Txns_are_allowed_from">Txns are allowed from</string>
+    <string name="Month_Changed_Please_login_by_authentication">Month Changed\Please login by authentication</string>
+    <string name="Offline_time_duration_completed_Login_by_authentication">Offline time duration completed\Login by authentication</string>
+    <string name="No_Network_and_Offline_Login_data_not_Available">No Network and Offline Login data not Available</string>
+    <string name="No_Network_Please_select_CardNo_and_Enter_CardNo_for_doing_TXN_in_OFFLINE">No Network\Please select \Card No.\ and Enter \Card No.\ for doing TXN in OFFLINE</string>
+    <string name="Invalid_Fps_Id">Invalid Fps Id</string>
+    <string name="Invalid_Response_for_Receive_Goods_Upload">Invalid Response for Receive Goods Upload</string>
+    <string name="TruckChitList_not_found_for_Receive_Goods_Upload">TruckChitList not found for Receive Goods Upload</string>
+    <string name="Unable_to_upload_Please_check_connectivity_Please_Try_again">Unable to upload.Please check connectivity\Please Try again</string>
+    <string name="PDS_Distribution_Stoped">PDS Distribution Stoped</string>
+    <string name="Distribution_Stoped">Distribution Stoped</string>
+    <string name="Upload_all_pending_Txns_and_Try_for_Patch_update">Upload all pending Txns and Try for Patch update</string>
+    <string name="Please_Wait_Uploading_Pending_CB">Please Wait...\Uploading Pending CB...</string>
+    <string name="Please_Wait_Uploading_Pending_Records">Please Wait...\Uploading Pending Records...</string>
+    <string name="Going_for_Manual_Transaction">Going for Manual Transaction ...</string>
+    <string name="Reciept_Bill_Amount_is">Reciept/Bill Amount is...</string>
+    <string name="Please_Wait_Commodity_Qty_Uploading_to_Server">Please Wait...\Commodity Qty Uploading to Server</string>
+    <string name="Please_Wait_Authenticating_FingerPrint">Please Wait...\Authenticating Finger Print...</string>
+    <string name="Please_Wait_Authenticating_Dealer">Please Wait...\Authenticating Dealer...</string>
+    <string name="Please_Wait_Downloading_Members_Details">Please Wait...\Downloading Members Details...</string>
+    <string name="Please_Wait_Scanning_For_Devices">Please Wait...\Scanning For Devices...</string>
+    <string name="Please_Wait_Downloading_Details_From_Server">Please Wait...\Downloading Details From Server...</string>
+    <string name="Please_Place_Customer_Finger_on_Scanner">Please Place Customer Finger on Scanner</string>
+    <string name="Transaction_Successfull_Printing_Please_Wait">Transaction Successfull...\Printing, Please Wait...</string>
+    <string name="Please_Wait_Pairing_with_Weighing_Machine">Please Wait...\Pairing with Weighing Machine...</string>
+    <string name="Downloading_Hawker_Details">Downloading Hawker Details...</string>
+    <string name="Please_Wait_Printing">Please Wait...Printing...</string>
+    <string name="Logout_Please_wait">Logout ... \ Please wait ...</string>
+    <string name="Please_place_two_fingers_on_the_scanner_one_after_the_other">Please place two fingers on the \scanner one after the other</string>
+    <string name="Requesting_OTP_Please_Wait">Requesting OTP...\Please Wait ...</string>
+    <string name="Uploading_Pending_CB_Please_Wait">Uploading Pending CB \Please Wait....</string>
+    <string name="Uploading_Pending_Records_Please_Wait">Uploading Pending Records \Please Wait ....</string>
+    <string name="Please_wait_Downloading_Menus">Please wait...\Downloading Menus</string>
+    <string name="Please_Wait_Initializing_Blueetooth">Please Wait..\Initializing Blueetooth</string>
+    <string name="Session_Id_not_found_Please_try_again">Session Id not found Please try again</string>
+    <string name="Network_unavailable">Network unavailable</string>
+    <string name="Please_Wait_Downloading_School_Members_Details">Please Wait...\nDownloading School Members Details</string>
+    <string name="Please_Enter_School_Id">Please Enter School Id</string>
 
 </resources>

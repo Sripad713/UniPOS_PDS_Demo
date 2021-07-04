@@ -303,7 +303,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ben_table_cell_shape"
                                 android:padding="10dp"
-                                android:text="Commodity"
+                                android:text="@string/Commodity"
                                 android:textColor="@color/white"
                                 android:textSize="16sp" />
 
@@ -312,7 +312,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ben_table_cell_shape"
                                 android:padding="10dp"
-                                android:text="Unit"
+                                android:text="@string/Unit"
                                 android:textColor="@color/white"
                                 android:textSize="16sp" />
 
@@ -321,7 +321,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ben_table_cell_shape"
                                 android:padding="10dp"
-                                android:text="Balance"
+                                android:text="@string/Balance"
                                 android:textColor="@color/white"
                                 android:textSize="16sp" />
 
@@ -330,7 +330,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ben_table_cell_shape"
                                 android:padding="10dp"
-                                android:text="Issued Qty"
+                                android:text="@string/issueQty"
                                 android:textColor="@color/white"
                                 android:textSize="16sp" />
 
@@ -339,7 +339,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ben_table_cell_shape"
                                 android:padding="10dp"
-                                android:text="CB"
+                                android:text="@string/CB"
                                 android:textColor="@color/white"
                                 android:textSize="16sp" />
 
@@ -348,7 +348,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ben_table_cell_shape"
                                 android:padding="10dp"
-                                android:text="Unit Price"
+                                android:text="@string/Unit_Price"
                                 android:textColor="@color/white"
                                 android:textSize="16sp" />
                         </TableRow>
@@ -373,7 +373,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/mybutton"
-                    android:text="SUBMIT"
+                    android:text="@string/Submit"
                     android:textColor="@color/white" />
 
 

@@ -1,6 +1,7 @@
 package com.visiontek.Mantra.Activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -11,7 +12,11 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -62,6 +67,7 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
     int select;
     TextView cardno;
     ProgressDialog pd = null;
+    String DisplayUID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,8 +81,9 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
-                    context.getResources().getString(R.string.RD_Service));
+            show_AlertDialog(context.getResources().getString(R.string.Cash_PDS),
+                    context.getResources().getString(R.string.RD_Service),
+                    context.getResources().getString(R.string.RD_Service_Msg),0);
             return;
         }
 
@@ -88,13 +95,24 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 preventTwoClick(view);
                 BEN_ID = id.getText().toString().trim();
+
                 if (BEN_ID.length() >0) {
+                    DisplayUID=BEN_ID;
                     Benverify();
                 } else {
-                    if(select==2){
-                        show_error_box(context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID), context.getResources().getString(R.string.Invalid_UID));
-                    }else {
-                        show_error_box(context.getResources().getString(R.string.Please_Enter_a_Valid_Number_RC), context.getResources().getString(R.string.Invalid_ID));
+                    if (select == 2) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Beneficiary_Verification),
+                                context.getResources().getString(R.string.Invalid_UID),
+                                context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID)
+                                ,0);
+
+                    } else {
+                        show_AlertDialog(context.getResources().getString(R.string.Beneficiary_Verification),
+                                context.getResources().getString(R.string.Invalid_ID),
+                                context.getResources().getString(R.string.Please_Enter_a_Valid_Number_RC),
+                                0);
+
                     }
                 }
             }
@@ -194,7 +212,11 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
                     mp = mp.create(context, R.raw.c100047);
                     mp.start();
                 }
-                show_error_box(context.getResources().getString(R.string.Please_Enter_Valid_Number), context.getResources().getString(R.string.Invalid_UID));
+                show_AlertDialog(
+                        context.getResources().getString(R.string.Beneficiary_Verification)+BEN_ID ,
+                        context.getResources().getString(R.string.Invalid_UID),
+                        context.getResources().getString(R.string.Please_Enter_Valid_Number),
+                        0);
                 id.setText("");
                 return;
             }
@@ -222,7 +244,10 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
             Util.generateNoteOnSD(context, "BenVerificationReq.txt", ben);
             benVerification(ben);
         } else {
-            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg),context.getResources().getString(R.string.Internet_Connection));
+            show_AlertDialog(
+                    context.getResources().getString(R.string.Beneficiary_Verification),
+                    context.getResources().getString(R.string.Internet_Connection),
+                    context.getResources().getString(R.string.Internet_Connection_Msg),0);
         }
         }catch (Exception ex){
 
@@ -240,27 +265,40 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
                 mp = mp.create(context, R.raw.c100075);
                 mp.start();
             }
+            Show(context.getResources().getString(R.string.Beneficiary_Details), context.getResources().getString(R.string.Fetching_Members));
+/*
         pd = ProgressDialog.show(context, context.getResources().getString(R.string.Beneficiary_Details), context.getResources().getString(R.string.Fetching_Members), true, false);
+*/
         Aadhaar_Parsing request = new Aadhaar_Parsing(context, ben,3 );
         request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
             @Override
-            public void onCompleted(String error, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (error == null || error.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response");
+            public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                Dismiss();
+                if (code == null || code.isEmpty()) {
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Beneficiary_Verification),
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
                     id.setText("");
                     return;
                 }
-                if (error.equals("057") || error.equals("008") || error.equals("09D")) {
-                    Sessiontimeout(msg, error);
+
+               /* if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+                    SessionAlert(
+                            context.getResources().getString(R.string.Beneficiary_Verification)+DisplayUID,
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg);
                     return;
-                }
-                if (!error.equals("00")) {
-                    System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                    show_error_box(msg, "Member Details: " + error);
+                }*/
+                if (!code.equals("00")) {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Beneficiary_Verification)+DisplayUID,
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            0);
                     id.setText("");
                 } else {
                     BeneficiaryDetails beneficiaryDetails= (BeneficiaryDetails) object;
@@ -278,22 +316,6 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
         }
     }
 
-    private void show_error_box(String msg, String title) {
-
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
     public void onRadioButtonClicked(View v) {
         try {
 
@@ -303,7 +325,7 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
         if (checked) {
             switch (v.getId()) {
                 case R.id.radio_rc_no:
-                    cardno.setText("RC No :");
+                    cardno.setText(context.getResources().getString(R.string.RC_No));
                     if (dealerConstants.fpsURLInfo.virtualKeyPadType.equals("A")){
                         id.setInputType(InputType. TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                     }else {
@@ -330,7 +352,7 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
                     break;
 
                 case R.id.radio_aadhaar:
-                    cardno.setText("Aadhaar No :");
+                    cardno.setText(context.getResources().getString(R.string.Aadhaar_No));
 
                     id.setInputType(InputType. TYPE_NUMBER_VARIATION_PASSWORD | InputType. TYPE_CLASS_NUMBER );
 
@@ -374,7 +396,7 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("BENEFICIARY");
+        toolbarActivity.setText( context.getResources().getString(R.string.BENEFICIARY_VERIFY));
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
@@ -382,5 +404,100 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
 
             Timber.tag("BeneficiaryV-Toolbar-").e(ex.getMessage(),"");
         }
+    }
+    private void show_Dialogbox(String msg,String header) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
+    }
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
     }
 }

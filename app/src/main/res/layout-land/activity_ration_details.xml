@@ -69,13 +69,18 @@
                         android:textStyle="bold" />
 
                     <Spinner
-                        style="@style/Widget.AppCompat.DropDownItem.Spinner"
-                        android:background="@drawable/wblack"
                         android:id="@+id/options"
+                        style="@style/Widget.AppCompat.DropDownItem.Spinner"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:background="@drawable/wblack" />
+                    <TextView
+                        android:background="@drawable/wblack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/btn_dropdown"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -330,7 +335,7 @@
                 android:background="@drawable/bblack"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/TextsizeP"
-                android:text="Amount"
+                android:text="@string/Amount"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="30sp"

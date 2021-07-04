@@ -2,6 +2,7 @@ package com.visiontek.Mantra.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -44,10 +45,19 @@ import com.visiontek.Mantra.Utils.Util;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import static com.visiontek.Mantra.Activities.StartActivity.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.longitude;
@@ -620,5 +630,216 @@ public class RC_MemberDetails extends AppCompatActivity {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //System.out.println(requestCode + "----" + requestCode);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 14) {
+
+                String rd_info = data.getStringExtra("RD_SERVICE_INFO");
+                if (rd_info != null) {
+                    showMessageDialogue(rd_info, "RD SERVICE INFO XML");
+                } else {
+                    showMessageDialogue("NULL STRING RETURNED", "RD SERVICE INFO XML");
+                }
+
+                String dev_info = data.getStringExtra("DEVICE_INFO");
+                if (dev_info != null) {
+                    showMessageDialogue(dev_info, "DEVICE INFO XML");
+                } else {
+                    showMessageDialogue("NULL STRING RETURNED", "DEVICE INFO XML");
+                }
+            } else if (requestCode == 13) {
+
+                String pidDataXML = data.getStringExtra("PID_DATA");
+                System.out.println("pidDataXML===" + pidDataXML);
+                if (pidDataXML != null) {
+                    if (pidDataXML.equals("") || pidDataXML.isEmpty()) {
+
+                        paramOK = false;
+
+                        return;
+                    }
+                    if (pidDataXML.startsWith("ERROR:-")) {
+
+                        paramOK = false;
+
+                        return;
+                    } else {
+                        DocumentBuilderFactory db = DocumentBuilderFactory.newInstance();
+                        org.w3c.dom.Document inputDocument = null;
+                        try {
+                            inputDocument = db.newDocumentBuilder().parse(new InputSource(new StringReader(pidDataXML)));
+                            NodeList nodes = inputDocument.getElementsByTagName("PidData");
+                            if (nodes != null) {
+                                //Element element = (Element) nodes.item(0);
+                                NodeList respNode = inputDocument.getElementsByTagName("Resp");
+                                if (respNode != null) {
+                                    Element element2 = (Element) respNode.item(0);
+                                    String errcode = element2.getAttribute("errCode");
+                                    //Toast.makeText(getApplicationContext(),"errcode==="+errcode,Toast.LENGTH_SHORT).show();
+
+                                    if (!errcode.equals("0")) {
+                                        paramOK = false;
+
+                                    } else {
+                                        NodeList dataTypeNode = inputDocument.getElementsByTagName("Data");
+                                        if (dataTypeNode != null) {
+                                            Element element1 = (Element) dataTypeNode.item(0);
+                                            pId = element1.getTextContent();
+                                            dataType = element1.getAttribute("type");
+                                        }
+
+                                        NodeList hmacNode = inputDocument.getElementsByTagName("Hmac");
+                                        if (hmacNode != null) {
+                                            Element element1 = (Element) hmacNode.item(0);
+                                            hmac = element1.getTextContent();
+                                        }
+                                        NodeList ciNode = inputDocument.getElementsByTagName("Skey");
+                                        if (ciNode != null) {
+                                            Element element1 = (Element) ciNode.item(0);
+                                            skey = element1.getTextContent();
+                                            certIdentifier = element1.getAttribute("ci");
+                                        }
+                                        NodeList devInfoNode = inputDocument.getElementsByTagName("DeviceInfo");
+                                        if (devInfoNode != null) {
+                                            Element element1 = (Element) devInfoNode.item(0);
+                                            dpId = element1.getAttribute("dpId");
+                                            rdId = element1.getAttribute("rdsId");
+                                            rdVer = element1.getAttribute("rdsVer");
+                                            dc = element1.getAttribute("dc");
+                                            mc = element1.getAttribute("mc");
+                                            mId = element1.getAttribute("mi");
+                                        }
+                                        paramOK = true;
+                                    }
+                                }
+                            }
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (SAXException e) {
+                            e.printStackTrace();
+                        } catch (ParserConfigurationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+        if (paramOK) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                JSONObject object = new JSONObject();
+                object.put("certificateIdentifier", certIdentifier);
+                object.put("dataType", dataType);
+                object.put("dc", dc);
+                object.put("dpId", dpId);
+                object.put("encHmac", hmac);
+                object.put("mc", mc);
+                object.put("mid", mId);
+                object.put("rdId", rdId);
+                object.put("rdVer", rdVer);
+                object.put("secure_pid", pId);
+                object.put("sessionKey", skey);
+
+                jsonObject.put("authRD", object);
+
+                jsonObject.put("auth_type", "FMR");
+                jsonObject.put("consent", "Y");
+                jsonObject.put("token", "91f01a0a96c526d28e4d0c1189e80459");
+                jsonObject.put("home_state_id", state_code);
+                jsonObject.put("sale_state_id", sale_state_code);
+                jsonObject.put("fps_id", sale_fps_id);
+                jsonObject.put("rc_id", rc_id);
+                jsonObject.put("rc_uid", rc_uid);
+                jsonObject.put("terminal_id", android_id);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            System.out.println("jsonObject.toString()==="+jsonObject.toString());
+            showBar();
+
+            RequestQueue requestQueue = Volley.newRequestQueue(RC_MemberDetails.this);
+
+            //showLog(""+jsonObject.toString(),"=REQ=");
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.POST,
+                    "http://164.100.65.96/CTGMobileApplication/mobileimpdsApi/impdsMEService",
+                    jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            try {
+                                progressDialog.dismiss();
+                                // showLog(response.toString(),"error=");
+                                System.out.println("bio---" + response.toString());
+                                String respCode = response.getString("resp_code");
+                                String respMessage = response.getString("resp_message");
+
+                                if (respCode != null && respCode.equalsIgnoreCase("001")) {
+                                    String uid_refer_no = response.getString("txn_id");
+                                    ImpdsBean impdsBean = ImpdsBean.getInstance();
+                                    impdsBean.setUidRefNumber(uid_refer_no);
+                                    impdsBean.setUid(rc_uid);
+                                    displayToast_success();
+
+                                } else {
+
+                                    //  Toast.makeText(getApplicationContext(),respCode+"--"+respMessage+"--"+transactionFlow,Toast.LENGTH_SHORT).show();
+                                    android.app.AlertDialog.Builder builder = new
+                                            android.app.AlertDialog.Builder(RC_MemberDetails.this);
+                                    builder.setTitle("Alert");
+
+                                    builder.setMessage(respMessage + " - " + respCode)
+                                            .setCancelable(false)
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    // onBackPressed();
+                                                    dialog.cancel();
+                                                }
+                                            });
+
+                                    android.app.AlertDialog alert = builder.create();
+                                    alert.show();
+                                }
+                            } catch (JSONException e) {
+                                if (progressDialog != null && progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                }
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(), "Biometric data did not match(300)", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            System.out.println("VolleyError---" + error.toString());
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                            showMessageDialogue("Authentication failed.Please try again!", "Alert");
+                            // onBackPressed();
+                        }
+                    }
+            );
+
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    20000,
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(jsonObjectRequest);
+        } else {
+            Toast.makeText(getApplicationContext(), "Device not ready", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

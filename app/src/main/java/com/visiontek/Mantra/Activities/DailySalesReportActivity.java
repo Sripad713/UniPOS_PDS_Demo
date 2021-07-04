@@ -2,6 +2,7 @@ package com.visiontek.Mantra.Activities;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -13,7 +14,11 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -91,8 +96,9 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
             } else {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_error_box(context.getResources().getString(R.string.RD_Service_Msg),
-                        context.getResources().getString(R.string.RD_Service));
+                show_AlertDialog(context.getResources().getString(R.string.Cash_PDS),
+                        context.getResources().getString(R.string.RD_Service),
+                        context.getResources().getString(R.string.RD_Service_Msg),0);
                 return;
             }
 
@@ -140,10 +146,17 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                             }
                             Util.generateNoteOnSD(context, "DailySaleReq.txt", sale);
                             hitURL(sale);
-                        } else
-                            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection));
+                        } else{
+                            show_AlertDialog(context.getResources().getString(R.string.Daily_Sales_Report),
+                                    context.getResources().getString(R.string.Internet_Connection),
+                                    context.getResources().getString(R.string.Internet_Connection_Msg),
+                                    0);
+                        }
                     } else {
-                        show_error_box(context.getResources().getString(R.string.Please_Enter_date_in_Edit_text_to_view_Stock), context.getResources().getString(R.string.Enter_Date));
+                        show_AlertDialog(context.getResources().getString(R.string.Daily_Sales_Report),
+                                context.getResources().getString(R.string.Enter_Date),
+                                context.getResources().getString(R.string.Please_Enter_date_in_Edit_text_to_view_Stock),
+                                0);
                     }
 
                 }
@@ -160,18 +173,27 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                 @Override
                 public void onClick(View v) {
-                    preventTwoClick(view);
+
                     if (flag_print == 1) {
+                        print.setEnabled(false);
+                        preventTwoClick(view);
                         String app;
                         StringBuilder add = new StringBuilder();
                         String time = sdf1.format(new Date()).substring(0, 5);
                         String date = sdf1.format(new Date()).substring(6, 16);
                         int drBeansize = saleDetails.drBean.size();
                         for (int i = 0; i < drBeansize; i++) {
-                            app = String.format("%-10s%-12s%-12s\n",
-                                    saleDetails.drBean.get(i).comm_name,
-                                    saleDetails.drBean.get(i).schemeName,
-                                    saleDetails.drBean.get(i).sale);
+                            if(L.equals("hi")){
+                                app = String.format("%-10s%-12s%-12s\n",
+                                        saleDetails.drBean.get(i).commNamell,
+                                        saleDetails.drBean.get(i).schemeName,
+                                        saleDetails.drBean.get(i).sale);
+                            }else {
+                                app = String.format("%-10s%-12s%-12s\n",
+                                        saleDetails.drBean.get(i).comm_name,
+                                        saleDetails.drBean.get(i).schemeName,
+                                        saleDetails.drBean.get(i).sale);
+                            }
                             add.append(app);
 
                         }
@@ -179,26 +201,37 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                         String[] str = new String[4];
                         if (L.equals("hi")) {
 
-                            str1 = context.getResources().getString(R.string.DAY_REPORT);
+                            str1 = dealerConstants.stateBean.stateReceiptHeaderLl + "\n" +
+                                    context.getResources().getString(R.string.DAY_REPORT) + "\n";
                             image(str1, "header.bmp", 1);
+
                             str2 = context.getResources().getString(R.string.Date) + " : " + date + "\n" + context.getResources().getString(R.string.Time) + " :" + time + "\n"
                                     + context.getResources().getString(R.string.Day_Report_Date) + " : " + date + "\n"
-                                    + context.getResources().getString(R.string.FPS_ID) + " : " + dealerConstants.stateBean.statefpsId + "\n";
+                                    + context.getResources().getString(R.string.FPS_ID) + " : " + dealerConstants.stateBean.statefpsId + "\n\n";
 
-                            str3 = context.getResources().getString(R.string.commodity) + "      " + context.getResources().getString(R.string.scheme) + "       " + context.getResources().getString(R.string.sale);
+                            str3 = String.format("%-13s%-13s%-13s\n",
+                                    context.getResources().getString(R.string.commodity),
+                                    context.getResources().getString(R.string.scheme),
+                                    context.getResources().getString(R.string.sale))
+                                    + "\n";
 
                             str4 = String.valueOf(add);
                             image(str2 + str3 + str4, "body.bmp", 0);
 
                             str5 = context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
-                                    + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n";
+                                    + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n\n\n";
 
                             image(str5, "tail.bmp", 1);
                             str[0] = "1";
                             str[1] = "1";
                             str[2] = "1";
                             str[3] = "1";
-                            checkandprint(str, 1);
+                            System.out.println(str1+"\n"+
+                            str2+"\n"+
+                            str3+"\n"+
+                            str4+"\n"+
+                                    str5+"");
+                           checkandprint(str, 1);
                         } else {
 
                             str1 = dealerConstants.stateBean.stateReceiptHeaderEn + "\n" +
@@ -206,13 +239,13 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                             str2 = context.getResources().getString(R.string.Date) + "           : " + date + "\n" +
                                     context.getResources().getString(R.string.Time) + "           : " + time + "\n"
                                     + context.getResources().getString(R.string.Day_Report_Date) + ": " + date + "\n"
-                                    + context.getResources().getString(R.string.FPS_ID) + "         : " + dealerConstants.stateBean.statefpsId + "\n"
-                                    + "-------------------------------\n";
+                                    + context.getResources().getString(R.string.FPS_ID) + "         : " + dealerConstants.stateBean.statefpsId + "\n\n"
+                                    + "\n";
                             str3 = String.format("%-10s%-12s%-12s\n",
                                     context.getResources().getString(R.string.commodity),
                                     context.getResources().getString(R.string.scheme),
                                     context.getResources().getString(R.string.sale))
-                                    + "-------------------------------\n";
+                                    + "\n";
                             str4 = String.valueOf(add);
 
                             str5 = "\n" + context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
@@ -221,12 +254,21 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                             str[1] = str1;
                             str[2] = str2 + str3 + str4;
                             str[3] = str5;
-                            checkandprint(str, 0);
+
+                            System.out.println(str1+"\n"+
+                                    str2+"\n"+
+                                    str3+"\n"+
+                                    str4+"\n"+
+                                    str5+"");
+                           checkandprint(str, 0);
 
                         }
 
                     } else {
-                        show_error_box("Please click on view Button", "Daily Sales");
+                        show_AlertDialog(context.getResources().getString(R.string.Daily_Sales_Report),
+                                context.getResources().getString(R.string.Date),
+                                context.getResources().getString(R.string.Enter_Date_to_view_sales),
+                                0);
                     }
                 }
             });
@@ -244,24 +286,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
             back.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                    alertDialogBuilder.setMessage(context.getResources().getString(R.string.Do_you_want_to_cancel_Session));
-                    alertDialogBuilder.setCancelable(false);
-                    alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Yes),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    finish();
-                                }
-                            });
-                    alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.No),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                }
-                            });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
+                    finish();
                 }
             });
 
@@ -314,8 +339,6 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkandprint(String[] str, int i) {
         try {
-
-
             if (Util.batterylevel(context) || Util.adapter(context)) {
                 if (mp != null) {
                     releaseMediaPlayer(context, mp);
@@ -328,7 +351,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                 es.submit(new TaskPrint(mTerminal100API, str, mActivity, context, i));
                 finish();
             } else {
-                show_error_box(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery));
+                printbox(str,i);
             }
         } catch (Exception ex) {
 
@@ -340,7 +363,6 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
         try {
             Util.image(content, name, align);
         } catch (Exception ex) {
-
             Timber.tag("DailySales-Image-").e(ex.getMessage(), "");
         }
     }
@@ -366,21 +388,31 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
             @Override
-            public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-                if (isError == null || isError.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response");
+            public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                Dismiss();
+                if (code == null || code.isEmpty()) {
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Daily_Sales_Report),
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
                     return;
                 }
-                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                    Sessiontimeout(msg, isError);
+
+              /*  if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+                    SessionAlert(
+                            context.getResources().getString(R.string.Daily_Sales_Report),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg);
                     return;
-                }
-                if (!isError.equals("00")) {
-                    System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                    show_error_box(msg, context.getResources().getString(R.string.Dealer_Details) + isError);
+                }*/
+                if (!code.equals("00")) {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Daily_Sales_Report),
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            0);
 
                 } else {
 
@@ -388,9 +420,17 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                     data = new ArrayList<>();
                     int drBeansize = saleDetails.drBean.size();
                     for (int i = 0; i < drBeansize; i++) {
-                        data.add(new DailySalesListModel(saleDetails.drBean.get(i).comm_name,
-                                saleDetails.drBean.get(i).schemeName,
-                                saleDetails.drBean.get(i).sale));
+                        if(L.equals("hi")){
+                            data.add(new DailySalesListModel(
+                                    saleDetails.drBean.get(i).commNamell,
+                                    saleDetails.drBean.get(i).schemeName,
+                                    saleDetails.drBean.get(i).sale));
+                        }else {
+                            data.add(new DailySalesListModel(
+                                    saleDetails.drBean.get(i).comm_name,
+                                    saleDetails.drBean.get(i).schemeName,
+                                    saleDetails.drBean.get(i).sale));
+                        }
 
                     }
                     adapter = new DailySalesListAdapter(context, data);
@@ -404,21 +444,6 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
 
             Timber.tag("DailySales-Date-").e(ex.getMessage(), "");
         }
-    }
-
-    private void show_error_box(String msg, String title) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
     }
 
 
@@ -574,7 +599,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
 
         toolbarFpsid.setText("FPS ID");
         toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("DAILY SALES");
+        toolbarActivity.setText( context.getResources().getString(R.string.Daily_Sales_Report));
 
         toolbarLatitudeValue.setText(latitude);
         toolbarLongitudeValue.setText(longitude);
@@ -582,5 +607,134 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
 
             Timber.tag("DailySales-Toolbar-").e(ex.getMessage(), "");
         }
+    }
+
+    private void show_Dialogbox(String msg,String header) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
+
+    }
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
+    }
+    private void printbox( final String[] str, final int type) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(context.getResources().getString(R.string.Battery));
+        status.setText( context.getResources().getString(R.string.Battery_Msg));
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                checkandprint(str,type);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
     }
 }

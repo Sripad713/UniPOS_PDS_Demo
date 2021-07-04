@@ -17,6 +17,8 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -115,8 +117,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             if (rd_fps) {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
             } else {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.blackblack));
+                show_AlertDialog(context.getResources().getString(R.string.Beneficiary_Details),
+                        context.getResources().getString(R.string.RD_Service),
+                        context.getResources().getString(R.string.RD_Service_Msg),0);
                 return;
             }
 
@@ -133,10 +137,19 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                         if (beneficiaryModel.verification.equals("N")) {
                             AadhaarDialog();
                         } else {
-                            show_error_box("", beneficiaryModel.verifyStatus_en, 0);
+                            show_AlertDialog(
+                                    beneficiaryModel.memberName,
+                                    beneficiaryModel.verifyStatus_en,
+                                    ""
+                                    ,0);
+
                         }
                     } else {
-                        show_error_box("", context.getResources().getString(R.string.Please_Select_a_Member), 0);
+                        show_AlertDialog(context.getResources().getString(R.string.Beneficiary_Details),
+                                context.getResources().getString(R.string.Please_Select_a_Member),
+                                ""
+                                ,0);
+
                     }
                 }
             });
@@ -202,9 +215,17 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             ArrayList<BeneficiaryVerificationListModel> data = new ArrayList<>();
             int rcMemberDetVerifysize = beneficiaryDetails.rcMemberDetVerify.size();
             for (int i = 0; i < rcMemberDetVerifysize; i++) {
-                data.add(new BeneficiaryVerificationListModel(beneficiaryDetails.rcMemberDetVerify.get(i).memberName,
-                        beneficiaryDetails.rcMemberDetVerify.get(i).uid,
-                        beneficiaryDetails.rcMemberDetVerify.get(i).verifyStatus_en));
+                if (L.equals("hi")) {
+                    data.add(new BeneficiaryVerificationListModel(
+                            beneficiaryDetails.rcMemberDetVerify.get(i).memberNamell,
+                            beneficiaryDetails.rcMemberDetVerify.get(i).uid,
+                            beneficiaryDetails.rcMemberDetVerify.get(i).verifyStatus_ll));
+                } else {
+                    data.add(new BeneficiaryVerificationListModel(
+                            beneficiaryDetails.rcMemberDetVerify.get(i).memberName,
+                            beneficiaryDetails.rcMemberDetVerify.get(i).uid,
+                            beneficiaryDetails.rcMemberDetVerify.get(i).verifyStatus_en));
+                }
             }
             adapter = new BeneficiaryVerificationListAdapter(context, data, new OnClickBen() {
                 @Override
@@ -242,27 +263,48 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     private void ConsentformURL(String consentrequest) {
         try {
 
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Beneficiary_Details), context.getResources().getString(R.string.Consent_Form), true, false);
+            Show(context.getResources().getString(R.string.Beneficiary_Details),
+                    context.getResources().getString(R.string.Consent_Form));
+/*
+            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Beneficiary_Details),
+             context.getResources().getString(R.string.Consent_Form), true, false);
+*/
             Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
             request.setOnResultListener(new Json_Parsing.OnResultListener() {
 
                 @Override
                 public void onCompleted(String code, String msg, Object object) {
-                    if (pd.isShowing()) {
-                        pd.dismiss();
-                    }
+                    Dismiss();
                     if (code == null || code.isEmpty()) {
-                        show_error_box("Invalid Response from Server", "No Response", 0);
+
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Consent_Form)+beneficiaryModel.memberName,
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
                         return;
                     }
-                    if (code.equals("057") || code.equals("008") || code.equals("09D")) {
-                        Sessiontimeout(msg, code);
+
+                    /*if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+                        SessionAlert(
+                                context.getResources().getString(R.string.Consent_Form)+beneficiaryModel.memberName,
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg);
                         return;
-                    }
+                    }*/
                     if (!code.equals("00")) {
-                        show_error_box(msg, code, 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Consent_Form)+beneficiaryModel.memberName,
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                0);
+
                     } else {
-                        show_error_box(msg, code, 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Consent_Form)+beneficiaryModel.memberName,
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                0);
                     }
                 }
 
@@ -285,8 +327,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             TextView tv = (TextView) dialog.findViewById(R.id.status);
             TextView dialogbox = (TextView) dialog.findViewById(R.id.dialog);
             final EditText enter = (EditText) dialog.findViewById(R.id.enter);
-            dialogbox.setText("EKYC");
-            tv.setText("Please Enter Benficiary UID");
+            dialogbox.setText(context.getResources().getString(R.string.EKYC));
+            tv.setText(context.getResources().getString(R.string.Please_Enter_Customer_Aadhaar_No));
             confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -298,10 +340,17 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                             beneficiaryModel.Enter_UID = encrypt(beneficiaryModel.Enter_UID, menuConstants.skey);
 
                             if (Util.networkConnected(context)) {
-                                ConsentDialog(ConsentForm(context));
+                                if (L.equals("hi")){
+                                    ConsentDialog(ConsentForm(context,1));
+                                }else {
+                                    ConsentDialog(ConsentForm(context,0));
+                                }
 
                             } else {
-                                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                                show_AlertDialog(context.getResources().getString(R.string.Beneficiary_Details),
+                                        context.getResources().getString(R.string.Internet_Connection),
+                                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                                        0);
                             }
                         } catch (BadPaddingException e) {
                             e.printStackTrace();
@@ -323,7 +372,12 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                         } else {
                             mp = mp.create(context, R.raw.c100047);
                             mp.start();
-                            show_error_box("", "Please enter a valid UID", 0);
+                            show_AlertDialog(
+                                    context.getResources().getString(R.string.Beneficiary_Details)+ beneficiaryModel.Enter_UID,
+                                    context.getResources().getString(R.string.Invalid_UID),
+                                    context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID),
+                                    0);
+
                         }
                     }
                 }
@@ -364,7 +418,11 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                         dialog.dismiss();
                         connectRDserviceEKYC(beneficiaryDetails.wadh);
                     } else {
-                        show_error_box("Please Check the Consent Message", context.getResources().getString(R.string.Consent_Form), 2);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Beneficiary_Details)+beneficiaryModel.memberName ,
+                                context.getResources().getString(R.string.Consent_Form),
+                                context.getResources().getString(R.string.Please_check_Consent_Form),
+                                2);
                     }
 
                 }
@@ -390,27 +448,42 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     private void hitURL1(String BenAuth) {
         try {
 
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Beneficiary_Verification), context.getResources().getString(R.string.Processing), true, false);
+            Show( context.getResources().getString(R.string.Beneficiary_Verification), context.getResources().getString(R.string.Processing));
+/*
+            pd = ProgressDialog.show(context,
+            context.getResources().getString(R.string.Beneficiary_Verification), context.getResources().getString(R.string.Processing), true, false);
+*/
             Aadhaar_Parsing request = new Aadhaar_Parsing(context, BenAuth, 4);
             request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                 @Override
-                public void onCompleted(String error, String msg, String ref, String flow, Object object) {
-                    if (pd.isShowing()) {
-                        pd.dismiss();
-                    }
-                    if (error == null || error.isEmpty()) {
-                        show_error_box("Invalid Response from Server", "No Response", 0);
+                public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                    Dismiss();
+                    if (code == null || code.isEmpty()) {
+
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Beneficiary_Verification)+beneficiaryModel.memberName,
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
                         return;
                     }
-                    if (error.equals("057") || error.equals("008") || error.equals("09D")) {
-                        Sessiontimeout(msg, error);
+
+                   /* if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+                        SessionAlert(
+                                context.getResources().getString(R.string.Beneficiary_Verification)+beneficiaryModel.memberName,
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg);
                         return;
-                    }
-                    if (!error.equals("E00")) {
-                        System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                        show_error_box(msg, context.getResources().getString(R.string.Member_Details) + error, 0);
+                    }*/
+                    if (!code.equals("E00")) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Beneficiary_Verification)+beneficiaryModel.memberName,
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                0);
+
                     } else {
                         beneficiaryAuth = (BeneficiaryAuth) object;
                         String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
@@ -420,7 +493,12 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                                 context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder + "\n" +
                                 context.getResources().getString(R.string.Date) + " : " + currentDateTimeString + "\n";
 
-                        show_error_box(details, error, 1);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                details,
+                                "",
+                                        1);
+
                     }
                 }
             });
@@ -434,7 +512,6 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     private void connectRDserviceEKYC(String wadhvalue) {
         try {
 
-            try {
                 if (mp != null) {
                     releaseMediaPlayer(context, mp);
                 }
@@ -456,14 +533,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 PackageManager packageManager = getPackageManager();
                 List<ResolveInfo> activities = packageManager.queryIntentActivities(act, PackageManager.MATCH_DEFAULT_ONLY);
                 final boolean isIntentSafe = activities.size() > 0;
-                System.out.println("Boolean check for activities = " + isIntentSafe);
-                System.out.println("No of activities = " + activities.size());
+
                 act.putExtra("PID_OPTIONS", xmplpid);
                 startActivityForResult(act, beneficiaryModel.RD_SERVICE);
-            } catch (Exception e) {
-                System.out.println("Error while connecting to RDService");
-                e.printStackTrace();
-            }
+
         } catch (Exception ex) {
             Timber.tag("Beneficiary-RD-").e(ex.getMessage(), "");
         }
@@ -475,10 +548,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         super.onActivityResult(requestCode, resultCode, data);
         try {
 
-            System.out.println("OnActivityResult");
+
             if (requestCode == beneficiaryModel.RD_SERVICE) {
                 if (resultCode == Activity.RESULT_OK) {
-                    System.out.println(data.getStringExtra("PID_DATA"));
+
                     String piddata = data.getStringExtra("PID_DATA");
                     int code = createAuthXMLRegistered(piddata);
                     if (piddata != null && piddata.contains("errCode=\"0\"") && code == 0) {
@@ -487,9 +560,19 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                         prep_Mlogin();
 
                     } else {
-                        show_error_box(beneficiaryModel.rdModel.errinfo, context.getResources().getString(R.string.PID_Exception), 0);
-                        System.out.println("ERROR PID DATA = " + piddata);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Dealer),
+                                beneficiaryModel.err_code,
+                                beneficiaryModel.rdModel.errinfo,
+                                0);
                     }
+                } else {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.RD_Service),
+                            beneficiaryModel.err_code,
+                            beneficiaryModel.rdModel.errinfo,
+                            0);
+
                 }
             }
         } catch (Exception ex) {
@@ -558,7 +641,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 Util.generateNoteOnSD(context, "BenVerificationAuthReq.txt", BenAuth);
                 hitURL1(BenAuth);
             } else {
-                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                show_AlertDialog(
+                        context.getResources().getString(R.string.Login),
+                        context.getResources().getString(R.string.Internet_Connection),
+                        context.getResources().getString(R.string.Internet_Connection_Msg),0);
             }
         } catch (Exception ex) {
             Timber.tag("Beneficiary-AuthFormat-").e(ex.getMessage(), "");
@@ -586,32 +672,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         }
     };
 
-    private void show_error_box(String msg, String title, final int type) {
-        try {
 
-            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-            alertDialogBuilder.setMessage(msg);
-            alertDialogBuilder.setTitle(title);
-            alertDialogBuilder.setCancelable(false);
-            alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                    new DialogInterface.OnClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            if (type == 1) {
-                                callPrint();
-                            } else if (type == 2) {
-                                prep_consent();
-                            }
-                        }
-                    });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-        } catch (Exception ex) {
-
-            Timber.tag("Beneficiary-ErrorBox-").e(ex.getMessage(), "");
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void callPrint() {
@@ -621,13 +682,15 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
             String[] str = new String[4];
             if (L.equals("hi")) {
-                str1 = context.getResources().getString(R.string.VERIFICATION_RECEIPT) + "\n";
+                str1 = dealerConstants.stateBean.stateReceiptHeaderEn + "\n" +
+                        context.getResources().getString(R.string.VERIFICATION_RECEIPT) + "\n";
                 image(str1, "header.bmp", 1);
                 str2 = context.getResources().getString(R.string.Date) + " : " + currentDateTimeString +
-                        context.getResources().getString(R.string.Time) + " : " + currentDateTimeString + " \n" +
+                       /* context.getResources().getString(R.string.Time) + " : " + currentDateTimeString + " \n" +*/
                         context.getResources().getString(R.string.FPS_ID) + " : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
-                        + context.getResources().getString(R.string.NAME) + " : " + beneficiaryAuth.eKYCMemberName + "\n\n"
+                        + context.getResources().getString(R.string.NAME) + " : " + beneficiaryAuth.eKYCMemberName + "\n"
                         + context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder + "\n"
+                        + context.getResources().getString(R.string.DOB) +" : " + beneficiaryAuth.eKYCDOB + "\n"
                         + context.getResources().getString(R.string.Ration_Card_Number) + " : " + "\n"
                         + context.getResources().getString(R.string.Status) + " : " + "Success" + "\n";
 
@@ -647,8 +710,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                         /*+ context.getResources().getString(R.string.Time) + "           : " + currentDateTimeString + " \n"*/
                         + context.getResources().getString(R.string.FPS_ID) + "         : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
                         + context.getResources().getString(R.string.NAME) + "           : " + beneficiaryAuth.eKYCMemberName + "\n"
-                        + context.getResources().getString(R.string.Gender) + "         : " + beneficiaryAuth.eKYCGeneder + "\n"
-                        + "DOB            : " + beneficiaryAuth.eKYCDOB + "\n"
+                        + context.getResources().getString(R.string.Gender) +"         : " + beneficiaryAuth.eKYCGeneder + "\n"
+                        + context.getResources().getString(R.string.DOB) +"            :" + beneficiaryAuth.eKYCDOB + "\n"
                         + context.getResources().getString(R.string.Ration_Card_Number) + " : " + beneficiaryDetails.rationCardId + "\n"
                         + context.getResources().getString(R.string.Status) + "         : " + "Success" + "\n";
 
@@ -667,7 +730,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     private void prep_consent() {
         try {
 
-            System.out.println("@@ In dealer details else case");
+
             String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
             //currentDateTimeString="26032021114610";
             String consentrequest = "{\n" +
@@ -689,39 +752,6 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         } catch (Exception ex) {
 
             Timber.tag("Beneficiary-CnsntFrmt-").e(ex.getMessage(), "");
-        }
-    }
-
-    private void printbox(String msg, String title, final String[] str, final int type) {
-        try {
-
-            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-            alertDialogBuilder.setMessage(msg);
-            alertDialogBuilder.setTitle(title);
-            alertDialogBuilder.setCancelable(false);
-            alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                    new DialogInterface.OnClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            checkandprint(str, type);
-
-                        }
-                    });
-            alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.Cancel),
-                    new DialogInterface.OnClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-
-
-                        }
-                    });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-        } catch (Exception ex) {
-
-            Timber.tag("Beneficiary-PrintBox-").e(ex.getMessage(), "");
         }
     }
 
@@ -752,7 +782,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             } else {
-                printbox(context.getResources().getString(R.string.Battery_Msg), context.getResources().getString(R.string.Battery), str, i);
+                printbox(str, i);
             }
         } catch (Exception ex) {
             Timber.tag("Beneficiary-Batter-").e(ex.getMessage(), "");
@@ -771,7 +801,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 Document doc = builder.parse(is);
 
                 beneficiaryModel.err_code = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errCode").getTextContent();
-                if (beneficiaryModel.err_code.equals("1")) {
+                if (!beneficiaryModel.err_code.equals("0")) {
                     beneficiaryModel.rdModel.errinfo = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errInfo").getTextContent();
                     return 1;
                 } else {
@@ -871,7 +901,38 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     public void OnPrint(final int bPrintResult, final boolean bIsOpened) {
 
     }
+    private void printbox( final String[] str, final int type) {
 
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(context.getResources().getString(R.string.Battery));
+        status.setText( context.getResources().getString(R.string.Battery_Msg));
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                checkandprint(str,type);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
     private void toolbarInitilisation() {
         try {
 
@@ -896,7 +957,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
             toolbarFpsid.setText("FPS ID");
             toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-            toolbarActivity.setText("BENEFICIARY");
+            toolbarActivity.setText( context.getResources().getString(R.string.BENEFICIARY_DETAILS));
 
             toolbarLatitudeValue.setText(latitude);
             toolbarLongitudeValue.setText(longitude);
@@ -904,5 +965,112 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
             Timber.tag("Beneficiary-ToolBar-").e(ex.getMessage(), "");
         }
+    }
+
+    private void show_Dialogbox(String msg, String header) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialogbox);
+        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
+        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
+        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
+        head.setText(header);
+        status.setText(msg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                if (i == 1) {
+                    callPrint();
+                } else if (i == 2) {
+                    prep_consent();
+                }
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(context, StartActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
+
+    }
+
+    public void Dismiss() {
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+
+    public void Show(String msg,String title){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
     }
 }
