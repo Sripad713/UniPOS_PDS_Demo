@@ -75,7 +75,9 @@ public class ReceiveGoodsActivity extends AppCompatActivity {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service),0);
+            show_AlertDialog(context.getResources().getString(R.string.RECEIVE_GOODS),
+                    context.getResources().getString(R.string.RD_Service),
+                    context.getResources().getString(R.string.RD_Service_Msg),0);
             return;
         }
         receiveGoodsModel=new ReceiveGoodsModel();

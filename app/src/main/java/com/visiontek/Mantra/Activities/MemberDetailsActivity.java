@@ -1084,11 +1084,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
         System.out.println("OnActivityResult");
         if (requestCode == memberModel.RD_SERVICE) {
             if (resultCode == Activity.RESULT_OK) {
-                System.out.println(data.getStringExtra("PID_DATA"));
                 String piddata = data.getStringExtra("PID_DATA");
                 int code = createAuthXMLRegistered(piddata);
                 if (piddata != null && piddata.contains("errCode=\"0\"") && code == 0) {
-                    System.out.println("PID DATA = " + piddata);
                     if (memberModel.EKYC == 1) {
                         memberModel.EKYC = 0;
                         EKYCAuth();
@@ -1097,7 +1095,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                     }
                 } else {
                     show_AlertDialog(
-                            context.getResources().getString(R.string.Dealer),
+                            context.getResources().getString(R.string.RD_Service),
                             memberModel.err_code,
                             memberModel.rdModel.errinfo,
                             0);

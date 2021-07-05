@@ -52,7 +52,9 @@ public class AadhaarServicesActivity extends AppCompatActivity {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_service_discovery_Failed), context.getResources().getString(R.string.RD_Service));
+            show_AlertDialog(context.getResources().getString(R.string.Aadhaar_Services),
+                    context.getResources().getString(R.string.RD_Service),
+                    context.getResources().getString(R.string.RD_Service_Msg),0);
             return;
         }
         initilisation();

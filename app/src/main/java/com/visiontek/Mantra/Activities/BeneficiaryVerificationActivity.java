@@ -81,7 +81,7 @@ public class BeneficiaryVerificationActivity extends AppCompatActivity {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
         } else {
             toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_AlertDialog(context.getResources().getString(R.string.Cash_PDS),
+            show_AlertDialog(context.getResources().getString(R.string.Beneficiary_Verification),
                     context.getResources().getString(R.string.RD_Service),
                     context.getResources().getString(R.string.RD_Service_Msg),0);
             return;

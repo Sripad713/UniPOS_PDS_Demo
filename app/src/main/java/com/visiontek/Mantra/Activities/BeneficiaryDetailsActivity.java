@@ -551,17 +551,13 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
             if (requestCode == beneficiaryModel.RD_SERVICE) {
                 if (resultCode == Activity.RESULT_OK) {
-
                     String piddata = data.getStringExtra("PID_DATA");
                     int code = createAuthXMLRegistered(piddata);
                     if (piddata != null && piddata.contains("errCode=\"0\"") && code == 0) {
-                        System.out.println("PID DATA = " + piddata);
-
                         prep_Mlogin();
-
                     } else {
                         show_AlertDialog(
-                                context.getResources().getString(R.string.Dealer),
+                                context.getResources().getString(R.string.RD_Service),
                                 beneficiaryModel.err_code,
                                 beneficiaryModel.rdModel.errinfo,
                                 0);

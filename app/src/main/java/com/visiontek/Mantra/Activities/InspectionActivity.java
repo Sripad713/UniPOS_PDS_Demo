@@ -90,10 +90,8 @@ import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
 public class InspectionActivity extends AppCompatActivity implements PrinterCallBack {
     String ACTION_USB_PERMISSION;
-
     int RD_SERVICE = 0;
     String errcode = "1";
-
     String fCount;
     Context context;
     ProgressDialog pd = null;
@@ -101,7 +99,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     RadioButton ok, seized;
     int select;
     ArrayList<InspectionListModel> data;
-
     String DATA;
     Float textdata;
     float cb;
@@ -129,13 +126,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-
-
                 String action = intent.getAction();
                 if (ACTION_USB_PERMISSION.equals(action)) {
                     probe();
                     synchronized (this) {
-
                     }
                 }
             }catch (Exception ex){
@@ -163,8 +157,9 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
             } else {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
-                return;
+                show_AlertDialog(context.getResources().getString(R.string.Inspection),
+                        context.getResources().getString(R.string.RD_Service),
+                        context.getResources().getString(R.string.RD_Service_Msg),0);                return;
             }
             initilisation();
             radioGroup = findViewById(R.id.groupradio);
@@ -193,8 +188,9 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                         fCount = "1";
                         Enter_UID();
                     } else {
-                        show_error_box("Please Select atleast one Observation", "", 0);
-
+                        show_AlertDialog(context.getResources().getString(R.string.INSPECTION),
+                                context.getResources().getString(R.string.Enter_Observation),
+                                "",0);
                     }
                 }
             });
@@ -269,28 +265,38 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             } else {
                 app("OK");
             }
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.COMMODITIES), context.getResources().getString(R.string.Commodity_details_are_updating), true, false);
+
+
+            Show(context.getResources().getString(R.string.INSPECTION),
+                    context.getResources().getString(R.string.Authenticating) );
+/*
+            pd = ProgressDialog.show(context,
+             context.getResources().getString(R.string.COMMODITIES),
+              context.getResources().getString(R.string.Commodity_details_are_updating), true, false);
+*/
             Aadhaar_Parsing request = new Aadhaar_Parsing(context, inspectionAuth, 6);
             request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
                 @Override
-                public void onCompleted(String error, String msg, String ref, String flow, Object object) {
+                public void onCompleted(String code, String msg, String ref, String flow, Object object) {
 
-                    if (pd.isShowing()) {
-                        pd.dismiss();
-                    }
+                  Dismiss();
+                    if (code == null || code.isEmpty()) {
 
-                    if (error == null || error.isEmpty()) {
-                        show_error_box("Invalid Response from Server", "No Response", 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.INSPECTION),
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
                         return;
                     }
-                    if (error.equals("057") || error.equals("008") || error.equals("09D")) {
-                        Sessiontimeout(msg, error);
-                        return;
-                    }
-                    if (!error.equals("00")) {
-                        System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                        show_error_box(msg, "Member Details: " + error, 0);
+
+                    if (!code.equals("00")) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.INSPECTION),
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                0);
                     } else {
                         InspectionAuth inspectionAuth = (InspectionAuth) object;
 
@@ -319,10 +325,14 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                                 hitpush(Inspectionpush);
                                 Util.generateNoteOnSD(context, "InspectionPushReq.txt", Inspectionpush);
                             } else {
-                                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
-                            }
+                                show_AlertDialog(context.getResources().getString(R.string.Inspection),
+                                        context.getResources().getString(R.string.Internet_Connection),
+                                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                                        0);                            }
                         } else {
-
+                            show_AlertDialog(context.getResources().getString(R.string.INSPECTION),
+                                    context.getResources().getString(R.string.Enter_Observation),
+                                    "",0);
                         }
                     }
                 }
@@ -353,7 +363,11 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                         dialog.dismiss();
                         connectRDservice();
                     } else {
-                        show_error_box("Please Check the Consent Message", context.getResources().getString(R.string.Consent_Form), 2);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Inspection),
+                                context.getResources().getString(R.string.Consent_Form),
+                                context.getResources().getString(R.string.Please_check_Consent_Form),
+                                2);
                     }
 
                 }
@@ -377,28 +391,39 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
     private void ConsentformURL(String consentrequest) {
         try {
-
+            Show(context.getResources().getString(R.string.Inspection),
+                    context.getResources().getString(R.string.Consent_Form));
+/*
             pd = ProgressDialog.show(context, context.getResources().getString(R.string.Inspection), context.getResources().getString(R.string.Consent_Form), true, false);
+*/
             Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
             request.setOnResultListener(new Json_Parsing.OnResultListener() {
 
                 @Override
                 public void onCompleted(String code, String msg, Object object) {
-                    if (pd.isShowing()) {
-                        pd.dismiss();
-                    }
+
+                    Dismiss();
                     if (code == null || code.isEmpty()) {
-                        show_error_box("Invalid Response from Server", "No Response", 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Consent_Form),
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
                         return;
                     }
-                    if (code.equals("057") || code.equals("008") || code.equals("09D")) {
-                        Sessiontimeout(msg, code);
-                        return;
-                    }
+
                     if (!code.equals("00")) {
-                        show_error_box(msg, code, 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Consent_Form),
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                0);
                     } else {
-                        show_error_box(msg, code, 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Consent_Form),
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                0);
                     }
                 }
 
@@ -457,27 +482,35 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     private void hitpush(String inspectionpush) {
         try {
 
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.COMMODITIES), context.getResources().getString(R.string.Commodity_details_are_updating), true, false);
+            Show( context.getResources().getString(R.string.COMMODITIES),
+                    context.getResources().getString(R.string.Commodity_details_are_updating));
+/*
+            pd = ProgressDialog.show(context, context.getResources().getString(R.string.COMMODITIES),
+             context.getResources().getString(R.string.Commodity_details_are_updating), true, false);
+*/
             Aadhaar_Parsing request = new Aadhaar_Parsing(context, inspectionpush, 7);
             request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                 @Override
-                public void onCompleted(String error, String msg, String ref, String flow, Object object) {
-                    if (pd.isShowing()) {
-                        pd.dismiss();
-                    }
-                    if (error == null || error.isEmpty()) {
-                        show_error_box("Invalid Response from Server", "No Response", 0);
+                public void onCompleted(String code, String msg, String ref, String flow, Object object) {
+                   Dismiss();
+                    if (code == null || code.isEmpty()) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Inspection),
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
+
                         return;
                     }
-                    if (error.equals("057") || error.equals("008") || error.equals("09D")) {
-                        Sessiontimeout(msg, error);
-                        return;
-                    }
-                    if (!error.equals("00")) {
-                        System.out.println("ERRORRRRRRRRRRRRRRRRRRRR");
-                        show_error_box(msg, context.getResources().getString(R.string.Commodities_Error) + error, 0);
+
+                    if (!code.equals("00")) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Consent_Form),
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                0);
                     } else {
                         Iref = ref;
                         String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
@@ -602,10 +635,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             Button back = (Button) dialog.findViewById(R.id.back);
             Button confirm = (Button) dialog.findViewById(R.id.confirm);
             TextView dialogbox = (TextView) dialog.findViewById(R.id.dialog);
-            dialogbox.setText("INSPECTOR");
+            dialogbox.setText(context.getResources().getString(R.string.INSPECTION));
             TextView tv = (TextView) dialog.findViewById(R.id.status);
             final EditText enter = (EditText) dialog.findViewById(R.id.enter);
-            tv.setText("Please Enter Inspector UID");
+            tv.setText(context.getResources().getString(R.string.Please_Enter_Your_Aadhaar_ID));
             confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -619,7 +652,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                             if (Util.networkConnected(context)) {
                                 ConsentDialog(ConsentForm(context, 1));
                             } else {
-                                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                                show_AlertDialog(context.getResources().getString(R.string.Inspection),
+                                        context.getResources().getString(R.string.Internet_Connection),
+                                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                                        0);
                             }
 
                         } catch (BadPaddingException e) {
@@ -642,7 +678,11 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                             mp = mp.create(context, R.raw.c100047);
                             mp.start();
                         }
-                        show_error_box("Please Enter Valid UID", "Invalid UID", 0);
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Inspection)+ Enter_UID,
+                                context.getResources().getString(R.string.Invalid_UID),
+                                context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID),
+                                0);
                     }
                /* }else {
                     show_error_box("Please Enter UID Number", "UID", 0);
@@ -726,18 +766,13 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                String msg = String.valueOf(e);
-                show_error_box(msg, context.getResources().getString(R.string.RD_SERVICE_ERROR), 0);
+
             }
             final boolean isIntentSafe = activities.size() > 0;
-            System.out.println("Boolean check for activities = " + isIntentSafe);
-
-            System.out.println("No of activities = " + activities.size());
             act.putExtra("PID_OPTIONS", xmplpid);
             startActivityForResult(act, RD_SERVICE);
 
         } catch (Exception ex) {
-
             Timber.tag("Inspection-onCreate-").e(ex.getMessage(), "");
         }
     }
@@ -795,8 +830,10 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
                 hit_inspectioAuth(InspectionAuth);
             } else {
-                show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
-            }
+                show_AlertDialog(context.getResources().getString(R.string.Inspection),
+                        context.getResources().getString(R.string.Internet_Connection),
+                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                        0);               }
         } catch (Exception ex) {
 
             Timber.tag("Inspection-Auth-").e(ex.getMessage(), "");
@@ -820,7 +857,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             TextView vari = (TextView) dialog.findViewById(R.id.d);
 
             TextView status = (TextView) dialog.findViewById(R.id.status);
-            status.setText("Please Enter Observation ");
+            status.setText(context.getResources().getString(R.string.Enter_Observation));
 
             name.setText(inspectionDetails.commDetails.get(position).commNameEn);
             bal.setText(inspectionDetails.commDetails.get(position).closingBalance);
@@ -846,13 +883,19 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                                 Display(0);
 
                             } else {
-                                show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
+                                show_AlertDialog(context.getResources().getString(R.string.Inspection),
+                                        context.getResources().getString(R.string.Please_enter_a_valid_Value),
+                                        context.getResources().getString(R.string.Invalid_Quantity), 0);
                             }
                         } else {
-                            show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
+                            show_AlertDialog(context.getResources().getString(R.string.Inspection),
+                                    context.getResources().getString(R.string.Please_enter_a_valid_Value),
+                                    context.getResources().getString(R.string.Invalid_Quantity), 0);
                         }
                     } else {
-                        show_error_box(context.getResources().getString(R.string.Please_enter_a_valid_Value), context.getResources().getString(R.string.Invalid_Quantity), 0);
+                        show_AlertDialog(context.getResources().getString(R.string.Inspection),
+                                context.getResources().getString(R.string.Please_enter_a_valid_Value),
+                                context.getResources().getString(R.string.Invalid_Quantity), 0);
                     }
 
                 }
@@ -885,20 +928,27 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         System.out.println("OnActivityResult");
         if (requestCode == RD_SERVICE) {
             if (resultCode == Activity.RESULT_OK) {
-                System.out.println(data.getStringExtra("PID_DATA"));
                 String piddata = data.getStringExtra("PID_DATA");
                 int code = createAuthXMLRegistered(piddata);
                 if (piddata != null && piddata.contains("errCode=\"0\"") && code == 0) {
-                    System.out.println("PID DATA = " + piddata);
                     xml_Frame();
                 } else {
-                    show_error_box(rdModel.errinfo, context.getResources().getString(R.string.PID_Exception), 0);
-                    System.out.println("ERROR PID DATA = " + piddata);
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.RD_Service),
+                            errcode,
+                            rdModel.errinfo,
+                            0);
                 }
+            } else {
+                show_AlertDialog(
+                        context.getResources().getString(R.string.RD_Service),
+                        errcode,
+                        rdModel.errinfo,
+                        0);
+
             }
         }
          } catch (Exception ex) {
-            show_error_box(ex.getMessage(), "PID Response", 0);
             Timber.tag("Inspection-onCreate-").e(ex.getMessage(), "");
         }
     }
@@ -915,7 +965,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             Document doc = builder.parse(is);
 
             errcode = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errCode").getTextContent();
-            if (errcode.equals("1")) {
+            if (!errcode.equals("0")) {
                 rdModel.errinfo = doc.getElementsByTagName("Resp").item(0).getAttributes().getNamedItem("errInfo").getTextContent();
                 return 1;
             } else {
@@ -947,26 +997,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         return 0;
     }
 
-    private void show_error_box(String msg, String title, final int i) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        if (i == 2) {
-                            prep_consent();
-                        }
-
-                    }
-                });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
 
     private void image(String content, String name, int align) {
         try {

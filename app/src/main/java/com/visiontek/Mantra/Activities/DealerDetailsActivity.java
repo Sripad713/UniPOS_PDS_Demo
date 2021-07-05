@@ -842,11 +842,10 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 int code = createAuthXMLRegistered(piddata);
                 if (piddata != null && piddata.contains("errCode=\"0\"")) {
                     if (code == 0) {
-                        System.out.println("PID DATA = " + piddata);
                         prep_Dlogin();
                     } else {
                         show_AlertDialog(
-                                context.getResources().getString(R.string.Dealer),
+                                context.getResources().getString(R.string.RD_Service),
                                 dealerModel.err_code,
                                 dealerModel.rdModel.errinfo,
                                 0);
