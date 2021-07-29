@@ -8,84 +8,77 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:weightSum="6">
 
             <com.visiontek.Mantra.Utils.MyCustomTextView
                 android:id="@+id/text_comm_name"
-                android:text="@string/Commodity"
-                android:layout_width="140dp"
+                android:layout_weight="1"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ben_table_cell_shape"
-                android:textSize="16sp"
-                android:maxLines="1"
-                android:textColor="@color/blackblack"
-                android:padding="10dp"/>
+                android:textSize="25sp"
+                android:textColor="@color/blackblack" />
 
             <com.visiontek.Mantra.Utils.MyCustomTextView
                 android:id="@+id/text_units"
-                android:layout_width="80dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="@string/Unit"
-                android:maxLines="1"
+                android:gravity="center"
                 android:background="@drawable/ben_table_cell_shape"
-                android:textSize="16sp"
+                android:textSize="25sp"
                 android:textColor="@color/blackblack"
-                android:padding="10dp"/>
+                android:layout_weight="1" />
 
             <com.visiontek.Mantra.Utils.MyCustomTextView
                 android:id="@+id/text_availed_qty"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
                 android:background="@drawable/ben_table_cell_shape"
-                android:inputType="numberDecimal"
-                android:padding="10dp"
-                android:maxLines="1"
-                android:text="@string/issueQty"
+                android:gravity="center"
                 android:textColor="@color/blackblack"
-                android:textSize="16sp" />
+                android:layout_weight="1"
+                android:textSize="25sp" />
 
             <com.visiontek.Mantra.Utils.MyCustomEditText
                 android:id="@+id/text_issue_qty"
-                android:text="@string/issueQty"
-                android:layout_width="100dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ben_table_cell_shape"
-                android:textSize="16sp"
-                android:maxLength="4"
-                android:maxLines="1"
+                android:textSize="25sp"
+                android:maxLength="6"
+                android:gravity="center"
                 android:longClickable="false"
                 android:textColor="@color/act_bar_blue"
-                android:padding="10dp"
                 android:inputType="numberDecimal"
+                android:layout_weight="1"
                 />
 
             <com.visiontek.Mantra.Utils.MyCustomTextView
                 android:id="@+id/text_clos_bal"
-                android:text="@string/CB"
-                android:layout_width="100dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ben_table_cell_shape"
-                android:textSize="16sp"
-                android:maxLines="1"
+                android:textSize="25sp"
+                android:gravity="center"
                 android:textColor="@color/blackblack"
-                android:padding="10dp"
+                android:layout_weight="1"
                 />
 
             <com.visiontek.Mantra.Utils.MyCustomTextView
                 android:id="@+id/text_price"
                 android:text="@string/Price"
-                android:layout_width="100dp"
-                android:maxLines="1"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ben_table_cell_shape"
-                android:textSize="16sp"
+                android:textSize="25sp"
+                android:gravity="center"
                 android:textColor="@color/black"
-                android:padding="10dp"
+                android:layout_weight="1"
                 />
 
         </TableRow>

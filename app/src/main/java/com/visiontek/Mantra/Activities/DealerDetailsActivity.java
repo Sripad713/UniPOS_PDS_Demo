@@ -15,11 +15,13 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -52,8 +54,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import timber.log.Timber;
 
 import static com.visiontek.Mantra.Activities.StartActivity.L;
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.Dealername;
@@ -65,7 +67,7 @@ import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
-public class DealerDetailsActivity extends AppCompatActivity {
+public class DealerDetailsActivity extends BaseActivity {
 
     DealerModel dealerModel = new DealerModel();
     RecyclerView.Adapter adapter;
@@ -75,150 +77,11 @@ public class DealerDetailsActivity extends AppCompatActivity {
     Context context;
     MemberModel memberModel;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dealer__details);
-        try {
-
-            context = DealerDetailsActivity.this;
-            memberModel = (MemberModel) getIntent().getSerializableExtra("OBJ");
-
-            TextView toolbarRD = findViewById(R.id.toolbarRD);
-            boolean rd_fps = RDservice(context);
-            if (rd_fps) {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-            } else {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_AlertDialog(context.getResources().getString(R.string.Dealer),
-                        context.getResources().getString(R.string.RD_Service),
-                        context.getResources().getString(R.string.RD_Service_Msg),0);
-                return;
-            }
-
-            initilisation();
-
-            RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
-            recyclerView.setHasFixedSize(true);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-            scanfp.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                @Override
-                public void onClick(View view) {
-                    preventTwoClick(view);
-                    if (dealerModel.click) {
-                        if (Util.networkConnected(context)) {
-                            if (dealerModel.DAtype.equals("P")) {
-                                password_Dialog();
-                            } else {
-                                ConsentDialog(ConsentForm(context, 1));
-                            }
-                        } else {
-                            show_AlertDialog(context.getResources().getString(R.string.Dealer),
-                                    context.getResources().getString(R.string.Internet_Connection),
-                                    context.getResources().getString(R.string.Internet_Connection_Msg),
-                                    0);
-                        }
-                    } else {
-                        if (mp != null) {
-                            releaseMediaPlayer(context, mp);
-                        }
-                        if (L.equals("hi")) {
-                        } else {
-                            mp = mp.create(context, R.raw.c100176);
-                            mp.start();
-
-                        }
-                        show_AlertDialog(context.getResources().getString(R.string.Dealer),
-                                context.getResources().getString(R.string.Please_Select_Dealer_Name),
-                                ""
-                                ,0);
-                    }
-                }
-            });
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    preventTwoClick(view);
-                    show_Dialogbox(context.getResources().getString(R.string.Dealer),
-                            context.getResources().getString(R.string.Do_you_want_to_Quit));
-                }
-            });
-
-            ArrayList<DealerListModel> data = new ArrayList<>();
-            int dealerlistsize = dealerConstants.fpsCommonInfo.fpsDetails.size();
-            for (int i = 0; i < dealerlistsize; i++) {
-                if(L.equals("hi")){
-                    data.add(new DealerListModel(
-                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delNamell,
-                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type,
-                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delUid));
-                }else {
-                    data.add(new DealerListModel(
-                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delName,
-                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type,
-                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delUid));
-                }
-            }
-            adapter = new DealerListAdapter(context, data, new OnClickDealer() {
-                @Override
-                public void onClick(int p) {
-                    dealerModel.click = true;
-                    dealerModel.Fusionflag = 0;
-                    dealerModel.wadhflag = 0;
-                    dealerModel.FIRflag = 0;
-                    dealerModel.fusionflag = 0;
-                    dealerModel.DName = dealerConstants.fpsCommonInfo.fpsDetails.get(p).delName;
-                    dealerModel.DUid = dealerConstants.fpsCommonInfo.fpsDetails.get(p).delUid;
-                    dealerModel.Dtype = dealerConstants.fpsCommonInfo.fpsDetails.get(p).dealer_type;
-                    dealerModel.DAtype = dealerConstants.fpsCommonInfo.fpsDetails.get(p).authType;
-                    dealerModel.Dfusion = dealerConstants.fpsCommonInfo.fpsDetails.get(p).dealerFusion;
-                    dealerModel.Dnamell = dealerConstants.fpsCommonInfo.fpsDetails.get(p).delNamell;
-                    dealerModel.Dwadh = dealerConstants.fpsCommonInfo.fpsDetails.get(p).wadhStatus;
-
-                    if(L.equals("hi")){
-                        Dealername = dealerModel.Dnamell;
-                    }else {
-                        Dealername = dealerModel.DName;
-                    }
-
-                    switch (dealerModel.DAtype) {
-                        case "F":
-                            dealerModel.DEALER_AUTH_TYPE = "Bio";
-                            break;
-                        case "P":
-                            dealerModel.DEALER_AUTH_TYPE = "P";
-                            break;
-                    }
-                }
-            }, 0);
-            recyclerView.setAdapter(adapter);
-        } catch (Exception ex) {
-
-            Timber.tag("DealerAuth-onCreate-").e(ex.getMessage(), "");
-        }
-    }
-
-    private void initilisation() {
-        pd = new ProgressDialog(context);
-        scanfp = findViewById(R.id.dealer_scanFP);
-        back = findViewById(R.id.dealer_back);
-
-        toolbarInitilisation();
-    }
-
     private void ConsentformURL(String consentrequest) {
         try {
             Show(context.getResources().getString(R.string.Dealer),
                     context.getResources().getString(R.string.Consent_Form));
-/*
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer),
-             context.getResources().getString(R.string.Consent_Form), true, false);
-*/
+
             Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
             request.setOnResultListener(new Json_Parsing.OnResultListener() {
 
@@ -320,7 +183,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                                 "        </mns1:ackRequest>\n" +
                                 "    </SOAP-ENV:Body>\n" +
                                 "</SOAP-ENV:Envelope> ";
-                        Util.generateNoteOnSD(context, "DealerPasswordReq.txt", pdealerlogin);
+                        //Util.generateNoteOnSD(context, "DealerPasswordReq.txt", pdealerlogin);
                         hitURLDealerAuthentication(pdealerlogin);
                     } else {
                         show_AlertDialog(Dealername,
@@ -347,34 +210,13 @@ public class DealerDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void Sessiontimeout(String msg, String title) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(title);
-        alertDialogBuilder.setTitle(msg);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-                        Intent i = new Intent(context, StartActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
 
     private void hitURLDealerAuthentication(String dealerlogin) {
         try {
 
             Show( context.getResources().getString(R.string.Please_wait),
                     context.getResources().getString(R.string.Authenticating));
-           /* pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
-                    context.getResources().getString(R.string.Authenticating), true, false);*/
-            XML_Parsing request = new XML_Parsing(DealerDetailsActivity.this, dealerlogin, 2);
+           XML_Parsing request = new XML_Parsing(DealerDetailsActivity.this, dealerlogin, 2);
             request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
                 @Override
@@ -435,10 +277,10 @@ public class DealerDetailsActivity extends AppCompatActivity {
                     } else {
                         if (Mdealer == 1) {
                             Mdealer = 0;
-                            Intent ration = new Intent(context, RationDetailsActivity.class);
+                           /* Intent ration = new Intent(context, RationDetailsActivity.class);
                             ration.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             ration.putExtra("OBJ", memberModel);
-                            startActivity(ration);
+                            startActivity(ration);*/
                             finish();
                         } else {
                             if (dealerModel.fusionflag == 1) {
@@ -469,7 +311,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                                         "        </ns1:getFusionRecord>\n" +
                                         "    </SOAP-ENV:Body>\n" +
                                         "</SOAP-ENV:Envelope>";
-                                Util.generateNoteOnSD(context, "DealerFusionReq.txt", fusion);
+                                //Util.generateNoteOnSD(context, "DealerFusionReq.txt", fusion);
                                 hitURLfusion(fusion);
                             }
 
@@ -488,7 +330,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                                     "        </ns1:menuDisplayService>\n" +
                                     "    </SOAP-ENV:Body>\n" +
                                     "</SOAP-ENV:Envelope>";
-                            Util.generateNoteOnSD(context, "MenuReq.txt", menu);
+                            //Util.generateNoteOnSD(context, "MenuReq.txt", menu);
                             hitURLMENU(menu);
                         }
                     }
@@ -504,21 +346,11 @@ public class DealerDetailsActivity extends AppCompatActivity {
     private void hitURLfusion(String fusion) {
         try {
 
-        /*pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
-                context.getResources().getString(R.string.Authenticating), true, false);*/
             XML_Parsing request = new XML_Parsing(DealerDetailsActivity.this, fusion, 2);
             request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
                 @Override
                 public void onCompleted(String isError, String msg, String ref, String flow, Object object) {
-              /*  if (pd.isShowing()) {
-                    pd.dismiss();
-                }
-
-                if (isError.equals("057") || isError.equals("008") || isError.equals("09D")) {
-                    Sessiontimeout(msg, isError);
-                    return;
-                }*/
 
                 }
             });
@@ -533,8 +365,6 @@ public class DealerDetailsActivity extends AppCompatActivity {
 
             Show( context.getResources().getString(R.string.Please_wait),
                     context.getResources().getString(R.string.Downloading_Menus) );
-       /* pd = ProgressDialog.show(context, context.getResources().getString(R.string.Please_wait),
-                context.getResources().getString(R.string.Downloading_Menus), true, false);*/
         XML_Parsing request = new XML_Parsing(DealerDetailsActivity.this, menu, 7);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
@@ -550,14 +380,14 @@ public class DealerDetailsActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (code.equals("057") || code.equals("008") || code.equals("09D")) {
+              /*  if (code.equals("057") || code.equals("008") || code.equals("09D")) {
                     SessionAlert(
                             context.getResources().getString(R.string.Dealer),
                             context.getResources().getString(R.string.ResponseCode)+code,
                             context.getResources().getString(R.string.ResponseMsg)+msg);
 
                     return;
-                }
+                }*/
                 if (!code.equals("00")) {
                     show_AlertDialog(
                             context.getResources().getString(R.string.Menus),
@@ -600,7 +430,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 /* "   \"token\" : "+"\""+ dealerConstants.fpsURLInfo.token+"\""+"\n" +*/
                 "   \"token\" : " + "\"9f943748d8c1ff6ded5145c59d0b2ae7\"" + "\n" +
                 "}";
-        Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
+        //Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
         ConsentformURL(consentrequest);
         } catch (Exception ex) {
 
@@ -738,7 +568,7 @@ public class DealerDetailsActivity extends AppCompatActivity {
                 mp = mp.create(context, R.raw.c100187);
                 mp.start();
             }
-            Util.generateNoteOnSD(context, "DealerAuthReq.txt", dealerlogin);
+            //Util.generateNoteOnSD(context, "DealerAuthReq.txt", dealerlogin);
             hitURLDealerAuthentication(dealerlogin);
         } else {
             show_AlertDialog(
@@ -869,7 +699,6 @@ public class DealerDetailsActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public int createAuthXMLRegistered(String piddataxml) {
 
-
         try {
             InputStream is = new ByteArrayInputStream(piddataxml.getBytes());
             DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
@@ -930,33 +759,129 @@ public class DealerDetailsActivity extends AppCompatActivity {
         void onClick(int p);
     }
 
-    private void toolbarInitilisation() {
+    @Override
+    public void initialize() {
         try {
+            context = DealerDetailsActivity.this;
+            LinearLayout llAboutUs = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_dealer__details, null);
+            llBody.addView(llAboutUs, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            llBody.setVisibility(View.VISIBLE);
+            initializeControls();
 
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+            memberModel = (MemberModel) getIntent().getSerializableExtra("OBJ");
 
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText( context.getResources().getString(R.string.DEALER_DETAILS));
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
+            RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+            scanfp.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    if (dealerModel.click) {
+                        if (Util.networkConnected(context)) {
+                            if (dealerModel.DAtype.equals("P")) {
+                                password_Dialog();
+                            } else {
+                                ConsentDialog(ConsentForm(context, 1));
+                            }
+                        } else {
+                            show_AlertDialog(context.getResources().getString(R.string.Dealer),
+                                    context.getResources().getString(R.string.Internet_Connection),
+                                    context.getResources().getString(R.string.Internet_Connection_Msg),
+                                    0);
+                        }
+                    } else {
+                        if (mp != null) {
+                            releaseMediaPlayer(context, mp);
+                        }
+                        if (L.equals("hi")) {
+                        } else {
+                            mp = mp.create(context, R.raw.c100176);
+                            mp.start();
+
+                        }
+                        show_AlertDialog(context.getResources().getString(R.string.Dealer),
+                                context.getResources().getString(R.string.Please_Select_Dealer_Name),
+                                ""
+                                ,0);
+                    }
+                }
+            });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    show_Dialogbox(context.getResources().getString(R.string.Dealer),
+                            context.getResources().getString(R.string.Do_you_want_to_Quit));
+                }
+            });
+
+            ArrayList<DealerListModel> data = new ArrayList<>();
+            int dealerlistsize = dealerConstants.fpsCommonInfo.fpsDetails.size();
+            for (int i = 0; i < dealerlistsize; i++) {
+                if(L.equals("hi")){
+                    data.add(new DealerListModel(
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delNamell,
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type,
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delUid));
+                }else {
+                    data.add(new DealerListModel(
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delName,
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).dealer_type,
+                            dealerConstants.fpsCommonInfo.fpsDetails.get(i).delUid));
+                }
+            }
+            adapter = new DealerListAdapter(context, data, new OnClickDealer() {
+                @Override
+                public void onClick(int p) {
+                    dealerModel.click = true;
+                    dealerModel.Fusionflag = 0;
+                    dealerModel.wadhflag = 0;
+                    dealerModel.FIRflag = 0;
+                    dealerModel.fusionflag = 0;
+                    dealerModel.DName = dealerConstants.fpsCommonInfo.fpsDetails.get(p).delName;
+                    dealerModel.DUid = dealerConstants.fpsCommonInfo.fpsDetails.get(p).delUid;
+                    dealerModel.Dtype = dealerConstants.fpsCommonInfo.fpsDetails.get(p).dealer_type;
+                    dealerModel.DAtype = dealerConstants.fpsCommonInfo.fpsDetails.get(p).authType;
+                    dealerModel.Dfusion = dealerConstants.fpsCommonInfo.fpsDetails.get(p).dealerFusion;
+                    dealerModel.Dnamell = dealerConstants.fpsCommonInfo.fpsDetails.get(p).delNamell;
+                    dealerModel.Dwadh = dealerConstants.fpsCommonInfo.fpsDetails.get(p).wadhStatus;
+
+                    if(L.equals("hi")){
+                        Dealername = dealerModel.Dnamell;
+                    }else {
+                        Dealername = dealerModel.DName;
+                    }
+
+                    switch (dealerModel.DAtype) {
+                        case "F":
+                            dealerModel.DEALER_AUTH_TYPE = "Bio";
+                            break;
+                        case "P":
+                            dealerModel.DEALER_AUTH_TYPE = "P";
+                            break;
+                    }
+                }
+            }, 0);
+            recyclerView.setAdapter(adapter);
         } catch (Exception ex) {
 
-            Timber.tag("DealerAuth-Toolbar-").e(ex.getMessage(), "");
+            Timber.tag("DealerAuth-onCreate-").e(ex.getMessage(), "");
         }
     }
+
+    @Override
+    public void initializeControls() {
+        pd = new ProgressDialog(context);
+        scanfp = findViewById(R.id.dealer_scanFP);
+        back = findViewById(R.id.dealer_back);
+        toolbarActivity.setText(context.getResources().getString(R.string.DEALER_DETAILS));
+    }
+
     private void show_Dialogbox(String header,String msg ) {
 
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);

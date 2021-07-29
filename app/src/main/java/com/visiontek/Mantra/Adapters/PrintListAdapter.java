@@ -36,7 +36,6 @@ public class PrintListAdapter extends RecyclerView.Adapter<PrintListAdapter.MyVi
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int listPosition) {
-        final PrintListModel model = dataSet.get(listPosition);
 
         TextView textViewName = holder.textName;
         TextView textViewPrev = holder.textPrev;

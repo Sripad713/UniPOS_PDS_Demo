@@ -35,7 +35,7 @@ public class DailySalesListAdapter extends RecyclerView.Adapter<DailySalesListAd
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int listPosition) {
-        final DailySalesListModel model = dataSet.get(listPosition);
+
 
         TextView textViewComm = holder.textComm;
         TextView textViewScheme = holder.textScheme;

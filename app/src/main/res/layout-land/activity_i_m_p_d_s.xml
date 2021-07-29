@@ -9,247 +9,6 @@
     tools:context=".Activities.IMPDSActivity"
     tools:ignore="MissingDefaultResource">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tool"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/black">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/black"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/black"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/image"
-                    android:layout_height="@dimen/image"
-                    android:background="@drawable/black"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/chhattisghar" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/black"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:id="@+id/toolbarVersion"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/black"
-                        android:gravity="left"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/TextsizeT"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="41dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/black"
-                        android:gravity="center"
-                        android:text="@string/CHHATISGARHPDS"
-                        android:textColor="@color/black"
-                        android:textSize="25dp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/toolbarRD"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/black"
-                        android:gravity="right"
-                        android:text="@string/RD"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/TextsizeT"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            tools:ignore="NestedWeights">
-
-                            <TextView
-                                android:id="@+id/toolbarDate"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:text="DATE"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/toolbarFpsid"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:text="FPS ID"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/toolbarDateValue"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH" />
-
-                            <TextView
-                                android:id="@+id/toolbarFpsidValue"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/toolbarActivity"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:textColor="@color/black"
-                            android:textSize="25dp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:text=""
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            tools:ignore="NestedWeights">
-
-                            <TextView
-                                android:id="@+id/toolbarLatitude"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:text="LATITUDE"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/toolbarLongitude"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:text="LONGITUDE"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/toolbarLatitudeValue"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH" />
-
-                            <TextView
-                                android:id="@+id/toolbarLongitudeValue"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -279,10 +38,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="20dp"
                         android:text="@string/Please_Select_Any_Option"
                         android:textColor="@color/Blue"
-                        android:textSize="20dp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <RadioGroup
@@ -290,7 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp"
+
                         android:gravity="center_horizontal"
                         android:orientation="horizontal">
 
@@ -301,7 +59,7 @@
                             android:checked="true"
                             android:text="@string/RC_No"
                             android:textColor="@color/blackblack"
-                            android:textSize="18dp" />
+                            android:textSize="20sp" />
 
                         <RadioButton
                             android:id="@+id/rd_type_uid"
@@ -309,7 +67,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/Aadhaar_No"
                             android:textColor="@color/blackblack"
-                            android:textSize="18dp" />
+                            android:textSize="20sp" />
 
                     </RadioGroup>
 
@@ -333,7 +91,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+
                         android:orientation="horizontal">
 
                         <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
@@ -344,7 +102,7 @@
                             android:layout_weight="1"
                             android:text="@string/RC_No"
                             android:textColor="@color/blackblack"
-                            android:textSize="18dp"
+                            android:textSize="25sp"
                             android:textStyle="bold" />
 
                         <com.visiontek.Mantra.Utils.MyCustomEditText
@@ -359,22 +117,49 @@
                             android:inputType="number"
                             android:text="066000000000"
                             android:maxLength="12"
-                            android:textSize="15dp" />
+                            android:textSize="25sp"
+                            />
 
                     </LinearLayout>
 
-                    <Button
-                        android:id="@+id/btn_submit"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal"
                         android:layout_gravity="center"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="@dimen/margin_size_10dp"
-                        android:background="@drawable/mybutton"
-                        android:text="@string/Submit"
-                        android:textStyle="bold"
-                        android:textColor="@color/white" />
+                        android:weightSum="3">
+                        <Button
+                            android:layout_weight="1"
+                            android:id="@+id/btn_back"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="@dimen/margin_size_10dp"
+                            android:background="@color/cancel"
+                            android:text="@string/Back"
+                            android:textStyle="bold"
+                            android:textSize="25sp"
+                            android:textColor="@color/white" />
 
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"/>
+                        <Button
+                            android:layout_weight="1"
+                            android:id="@+id/btn_submit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="@dimen/margin_size_10dp"
+                            android:background="@color/ok"
+                            android:text="@string/Submit"
+                            android:textSize="25sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

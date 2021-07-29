@@ -2,6 +2,28 @@
 <resources>
     <string name="app_name">Mantra PDS</string>
 
+
+
+
+
+    <string name="Exception">अपवाद </string>
+    <string name="BENEFICIARY">लाभकारी</string>
+    <string name="Device_Not_Ready">Device Not Ready</string>
+
+
+
+    //impds
+    <string name="Home_State">होम राज्य</string>
+    <string name="Sale_State">बिक्री होम राज्य</string>
+    <string name="Sale_State_FPSID">बिक्री होम राज्य एफपीएस आईडी</string>
+    <string name="Receipt_No">रसीद नंबर</string>
+    <string name="Shop_ID">दुकान नंबर</string>
+    <string name="Consumer_Name">ग्राहक नाम</string>
+    <string name="UID_Ref_ID">यूआईडी रेफरी आईडी</string>
+    <string name="ItemTot">वस्तु(कुल)</string>
+    <string name="AvailQty">उपलब्ध मात्रा</string>
+    <string name="Quantities_In_KGsLTRsPkts">(**मात्रा KGs/LTRs/Pkts . में)</string>
+
     <string name="printsuccess">प्रिंट सफलता</string>
     <string name="printfailed">प्रिंट विफल रहा</string>
 
@@ -102,13 +124,13 @@
     <string name="Please_connect_to_the_Bluetooth_printer_to_print">कृपया प्रिंट करने के लिए ब्लूटूथ प्रिंटर से कनेक्ट करें</string>
     <string name="Connect">जुडिये</string>
     <string name="Print">प्रिंट</string>
+    <string name="PRINT">प्रिंट</string>
     <string name="Amount">राशि</string>
     <string name="MDM">एम डी एम</string>
     <string name="Home_State_Name">होम राज्य नाम</string>
     <string name="Home_District_Name">होम जिला नाम</string>
     <string name="ISSUE_GOODS">विक्रय प्राप्ति</string>
     <string name="OB">ओबी</string>
-
 
     //daily sales report
     <string name="DAILY_SALES_REPORT">प्रतिदिन रिपोर्ट</string>
@@ -129,9 +151,11 @@
     <string name="SCHEME">योजना</string>
     <string name="RO_Quantity">र ओ मात्रा</string>
 
+
     //reports
     <string name="REPORTS">रिपोर्ट</string>
     <string name="Daily_Sales_Report">प्रतिदिन रिपोर्ट</string>
+    <string name="SALES_REPORT">प्रतिदिन रिपोर्ट</string>
     <string name="Stock_Report">स्टॉक रिपोर्ट</string>
 
     //settings
@@ -156,6 +180,7 @@
     <string name="UPDATE">अपडेट करें</string>
     <string name="USB">पेन ड्राइव</string>
     <string name="GPRS">जीपीआरएस</string>
+    <string name="TMS">टीएचएमएस</string>
 
     //beneficiary verification
     <string name="BENEFICIARY_VERIFY">लाभकारी वैरायटी</string>
@@ -198,6 +223,7 @@
     <string name="Connection_Error">कनेक्शन त्रुटि</string>
     <string name="Please_Select_Dealer_Name">कृपया मालिक का नाम चुनें</string>
     <string name="Dealer">डीलर</string>
+    <string name="Please_Select_FP_Authentication_Dealer">कृपया एफपी प्रमाणीकरण डीलर का चयन करें</string>
     <string name="Do_you_want_to_Cancel">क्या आप रद्द करना चाहते हैं</string>
     <string name="IRIS_login">IRIS लॉग इन करें</string>
     <string name="Biometric_login">बायोमेट्रिक लॉगिन</string>
@@ -217,6 +243,7 @@
     <string name="NA_MSG">कृपया अन्य सदस्य का चयन करें</string>
     <string name="Battery">बैटरी</string>
     <string name="Battery_Msg">कम बैटरी के कारण रसीद को प्रिंट करने में असमर्थ</string>
+    <string name="Battery_plugin">Battery % is below 20, Please connect the Adapter to continue</string>
 
     //Issue
     <string name="Cashless_PDS_function_is_Not_Available">कैशलेस पीडीएस फ़ंक्शन उपलब्ध नहीं है</string>
@@ -269,7 +296,9 @@
     <string name="Please_Enter_the_Weight">कृपया वजन दर्ज करें</string>
     <string name="Socket_creation_failed">सॉकेट निर्माण विफल रहा</string>
     <string name="Socket_Exception">सॉकेट अपवाद</string>
-
+    <string name="FTP">एफ़टीपी</string>
+    <string name="Please_Try_Again">कृपया फिर से प्रयास करें..</string>
+    <string name="No_Update_Found">कोई अपडेट नहीं मिला</string>
     //Print
     <string name="NOT_Supported">समर्थित नहीं</string>
     <string name="Disabled">विकलांग</string>
@@ -313,6 +342,8 @@
     <string name="Member_is_already_Verified">सदस्य पहले से ही सत्यापित है</string>
     <string name="Already_Verified">UID पहले से ही वरीयता प्राप्त</string>
     <string name="Processing">प्रसंस्करण ...</string>
+    <string name="Downloading_APK">डाउनलोड APK</string>
+    <string name="Downloading">डाउनलोड</string>
     <string name="Please_wait">कृपया प्रतीक्षा करें</string>
     <string name="Downloading_Menus">डाउनलोडिंग मेनू</string>
     <string name="Beneficiary_Verification">लाभार्थी का सत्यापन </string>
@@ -374,7 +405,7 @@
     <string name="Designation">स्थिति</string>
     <string name="Status">स्थिति</string>
     <string name="Commidity_CB_Obsevn_Varitn">वस्तु  सीबी   पर्यवेक्षण   परिवर्तन</string>
-    <string name="part1">"मैं इस बात की पुष्टि करता हूँ  कि , स्वयं को आधार से  आधारित प्रमाणीकरण प्रणाली  में, प्रमाणित करने में मुझे कोई आपत्ति नहीं है तथा खाद्य और नागरिक आपूर्ति विभाग, "</string>
+    <string name="part1">मैं इस बात की पुष्टि करता हूँ  कि , स्वयं को आधार से  आधारित प्रमाणीकरण प्रणाली  में, प्रमाणित करने में मुझे कोई आपत्ति नहीं है तथा खाद्य और नागरिक आपूर्ति विभाग, "</string>
     <string name="part2">से मिलने वाले लाभ उठाने हेतु, मैं आधार से आधारित प्रमाणीकरण के लिए  मेरे आधार नंबर , बायोमेट्रिक और/या  ओ.टी.पी. जानकारी देने के लिए सहमत हूँ । मैं समझता हूँ कि, मेरे द्वारा प्रमाणीकरण के लिए आधार आधारित प्रणाली को दी गयी मेरी बायोमेट्रिक और/या  ओ.टी.पी. जानकारी, केवल विशिष्ट लेनदेन में, मेरी पहचान को प्रमाणित करने के लिए इस्तेमाल की जाएगी एवं अन्य कोई प्रयोजन में  उपयोग नहीं  की जाएगी।  मैं समझता हूँ कि मेरे द्वारा आधार आधरित प्रमाणीकरण के उद्देश्य के लिए  दी गयी  व्यक्तिगत जानकारी गोपनीय एवं सुरक्षित रहेगी</string>
     <string name="part3"></string>
 <!--    <string name="part1">No Hindi Message</string>
@@ -417,8 +448,8 @@
     <string name="Invalid_Aadhaar">अमान्य आधार</string>
 
     <string name="AADHAAR_SERVICES">आधार सेवाएं</string>
-    <string name="UID_SEEDing"> आधार सीडिंग</string>
-    <string name="BENEficiary_VERIfication">लाभार्थी का सत्यापन</string>
+    <string name="UID_SEEDING"> आधार सीडिंग</string>
+    <string name="BENEficiary_VERIFICATION">लाभार्थी का सत्यापन</string>
     <string name="BENEFICIARY_DETAILS">लाभार्थी विवरण</string>
     <string name="EKYC">ईकेवाईसी</string>
     <string name="Enter_Date_to_view_sales">बिक्री देखने के लिए दिनांक दर्ज करें</string>
@@ -430,6 +461,7 @@
     <string name="VARIATION">परिवर्तन</string>
     <string name="Seized">जब्त</string>
     <string name="RECEIVE_GOODS">रस्टॉक प्राप्ति</string>
+    <string name="Select_Truck_Chit">ट्रक चिटो का चयन करें</string>
     <string name="Allot">आवंटित</string>
     <string name="dispatch">भेजे</string>
     <string name="DISPATCH">भेजे</string>

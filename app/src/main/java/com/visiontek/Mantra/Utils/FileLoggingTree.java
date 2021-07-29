@@ -44,17 +44,10 @@ public class FileLoggingTree extends Timber.Tree {
                 writer.close();
             }
         } catch (Exception e) {
-            Log.e(LOG_TAG,"Error while logging into file : " + e);
+
         }
     }
-//
-//    @Override
-//    protected String createStackElementTag(StackTraceElement element) {
-//        // Add log statements line number to the log
-//        return super.createStackElementTag(element) + " - " + element.getLineNumber();
-//    }
 
-    /*  Helper method to create file*/
     @Nullable
     private static File generateFile(@NonNull String path, @NonNull String fileName) {
         File file = null;
@@ -75,7 +68,6 @@ public class FileLoggingTree extends Timber.Tree {
         return file;
     }
 
-    /* Helper method to determine if external storage is available*/
     private static boolean isExternalStorageAvailable() {
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }

@@ -10,6 +10,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.hardware.usb.UsbConstants;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbEndpoint;
+import android.hardware.usb.UsbInterface;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -19,6 +23,7 @@ import android.os.Environment;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -55,11 +60,14 @@ import javax.crypto.NoSuchPaddingException;
 
 import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.CONNECTIVITY_SERVICE;
+import static com.visiontek.Mantra.Models.AppConstants.INTERFACE_PROTOCOL;
+import static com.visiontek.Mantra.Models.AppConstants.INTERFACE_SUBCLASS;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 
 
 public class Util {
+    public final static File otgViewerPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/USB/");
 
     public static void generateNoteOnSD(Context context, String sFileName, String sBody) {
         try {
@@ -87,8 +95,24 @@ public class Util {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static boolean batterylevel(Context context) {
-        BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
-        return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) >= 50;
+        int counttrue=0;
+        int countfalse=0;
+        for (int i=0;i<5;i++) {
+            BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
+            if (bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) >= 20){
+                counttrue++;
+                if (counttrue>=3) {
+                    return true;
+                }
+
+            }else {
+                countfalse++;
+                if (countfalse>=3){
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     public static String ConsentForm(Context context, int i) {
@@ -107,6 +131,7 @@ public class Util {
 
     public static boolean diableMenu( String val) {
         for (int i = 0; i < menuConstants.mBean.size(); i++) {
+
             if (menuConstants.mBean.get(i).service.equals(val)&&
                     menuConstants.mBean.get(i).status.equals("N")){
                 return true;
@@ -129,6 +154,7 @@ public class Util {
     public static boolean RDservice(Context context) {
         Intent act;
         try {
+
             act = new Intent("in.gov.uidai.rdservice.fp.CAPTURE");
 
             PackageManager packageManager = context.getPackageManager();
@@ -327,7 +353,7 @@ public class Util {
 
                 PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
                 String version = pInfo.versionName;
-                System.out.println("@@Version: "+version);
+
                 appVersion = String.valueOf(Float.parseFloat(version));
 
 /*
@@ -410,5 +436,55 @@ public class Util {
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
+    }
+
+
+    public static boolean isMassStorageDevice(UsbDevice device) {
+        boolean result = false;
+
+        int interfaceCount = device.getInterfaceCount();
+        for (int i = 0; i < interfaceCount; i++) {
+            UsbInterface usbInterface = device.getInterface(i);
+
+
+            // we currently only support SCSI transparent command set with
+            // bulk transfers only!
+            if (usbInterface.getInterfaceClass() != UsbConstants.USB_CLASS_MASS_STORAGE
+                    || usbInterface.getInterfaceSubclass() != INTERFACE_SUBCLASS
+                    || usbInterface.getInterfaceProtocol() != INTERFACE_PROTOCOL) {
+
+                continue;
+            }
+
+            // Every mass storage device has exactly two endpoints
+            // One IN and one OUT endpoint
+            int endpointCount = usbInterface.getEndpointCount();
+            if (endpointCount != 2) {
+
+            }
+
+            UsbEndpoint outEndpoint = null;
+            UsbEndpoint inEndpoint = null;
+            for (int j = 0; j < endpointCount; j++) {
+                UsbEndpoint endpoint = usbInterface.getEndpoint(j);
+
+                if (endpoint.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
+                    if (endpoint.getDirection() == UsbConstants.USB_DIR_OUT) {
+                        outEndpoint = endpoint;
+                    } else {
+                        inEndpoint = endpoint;
+                    }
+                }
+            }
+
+            if (outEndpoint == null || inEndpoint == null) {
+
+                continue;
+            }
+
+            result = true;
+        }
+
+        return result;
     }
 }

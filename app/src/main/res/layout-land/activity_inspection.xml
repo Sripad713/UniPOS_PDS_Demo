@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/card_lt_yellow"
     tools:context=".Activities.InspectionActivity">
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool"
         android:layout_width="match_parent"
@@ -159,6 +159,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
@@ -166,7 +167,7 @@
                             android:background="@drawable/black"
                             android:gravity="center"
                             android:textColor="@color/black"
-                            android:textSize="25dp"
+                            android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
                         <TextView
                             android:layout_width="match_parent"
@@ -248,7 +249,6 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -377,64 +377,7 @@
             </RadioGroup>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_marginVertical="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            tools:ignore="MissingConstraints">
-            <LinearLayout
-                android:gravity="center"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-            <Button
-                android:foreground="@drawable/custom_ripple"
-                android:id="@+id/inspection_back"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/opaque_red"
-                android:text="@string/Back"
-                android:textColor="@color/white"
-                android:textSize="30sp"
-                android:textStyle="bold" />
-            </LinearLayout>
-            <LinearLayout
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:checked="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-            <LinearLayout
-                android:gravity="center"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-            <Button
-                android:id="@+id/inspection_next"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/custom_ripple"
-                android:background="@color/ok"
-                android:text="@string/Next"
-                android:textColor="@color/white"
-                android:textSize="30sp"
-                android:textStyle="bold" />
-            </LinearLayout>
 
-        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -451,7 +394,65 @@
             android:layout_weight="1"
             android:gravity="bottom"
             android:orientation="vertical">
+            <LinearLayout
+                android:layout_marginVertical="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginHorizontal="20dp"
+                tools:ignore="MissingConstraints">
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <Button
+                        android:foreground="@drawable/custom_ripple"
+                        android:id="@+id/inspection_back"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/opaque_red"
+                        android:text="@string/Back"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:checked="true"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <Button
+                        android:id="@+id/inspection_next"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:foreground="@drawable/custom_ripple"
+                        android:background="@color/ok"
+                        android:text="@string/Next"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -32,9 +32,28 @@
     <dimen name="TextsizeV">20sp</dimen>
 
 
+    //impds
+    <string name="Home_State">Home State</string>
+    <string name="Sale_State">Sale State</string>
+    <string name="Sale_State_FPSID">Sale State FPSID</string>
+    <string name="Receipt_No">Receipt No</string>
+    <string name="Shop_ID">Shop ID</string>
+    <string name="Consumer_Name">Consumer Name</string>
+    <string name="UID_Ref_ID">UID Ref ID</string>
+    <string name="ItemTot">Item(Tot)</string>
+    <string name="AvailQty">AvailQty</string>
+    <string name="Quantities_In_KGsLTRsPkts">(**Quantities In KGs/LTRs/Pkts)</string>
+
+
     <string name="printsuccess">Print Success</string>
     <string name="printfailed">Print Failed</string>
     <string name="Device_Not_Found">Device Not Found</string>
+    <string name="Device_Not_Ready">Device Not Ready</string>
+
+
+    <string name="Exception">Exception </string>
+    <string name="BENEFICIARY">Beneficiary</string>
+
 
     //start
 
@@ -140,6 +159,7 @@
     <string name="Print">Print</string>
     <string name="Amount">Amount</string>
     <string name="MDM">MDM</string>
+    <string name="PRINT">PRINT</string>
 
     //daily_sales_report
     <string name="DAILY_SALES_REPORT">DAILY SALES REPORT</string>
@@ -158,9 +178,11 @@
     <string name="Stock">Stock</string>
     <string name="CB">CB</string>
 
+
     //reports
     <string name="REPORTS">REPORTS</string>
     <string name="Daily_Sales_Report">Daily Sales Report</string>
+    <string name="SALES_REPORT">SALES REPORT</string>
     <string name="Stock_Report">Stock Report</string>
 
     //settings
@@ -173,6 +195,7 @@
 
     //device
     <string name="DEVICE">DEVICE</string>
+
     <string name="Device_ID">Device ID</string>
     <string name="RD_Service">RD Service :</string>
     <string name="selected_language">Selected Language</string>
@@ -185,6 +208,7 @@
     <string name="UPDATE">UPDATE</string>
     <string name="USB">USB</string>
     <string name="GPRS">GPRS</string>
+    <string name="TMS">TMS</string>
     <string name="Upload_Log">Upload Log</string>
     <string name="Please_Select_Any_Option">Please Select Any Option</string>
     <string name="Submit">Submit</string>
@@ -218,6 +242,10 @@
     <string name="No">No</string>
     <string name="Start_Ok">OK</string>
 
+    <string name="No_Update_Found">No Update Found</string>
+
+    <string name="FTP">FTP</string>
+    <string name="Please_Try_Again">Please Try Again..</string>
     //Dealers Details
     <string name="Explain_here_why_the_app_needs_permissions">Explain here why the app needs permissions</string>
     <string name="Bio">Bio</string>
@@ -228,6 +256,7 @@
     <string name="Please_Select_Dealer_Name">Please Select Dealer or Nominee</string>
     <string name="Please_Select_Another_Dealer">Please Select Another Dealer Name</string>
     <string name="Dealer">Dealer</string>
+    <string name="Please_Select_FP_Authentication_Dealer">Please Select FP Authentication Dealer</string>
     <string name="Please_wait">Please Wait</string>
     <string name="Do_you_want_to_Cancel">Do you want to Cancel</string>
     <string name="IRIS_login">IRIS login</string>
@@ -252,7 +281,7 @@
     <string name="Battery">Battery</string>
     <string name="Battery_Msg">Unable To Print Recipt due to Low Battery</string>
 
-
+    <string name="Battery_plugin">Battery % is less than 20, Please connect Adapter</string>
     //Issue
     <string name="Cashless_PDS_function_is_Not_Available">Cashless PDS function is Not Available</string>
     <string name="IMPDS_function_is_Not_Available">IMPDS function is Not Available</string>
@@ -345,6 +374,8 @@
     <string name="Member_is_already_Verified">Member is already Verified</string>
     <string name="Already_Verified">UID Already Seeded</string>
     <string name="Processing">Processing ...</string>
+    <string name="Downloading_APK">Downloading APK</string>
+    <string name="Downloading">Downloading </string>
     <string name="Fetching_Details">Fetching Details</string>
     <string name="Beneficiary_Verification">Beneficiary Verification </string>
     <string name="Government_of_Chattisgarh">Government of Chattisgarh</string>
@@ -452,8 +483,8 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
 
 
     <string name="AADHAAR_SERVICES">AADHAAR SERVICES</string>
-    <string name="UID_SEEDing">UID SEEDING</string>
-    <string name="BENEficiary_VERIfication">BENEFICIARY VERIFICATION</string>
+    <string name="UID_SEEDING">UID SEEDING</string>
+    <string name="BENEficiary_VERIFICATION">BENEFICIARY VERIFICATION</string>
     <string name="BENEFICIARY_DETAILS">BENEFICIARY DETAILS</string>
     <string name="EKYC">EKYC</string>
     <string name="Enter_Date_to_view_sales">Enter Date to view sales</string>
@@ -465,6 +496,7 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="VARIATION">VARIATION</string>
     <string name="Seized">Seized</string>
     <string name="RECEIVE_GOODS">RECEIVE GOODS</string>
+    <string name="Select_Truck_Chit">Select Truck Chit</string>
     <string name="Allot">Allot</string>
     <string name="dispatch">Dispatch</string>
     <string name="Received">Receive</string>
@@ -473,9 +505,6 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="Commodity">Commodity</string>
     <string name="Issued">Issued</string>
     <string name="Sno">S.no</string>
-
-
-
 
 
     <string name="Please_Put_Paper">Please Put Paper</string>
@@ -511,7 +540,8 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="Please_Select_Dealer_Nominee">Please Select Dealer/Nominee</string>
     <string name="UID_is_Empty_Please_Select_Other_Member">UID is Empty...\Please Select Other Member</string>
     <string name="Finger_Not_Placed_On_Scanner">Finger Not Placed On Scanner...</string>
-    <string name="No_Response_From_Server_Please_Try_Again">No Response From Server...\Please Try Again</string>v
+    <string name="No_Response_From_Server_Please_Try_Again">No Response From Server...\Please Try Again</string>
+    v
     <string name="Server_is_Busy_Please_Try_Again">Server is Busy...\Please Try Again...</string>
     <string name="String_index_out_of_range_Invalid_Response">String index out of range - Invalid Response</string>
     <string name="Server_is_Not_Active">Server is Not Active</string>

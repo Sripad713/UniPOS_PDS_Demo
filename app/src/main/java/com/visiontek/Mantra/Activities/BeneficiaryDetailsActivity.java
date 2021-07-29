@@ -2,37 +2,35 @@ package com.visiontek.Mantra.Activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.visiontek.Mantra.Adapters.BeneficiaryVerificationListAdapter;
@@ -45,9 +43,7 @@ import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
 import com.visiontek.Mantra.Utils.Json_Parsing;
 import com.visiontek.Mantra.Utils.TaskPrint;
 import com.visiontek.Mantra.Utils.Util;
-
 import org.w3c.dom.Document;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
@@ -57,24 +53,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import timber.log.Timber;
 
+import static com.visiontek.Mantra.Activities.BaseActivity.rd_fps;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.Debug;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
+import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
 import static com.visiontek.Mantra.Utils.Util.ConsentForm;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
@@ -84,12 +81,11 @@ import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
-public class BeneficiaryDetailsActivity extends AppCompatActivity implements PrinterCallBack {
+public class BeneficiaryDetailsActivity extends AppCompatActivity  implements PrinterCallBack {
 
     String ACTION_USB_PERMISSION;
     Button back, Ekyc;
     Context context;
-    RecyclerView.Adapter adapter;
     ProgressDialog pd = null;
     String details;
     BeneficiaryAuth beneficiaryAuth;
@@ -99,109 +95,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     private final ExecutorService es = Executors.newScheduledThreadPool(30);
     private MTerminal100API mTerminal100API;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_beneficiary__details);
-
-        try {
-
-            context = BeneficiaryDetailsActivity.this;
-            mActivity = this;
-            ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
-
-            beneficiaryDetails = (BeneficiaryDetails) getIntent().getSerializableExtra("OBJ");
-
-            TextView toolbarRD = findViewById(R.id.toolbarRD);
-            boolean rd_fps = RDservice(context);
-            if (rd_fps) {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-            } else {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.blackblack));
-                show_AlertDialog(context.getResources().getString(R.string.Beneficiary_Details),
-                        context.getResources().getString(R.string.RD_Service),
-                        context.getResources().getString(R.string.RD_Service_Msg),0);
-                return;
-            }
-
-            initilisation();
-
-
-            beneficiaryModel.click = false;
-
-            Ekyc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    preventTwoClick(view);
-                    if (beneficiaryModel.click) {
-                        if (beneficiaryModel.verification.equals("N")) {
-                            AadhaarDialog();
-                        } else {
-                            show_AlertDialog(
-                                    beneficiaryModel.memberName,
-                                    beneficiaryModel.verifyStatus_en,
-                                    ""
-                                    ,0);
-
-                        }
-                    } else {
-                        show_AlertDialog(context.getResources().getString(R.string.Beneficiary_Details),
-                                context.getResources().getString(R.string.Please_Select_a_Member),
-                                ""
-                                ,0);
-
-                    }
-                }
-            });
-
-
-            Display();
-            mTerminal100API = new MTerminal100API();
-            mTerminal100API.initPrinterAPI(this, this);
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                probe();
-            } else {
-                finish();
-            }
-
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    preventTwoClick(view);
-                    finish();
-                }
-            });
-        } catch (Exception ex) {
-
-            Timber.tag("Beneficiary-onCreate-").e(ex.getMessage(), "");
-        }
-    }
-
-    private void Sessiontimeout(String msg, String title) {
-        try {
-
-            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-            alertDialogBuilder.setMessage(title);
-            alertDialogBuilder.setTitle(msg);
-            alertDialogBuilder.setCancelable(false);
-            alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-
-                            Intent i = new Intent(context, StartActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(i);
-
-                        }
-                    });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-        } catch (Exception ex) {
-
-            Timber.tag("Beneficiary-timeout-").e(ex.getMessage(), "");
-        }
-    }
+    int flagprint;
 
     private void Display() {
         try {
@@ -227,24 +121,20 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                             beneficiaryDetails.rcMemberDetVerify.get(i).verifyStatus_en));
                 }
             }
-            adapter = new BeneficiaryVerificationListAdapter(context, data, new OnClickBen() {
-                @Override
-                public void onClick(int p) {
-                    beneficiaryModel.click = true;
-                    beneficiaryModel.memberId = beneficiaryDetails.rcMemberDetVerify.get(p).memberId;
-                    beneficiaryModel.memberName = beneficiaryDetails.rcMemberDetVerify.get(p).memberName;
-                    beneficiaryModel.memberNamell = beneficiaryDetails.rcMemberDetVerify.get(p).memberNamell;
-                    beneficiaryModel.member_fusion = beneficiaryDetails.rcMemberDetVerify.get(p).member_fusion;
-                    beneficiaryModel.uid = beneficiaryDetails.rcMemberDetVerify.get(p).uid;
-                    beneficiaryModel.verification = beneficiaryDetails.rcMemberDetVerify.get(p).verification;
-                    beneficiaryModel.verifyStatus_en = beneficiaryDetails.rcMemberDetVerify.get(p).verifyStatus_en;
-                    beneficiaryModel.verifyStatus_ll = beneficiaryDetails.rcMemberDetVerify.get(p).verifyStatus_ll;
-                    beneficiaryModel.w_uid_status = beneficiaryDetails.rcMemberDetVerify.get(p).w_uid_status;
-                }
+            RecyclerView.Adapter adapter = new BeneficiaryVerificationListAdapter(context, data, p -> {
+                beneficiaryModel.click = true;
+                beneficiaryModel.memberId = beneficiaryDetails.rcMemberDetVerify.get(p).memberId;
+                beneficiaryModel.memberName = beneficiaryDetails.rcMemberDetVerify.get(p).memberName;
+                beneficiaryModel.memberNamell = beneficiaryDetails.rcMemberDetVerify.get(p).memberNamell;
+                beneficiaryModel.member_fusion = beneficiaryDetails.rcMemberDetVerify.get(p).member_fusion;
+                beneficiaryModel.uid = beneficiaryDetails.rcMemberDetVerify.get(p).uid;
+                beneficiaryModel.verification = beneficiaryDetails.rcMemberDetVerify.get(p).verification;
+                beneficiaryModel.verifyStatus_en = beneficiaryDetails.rcMemberDetVerify.get(p).verifyStatus_en;
+                beneficiaryModel.verifyStatus_ll = beneficiaryDetails.rcMemberDetVerify.get(p).verifyStatus_ll;
+                beneficiaryModel.w_uid_status = beneficiaryDetails.rcMemberDetVerify.get(p).w_uid_status;
             });
             recyclerView.setAdapter(adapter);
         } catch (Exception ex) {
-
             Timber.tag("Beneficiary-display-").e(ex.getMessage(), "");
         }
     }
@@ -253,64 +143,30 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         void onClick(int p);
     }
 
-    private void initilisation() {
-        pd = new ProgressDialog(context);
-        back = findViewById(R.id.Ben_details_back);
-        Ekyc = findViewById(R.id.Ben_details_Ekyc);
-        toolbarInitilisation();
-    }
-
     private void ConsentformURL(String consentrequest) {
         try {
 
-            Show(context.getResources().getString(R.string.Beneficiary_Details),
-                    context.getResources().getString(R.string.Consent_Form));
-/*
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Beneficiary_Details),
-             context.getResources().getString(R.string.Consent_Form), true, false);
-*/
+            Show(context.getResources().getString(R.string.Beneficiary_Details), context.getResources().getString(R.string.Consent_Form));
+
             Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
-            request.setOnResultListener(new Json_Parsing.OnResultListener() {
+            request.setOnResultListener((code, msg, object) -> {
+                Dismiss();
+                if (code == null || code.isEmpty()) {
 
-                @Override
-                public void onCompleted(String code, String msg, Object object) {
-                    Dismiss();
-                    if (code == null || code.isEmpty()) {
-
-                        show_AlertDialog(
-                                context.getResources().getString(R.string.Consent_Form)+beneficiaryModel.memberName,
-                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
-                                "",
-                                0);
-                        return;
-                    }
-
-                    /*if (code.equals("057") || code.equals("008") || code.equals("09D")) {
-                        SessionAlert(
-                                context.getResources().getString(R.string.Consent_Form)+beneficiaryModel.memberName,
-                                context.getResources().getString(R.string.ResponseCode)+code,
-                                context.getResources().getString(R.string.ResponseMsg)+msg);
-                        return;
-                    }*/
-                    if (!code.equals("00")) {
-                        show_AlertDialog(
-                                context.getResources().getString(R.string.Consent_Form)+beneficiaryModel.memberName,
-                                context.getResources().getString(R.string.ResponseCode)+code,
-                                context.getResources().getString(R.string.ResponseMsg)+msg,
-                                0);
-
-                    } else {
-                        show_AlertDialog(
-                                context.getResources().getString(R.string.Consent_Form)+beneficiaryModel.memberName,
-                                context.getResources().getString(R.string.ResponseCode)+code,
-                                context.getResources().getString(R.string.ResponseMsg)+msg,
-                                0);
-                    }
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Consent_Form)+beneficiaryModel.memberName,
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
+                    return;
                 }
-
+                show_AlertDialog(
+                        context.getResources().getString(R.string.Consent_Form)+beneficiaryModel.memberName,
+                        context.getResources().getString(R.string.ResponseCode)+code,
+                        context.getResources().getString(R.string.ResponseMsg)+msg,
+                        0);
             });
         } catch (Exception ex) {
-
             Timber.tag("Beneficiary-ConsentReq-").e(ex.getMessage(), "");
         }
     }
@@ -329,68 +185,60 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             final EditText enter = (EditText) dialog.findViewById(R.id.enter);
             dialogbox.setText(context.getResources().getString(R.string.EKYC));
             tv.setText(context.getResources().getString(R.string.Please_Enter_Customer_Aadhaar_No));
-            confirm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    beneficiaryModel.Enter_UID = enter.getText().toString();
+            confirm.setOnClickListener(v -> {
+                dialog.dismiss();
+                beneficiaryModel.Enter_UID = enter.getText().toString();
 
-                    if (validateVerhoeff(beneficiaryModel.Enter_UID) && beneficiaryModel.Enter_UID.length() == 12) {
-                        try {
-                            beneficiaryModel.Enter_UID = encrypt(beneficiaryModel.Enter_UID, menuConstants.skey);
+                if (validateVerhoeff(beneficiaryModel.Enter_UID) && beneficiaryModel.Enter_UID.length() == 12) {
+                    try {
+                        beneficiaryModel.Enter_UID = encrypt(beneficiaryModel.Enter_UID, menuConstants.skey);
 
-                            if (Util.networkConnected(context)) {
-                                if (L.equals("hi")){
-                                    ConsentDialog(ConsentForm(context,1));
-                                }else {
-                                    ConsentDialog(ConsentForm(context,0));
-                                }
-
-                            } else {
-                                show_AlertDialog(context.getResources().getString(R.string.Beneficiary_Details),
-                                        context.getResources().getString(R.string.Internet_Connection),
-                                        context.getResources().getString(R.string.Internet_Connection_Msg),
-                                        0);
+                        if (Util.networkConnected(context)) {
+                            if (L.equals("hi")){
+                                ConsentDialog(ConsentForm(context,1));
+                            }else {
+                                ConsentDialog(ConsentForm(context,0));
                             }
-                        } catch (BadPaddingException e) {
-                            e.printStackTrace();
-                        } catch (IllegalBlockSizeException e) {
-                            e.printStackTrace();
-                        } catch (InvalidKeyException e) {
-                            e.printStackTrace();
-                        } catch (NoSuchPaddingException e) {
-                            e.printStackTrace();
-                        } catch (NoSuchAlgorithmException e) {
-                            e.printStackTrace();
-                        }
 
-                    } else {
-                        if (mp != null) {
-                            releaseMediaPlayer(context, mp);
-                        }
-                        if (L.equals("hi")) {
                         } else {
-                            mp = mp.create(context, R.raw.c100047);
-                            mp.start();
-                            show_AlertDialog(
-                                    context.getResources().getString(R.string.Beneficiary_Details)+ beneficiaryModel.Enter_UID,
-                                    context.getResources().getString(R.string.Invalid_UID),
-                                    context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID),
+                            show_AlertDialog(context.getResources().getString(R.string.Beneficiary_Details),
+                                    context.getResources().getString(R.string.Internet_Connection),
+                                    context.getResources().getString(R.string.Internet_Connection_Msg),
                                     0);
-
                         }
+                    } catch (BadPaddingException e) {
+                        e.printStackTrace();
+                    } catch (IllegalBlockSizeException e) {
+                        e.printStackTrace();
+                    } catch (InvalidKeyException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchPaddingException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    if (mp != null) {
+                        releaseMediaPlayer(context, mp);
+                    }
+                    if (L.equals("hi")) {
+                    } else {
+                        mp = MediaPlayer.create(context, R.raw.c100047);
+                        mp.start();
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Beneficiary_Details)+ beneficiaryModel.Enter_UID,
+                                context.getResources().getString(R.string.Invalid_UID),
+                                context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID),
+                                0);
+
                     }
                 }
             });
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
+            back.setOnClickListener(v -> dialog.dismiss());
 
             dialog.setCanceledOnTouchOutside(false);
-            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
             dialog.show();
         } catch (Exception ex) {
@@ -411,31 +259,23 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             TextView tv = (TextView) dialog.findViewById(R.id.consent);
             tv.setText(concent);
             final CheckBox checkBox = (CheckBox) dialog.findViewById(R.id.check);
-            confirm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (checkBox.isChecked()) {
-                        dialog.dismiss();
-                        connectRDserviceEKYC(beneficiaryDetails.wadh);
-                    } else {
-                        show_AlertDialog(
-                                context.getResources().getString(R.string.Beneficiary_Details)+beneficiaryModel.memberName ,
-                                context.getResources().getString(R.string.Consent_Form),
-                                context.getResources().getString(R.string.Please_check_Consent_Form),
-                                2);
-                    }
-
-                }
-            });
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            confirm.setOnClickListener(v -> {
+                if (checkBox.isChecked()) {
                     dialog.dismiss();
+                    connectRDserviceEKYC(beneficiaryDetails.wadh);
+                } else {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Beneficiary_Details)+beneficiaryModel.memberName ,
+                            context.getResources().getString(R.string.Consent_Form),
+                            context.getResources().getString(R.string.Please_check_Consent_Form),
+                            2);
                 }
+
             });
+            back.setOnClickListener(v -> dialog.dismiss());
 
             dialog.setCanceledOnTouchOutside(false);
-            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             dialog.show();
         } catch (Exception ex) {
@@ -449,57 +289,42 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         try {
 
             Show( context.getResources().getString(R.string.Beneficiary_Verification), context.getResources().getString(R.string.Processing));
-/*
-            pd = ProgressDialog.show(context,
-            context.getResources().getString(R.string.Beneficiary_Verification), context.getResources().getString(R.string.Processing), true, false);
-*/
+
             Aadhaar_Parsing request = new Aadhaar_Parsing(context, BenAuth, 4);
-            request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
+            request.setOnResultListener((code, msg, ref, flow, object) -> {
+                Dismiss();
+                if (code == null || code.isEmpty()) {
 
-                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                @Override
-                public void onCompleted(String code, String msg, String ref, String flow, Object object) {
-                    Dismiss();
-                    if (code == null || code.isEmpty()) {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Beneficiary_Verification)+beneficiaryModel.memberName,
+                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                            "",
+                            0);
+                    return;
+                }
 
-                        show_AlertDialog(
-                                context.getResources().getString(R.string.Beneficiary_Verification)+beneficiaryModel.memberName,
-                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
-                                "",
-                                0);
-                        return;
-                    }
+                if (!code.equals("E00")) {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Beneficiary_Verification)+beneficiaryModel.memberName,
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            context.getResources().getString(R.string.ResponseMsg)+msg,
+                            0);
 
-                   /* if (code.equals("057") || code.equals("008") || code.equals("09D")) {
-                        SessionAlert(
-                                context.getResources().getString(R.string.Beneficiary_Verification)+beneficiaryModel.memberName,
-                                context.getResources().getString(R.string.ResponseCode)+code,
-                                context.getResources().getString(R.string.ResponseMsg)+msg);
-                        return;
-                    }*/
-                    if (!code.equals("E00")) {
-                        show_AlertDialog(
-                                context.getResources().getString(R.string.Beneficiary_Verification)+beneficiaryModel.memberName,
-                                context.getResources().getString(R.string.ResponseCode)+code,
-                                context.getResources().getString(R.string.ResponseMsg)+msg,
-                                0);
+                } else {
+                    beneficiaryAuth = (BeneficiaryAuth) object;
+                    String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+                    details = "\n" + context.getResources().getString(R.string.MemberName) + beneficiaryAuth.eKYCMemberName + "\n" +
+                            context.getResources().getString(R.string.DOB) + " : " + beneficiaryAuth.eKYCDOB + "\n" +
+                            context.getResources().getString(R.string.PindCode) + " : " + beneficiaryAuth.eKYCPindCode + "\n" +
+                            context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder + "\n" +
+                            context.getResources().getString(R.string.Date) + " : " + currentDateTimeString + "\n";
 
-                    } else {
-                        beneficiaryAuth = (BeneficiaryAuth) object;
-                        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-                        details = "\n" + context.getResources().getString(R.string.MemberName) + beneficiaryAuth.eKYCMemberName + "\n" +
-                                context.getResources().getString(R.string.DOB) + " : " + beneficiaryAuth.eKYCDOB + "\n" +
-                                context.getResources().getString(R.string.PindCode) + " : " + beneficiaryAuth.eKYCPindCode + "\n" +
-                                context.getResources().getString(R.string.Gender) + " : " + beneficiaryAuth.eKYCGeneder + "\n" +
-                                context.getResources().getString(R.string.Date) + " : " + currentDateTimeString + "\n";
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.ResponseCode)+code,
+                            details,
+                            "",
+                                    1);
 
-                        show_AlertDialog(
-                                context.getResources().getString(R.string.ResponseCode)+code,
-                                details,
-                                "",
-                                        1);
-
-                    }
                 }
             });
             request.execute();
@@ -516,10 +341,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     releaseMediaPlayer(context, mp);
                 }
                 if (L.equals("hi")) {
-                    mp = mp.create(context, R.raw.c200032);
+                    mp = MediaPlayer.create(context, R.raw.c200032);
                     mp.start();
                 } else {
-                    mp = mp.create(context, R.raw.c100032);
+                    mp = MediaPlayer.create(context, R.raw.c100032);
                     mp.start();
                 }
 
@@ -530,13 +355,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                         "</PidOptions>";
 
                 Intent act = new Intent("in.gov.uidai.rdservice.fp.CAPTURE");
-                PackageManager packageManager = getPackageManager();
-                List<ResolveInfo> activities = packageManager.queryIntentActivities(act, PackageManager.MATCH_DEFAULT_ONLY);
-                final boolean isIntentSafe = activities.size() > 0;
-
                 act.putExtra("PID_OPTIONS", xmplpid);
                 startActivityForResult(act, beneficiaryModel.RD_SERVICE);
-
         } catch (Exception ex) {
             Timber.tag("Beneficiary-RD-").e(ex.getMessage(), "");
         }
@@ -631,10 +451,12 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 }
                 if (L.equals("hi")) {
                 } else {
-                    mp = mp.create(context, R.raw.c100187);
+                    mp = MediaPlayer.create(context, R.raw.c100187);
                     mp.start();
                 }
-                Util.generateNoteOnSD(context, "BenVerificationAuthReq.txt", BenAuth);
+                if (Debug) {
+                    Util.generateNoteOnSD(context, "BenVerificationAuthReq.txt", BenAuth);
+                }
                 hitURL1(BenAuth);
             } else {
                 show_AlertDialog(
@@ -655,9 +477,6 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                 String action = intent.getAction();
                 if (ACTION_USB_PERMISSION.equals(action)) {
                     probe();
-                    // btnConnect.performClick();
-
-                    //last.setEnabled(true);
                     synchronized (this) {
 
                     }
@@ -668,13 +487,10 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         }
     };
 
-
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void callPrint() {
         try {
 
-            String str1, str2, str3;
+            String str1, str2;
             String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
             String[] str = new String[4];
             if (L.equals("hi")) {
@@ -701,7 +517,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
                 str1 = dealerConstants.stateBean.stateReceiptHeaderEn + "\n" +
                         context.getResources().getString(R.string.VERIFICATION_RECEIPT) + "\n"
-                        + "-----------------------------\n";
+                        + "\n";
                 str2 = context.getResources().getString(R.string.Date) + "           :" + currentDateTimeString + "\n"
                         /*+ context.getResources().getString(R.string.Time) + "           : " + currentDateTimeString + " \n"*/
                         + context.getResources().getString(R.string.FPS_ID) + "         : " + dealerConstants.fpsCommonInfo.fpsId + "\n"
@@ -725,8 +541,6 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
     private void prep_consent() {
         try {
-
-
             String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
             //currentDateTimeString="26032021114610";
             String consentrequest = "{\n" +
@@ -743,7 +557,9 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                     /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
                     "   \"token\" : " + "\"9f943748d8c1ff6ded5145c59d0b2ae7\"" + "\n" +
                     "}";
-            Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
+                    if (Debug) {
+                        Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
+                    }
             ConsentformURL(consentrequest);
         } catch (Exception ex) {
 
@@ -760,25 +576,26 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkandprint(String[] str, int i) {
         try {
 
-            if (Util.batterylevel(context) || Util.adapter(context)) {
-                if (mp != null) {
-                    releaseMediaPlayer(context, mp);
-                }
-                if (L.equals("hi")) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (Util.batterylevel(context) || Util.adapter(context)) {
+                    if (mp != null) {
+                        releaseMediaPlayer(context, mp);
+                    }
+                    if (L.equals("hi")) {
+                    } else {
+                        mp = mp.create(context, R.raw.c100191);
+                        mp.start();
+                    }
+                    es.submit(new TaskPrint(mTerminal100API, str, mActivity, context, i));
+                    Intent intent = new Intent(context, HomeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 } else {
-                    mp = mp.create(context, R.raw.c100191);
-                    mp.start();
+                    printbox(str, i);
                 }
-                es.submit(new TaskPrint(mTerminal100API, str, mActivity, context, i));
-                Intent intent = new Intent(context, HomeActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            } else {
-                printbox(str, i);
             }
         } catch (Exception ex) {
             Timber.tag("Beneficiary-Batter-").e(ex.getMessage(), "");
@@ -830,15 +647,11 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
     private void probe() {
         try {
-
             final UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-
             HashMap<String, UsbDevice> deviceList = mUsbManager.getDeviceList();
             Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
             if (deviceList.size() > 0) {
-
                 while (deviceIterator.hasNext()) {
-// Here is if not while, indicating that I only want to support a device
                     final UsbDevice device = deviceIterator.next();
                     if ((device.getProductId() == 22304) && (device.getVendorId() == 1155)) {
                         // TODO Auto-generated method stub
@@ -851,17 +664,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
                             context.registerReceiver(mUsbReceiver, filter);
 
                         } else {
-
-                            //last.setEnabled(false);
-                            es.submit(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mTerminal100API.printerOpenTask(mUsbManager, device, context);
-                                }
-                            });
+                            es.submit(() -> mTerminal100API.printerOpenTask(mUsbManager, device, context));
                         }
-                        //  });
-                    } else {
 
                     }
                 }
@@ -875,8 +679,6 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
 
     @Override
     public void OnOpen() {
-        //last.setEnabled(true);
-        // btnConnect.setEnabled(false);
 
     }
 
@@ -897,7 +699,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
     public void OnPrint(final int bPrintResult, final boolean bIsOpened) {
 
     }
-    private void printbox( final String[] str, final int type) {
+
+    private void printbox(final String[] str, final int type) {
 
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -909,26 +712,78 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
         head.setText(context.getResources().getString(R.string.Battery));
         status.setText( context.getResources().getString(R.string.Battery_Msg));
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                checkandprint(str,type);
-            }
+        confirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            checkandprint(str,type);
         });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
+        back.setOnClickListener(v -> dialog.dismiss());
         dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_beneficiary__details);
+        try {
+            context = BeneficiaryDetailsActivity.this;
+
+            mActivity = this;
+            ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
+
+            beneficiaryDetails = (BeneficiaryDetails) getIntent().getSerializableExtra("OBJ");
+
+
+
+            flagprint=0;
+            beneficiaryModel.click = false;
+
+            Ekyc.setOnClickListener(view -> {
+                preventTwoClick(view);
+                if (flagprint!=2) {
+                    if (beneficiaryModel.click) {
+                        if (beneficiaryModel.verification.equals("N")) {
+                            AadhaarDialog();
+                        } else {
+                            show_AlertDialog(
+                                    beneficiaryModel.memberName,
+                                    beneficiaryModel.verifyStatus_en,
+                                    ""
+                                    , 0);
+
+                        }
+                    } else {
+                        show_AlertDialog(context.getResources().getString(R.string.Beneficiary_Details),
+                                context.getResources().getString(R.string.Please_Select_a_Member),
+                                ""
+                                , 0);
+
+                    }
+                }
+            });
+
+            Display();
+            mTerminal100API = new MTerminal100API();
+            mTerminal100API.initPrinterAPI(this, this);
+            probe();
+            back.setOnClickListener(view -> {
+                preventTwoClick(view);
+                finish();
+            });
+        } catch (Exception ex) {
+            Timber.tag("Beneficiary-onCreate-").e(ex.getMessage(), "");
+        }
+    }
+
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        back = findViewById(R.id.Ben_details_back);
+        Ekyc = findViewById(R.id.Ben_details_Ekyc);
+        toolbarInitilisation();
+    }
+
+
     private void toolbarInitilisation() {
         try {
 
@@ -940,6 +795,18 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
             TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
             TextView toolbarCard = findViewById(R.id.toolbarCard);
+            TextView toolbarRD = findViewById(R.id.toolbarRD);
+            if (rd_fps == 3) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+            } else if (rd_fps == 2) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+            } else {
+                if (RDservice(context)) {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
+                } else {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+                }
+            }
             toolbarCard.setText("RC : " + beneficiaryDetails.rationCardId);
             String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
             System.out.println(appversion);
@@ -962,39 +829,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
             Timber.tag("Beneficiary-ToolBar-").e(ex.getMessage(), "");
         }
     }
-
-    private void show_Dialogbox(String msg, String header) {
-
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.dialogbox);
-        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
-        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
-        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
-        head.setText(header);
-        status.setText(msg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
-    }
-
-    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+    private void show_AlertDialog(String headermsg, String bodymsg, String talemsg, int i) {
 
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1007,48 +842,20 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity implements Pri
         head.setText(headermsg);
         body.setText(bodymsg);
         tale.setText(talemsg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+        confirm.setOnClickListener(v -> {
+            dialog.dismiss();
 
-                if (i == 1) {
-                    callPrint();
-                } else if (i == 2) {
-                    prep_consent();
-                }
+            if (i == 1) {
+                flagprint=2;
+                callPrint();
+            } else if (i == 2) {
+                prep_consent();
             }
         });
         dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
-    }
-
-    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.alertdialog);
-        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
-        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
-        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
-        head.setText(headermsg);
-        body.setText(bodymsg);
-        tale.setText(talemsg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Intent i = new Intent(context, StartActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-
-            }
-        });
-
     }
 
     public void Dismiss() {

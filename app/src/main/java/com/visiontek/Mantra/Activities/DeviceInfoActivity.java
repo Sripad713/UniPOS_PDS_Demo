@@ -4,12 +4,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -30,18 +34,16 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import timber.log.Timber;
-
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
 
-public class DeviceInfoActivity extends AppCompatActivity {
+public class DeviceInfoActivity extends BaseActivity {
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
     ArrayList<DeviceInfoListModel> arraydata;
@@ -67,49 +69,11 @@ public class DeviceInfoActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_device__info);
-        try {
-        }catch (Exception ex){
-            show_error_box(ex.getMessage(),"Start");
-            Timber.tag("DeviceInfo-onCreate-").e(ex.getMessage(),"");
-        }
-        context = DeviceInfoActivity.this;
-
-        TextView toolbarRD = findViewById(R.id.toolbarRD);
-        boolean rd_fps = RDservice(context);
-        if (rd_fps) {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_AlertDialog(context.getResources().getString(R.string.DEVICE_INFO),
-                    context.getResources().getString(R.string.RD_Service),
-                    context.getResources().getString(R.string.RD_Service_Msg),0);
-            return;
-        }
-
-        toolbarInitilisation();
-        saveInfo(context);
-        Button back=findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                finish();
-            }
-        });
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void saveInfo(Context context) {
         try {
-        }catch (Exception ex){
-            show_error_box(ex.getMessage(),"Start");
-            Timber.tag("DeviceInfo-onCreate-").e(ex.getMessage(),"");
-        }
+
         ArrayList<String> value = new ArrayList<>();
         value.add("Device");
         value.add("Manufacture");
@@ -132,7 +96,16 @@ public class DeviceInfoActivity extends AppCompatActivity {
         info.add(Build.DISPLAY);
         info.add(Build.getRadioVersion());
         info.add(readKernelVersion());
-        info.add("MantraPDS_1.0");
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String version = pInfo.versionName;
+        System.out.println("@@Version: " + version);
+        float appVersion = Float.parseFloat(version);
+        info.add("MantraPDS_"+appVersion);
 
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -146,131 +119,43 @@ public class DeviceInfoActivity extends AppCompatActivity {
         }
         adapter = new DeviceInfoListAdapter(context, arraydata);
         recyclerView.setAdapter(adapter);
-    }
+         }catch (Exception ex){
 
-
-    private void show_error_box(String msg, String title) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-    private void toolbarInitilisation() {
-        try {
-
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
-
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
-
-        toolbarFpsid.setText("DEVICE ID");
-        toolbarFpsidValue.setText(DEVICEID);
-        toolbarActivity.setText( context.getResources().getString(R.string.DEVICE_INFO));
-
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
-        }catch (Exception ex){
-
-            Timber.tag("DeviceInfo-Toolbar-").e(ex.getMessage(),"");
+            Timber.tag("DeviceInfo-onCreate-").e(ex.getMessage(),"");
         }
     }
-    private void show_Dialogbox(String msg,String header) {
 
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.dialogbox);
-        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
-        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
-        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
-        head.setText(header);
-        status.setText(msg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
 
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void initialize() {
+        try {
+            context = DeviceInfoActivity.this;
+            LinearLayout llAboutUs = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_device__info, null);
+            llBody.addView(llAboutUs, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            llBody.setVisibility(View.VISIBLE);
+            initializeControls();
+
+
+
+            saveInfo(context);
+            Button back=findViewById(R.id.back);
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    finish();
+                }
+            });
+        }catch (Exception ex){
+
+            Timber.tag("DeviceInfo-onCreate-").e(ex.getMessage(),"");
+        }
     }
 
-    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
-
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.alertdialog);
-        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
-        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
-        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
-        head.setText(headermsg);
-        body.setText(bodymsg);
-        tale.setText(talemsg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
+    @Override
+    public void initializeControls() {
+        toolbarActivity.setText(context.getResources().getString(R.string.DEVICE_INFO));
     }
-    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.alertdialog);
-        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
-        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
-        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
-        head.setText(headermsg);
-        body.setText(bodymsg);
-        tale.setText(talemsg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Intent i = new Intent(context, StartActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
 
-            }
-        });
-
-    }
 }

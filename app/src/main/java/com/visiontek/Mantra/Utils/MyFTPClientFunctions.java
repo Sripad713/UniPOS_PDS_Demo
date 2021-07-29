@@ -19,10 +19,7 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class MyFTPClientFunctions {
 
-    public int Toknow, working;
     public FileOutputStream desFileStream;
-    public String fdate, name;
-    public String network;
     public FTPClient mFTPClient = new FTPClient();
 
     public boolean ftpConnect(String host, String username, String password, int port) {
@@ -69,7 +66,6 @@ public class MyFTPClientFunctions {
     public boolean ftpDownload(String srcFilePath, String desFilePath) {
         boolean status = false;
         try {
-            System.out.println("@@Destination file path: "+desFilePath);
 
             mFTPClient.setDataTimeout(30000);
             mFTPClient.setSoTimeout(15000);
@@ -90,7 +86,6 @@ public class MyFTPClientFunctions {
             try {
                 mFTPClient.disconnect();
             } catch (Exception e) {
-                System.out.println("Error occurred while disconnecting from ftp server." + Toknow);
             }
         }
     }

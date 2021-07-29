@@ -113,7 +113,7 @@ public class Json_Parsing {
 
                         System.out.println("OUTPUT"+myResponse);
                         if (type == 1) {
-                            Util.generateNoteOnSD(context, "RecivegoodsRes.txt", myResponse);
+                            //Util.generateNoteOnSD(context, "RecivegoodsRes.txt", myResponse);
                             object = parse_recivegoods(myResponse);
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
@@ -126,13 +126,13 @@ public class Json_Parsing {
                                 }
                             });
                         } else if (type == 2) {
-                            Util.generateNoteOnSD(context, "CancelRequestRes.txt", myResponse);
+                            //Util.generateNoteOnSD(context, "CancelRequestRes.txt", myResponse);
                             parse_cancelReq(myResponse);
                         } else if (type == 3) {
-                            Util.generateNoteOnSD(context, "ConsentFormRes.txt", myResponse);
+                            //Util.generateNoteOnSD(context, "ConsentFormRes.txt", myResponse);
                             parse_consentform(myResponse);
                         } else if (type == 4) {
-                            Util.generateNoteOnSD(context, "LogoutRes.txt", myResponse);
+                            //Util.generateNoteOnSD(context, "LogoutRes.txt", myResponse);
                             parse_logout(myResponse);
                         }
                     }
@@ -152,18 +152,6 @@ public class Json_Parsing {
                     }
                 });
             }
-
-       /* if (type==17 || type==18){
-
-            System.out.println(url);
-        }else if (type==3){
-            url="http://epos.nic.in/ePosCommonServiceCTG/eposCommon/getFpsOfflineData";
-        }else if (type==4){
-            url="http://epos.nic.in/ePosCommonServiceCTG/eposCommon/getCbUpdate";
-        }else  {
-            url="http://epos.nic.in/ePosCommonServiceCTG/eposCommon/getFpsStockDetails";
-        }*/
-
 
         }catch (Exception e) {
                 e.printStackTrace();
@@ -246,7 +234,6 @@ public class Json_Parsing {
         } catch (JSONException e) {
             code="1";
             msg="Parsing Error";
-            System.out.println("----------------------");
             e.printStackTrace();
         }
         new Handler(Looper.getMainLooper()).post(new Runnable() {

@@ -15,11 +15,13 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,8 +60,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import timber.log.Timber;
 
 import static com.visiontek.Mantra.Activities.StartActivity.L;
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 
@@ -74,7 +76,7 @@ import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 import static com.visiontek.Mantra.Utils.Util.toast;
 import static com.visiontek.Mantra.Utils.Veroeff.validateVerhoeff;
 
-public class UIDDetailsActivity extends AppCompatActivity {
+public class UIDDetailsActivity extends BaseActivity {
 
     Button back, Ekyc;
     Context context;
@@ -84,112 +86,6 @@ public class UIDDetailsActivity extends AppCompatActivity {
     UIDDetails uidDetails;
     UIDModel uidModel=new UIDModel();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_u_i_d__details);
-        try {
-        }catch (Exception ex){
-            show_error_box(ex.getMessage(),"Start",0);
-            Timber.tag("UIDDetails-onCreate-").e(ex.getMessage(),"");
-        }
-        context = UIDDetailsActivity.this;
-
-        uidDetails = (UIDDetails) getIntent().getSerializableExtra("OBJ");
-        TextView toolbarRD = findViewById(R.id.toolbarRD);
-        boolean rd_fps = RDservice(context);
-        if (rd_fps) {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_error_box(context.getResources().getString(R.string.RD_Service_Msg), context.getResources().getString(R.string.RD_Service), 0);
-            return;
-        }
-
-        initilisation();
-        uidModel.click=false;
-
-        Ekyc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                if (uidModel.click) {
-                    if (Util.networkConnected(context)) {
-
-                            if (uidModel.bfd_1.equals("Y")) {
-                                ConsentDialog(ConsentForm(context, 1));
-                            } else {
-                                show_error_box(context.getResources().getString(R.string.Member_is_already_Verified), context.getResources().getString(R.string.Already_Verified),0);
-                            }
-
-                    } else {
-                        show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
-                    }
-
-                } else {
-                    if (mp != null) {
-                        releaseMediaPlayer(context, mp);
-                    }
-                    if (L.equals("hi")) {
-                    } else {
-                        mp = mp.create(context, R.raw.c100065);
-                        mp.start();
-                        toast(context, context.getResources().getString(R.string.Please_Select_a_Member));
-                    }
-                }
-
-            }
-        });
-
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                finish();
-            }
-        });
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        ArrayList<AadhaarSeedingListModel> data = new ArrayList<>();
-        int rcMemberDetssize=uidDetails.rcMemberDet.size();
-        for (int i = 0; i < rcMemberDetssize; i++) {
-            data.add(new AadhaarSeedingListModel(uidDetails.rcMemberDet.get(i).memberName,
-                    uidDetails.rcMemberDet.get(i).uid,
-                    uidDetails.rcMemberDet.get(i).w_uid_status));
-        }
-
-        adapter = new AadharSeedingListAdapter(context, data, new OnClickUID() {
-            @Override
-            public void onClick(int p) {
-                uidModel.click = true;
-                uidModel.memberId = uidDetails.rcMemberDet.get(p).memberId;
-                uidModel.bfd_1 = uidDetails.rcMemberDet.get(p).bfd_1;
-                uidModel.memberName = uidDetails.rcMemberDet.get(p).memberName;
-                uidModel.w_uid_status = uidDetails.rcMemberDet.get(p).w_uid_status;
-                uidModel.member_fusion = uidDetails.rcMemberDet.get(p).member_fusion;
-                uidModel.uid = uidDetails.rcMemberDet.get(p).uid;
-
-            }
-        });
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void initilisation() {
-        pd = new ProgressDialog(context);
-
-        Ekyc = findViewById(R.id.UID_details_Ekyc);
-        back = findViewById(R.id.UID_details_back);
-
-
-        toolbarInitilisation();
-    }
 
     private void Sessiontimeout(String msg, String title) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
@@ -487,7 +383,7 @@ public class UIDDetailsActivity extends AppCompatActivity {
                 "    </SOAP-ENV:Body>\n" +
                 "</SOAP-ENV:Envelope>";
 
-        Util.generateNoteOnSD(context, "UIDAuthReq.txt", UIDAuth);
+        //Util.generateNoteOnSD(context, "UIDAuthReq.txt", UIDAuth);
         if (networkConnected(context)) {
             if (mp!=null) {
                 releaseMediaPlayer(context,mp);
@@ -542,7 +438,7 @@ public class UIDDetailsActivity extends AppCompatActivity {
                 /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
                 "   \"token\" : "+"\"9f943748d8c1ff6ded5145c59d0b2ae7\""+"\n" +
                 "}";
-        Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
+        //Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
         ConsentformURL(consentrequest);
     }
 
@@ -589,34 +485,106 @@ public class UIDDetailsActivity extends AppCompatActivity {
         }
         return 0;
     }
-    private void toolbarInitilisation() {
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-        TextView  toolbarCard= findViewById(R.id.toolbarCard);
-        toolbarCard.setText(uidDetails.rationCardId);
 
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
+    @Override
+    public void initialize() {
+        try {
+            context = UIDDetailsActivity.this;
+            LinearLayout llAboutUs = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_u_i_d__details, null);
+            llBody.addView(llAboutUs, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            llBody.setVisibility(View.VISIBLE);
+            initializeControls();
 
 
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
+            uidDetails = (UIDDetails) getIntent().getSerializableExtra("OBJ");
 
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText("UID");
 
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
+            uidModel.click=false;
+
+            Ekyc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    if (uidModel.click) {
+                        if (Util.networkConnected(context)) {
+
+                            if (uidModel.bfd_1.equals("Y")) {
+                                ConsentDialog(ConsentForm(context, 1));
+                            } else {
+                                show_error_box(context.getResources().getString(R.string.Member_is_already_Verified), context.getResources().getString(R.string.Already_Verified),0);
+                            }
+
+                        } else {
+                            show_error_box(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), 0);
+                        }
+
+                    } else {
+                        if (mp != null) {
+                            releaseMediaPlayer(context, mp);
+                        }
+                        if (L.equals("hi")) {
+                        } else {
+                            mp = mp.create(context, R.raw.c100065);
+                            mp.start();
+                            toast(context, context.getResources().getString(R.string.Please_Select_a_Member));
+                        }
+                    }
+
+                }
+            });
+
+
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    finish();
+                }
+            });
+
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            ArrayList<AadhaarSeedingListModel> data = new ArrayList<>();
+            int rcMemberDetssize=uidDetails.rcMemberDet.size();
+            for (int i = 0; i < rcMemberDetssize; i++) {
+                data.add(new AadhaarSeedingListModel(uidDetails.rcMemberDet.get(i).memberName,
+                        uidDetails.rcMemberDet.get(i).uid,
+                        uidDetails.rcMemberDet.get(i).w_uid_status));
+            }
+
+            adapter = new AadharSeedingListAdapter(context, data, new OnClickUID() {
+                @Override
+                public void onClick(int p) {
+                    uidModel.click = true;
+                    uidModel.memberId = uidDetails.rcMemberDet.get(p).memberId;
+                    uidModel.bfd_1 = uidDetails.rcMemberDet.get(p).bfd_1;
+                    uidModel.memberName = uidDetails.rcMemberDet.get(p).memberName;
+                    uidModel.w_uid_status = uidDetails.rcMemberDet.get(p).w_uid_status;
+                    uidModel.member_fusion = uidDetails.rcMemberDet.get(p).member_fusion;
+                    uidModel.uid = uidDetails.rcMemberDet.get(p).uid;
+
+                }
+            });
+            recyclerView.setAdapter(adapter);
+        }catch (Exception ex){
+            show_error_box(ex.getMessage(),"Start",0);
+            Timber.tag("UIDDetails-onCreate-").e(ex.getMessage(),"");
+        }
     }
+
+    @Override
+    public void initializeControls() {
+        pd = new ProgressDialog(context);
+
+        Ekyc = findViewById(R.id.UID_details_Ekyc);
+        back = findViewById(R.id.UID_details_back);
+
+    }
+
     public void Dismiss(){
         if (pd.isShowing()) {
             pd.dismiss();

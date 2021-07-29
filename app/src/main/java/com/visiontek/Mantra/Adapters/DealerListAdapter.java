@@ -22,7 +22,7 @@ public class DealerListAdapter extends RecyclerView.Adapter<DealerListAdapter.My
 
     Context context;
     int type;
-    private  ArrayList<DealerListModel> dataSet;
+    private final ArrayList<DealerListModel> dataSet;
     private  DealerDetailsActivity.OnClickDealer OnClickDealer;
     private  DealerAuthenticationActivity.OnClickDealerAUTH OnClickDealerAUTH;
 
@@ -51,7 +51,7 @@ public class DealerListAdapter extends RecyclerView.Adapter<DealerListAdapter.My
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int listPosition) {
         final DealerListModel model = dataSet.get(listPosition);
-       // CardView card = holder.cardView;
+
         LinearLayout lin = holder.linearLayout;
         TextView textViewName = holder.textName;
         TextView textViewStatus = holder.textType;

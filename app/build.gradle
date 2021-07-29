@@ -2,15 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
-
-
     defaultConfig {
         applicationId "com.visiontek.unipos_pds_demo"
         minSdkVersion 16
         targetSdkVersion 28
         multiDexEnabled true
         versionCode 1
-        versionName "1.1"
+        versionName "1.2"
        /* ndk {
             abiFilters "arm64-v8a", "armeabi", "armeabi-v7a"
         }*/
@@ -56,7 +54,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-   // implementation 'me.dm7.barcodescanner:zxing:1.9'
+    // implementation 'me.dm7.barcodescanner:zxing:1.9'
 
     implementation files('src/main/libs/IrisAlgo.jar')
     implementation files('src/main/libs/jpeg.jar')
@@ -92,4 +90,6 @@ dependencies {
     implementation 'com.github.delight-im:Android-SimpleLocation:v1.0.1'
     implementation 'com.android.support:gridlayout-v7:28.0.0'
     implementation 'androidx.multidex:multidex:2.0.1'
+    //==========================================
+    implementation 'com.github.mjdev:libaums:0.5.5'
 }

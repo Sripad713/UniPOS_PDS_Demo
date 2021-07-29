@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/card_lt_yellow"
     tools:context=".Activities.DailySalesReportActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -34,9 +35,9 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:background="@drawable/black"
                 android:orientation="vertical">
 
@@ -166,7 +167,7 @@
                             android:background="@drawable/black"
                             android:gravity="center"
                             android:textColor="@color/black"
-                            android:textSize="25dp"
+                            android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
                         <TextView
                             android:layout_width="match_parent"
@@ -248,7 +249,6 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -259,7 +259,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/LayoutMH"
-            android:layout_marginVertical="@dimen/LayoutMV"
+            android:layout_marginVertical="5dp"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -281,7 +281,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:background="@color/button"
+                android:background="@color/ok"
                 android:checked="true"
                 android:text="@string/View"
                 android:textColor="@color/white"
@@ -360,6 +360,26 @@
                 </ScrollView>
             </LinearLayout>
 
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -406,26 +426,6 @@
                     android:textSize="30sp"
                     android:textStyle="bold" />
             </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_weight="1"
-        android:gravity="bottom"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="1"
-            android:gravity="bottom"
-            android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

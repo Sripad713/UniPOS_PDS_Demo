@@ -17,9 +17,11 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -51,9 +53,10 @@ import java.util.concurrent.Executors;
 
 import timber.log.Timber;
 
+import static com.visiontek.Mantra.Activities.BaseActivity.rd_fps;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
@@ -62,7 +65,7 @@ import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
-public class StockReportActivity extends AppCompatActivity implements PrinterCallBack {
+public class StockReportActivity extends AppCompatActivity  implements PrinterCallBack {
     public SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm dd/MM/yyyy");
     Button back, print;
     Context context;
@@ -96,208 +99,6 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
             }
         }
     };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_stock__report);
-        context = StockReportActivity.this;
-        try {
-
-        TextView toolbarRD = findViewById(R.id.toolbarRD);
-        boolean rd_fps = RDservice(context);
-        if (rd_fps) {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_AlertDialog(context.getResources().getString(R.string.Stock_Report),
-                    context.getResources().getString(R.string.RD_Service),
-                    context.getResources().getString(R.string.RD_Service_Msg),0);
-            return;
-        }
-
-        initilisation();
-
-
-        flag_print = 0;
-
-        mActivity = this;
-        ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
-
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        print.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View view) {
-
-               if (flag_print==1) {
-                   print.setEnabled(false);
-                   preventTwoClick(view);
-                   String app;
-                   String time = sdf1.format(new Date()).substring(0, 5);
-                   String date = sdf1.format(new Date()).substring(6, 16);
-                   StringBuilder add = new StringBuilder();
-                   int astockBeansize= stockDetails.astockBean.size();
-                   for (int i = 0; i < astockBeansize; i++) {
-
-                       if (L.equals("hi")) {
-                           app = String.format("%-6s%-6s%-6s%-6s%-8s\n",
-                                   stockDetails.astockBean.get(i).commNamell,
-                                   stockDetails.astockBean.get(i).scheme_desc_ll,
-                                   stockDetails.astockBean.get(i).opening_balance,
-                                   stockDetails.astockBean.get(i).issued_qty,
-                                   stockDetails.astockBean.get(i).closing_balance);
-                       } else {
-                           app = String.format("%-6s%-6s%-6s%-6s%-8s\n",
-                                   stockDetails.astockBean.get(i).comm_name,
-                                   stockDetails.astockBean.get(i).scheme_desc_en,
-                                   stockDetails.astockBean.get(i).opening_balance,
-                                   stockDetails.astockBean.get(i).issued_qty,
-                                   stockDetails.astockBean.get(i).closing_balance);
-                       }
-                       add.append(app);
-                   }
-
-                   String str1,str2,str3,str4,str5,str6;
-                   String[] str = new String[4];
-                   if (L.equals("hi")){
-                       str1 = dealerConstants.stateBean.stateReceiptHeaderLl+"\n"+
-                               context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report)+ "\n";
-                       image(str1,"header.bmp",1);
-                    str2 = context.getResources().getString(R.string.Date)+" : " + date +"\n"+
-                           context.getResources().getString(R.string.Time) +" : "+ time + "\n";
-                    str3 = context.getResources().getString(R.string.Report_Type) + " : PDS\n"
-                           + context.getResources().getString(R.string.FPS_ID)+" : " + dealerConstants.stateBean.statefpsId + "\n\n";
-
-                       str4 = String.format("%-6s%-8s%-4s%-8s%-8s\n",
-                               context.getResources().getString(R.string.name),
-                               context.getResources().getString(R.string.sch),
-                               context.getResources().getString(R.string.OB),
-                               context.getResources().getString(R.string.issued),
-                               context.getResources().getString(R.string.cb))
-                               + "\n";
-
-                    str5 = String.valueOf(add);
-                       image(str2+str3+str4+str5,"body.bmp",0);
-
-                    str6 = context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
-                           + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n";
-
-                       image(str6,"tail.bmp",1);
-                       str[0]="1";
-                       str[1]="1";
-                       str[2]="1";
-                       str[3]="1";
-                       checkandprint(str,1);
-                   }else {
-
-                        str1 = dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
-                                context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report)+ "\n\n";
-                        str2 = context.getResources().getString(R.string.Date) +"        : " + date +"\n"+
-                               context.getResources().getString(R.string.Time) +"        : "+ time + "\n";
-                        str3 = context.getResources().getString(R.string.Report_Type) +" : PDS\n"+
-                                context.getResources().getString(R.string.FPS_ID) +"      : " + dealerConstants.stateBean.statefpsId + "\n\n"
-                               + "\n";
-                        str4 = String.format("%-6s%-8s%-4s%-8s%-8s\n",
-                                context.getResources().getString(R.string.name),
-                                context.getResources().getString(R.string.sch),
-                                context.getResources().getString(R.string.OB),
-                                context.getResources().getString(R.string.issued),
-                                context.getResources().getString(R.string.cb))
-                               + "\n";
-                        str5 = String.valueOf(add);
-
-                        str6 = "\n"+context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
-                               + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n\n\n";
-
-                       str[0]="1";
-                       str[1]=str1;
-                       str[2]=str2+str3+str4+str5;
-                       str[3]=str6;
-                       checkandprint(str,0);
-
-                   }
-               }
-            }
-        });
-        mTerminal100API = new MTerminal100API();
-        mTerminal100API.initPrinterAPI(this, this);
-        print.setEnabled(false);
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            probe();
-        } else {
-            finish();
-        }
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                finish();
-            }
-        });
-
-        String stock = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
-                "<soapenv:Envelope\n" +
-                "    xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
-                "    xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n" +
-                "    xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
-                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "    xmlns:ser=\"http://service.fetch.rationcard/\">\n" +
-                "    <soapenv:Header/>\n" +
-                "    <soapenv:Body>\n" +
-                "        <ser:getStockReportDetails>\n" +
-                "            <shop_no>" + dealerConstants.stateBean.statefpsId + "</shop_no>\n" +
-                "            <report_type>S</report_type>\n" +
-                "            <token>" + dealerConstants.fpsURLInfo.token + "</token>\n" +
-                "            <fpsSessionId>" +dealerConstants. fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
-                "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
-                "        </ser:getStockReportDetails>\n" +
-                "    </soapenv:Body>\n" +
-                "</soapenv:Envelope>";
-            if (networkConnected(context)) {
-                Util.generateNoteOnSD(context, "StockReporReq.txt", stock);
-                hitURL(stock);
-            } else{
-                show_AlertDialog(context.getResources().getString(R.string.Stock_Report),
-                        context.getResources().getString(R.string.Internet_Connection),
-                        context.getResources().getString(R.string.Internet_Connection_Msg),
-                        0);
-            }
-        }catch (Exception ex){
-
-            Timber.tag("Stock-onCreate-").e(ex.getMessage(),"");
-        }
-    }
-    private void Sessiontimeout(String msg, String title) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(title);
-        alertDialogBuilder.setTitle(msg);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-                        Intent i = new Intent(context, StartActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-    private void initilisation() {
-        print = findViewById(R.id.stock_print);
-        back = findViewById(R.id.stock_back);
-        pd = new ProgressDialog(context);
-        recyclerView = findViewById(R.id.my_recycler_view);
-        toolbarInitilisation();
-    }
 
     private void image(String content, String name,int align) {
         try {
@@ -380,11 +181,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
 
             Show(context.getResources().getString(R.string.stock),
                     context.getResources().getString(R.string.Details));
-/*
-        pd = ProgressDialog.show(context,
-         context.getResources().getString(R.string.stock),
-          context.getResources().getString(R.string.Details), true, false);
-*/
+
         XML_Parsing request = new XML_Parsing(context, stock, 6);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
 
@@ -410,7 +207,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
 
                 } else {
                     stockDetails= (StockDetails) object;
-                    flag_print = 1;
+                    flag_print = 2;
                     int astockBeansize= stockDetails.astockBean.size();
                     data = new ArrayList<>();
                     for (int i = 0; i < astockBeansize; i++) {
@@ -491,66 +288,219 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
 
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_stock__report);
+        try {
+            context = StockReportActivity.this;
+
+
+
+            flag_print = 0;
+            initilisation();
+            mActivity = this;
+            ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
+
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            print.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public void onClick(View view) {
+
+                    if (flag_print==2) {
+                        print.setEnabled(false);
+                        preventTwoClick(view);
+                        String app;
+                        String time = sdf1.format(new Date()).substring(0, 5);
+                        String date = sdf1.format(new Date()).substring(6, 16);
+                        StringBuilder add = new StringBuilder();
+                        int astockBeansize= stockDetails.astockBean.size();
+                        for (int i = 0; i < astockBeansize; i++) {
+
+                            if (L.equals("hi")) {
+                                app = String.format("%-6s%-6s%-6s%-6s%-8s\n",
+                                        stockDetails.astockBean.get(i).commNamell,
+                                        stockDetails.astockBean.get(i).scheme_desc_ll,
+                                        stockDetails.astockBean.get(i).opening_balance,
+                                        stockDetails.astockBean.get(i).issued_qty,
+                                        stockDetails.astockBean.get(i).closing_balance);
+                            } else {
+                                app = String.format("%-6s%-6s%-6s%-6s%-8s\n",
+                                        stockDetails.astockBean.get(i).comm_name,
+                                        stockDetails.astockBean.get(i).scheme_desc_en,
+                                        stockDetails.astockBean.get(i).opening_balance,
+                                        stockDetails.astockBean.get(i).issued_qty,
+                                        stockDetails.astockBean.get(i).closing_balance);
+                            }
+                            add.append(app);
+                        }
+
+                        String str1,str2,str3,str4,str5,str6;
+                        String[] str = new String[4];
+                        if (L.equals("hi")){
+                            str1 = dealerConstants.stateBean.stateReceiptHeaderLl+"\n"+
+                                    context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report)+ "\n";
+                            image(str1,"header.bmp",1);
+                            str2 = context.getResources().getString(R.string.Date)+" : " + date +"\n"+
+                                    context.getResources().getString(R.string.Time) +" : "+ time + "\n";
+                            str3 = context.getResources().getString(R.string.Report_Type) + " : PDS\n"
+                                    + context.getResources().getString(R.string.FPS_ID)+" : " + dealerConstants.stateBean.statefpsId + "\n\n";
+
+                            str4 = String.format("%-6s%-8s%-4s%-8s%-8s\n",
+                                    context.getResources().getString(R.string.name),
+                                    context.getResources().getString(R.string.sch),
+                                    context.getResources().getString(R.string.OB),
+                                    context.getResources().getString(R.string.issued),
+                                    context.getResources().getString(R.string.cb))
+                                    + "\n";
+
+                            str5 = String.valueOf(add);
+                            image(str2+str3+str4+str5,"body.bmp",0);
+
+                            str6 = context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
+                                    + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n\n";
+
+                            image(str6,"tail.bmp",1);
+                            str[0]="1";
+                            str[1]="1";
+                            str[2]="1";
+                            str[3]="1";
+                            checkandprint(str,1);
+                        }else {
+
+                            str1 = dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
+                                    context.getResources().getString(R.string.current_stock)+"\n"+context.getResources().getString(R.string.report)+ "\n\n";
+                            str2 = context.getResources().getString(R.string.Date) +"        : " + date +"\n"+
+                                    context.getResources().getString(R.string.Time) +"        : "+ time + "\n";
+                            str3 = context.getResources().getString(R.string.Report_Type) +" : PDS\n"+
+                                    context.getResources().getString(R.string.FPS_ID) +"      : " + dealerConstants.stateBean.statefpsId + "\n\n";
+                            str4 = String.format("%-6s%-8s%-4s%-8s%-8s\n",
+                                    context.getResources().getString(R.string.name),
+                                    context.getResources().getString(R.string.sch),
+                                    context.getResources().getString(R.string.OB),
+                                    context.getResources().getString(R.string.issued),
+                                    context.getResources().getString(R.string.cb))
+                                    + "\n";
+                            str5 = String.valueOf(add);
+
+                            str6 = "\n"+context.getResources().getString(R.string.Public_Distribution_Dept)+"\n"
+                                    + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs)+"\n\n\n\n";
+
+                            str[0]="1";
+                            str[1]=str1;
+                            str[2]=str2+str3+str4+str5;
+                            str[3]=str6;
+                            checkandprint(str,0);
+
+                        }
+                    }
+                }
+            });
+            mTerminal100API = new MTerminal100API();
+            mTerminal100API.initPrinterAPI(this, this);
+            print.setEnabled(false);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                probe();
+            } else {
+                finish();
+            }
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    finish();
+                }
+            });
+
+            String stock = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
+                    "<soapenv:Envelope\n" +
+                    "    xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
+                    "    xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n" +
+                    "    xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
+                    "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                    "    xmlns:ser=\"http://service.fetch.rationcard/\">\n" +
+                    "    <soapenv:Header/>\n" +
+                    "    <soapenv:Body>\n" +
+                    "        <ser:getStockReportDetails>\n" +
+                    "            <shop_no>" + dealerConstants.stateBean.statefpsId + "</shop_no>\n" +
+                    "            <report_type>S</report_type>\n" +
+                    "            <token>" + dealerConstants.fpsURLInfo.token + "</token>\n" +
+                    "            <fpsSessionId>" +dealerConstants. fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
+                    "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
+                    "        </ser:getStockReportDetails>\n" +
+                    "    </soapenv:Body>\n" +
+                    "</soapenv:Envelope>";
+            if (networkConnected(context)) {
+                //Util.generateNoteOnSD(context, "StockReporReq.txt", stock);
+                hitURL(stock);
+            } else{
+                show_AlertDialog(context.getResources().getString(R.string.Stock_Report),
+                        context.getResources().getString(R.string.Internet_Connection),
+                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                        0);
+            }
+        }catch (Exception ex){
+
+            Timber.tag("Stock-onCreate-").e(ex.getMessage(),"");
+        }
+    }
+
+    private void initilisation() {
+        print = findViewById(R.id.stock_print);
+        back = findViewById(R.id.stock_back);
+        pd = new ProgressDialog(context);
+        recyclerView = findViewById(R.id.my_recycler_view);
+        toolbarInitilisation();
+    }
+
     private void toolbarInitilisation() {
         try {
 
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
+            TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+            TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+            TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+            TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+            TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+            TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+            TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
 
 
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
+            TextView toolbarRD = findViewById(R.id.toolbarRD);
+            if (rd_fps == 3) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+            } else if (rd_fps == 2) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+            } else {
+                if (RDservice(context)) {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
+                } else {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+                }
+            }
+            String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+            System.out.println(appversion);
+            toolbarVersion.setText("V" + appversion);
 
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText( context.getResources().getString(R.string.Stock_Report));
 
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
+            SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+            String date = dateformat.format(new Date()).substring(6, 16);
+            toolbarDateValue.setText(date);
+            System.out.println(date);
+
+            toolbarFpsid.setText("FPS ID");
+            toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+            toolbarActivity.setText( context.getResources().getString(R.string.Stock_Report));
+
+            toolbarLatitudeValue.setText(latitude);
+            toolbarLongitudeValue.setText(longitude);
         }catch (Exception ex){
             Timber.tag("Stock-Toolbar-").e(ex.getMessage(),"");
         }
-    }
-    private void show_Dialogbox(String msg,String header) {
-
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.dialogbox);
-        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
-        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
-        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
-        head.setText(header);
-        status.setText(msg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
     }
 
 
@@ -578,30 +528,7 @@ public class StockReportActivity extends AppCompatActivity implements PrinterCal
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
-    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.alertdialog);
-        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
-        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
-        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
-        head.setText(headermsg);
-        body.setText(bodymsg);
-        tale.setText(talemsg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Intent i = new Intent(context, StartActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
 
-            }
-        });
-
-    }
     public void Dismiss(){
         if (pd.isShowing()) {
             pd.dismiss();

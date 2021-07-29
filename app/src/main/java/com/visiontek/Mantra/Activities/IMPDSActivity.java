@@ -1,77 +1,70 @@
 package com.visiontek.Mantra.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import com.visiontek.Mantra.Models.bean.ImpdsBean;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.ConnectivityReceiver;
 import com.visiontek.Mantra.Utils.Util;
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import timber.log.Timber;
+
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
-public class IMPDSActivity extends AppCompatActivity {
-    Button btn_submit;
+public class IMPDSActivity extends BaseActivity {
+    Button btn_submit,btn_back;
     EditText ed_rc_id;
-    Intent i;
     ConnectivityReceiver connectivityReceiver;
-    private AlertDialog.Builder builder;
-    private String vendor,st_ed_rc_id;
+    private String st_ed_rc_id;
     String st_rd_type="R";
-    ProgressDialog progressDialog;
     RadioGroup rg_type;
     RadioButton rd_type_ration, rd_type_uid;
     TextView rc_label;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_i_m_p_d_s);
+    Context context;
 
+
+    @Override
+    public void initialize() {
+        try{
+            context=IMPDSActivity.this;
+            LinearLayout llAboutUs = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_i_m_p_d_s, null);
+            llBody.addView(llAboutUs, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            llBody.setVisibility(View.VISIBLE);
+            initializeControls();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(R.color.toolbar));//33A1C9
         }
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        Date date = new Date();
-        String trxdate = dateFormat.format(date);
 
-        toolbarInitilisation();
-         connectivityReceiver = new ConnectivityReceiver();
+
+        connectivityReceiver = new ConnectivityReceiver();
         rc_label = findViewById(R.id.rc_label);
         rg_type=findViewById(R.id.rg_type);
         rd_type_uid=findViewById(R.id.rd_type_uid);
         rd_type_ration=findViewById(R.id.rd_type_ration);
-
-        /*vendor= ImpdsBean.getInstance().getVendor();
-        if(vendor == null || vendor.length() == 0){
-            logout();
-        }*/
 
         rg_type.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -79,42 +72,41 @@ public class IMPDSActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 if (arg1 == R.id.rd_type_ration) {
                     st_rd_type = "R";
-                    rc_label.setText("Ration Card No");
-                    rc_label.setHint("Enter Ration Card No");
+                    rc_label.setText(context.getResources().getString(R.string.RC_No));
+                    rc_label.setHint(context.getResources().getString(R.string.Please_Enter_RC_Number));
                 }
                 if (arg1 == R.id.rd_type_uid) {
                     st_rd_type = "U";
-                    rc_label.setText("Aadhar Card No");
-                    rc_label.setHint("Enter Aadhar Card No");
+                    rc_label.setText(context.getResources().getString(R.string.Aadhaar_No));
+                    rc_label.setHint(context.getResources().getString(R.string.Enter_UID));
                 }
             }
         });
 
         ed_rc_id=findViewById(R.id.ed_rc_id);
-        //ed_rc_id.setText("066000000000");// 782971625188
-
         btn_submit=findViewById(R.id.btn_submit);
         btn_submit.setEnabled(true);
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 btn_submit.setEnabled(false);
-                AlertDialog.Builder builder = new AlertDialog.Builder(IMPDSActivity.this);
-
+                preventTwoClick(v);
                 if (ed_rc_id.getText().toString().isEmpty()) {
-                    builder.setTitle("Alert");
+                    if ( st_rd_type.equals("U")){
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Aadhaar),
+                                context.getResources().getString(R.string.Invalid_UID),
+                                context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID)
+                                ,0);
 
-                    builder.setMessage(String.valueOf("Enter Valid Ration Card No."))
-                            .setCancelable(false)
-                            .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                    btn_submit.setEnabled(true);
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                    return;
+                    } else {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.RC_No),
+                                context.getResources().getString(R.string.Invalid_ID),
+                                context.getResources().getString(R.string.Please_Enter_a_Valid_Number_RC),
+                                0);
+
+                    }
 
                 }else {
 
@@ -127,68 +119,39 @@ public class IMPDSActivity extends AppCompatActivity {
                     impdsbean.setSaleDistCode(dealerConstants.fpsCommonInfo.distCode);
                     impdsbean.setFps_session_id(dealerConstants.fpsCommonInfo.fpsSessionId);
 
-
-
                     Intent dashboard = new Intent(getBaseContext(), RC_MemberDetails.class);//RC_MemberDetailsTest
                     dashboard.addCategory(Intent.CATEGORY_HOME);
                     dashboard.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(dashboard);
                     IMPDSActivity.this.finish();
 
-                    // checkLogin();
                 }
 
             }
         });
         btn_submit.setEnabled(true);
+        btn_back=findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                preventTwoClick(v);
+                finish();
+            }
+        });
+    } catch (Exception ex) {
+
+        Timber.tag("Home-onCreate-").e(ex.getMessage(), "");
     }
-    private void toolbarInitilisation() {
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
-
-
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
-
-        toolbarFpsid.setText("DEVICE ID");
-        toolbarFpsidValue.setText(DEVICEID);
-        toolbarActivity.setText("IMPDS");
-
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
     }
-    private void logout() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(IMPDSActivity.this);
-        builder.setTitle("Alert");
 
-        builder.setMessage("Session expired.Kindly login again")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent i = new Intent(getApplicationContext(), StartActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
-                });
-
-        android.app.AlertDialog alert = builder.create();
-        alert.show();
+    @Override
+    public void initializeControls() {
+        toolbarActivity.setText(context.getResources().getString(R.string.IMPDS));
     }
+
     @Override
     protected void onStart() {
         super.onStart();
-
         IntentFilter filter=new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(connectivityReceiver,filter);
     }
@@ -208,20 +171,35 @@ public class IMPDSActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-
-        Intent dashboard = new Intent(getBaseContext(),IssueActivity .class);
-        dashboard.addCategory(Intent.CATEGORY_HOME);
-        dashboard.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(dashboard);
-        IMPDSActivity.this.finish();
-    }
-    @Override
     public void onDestroy() {
         super.onDestroy();
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
+
+    }
+
+
+    private void show_AlertDialog(String headermsg, String bodymsg, String talemsg, int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
     }
 
 

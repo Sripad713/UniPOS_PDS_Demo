@@ -7,9 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -23,40 +25,28 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import timber.log.Timber;
-
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.diableMenu;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
-public class ReportsActivity extends AppCompatActivity {
+public class ReportsActivity extends BaseActivity {
 
     Button daily_report, stock_report, back;
     Context context;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reports);
-        context = ReportsActivity.this;
+    public void initialize() {
+        try {
 
-
-        TextView toolbarRD = findViewById(R.id.toolbarRD);
-        boolean rd_fps = RDservice(context);
-        if (rd_fps) {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_AlertDialog(context.getResources().getString(R.string.Reports),
-                    context.getResources().getString(R.string.RD_Service),
-                    context.getResources().getString(R.string.RD_Service_Msg),0);
-            return;
-        }
-
-        initilisation();
+            context = ReportsActivity.this;
+            LinearLayout llAboutUs = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_reports, null);
+            llBody.addView(llAboutUs, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            llBody.setVisibility(View.VISIBLE);
+            initializeControls();
 
         if (diableMenu("getDailyReport")) {
             daily_report.setEnabled(false);
@@ -90,61 +80,20 @@ public class ReportsActivity extends AppCompatActivity {
                 finish();
             }
         });
+        }catch (Exception exception) {
 
+            exception.printStackTrace();
+        }
     }
 
-    private void initilisation() {
+    @Override
+    public void initializeControls() {
         daily_report = findViewById(R.id.btn_dailysales_report);
         stock_report = findViewById(R.id.btn_stock_report);
         back = findViewById(R.id.btn_back);
-        toolbarInitilisation();
+        toolbarActivity.setText(context.getResources().getString(R.string.REPORTS));
     }
 
-    private void show_error_box(String msg, String title) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-    private void toolbarInitilisation() {
-        try {
-
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
-
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
-
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText( context.getResources().getString(R.string.REPORTS));
-
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
-        }catch (Exception ex){
-
-            Timber.tag("Reports-Toolbar-").e(ex.getMessage(),"");
-        }
-    }
     private void show_AlertDialog(String headermsg, String bodymsg, String talemsg, int i) {
 
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);

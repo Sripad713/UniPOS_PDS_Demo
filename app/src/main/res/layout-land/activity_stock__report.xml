@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/card_lt_yellow"
     android:orientation="vertical"
     tools:context=".Activities.StockReportActivity">
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool"
         android:layout_width="match_parent"
@@ -159,6 +159,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
@@ -166,7 +167,7 @@
                             android:background="@drawable/black"
                             android:gravity="center"
                             android:textColor="@color/black"
-                            android:textSize="25dp"
+                            android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
                         <TextView
                             android:layout_width="match_parent"
@@ -248,7 +249,6 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -344,14 +344,25 @@
             </ScrollView>
         </LinearLayout>
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
         <LinearLayout
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="3"
-            android:layout_marginVertical="10dp"
-            tools:ignore="MissingConstraints">
-
+            android:baselineAligned="false">
             <Button
                 android:id="@+id/stock_back"
                 android:layout_width="wrap_content"
@@ -380,54 +391,35 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="@dimen/TextsizeB"/>
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_weight="1"
-        android:gravity="bottom"
-        android:orientation="vertical">
 
+        </LinearLayout>
         <LinearLayout
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="1"
-            android:gravity="bottom"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:background="@drawable/black"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/black"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="Powered by"
+                android:background="@color/link_color"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeH"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="Powered by"
-                    android:background="@color/link_color"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/TextsizeH"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:gravity="left"
-                    android:layout_width="300dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/wblack"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/nic3" />
-            </LinearLayout>
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/wblack"
+                android:src="@drawable/nic3" />
         </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

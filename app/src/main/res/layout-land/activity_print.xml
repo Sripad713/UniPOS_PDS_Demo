@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/card_lt_yellow"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -33,9 +34,9 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:background="@drawable/black"
                 android:orientation="vertical">
 
@@ -165,19 +166,18 @@
                             android:background="@drawable/black"
                             android:gravity="center"
                             android:textColor="@color/black"
-                            android:textSize="25dp"
+                            android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
-
                         <TextView
-                            android:id="@+id/toolbarCard"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
                             android:gravity="center"
-                            android:text=""
+                            android:text=" "
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
+
 
                     </LinearLayout>
 
@@ -248,7 +248,6 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -438,28 +437,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="5dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
 
-            <Button
-                android:id="@+id/print"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:background="@color/ok"
-                android:foreground="@drawable/custom_ripple"
-                android:gravity="center"
-                android:text="@string/Print"
-                android:textColor="@color/white"
-                android:textSize="30sp"
-                android:textStyle="bold" />
-        </LinearLayout>
 
     </LinearLayout>
 
@@ -479,7 +457,28 @@
             android:layout_weight="1"
             android:gravity="bottom"
             android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="5dp"
+                android:gravity="end"
+                android:orientation="horizontal"
+                tools:ignore="MissingConstraints">
 
+                <Button
+                    android:id="@+id/print"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/ok"
+                    android:foreground="@drawable/custom_ripple"
+                    android:gravity="center"
+                    android:text="@string/Print"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

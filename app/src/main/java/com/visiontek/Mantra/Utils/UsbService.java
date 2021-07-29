@@ -60,9 +60,15 @@ public class UsbService extends Service {
         UsbDevice device = null;
         HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
         if (!usbDevices.isEmpty()) {
+            System.out.println("Size========================"+usbDevices.size());
             for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
                 device = entry.getValue();
+                System.out.println("VendorId========================"+device.getVendorId());
+                System.out.println("ProductId========================"+device.getProductId());
                 if (device.getVendorId() == 0x10C4 && device.getProductId() == 0xEA60) {
+                    requestUserPermission(context1,device);
+                    return device;
+                }else if (device.getVendorId() == 0x0e6a && device.getProductId() == 0x0122){
                     requestUserPermission(context1,device);
                     return device;
                 }

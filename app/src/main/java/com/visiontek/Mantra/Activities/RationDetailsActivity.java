@@ -20,15 +20,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +49,7 @@ import com.visiontek.Mantra.Models.DATAModels.MemberListModel;
 import com.visiontek.Mantra.Models.DATAModels.RationListModel;
 import com.visiontek.Mantra.Models.IssueModel.MemberDetailsModel.GetUserDetails.MemberModel;
 import com.visiontek.Mantra.R;
+import com.visiontek.Mantra.Utils.DecimalDigitsInputFilter;
 import com.visiontek.Mantra.Utils.Json_Parsing;
 import com.visiontek.Mantra.Utils.UsbService;
 import com.visiontek.Mantra.Utils.Util;
@@ -63,21 +67,23 @@ import java.util.UUID;
 import timber.log.Timber;
 
 import static com.visiontek.Mantra.Activities.StartActivity.L;
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
+import static com.visiontek.Mantra.Models.AppConstants.TOTALAMOUNT;
 import static com.visiontek.Mantra.Utils.Util.checkdotvalue;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
+
 
 public class RationDetailsActivity extends AppCompatActivity {
     private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     Spinner options;
     public int MESSAGE_FROM_SERIAL_PORT;
-    public static double TOTALAMOUNT;
+
     public int choice;
     private BluetoothSocket btSocket = null;
     private BluetoothAdapter mBluetoothAdapter;
@@ -107,77 +113,77 @@ public class RationDetailsActivity extends AppCompatActivity {
         try {
 
 
-        Ref = getIntent().getStringExtra("REF");
-        memberModel = (MemberModel) getIntent().getSerializableExtra("OBJ");
-        initilisation();
-        Display(0);
-        pd = new ProgressDialog(context);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                conformRation();
-            }
-        });
+            Ref = getIntent().getStringExtra("REF");
+            memberModel = (MemberModel) getIntent().getSerializableExtra("OBJ");
+            initilisation();
+            Display(0);
+            pd = new ProgressDialog(context);
+            confirm.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    conformRation();
+                }
+            });
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                dialog();
-            }
-        });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    dialog();
+                }
+            });
 
-        mProgressDlg = new ProgressDialog(this);
-        mProgressDlg.setMessage("Scanning...");
-        mProgressDlg.setCancelable(false);
-        mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", ((dialog, which) -> {
-            dialog.dismiss();
-            if (mBluetoothAdapter != null)
-                mBluetoothAdapter.cancelDiscovery();
-        }));
-       // mProgressDlg.show();
+            mProgressDlg = new ProgressDialog(this);
+            mProgressDlg.setMessage("Scanning...");
+            mProgressDlg.setCancelable(false);
+            mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", ((dialog, which) -> {
+                dialog.dismiss();
+                if (mBluetoothAdapter != null)
+                    mBluetoothAdapter.cancelDiscovery();
+            }));
+            // mProgressDlg.show();
 
-        String[] items = new String[]{"Comm Mode", "Bluetooth", "USB"};
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, items);
-        options.setAdapter(adapter1);
-        options.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapter, View view, int position, long id) {
-                preventTwoClick(view);
-                choice = position;
-                if (choice == 2) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (true) {
-                                if (usbService != null) {
-                                    device = usbService.findSerialPortDevice(context);
+            String[] items = new String[]{"Comm Mode", "Bluetooth", "USB"};
+            ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_dropdown_item, items);
+            options.setAdapter(adapter1);
+            options.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapter, View view, int position, long id) {
+                    preventTwoClick(view);
+                    choice = position;
+                    if (choice == 2) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                while (true) {
+                                    if (usbService != null) {
+                                        device = usbService.findSerialPortDevice(context);
+                                        break;
+                                    }
+                                }
+                            }
+                        }).start();
+                    } else if (choice == 1) {
+                        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                        if (pairedDevices.size() > 0) {
+                            for (BluetoothDevice device : pairedDevices) {
+                                if ((device.getName().equals("VTWS100"))) {
+                                    address = (device.getAddress());
                                     break;
                                 }
                             }
                         }
-                    }).start();
-                } else if (choice == 1) {
-                    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-                    if (pairedDevices.size() > 0) {
-                        for (BluetoothDevice device : pairedDevices) {
-                            if ((device.getName().equals("VTWS100"))) {
-                                address = (device.getAddress());
-                                break;
-                            }
-                        }
                     }
                 }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
+                @Override
+                public void onNothingSelected(AdapterView<?> arg0) {
 
-            }
-        });
+                }
+            });
         } catch (Exception ex) {
 
             Timber.tag("Ration-onCreate-").e(ex.getMessage(), "");
@@ -226,62 +232,60 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void cancelRequest() {
         try {
 
-        String mos = "P";
-        String mt = "R";
-        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-        //currentDateTimeString = "23032021163452";
+            String mos = "P";
+            String mt = "R";
+            String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+            //currentDateTimeString = "23032021163452";
 
-        String reasons = "{\n" +
-                "   \"fpsId\" :" + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
-                "   \"modeOfService\" : " + "\"" + mos + "\"" + ",\n" +
-                "   \"moduleType\" :" + "\"" + mt + "\"" + ",\n" +
-                "   \"rcId\" : " + "\"" + memberConstants.carddetails.rcId + "\"" + ",\n" +
-                "   \"requestId\" :" + "\"" + reasonid + "\"" + ",\n" +
-                "   \"requestValue\" :" + "\"" + reasonName + "\"" + ",\n" +
-                "   \"sessionId\" : " + "\"" + dealerConstants.fpsCommonInfo.fpsSessionId + "\"" + ",\n" +
-                "   \"stateCode\" : " + "\"" + dealerConstants.stateBean.stateCode + "\"" + ",\n" +
-                "   \"terminalId\" : " + "\"" + DEVICEID + "\"" + ",\n" +
-                "   \"timeStamp\" : " + "\"" + currentDateTimeString + "\"" + ",\n" +
-                /* "   \"token\" : " + "\"" + dealerConstants.fpsURLInfo.token + "\"" + "\n" +*/
-                "   \"token\" : " + "\"9f943748d8c1ff6ded5145c59d0b2ae7\"" + "\n" +
-                "}";
-        Util.generateNoteOnSD(context, "CancelRequestReq.txt", reasons);
-        Show(context.getResources().getString(R.string.Please_wait),context.getResources().getString(R.string.Processing));
-/*
-        pd = ProgressDialog.show(context, "Please Wait ", context.getResources().getString(R.string.Processing), true, false);
-*/
-        Json_Parsing request = new Json_Parsing(context, reasons, 2);
-        request.setOnResultListener(new Json_Parsing.OnResultListener() {
+            String reasons = "{\n" +
+                    "   \"fpsId\" :" + "\"" + dealerConstants.stateBean.statefpsId + "\"" + ",\n" +
+                    "   \"modeOfService\" : " + "\"" + mos + "\"" + ",\n" +
+                    "   \"moduleType\" :" + "\"" + mt + "\"" + ",\n" +
+                    "   \"rcId\" : " + "\"" + memberConstants.carddetails.rcId + "\"" + ",\n" +
+                    "   \"requestId\" :" + "\"" + reasonid + "\"" + ",\n" +
+                    "   \"requestValue\" :" + "\"" + reasonName + "\"" + ",\n" +
+                    "   \"sessionId\" : " + "\"" + dealerConstants.fpsCommonInfo.fpsSessionId + "\"" + ",\n" +
+                    "   \"stateCode\" : " + "\"" + dealerConstants.stateBean.stateCode + "\"" + ",\n" +
+                    "   \"terminalId\" : " + "\"" + DEVICEID + "\"" + ",\n" +
+                    "   \"timeStamp\" : " + "\"" + currentDateTimeString + "\"" + ",\n" +
+                    /* "   \"token\" : " + "\"" + dealerConstants.fpsURLInfo.token + "\"" + "\n" +*/
+                    "   \"token\" : " + "\"9f943748d8c1ff6ded5145c59d0b2ae7\"" + "\n" +
+                    "}";
+            //Util.generateNoteOnSD(context, "CancelRequestReq.txt", reasons);
+            Show(context.getResources().getString(R.string.Please_wait),context.getResources().getString(R.string.Processing));
 
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onCompleted(String code, String msg, Object object) {
-                Dismiss();
-                if (code == null || code.isEmpty()) {
-                    show_AlertDialog(
-                            context.getResources().getString(R.string.Reasonreq),
-                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
-                            "",
-                            0);
-                    return;
+            Json_Parsing request = new Json_Parsing(context, reasons, 2);
+            request.setOnResultListener(new Json_Parsing.OnResultListener() {
+
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                @Override
+                public void onCompleted(String code, String msg, Object object) {
+                    Dismiss();
+                    if (code == null || code.isEmpty()) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Reasonreq),
+                                context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                "",
+                                0);
+                        return;
+                    }
+
+                    if (!code.equals("00")) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Reasonreq),
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                0);
+                    } else {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Reasonreq),
+                                context.getResources().getString(R.string.ResponseCode)+code,
+                                context.getResources().getString(R.string.ResponseMsg)+msg,
+                                1);
+                    }
                 }
 
-                if (!code.equals("00")) {
-                    show_AlertDialog(
-                            context.getResources().getString(R.string.Reasonreq),
-                            context.getResources().getString(R.string.ResponseCode)+code,
-                            context.getResources().getString(R.string.ResponseMsg)+msg,
-                            0);
-                } else {
-                    show_AlertDialog(
-                            context.getResources().getString(R.string.Reasonreq),
-                            context.getResources().getString(R.string.ResponseCode)+code,
-                            context.getResources().getString(R.string.ResponseMsg)+msg,
-                            1);
-                }
-            }
-
-        });
+            });
         } catch (Exception ex) {
 
             Timber.tag("Ration-CnclReq-").e(ex.getMessage(), "");
@@ -291,101 +295,100 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void Display(int value) {
         try {
 
-        RecyclerView.Adapter adapter;
-        RecyclerView recyclerView;
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        recyclerView = findViewById(R.id.my_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        ArrayList<RationListModel> modeldata = new ArrayList<>();
-        int commDetailssize = memberConstants.commDetails.size();
-        float commprice, commamount, commqty, commclosebal, commbal;
-        for (int i = 0; i < commDetailssize; i++) {
-            commqty = Float.parseFloat(memberConstants.commDetails.get(i).requiredQty);
-            commprice = Float.parseFloat(memberConstants.commDetails.get(i).price);
-            commclosebal = Float.parseFloat(memberConstants.commDetails.get(i).closingBal);
-            commbal = Float.parseFloat(memberConstants.commDetails.get(i).balQty);
-            if (value == 0) {
-                if (memberConstants.commDetails.get(i).weighing.equals("Y")) {
-                    memberConstants.commDetails.get(i).requiredQty = "0.0";
-                } else {
-                    if (commbal <= commclosebal) {
-                        memberConstants.commDetails.get(i).requiredQty = memberConstants.commDetails.get(i).balQty;
+            RecyclerView.Adapter adapter;
+            RecyclerView recyclerView;
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            recyclerView = findViewById(R.id.my_recycler_view);
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            ArrayList<RationListModel> modeldata = new ArrayList<>();
+            int commDetailssize = memberConstants.commDetails.size();
+            float commprice, commamount, commqty, commclosebal, commbal;
+            for (int i = 0; i < commDetailssize; i++) {
+                commqty = Float.parseFloat(memberConstants.commDetails.get(i).requiredQty);
+                commprice = Float.parseFloat(memberConstants.commDetails.get(i).price);
+                commclosebal = Float.parseFloat(memberConstants.commDetails.get(i).closingBal);
+                commbal = Float.parseFloat(memberConstants.commDetails.get(i).balQty);
+                if (value == 0) {
+                    if (memberConstants.commDetails.get(i).weighing.equals("Y")) {
+                        memberConstants.commDetails.get(i).requiredQty = "0.0";
                     } else {
-                        memberConstants.commDetails.get(i).requiredQty = memberConstants.commDetails.get(i).closingBal;
+                        if (commbal <= commclosebal) {
+                            memberConstants.commDetails.get(i).requiredQty = memberConstants.commDetails.get(i).balQty;
+                        } else {
+                            memberConstants.commDetails.get(i).requiredQty = memberConstants.commDetails.get(i).closingBal;
+                        }
                     }
                 }
+
+                commamount = commprice * commqty;
+                memberConstants.commDetails.get(i).amount = String.valueOf(commamount);
+
+
+                if(L.equals("hi")){
+                    modeldata.add(new RationListModel(
+                            memberConstants.commDetails.get(i).commNamell +
+                                    "\n(" + memberConstants.commDetails.get(i).totQty + ")",
+                            memberConstants.commDetails.get(i).price,
+                            memberConstants.commDetails.get(i).balQty,
+                            memberConstants.commDetails.get(i).closingBal,
+                            memberConstants.commDetails.get(i).requiredQty,
+                            memberConstants.commDetails.get(i).amount));
+                }else {
+                    modeldata.add(new RationListModel(
+                            memberConstants.commDetails.get(i).commName +
+                                    "\n(" + memberConstants.commDetails.get(i).totQty + ")",
+                            memberConstants.commDetails.get(i).price,
+                            memberConstants.commDetails.get(i).balQty,
+                            memberConstants.commDetails.get(i).closingBal,
+                            memberConstants.commDetails.get(i).requiredQty,
+                            memberConstants.commDetails.get(i).amount));
+                }
             }
+            adapter = new RationListAdapter(context, modeldata, new OnClickRation() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                @Override
+                public void onClick(int p) {
+                    float commclbal = Float.parseFloat(memberConstants.commDetails.get(p).closingBal);
+                    float commbal = Float.parseFloat(memberConstants.commDetails.get(p).balQty);
+                    float commmin = Float.parseFloat(memberConstants.commDetails.get(p).minQty);
+                    if (!(commclbal < commmin)) {
+                        if (!(commbal < commmin)) {
 
-            commamount = commprice * commqty;
-            memberConstants.commDetails.get(i).amount = String.valueOf(commamount);
-
-
-            if(L.equals("hi")){
-                modeldata.add(new RationListModel(
-                        memberConstants.commDetails.get(i).commNamell +
-                                "\n(" + memberConstants.commDetails.get(i).totQty + ")",
-                        memberConstants.commDetails.get(i).price,
-                        memberConstants.commDetails.get(i).balQty,
-                        memberConstants.commDetails.get(i).closingBal,
-                        memberConstants.commDetails.get(i).requiredQty,
-                        memberConstants.commDetails.get(i).amount));
-            }else {
-                modeldata.add(new RationListModel(
-                        memberConstants.commDetails.get(i).commName +
-                                "\n(" + memberConstants.commDetails.get(i).totQty + ")",
-                        memberConstants.commDetails.get(i).price,
-                        memberConstants.commDetails.get(i).balQty,
-                        memberConstants.commDetails.get(i).closingBal,
-                        memberConstants.commDetails.get(i).requiredQty,
-                        memberConstants.commDetails.get(i).amount));
-            }
-        }
-        adapter = new RationListAdapter(context, modeldata, new OnClickRation() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onClick(int p) {
-                //memberConstants.commDetails.get(1).weighing="Y";
-                float commclbal = Float.parseFloat(memberConstants.commDetails.get(p).closingBal);
-                float commbal = Float.parseFloat(memberConstants.commDetails.get(p).balQty);
-                float commmin = Float.parseFloat(memberConstants.commDetails.get(p).minQty);
-                if (!(commclbal < commmin)) {
-                    if (!(commbal < commmin)) {
-
-                        if (memberConstants.commDetails.get(p).weighing.equals("Y")) {
-                            if (choice != 0) {
-                                MESSAGE_FROM_SERIAL_PORT = 0;
-                                WeighingDialog(p);
+                            if (memberConstants.commDetails.get(p).weighing.equals("Y")) {
+                                if (choice != 0) {
+                                    MESSAGE_FROM_SERIAL_PORT = 0;
+                                    WeighingDialog(p);
+                                } else {
+                                    show_AlertDialog(
+                                            context.getResources().getString(R.string.Weighing_machine),
+                                            context.getResources().getString(R.string.Please_Select_Other_Mode_of_Communication),
+                                            "",
+                                            0);
+                                }
                             } else {
-                                show_AlertDialog(
-                                        context.getResources().getString(R.string.Weighing_machine),
-                                        context.getResources().getString(R.string.Please_Select_Other_Mode_of_Communication),
-                                        "",
-                                        0);
+                                ManualDialog(p);
                             }
                         } else {
-                            ManualDialog(p);
+                            show_AlertDialog(
+                                    (memberConstants.commDetails.get(p).commName),
+                                    context.getResources().getString(R.string.Commodity_Balance_Qty_not_available_for_this_Entered_Card),
+                                    "",
+                                    0);
                         }
                     } else {
                         show_AlertDialog(
                                 (memberConstants.commDetails.get(p).commName),
-                                context.getResources().getString(R.string.Commodity_Balance_Qty_not_available_for_this_Entered_Card),
+                                context.getResources().getString(R.string.Commodity_Closing_balance_not_available_for_this_shop),
                                 "",
                                 0);
-                    }
-                } else {
-                    show_AlertDialog(
-                            (memberConstants.commDetails.get(p).commName),
-                            context.getResources().getString(R.string.Commodity_Closing_balance_not_available_for_this_shop),
-                            "",
-                            0);
 
+                    }
                 }
-            }
-        });
-        recyclerView.setAdapter(adapter);
+            });
+            recyclerView.setAdapter(adapter);
         } catch (Exception ex) {
 
             Timber.tag("Ration-Display-").e(ex.getMessage(), "");
@@ -591,46 +594,55 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void ManualDialog(final int position) {
         try {
 
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.activity_weight);
-        weight = dialog.findViewById(R.id.enter);
+            final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setContentView(R.layout.activity_weight);
+            weight = dialog.findViewById(R.id.enter);
+            weight.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(3)});
+            weightstatus = dialog.findViewById(R.id.weight_status);
+            Button confirm = (Button) dialog.findViewById(R.id.confirm);
+            Button back = (Button) dialog.findViewById(R.id.back);
 
-        weightstatus = dialog.findViewById(R.id.weight_status);
-        Button confirm = (Button) dialog.findViewById(R.id.confirm);
-        Button back = (Button) dialog.findViewById(R.id.back);
-
-        TextView commName = (TextView) dialog.findViewById(R.id.a);
-        TextView price = (TextView) dialog.findViewById(R.id.b);
-        TextView balQty = (TextView) dialog.findViewById(R.id.c);
-        TextView closingBal = (TextView) dialog.findViewById(R.id.d);
+            TextView commName = (TextView) dialog.findViewById(R.id.a);
+            TextView price = (TextView) dialog.findViewById(R.id.b);
+            TextView balQty = (TextView) dialog.findViewById(R.id.c);
+            TextView closingBal = (TextView) dialog.findViewById(R.id.d);
 
             if(L.equals("hi")){
                 commName.setText(memberConstants.commDetails.get(position).commNamell);
             }else {
                 commName.setText(memberConstants.commDetails.get(position).commName);
             }
-        price.setText(memberConstants.commDetails.get(position).price);
-        balQty.setText(memberConstants.commDetails.get(position).balQty);
-        closingBal.setText(memberConstants.commDetails.get(position).closingBal);
+            price.setText(memberConstants.commDetails.get(position).price);
+            balQty.setText(memberConstants.commDetails.get(position).balQty);
+            closingBal.setText(memberConstants.commDetails.get(position).closingBal);
 
 
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                String enteredweight = weight.getText().toString();
-                if (enteredweight != null && !enteredweight.isEmpty()
-                        && enteredweight.length() > 0) {
-                    if (checkdotvalue(enteredweight)) {
-                        float value = Float.parseFloat(enteredweight);
-                        if (value == 0.0) {
-                            memberConstants.commDetails.get(position).requiredQty = String.valueOf(value);
-                            Display(1);
-                        } else if (value > 0.0) {
-                            CheckWeight(position, enteredweight, 0);
+            confirm.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    String enteredweight = weight.getText().toString();
+                    if (enteredweight != null && !enteredweight.isEmpty()
+                            && enteredweight.length() > 0) {
+                        if (checkdotvalue(enteredweight)) {
+                            float value = Float.parseFloat(enteredweight);
+                            if (value == 0.0) {
+                                memberConstants.commDetails.get(position).requiredQty = String.valueOf(value);
+                                Display(1);
+                            } else if (value > 0.0) {
+                                CheckWeight(position, enteredweight, 0);
+                            }
+                        } else {
+                            show_AlertDialog(
+                                    context.getResources().getString(R.string.Invalid_Inputs),
+                                    context.getResources().getString(R.string.Please_enter_a_valid_Value),
+                                    "",
+                                    0);
+
+
                         }
                     } else {
                         show_AlertDialog(
@@ -639,29 +651,20 @@ public class RationDetailsActivity extends AppCompatActivity {
                                 "",
                                 0);
 
-
                     }
-                } else {
-                    show_AlertDialog(
-                            context.getResources().getString(R.string.Invalid_Inputs),
-                            context.getResources().getString(R.string.Please_enter_a_valid_Value),
-                            "",
-                            0);
-
                 }
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+            });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
 
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            dialog.show();
         } catch (Exception ex) {
 
             Timber.tag("Ration-ManualDilg-").e(ex.getMessage(), "");
@@ -673,56 +676,56 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void CheckWeight(int position, String enteredweight, int i) {
         try {
 
-        if (enteredweight != null && !enteredweight.isEmpty() && !enteredweight.equals("null")) {
-            float requiredQty = verify_Weight(position, enteredweight, i);
-            if (requiredQty >= 0) {
-                int calculated = cal(requiredQty, position);
-                if (calculated == 0) {
-                    memberConstants.commDetails.get(position).requiredQty = String.valueOf(requiredQty);
-                    Display(1);
-                } else if (calculated == 2) {
+            if (enteredweight != null && !enteredweight.isEmpty() && !enteredweight.equals("null")) {
+                float requiredQty = verify_Weight(position, enteredweight, i);
+                if (requiredQty >= 0) {
+                    int calculated = cal(requiredQty, position);
+                    if (calculated == 0) {
+                        memberConstants.commDetails.get(position).requiredQty = String.valueOf(requiredQty);
+                        Display(1);
+                    } else if (calculated == 2) {
+                        show_AlertDialog(
+                                memberConstants.commDetails.get(position).commName,
+                                context.getResources().getString(R.string.Please_Issue_Commodity_upto_Bal_Qty_only)+memberConstants.commDetails.get(position).balQty,
+                                "",
+                                0);
+
+                    } else if (calculated == 3) {
+                        show_AlertDialog(
+                                memberConstants.commDetails.get(position).commName,
+                                context.getResources().getString(R.string.Issue_quantity_should_more_than_or_equal_to_Minimum_quantity)+memberConstants.commDetails.get(position).minQty,
+                                "",
+                                0);
+                    } else if (calculated == 4){
+                        show_AlertDialog(
+                                memberConstants.commDetails.get(position).commName,
+                                context.getResources().getString(R.string.Please_Issue_Commodity_upto_Closing_Balance_only_Closing_Balance)+memberConstants.commDetails.get(position).closingBal,
+                                "",
+                                0);
+
+                    }else {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.Enter_valid_weight),
+                                context.getResources().getString(R.string.Please_Enter_the_Weight),
+                                "",
+                                0);
+                    }
+                } else {
                     show_AlertDialog(
                             memberConstants.commDetails.get(position).commName,
-                            context.getResources().getString(R.string.Please_Issue_Commodity_upto_Bal_Qty_only)+memberConstants.commDetails.get(position).balQty,
+                            context.getResources().getString(R.string.Issue_Qty_Should_Be_Multiple_By_Minimum_Qty)+memberConstants.commDetails.get(position).minQty,
                             "",
                             0);
 
-                } else if (calculated == 3) {
-                    show_AlertDialog(
-                            memberConstants.commDetails.get(position).commName,
-                            context.getResources().getString(R.string.Issue_quantity_should_more_than_or_equal_to_Minimum_quantity)+memberConstants.commDetails.get(position).minQty,
-                            "",
-                            0);
-                } else if (calculated == 4){
-                    show_AlertDialog(
-                            memberConstants.commDetails.get(position).commName,
-                            context.getResources().getString(R.string.Please_Issue_Commodity_upto_Closing_Balance_only_Closing_Balance)+memberConstants.commDetails.get(position).closingBal,
-                            "",
-                            0);
-
-                }else {
-                    show_AlertDialog(
-                            context.getResources().getString(R.string.Enter_valid_weight),
-                            context.getResources().getString(R.string.Please_Enter_the_Weight),
-                            "",
-                            0);
                 }
             } else {
                 show_AlertDialog(
-                        memberConstants.commDetails.get(position).commName,
-                        context.getResources().getString(R.string.Issue_Qty_Should_Be_Multiple_By_Minimum_Qty)+memberConstants.commDetails.get(position).minQty,
+                        context.getResources().getString(R.string.Enter_valid_weight),
+                        context.getResources().getString(R.string.Please_Enter_the_Weight),
                         "",
                         0);
 
             }
-        } else {
-            show_AlertDialog(
-                    context.getResources().getString(R.string.Enter_valid_weight),
-                    context.getResources().getString(R.string.Please_Enter_the_Weight),
-                    "",
-                    0);
-
-        }
         } catch (Exception ex) {
 
             Timber.tag("Ration-check-").e(ex.getMessage(), "");
@@ -732,21 +735,21 @@ public class RationDetailsActivity extends AppCompatActivity {
     private int cal(float requiredQty, int position) {
         try {
 
-        float price, balQty, closingBal, minQty;
-        price = Float.parseFloat(memberConstants.commDetails.get(position).price);
-        memberConstants.commDetails.get(position).amount = String.valueOf((requiredQty * price));
-        balQty = Float.parseFloat(memberConstants.commDetails.get(position).balQty);
-        closingBal = Float.parseFloat(memberConstants.commDetails.get(position).closingBal);
-        minQty = Float.parseFloat(memberConstants.commDetails.get(position).minQty);
-        if (requiredQty > balQty) {
-            return 2;
-        } else if (requiredQty < minQty) {
-            return 3;
-        } else if (requiredQty > closingBal) {
-            return 4;
-        } else {
-            return 0;
-        }
+            float price, balQty, closingBal, minQty;
+            price = Float.parseFloat(memberConstants.commDetails.get(position).price);
+            memberConstants.commDetails.get(position).amount = String.valueOf((requiredQty * price));
+            balQty = Float.parseFloat(memberConstants.commDetails.get(position).balQty);
+            closingBal = Float.parseFloat(memberConstants.commDetails.get(position).closingBal);
+            minQty = Float.parseFloat(memberConstants.commDetails.get(position).minQty);
+            if (requiredQty > balQty) {
+                return 2;
+            } else if (requiredQty < minQty) {
+                return 3;
+            } else if (requiredQty > closingBal) {
+                return 4;
+            } else {
+                return 0;
+            }
         } catch (Exception ex) {
 
             Timber.tag("Ration-W8conditions-").e(ex.getMessage(), "");
@@ -798,36 +801,36 @@ public class RationDetailsActivity extends AppCompatActivity {
 
     private String add_comm() {
         try {
-        TOTALAMOUNT = 0.0;
-        StringBuilder add = new StringBuilder();
-        String str;
-        int userCommModelssize = memberConstants.commDetails.size();
-        float commqty, commprice, commamount;
-        if (userCommModelssize > 0) {
-            for (int i = 0; i < userCommModelssize; i++) {
-                commqty = Float.parseFloat((memberConstants.commDetails.get(i).requiredQty));
-                if (commqty > 0.0) {
-                    commqty = Float.parseFloat(memberConstants.commDetails.get(i).requiredQty);
-                    commprice = Float.parseFloat(memberConstants.commDetails.get(i).price);
-                    commamount = commprice * commqty;
-                    TOTALAMOUNT = TOTALAMOUNT + commamount;
-                    str = "<commodityDetail>\n" +
-                            "<allocationType>" + memberConstants.commDetails.get(i).allocationType + "</allocationType>\n" +
-                            "<allotedMonth>" + memberConstants.commDetails.get(i).allotedMonth + "</allotedMonth>\n" +
-                            "<allotedYear>" + memberConstants.commDetails.get(i).allotedYear + "</allotedYear>\n" +
-                            "<commCode>" + memberConstants.commDetails.get(i).commcode + "</commCode>\n" +
-                            "<commName>" + memberConstants.commDetails.get(i).commName + "</commName>\n" +
-                            "<requiredQuantity>" + memberConstants.commDetails.get(i).requiredQty + "</requiredQuantity>\n" +
-                            "<commodityAmount>" + memberConstants.commDetails.get(i).price + "</commodityAmount>\n" +
-                            "<price>" + memberConstants.commDetails.get(i).amount + "</price>\n" +
-                            "</commodityDetail>\n";
-                    add.append(str);
+            TOTALAMOUNT = 0.0;
+            StringBuilder add = new StringBuilder();
+            String str;
+            int userCommModelssize = memberConstants.commDetails.size();
+            float commqty, commprice, commamount;
+            if (userCommModelssize > 0) {
+                for (int i = 0; i < userCommModelssize; i++) {
+                    commqty = Float.parseFloat((memberConstants.commDetails.get(i).requiredQty));
+                    if (commqty > 0.0) {
+                        commqty = Float.parseFloat(memberConstants.commDetails.get(i).requiredQty);
+                        commprice = Float.parseFloat(memberConstants.commDetails.get(i).price);
+                        commamount = commprice * commqty;
+                        TOTALAMOUNT = TOTALAMOUNT + commamount;
+                        str = "<commodityDetail>\n" +
+                                "<allocationType>" + memberConstants.commDetails.get(i).allocationType + "</allocationType>\n" +
+                                "<allotedMonth>" + memberConstants.commDetails.get(i).allotedMonth + "</allotedMonth>\n" +
+                                "<allotedYear>" + memberConstants.commDetails.get(i).allotedYear + "</allotedYear>\n" +
+                                "<commCode>" + memberConstants.commDetails.get(i).commcode + "</commCode>\n" +
+                                "<commName>" + memberConstants.commDetails.get(i).commName + "</commName>\n" +
+                                "<requiredQuantity>" + memberConstants.commDetails.get(i).requiredQty + "</requiredQuantity>\n" +
+                                "<commodityAmount>" +memberConstants.commDetails.get(i).amount  + "</commodityAmount>\n" +
+                                "<price>" +  memberConstants.commDetails.get(i).price + "</price>\n" +
+                                "</commodityDetail>\n";
+                        add.append(str);
+                    }
+                }
+                if (add.length() > 0) {
+                    return String.valueOf(add);
                 }
             }
-            if (add.length() > 0) {
-                return String.valueOf(add);
-            }
-        }
         } catch (Exception ex) {
 
             Timber.tag("Ration-add_comm-").e(ex.getMessage(), "");
@@ -839,68 +842,68 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void conformRation() {
         try {
 
-        String com = add_comm();
-        if (com != null && com.length() > 0) {
-            String ration = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
-                    "<SOAP-ENV:Envelope\n" +
-                    "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
-                    "    xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n" +
-                    "    xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
-                    "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                    "    xmlns:ns1=\"http://service.fetch.rationcard/\">\n" +
-                    "    <SOAP-ENV:Body>\n" +
-                    "        <ns1:getCommodityTransaction>\n" +
-                    "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
-                    "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
-                    "            <exRCNumber>" + memberConstants.carddetails.rcId + "</exRCNumber>\n" +
-                    "            <shop_no>" + dealerConstants.stateBean.statefpsId + "</shop_no>\n" +
-                    "            <deviceId>" + DEVICEID + "</deviceId>\n" +
-                    "            <rationCardId>" + memberConstants.carddetails.rcId + "</rationCardId>\n" +
-                    "            <schemeId>" + memberConstants.carddetails.schemeId + "</schemeId>\n" +
-                    com + "\n" +
-                    "            <recieptId>3863389061819</recieptId>\n" +
-                    "            <totAmount>" + TOTALAMOUNT + "</totAmount>\n" +
-                    "            <uid_no>" + memberModel.uid + "</uid_no>\n" +
-                    "            <uid_ref_no>" + Ref + "</uid_ref_no>\n" +
-                    "            <card_type></card_type>\n" +
-                    "            <password>" + dealerConstants.fpsURLInfo.token + "</password>\n" +
-                    "            <memberId>" + memberModel.zmemberId + "</memberId>\n" +
-                    "            <surveyEntryQuantity>0.0</surveyEntryQuantity>\n" +
-                    "            <surveyStatus>N</surveyStatus>\n" +
-                    "            <trans_type>"+memberModel.trans_type+"</trans_type>\n" +
-                    "            <availedBenfName>" + memberModel.memberName + "</availedBenfName>\n" +
-                    "        </ns1:getCommodityTransaction>\n" +
-                    "    </SOAP-ENV:Body>\n" +
-                    "</SOAP-ENV:Envelope>";
-            if (Util.networkConnected(context)) {
+            String com = add_comm();
+            if (com != null && com.length() > 0) {
+                String ration = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
+                        "<SOAP-ENV:Envelope\n" +
+                        "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
+                        "    xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n" +
+                        "    xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
+                        "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                        "    xmlns:ns1=\"http://service.fetch.rationcard/\">\n" +
+                        "    <SOAP-ENV:Body>\n" +
+                        "        <ns1:getCommodityTransaction>\n" +
+                        "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
+                        "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
+                        "            <exRCNumber>" + memberConstants.carddetails.rcId + "</exRCNumber>\n" +
+                        "            <shop_no>" + dealerConstants.stateBean.statefpsId + "</shop_no>\n" +
+                        "            <deviceId>" + DEVICEID + "</deviceId>\n" +
+                        "            <rationCardId>" + memberConstants.carddetails.rcId + "</rationCardId>\n" +
+                        "            <schemeId>" + memberConstants.carddetails.schemeId + "</schemeId>\n" +
+                        com + "\n" +
+                        "            <recieptId>3863389061819</recieptId>\n" +
+                        "            <totAmount>" + TOTALAMOUNT + "</totAmount>\n" +
+                        "            <uid_no>" + memberModel.uid + "</uid_no>\n" +
+                        "            <uid_ref_no>" + Ref + "</uid_ref_no>\n" +
+                        "            <card_type></card_type>\n" +
+                        "            <password>" + dealerConstants.fpsURLInfo.token + "</password>\n" +
+                        "            <memberId>" + memberModel.zmemberId + "</memberId>\n" +
+                        "            <surveyEntryQuantity>0.0</surveyEntryQuantity>\n" +
+                        "            <surveyStatus>N</surveyStatus>\n" +
+                        "            <trans_type>"+memberModel.trans_type+"</trans_type>\n" +
+                        "            <availedBenfName>" + memberModel.memberName + "</availedBenfName>\n" +
+                        "        </ns1:getCommodityTransaction>\n" +
+                        "    </SOAP-ENV:Body>\n" +
+                        "</SOAP-ENV:Envelope>";
+                if (Util.networkConnected(context)) {
 
-                Util.generateNoteOnSD(context, "RationReq.txt", ration);
-                hitURL(ration);
+                    //Util.generateNoteOnSD(context, "RationReq.txt", ration);
+                    hitURL(ration);
+                } else {
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.Internet_Connection),
+                            context.getResources().getString(R.string.Internet_Connection_Msg),
+                            "",
+                            0);
+                }
             } else {
+                if (mp != null) {
+                    releaseMediaPlayer(context, mp);
+                }
+                if (L.equals("hi")) {
+
+                } else {
+                    mp = mp.create(context, R.raw.c100189);
+                    mp.start();
+
+
+                }
                 show_AlertDialog(
-                        context.getResources().getString(R.string.Internet_Connection),
-                        context.getResources().getString(R.string.Internet_Connection_Msg),
+                        context.getResources().getString(R.string.Commodity),
+                        context.getResources().getString(R.string.Please_Select_Any_Commodity_For_Issuance),
                         "",
                         0);
             }
-        } else {
-            if (mp != null) {
-                releaseMediaPlayer(context, mp);
-            }
-            if (L.equals("hi")) {
-
-            } else {
-                mp = mp.create(context, R.raw.c100189);
-                mp.start();
-
-
-            }
-            show_AlertDialog(
-                    context.getResources().getString(R.string.Commodity),
-                    context.getResources().getString(R.string.Please_Select_Any_Commodity_For_Issuance),
-                    "",
-                    0);
-        }
         } catch (Exception ex) {
 
             Timber.tag("Ration-conform-").e(ex.getMessage(), "");
@@ -911,10 +914,10 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void hitURL(String xmlformat) {
         try {
 
-        Intent p = new Intent(getApplicationContext(), PrintActivity.class);
-        p.putExtra("key", xmlformat);
-        p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(p);
+            Intent p = new Intent(getApplicationContext(), PrintActivity.class);
+            p.putExtra("key", xmlformat);
+            p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(p);
         } catch (Exception ex) {
 
             Timber.tag("Ration-onCreate-").e(ex.getMessage(), "");
@@ -932,21 +935,21 @@ public class RationDetailsActivity extends AppCompatActivity {
         super.onDestroy();
         try {
 
-        if (btSocket != null && btSocket.isConnected()) {
-            try {
-                btSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (btSocket != null && btSocket.isConnected()) {
+                try {
+                    btSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
 
+                }
             }
+
+            unregisterReceiver(mUsbReceiver);
+            //unregisterReceiver(mReceiver);
+        } catch (Exception ex) {
+
+            Timber.tag("Ration-OnDestroy-").e(ex.getMessage(), "");
         }
-
-        unregisterReceiver(mUsbReceiver);
-        //unregisterReceiver(mReceiver);
-    } catch (Exception ex) {
-
-        Timber.tag("Ration-OnDestroy-").e(ex.getMessage(), "");
-    }
     }
 
 
@@ -957,29 +960,29 @@ public class RationDetailsActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             try {
 
-            String action = intent.getAction();
-            if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                mDeviceList = new ArrayList<BluetoothDevice>();
+                String action = intent.getAction();
+                if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
+                    final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                    mDeviceList = new ArrayList<BluetoothDevice>();
 
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                mProgressDlg.dismiss();
-                System.out.println("Device Not Found");
-            } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device1 = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                mDeviceList.add(device1);
-                if (device1 != null) {
-                    if (device1.getName() != null) {
-                        if (device1.getName().equalsIgnoreCase("APPDS_VNTK@2015") ||
-                                device1.getName().equalsIgnoreCase("VTWS100")) {
-                            device1.createBond();
-                            mBluetoothAdapter.cancelDiscovery();
-                            mProgressDlg.dismiss();
+                } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                    mProgressDlg.dismiss();
+                    System.out.println("Device Not Found");
+                } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                    BluetoothDevice device1 = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    mDeviceList.add(device1);
+                    if (device1 != null) {
+                        if (device1.getName() != null) {
+                            if (
+                                    device1.getName().equalsIgnoreCase("VTWS100")) {
+                                device1.createBond();
+                                mBluetoothAdapter.cancelDiscovery();
+                                mProgressDlg.dismiss();
+                            }
                         }
                     }
                 }
-            }
             } catch (Exception ex) {
                 Timber.tag("Ration-BroadCast-").e(ex.getMessage(), "");
             }
@@ -995,8 +998,8 @@ public class RationDetailsActivity extends AppCompatActivity {
         super.onResume();
         try {
 
-        setFilters();
-        startService(UsbService.class, usbConnection, null);
+            setFilters();
+            startService(UsbService.class, usbConnection, null);
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (mBluetoothAdapter.isEnabled()) {
                 Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
@@ -1004,7 +1007,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                     for (BluetoothDevice device : pairedDevices) {
                         if (device.getName().equals("VTWS100")){
                             address = (device.getAddress());
-                            System.out.println("++++++++++++++==="+address);
+
                             break;
                         }
                     }
@@ -1016,27 +1019,13 @@ public class RationDetailsActivity extends AppCompatActivity {
                     for (BluetoothDevice device : pairedDevices) {
                         if (device.getName().equals(device.getName().equals("VTWS100"))){
                             address = (device.getAddress());
-                            System.out.println("++++++++++++++==="+address);
+
                             break;
                         }
                     }
                 }
             }
 
-        /*setFiltersbluetooth();
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter.isEnabled()) {
-            // Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-            *//*if (pairedDevices.size() > 0) {
-                for (BluetoothDevice device : pairedDevices) {
-                    if (device.getName().equals("APPDS_VNTK@2015") || device.getName().equals("VTWS100")) {
-                        address = (device.getAddress());
-                        return;
-                    }
-                }
-            }*//*
-            mBluetoothAdapter.startDiscovery();
-        }*/
         } catch (Exception ex) {
 
             Timber.tag("Ration-onResume-").e(ex.getMessage(), "");
@@ -1137,29 +1126,21 @@ public class RationDetailsActivity extends AppCompatActivity {
                         }
 
                         if (data != null) {
-                            System.out.println("@@+++++++==" + data);
                             String temp = "";
                             for (int i = 0; i < data.length()-11; i++) {
                                 temp = "";
                                 if (data.charAt(i) == '+') {
-                                    System.out.println("@@fOUND +");
                                     temp = data.substring(i, i + 4);
                                     i = i + 4;
                                     if (data.charAt(i) == '.') {
-                                        System.out.println("@@Found .");
                                         temp = temp + data.substring(i, i + 4);
                                         i = i + 4;
                                         if (data.charAt(i) == ' ' ) {
-                                            System.out.println("@@Found  ");
                                             temp = temp + data.substring(i, i + 3);
                                             i = i + 3;
-                                            System.out.println("@@Data in temp: " + temp);
                                             weight_Data = temp;
-                                            System.out.println("@@Data in weight_Data: " + weight_Data);
                                             getweight.setText(weight_Data);
                                             i =data.length();
-                                        } else {
-                                            System.out.println("@@Data ---  " + data.charAt(i));
                                         }
                                     }
                                 }
@@ -1171,9 +1152,8 @@ public class RationDetailsActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     try {
-                                        System.out.println("@@Updatng weight: " + weight_Data + " in UI");
+
                                         getweight.setText(weight_Data);
-//serialport.close();
                                         get.setEnabled(true);
                                     } catch (Exception ex) {
                                         Timber.tag("Ration-myhandler1-").e(ex.getMessage(), "");
@@ -1183,10 +1163,6 @@ public class RationDetailsActivity extends AppCompatActivity {
                             });
                         }
 
-/* if (mHandler != null) {
-                        System.out.println("@@Sending to handler");
-                        //mHandler.obtainMessage(MESSAGE_FROM_SERIAL_PORT, storeBT).sendToTarget();
-                    }*/
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -1214,13 +1190,10 @@ public class RationDetailsActivity extends AppCompatActivity {
                     MESSAGE_FROM_SERIAL_PORT = 1;
                     final StringBuilder data = (StringBuilder) msg.obj;
                     if (data != null) {
-                        System.out.println("@@+++++++==" + data);
                         StringBuilder value = new StringBuilder();
 
                         int index = data.lastIndexOf("g");
                         int index1 = data.lastIndexOf("+");
-                        System.out.println("@@index of +: "+index1);
-                        System.out.println("@@index of g: "+index);
 
                         if(index1>index)
                         {
@@ -1231,9 +1204,9 @@ public class RationDetailsActivity extends AppCompatActivity {
                         }
                         else{
                             weight_Data  = data.substring(index1,index+1);
-                            System.out.println("@@weight_Data in else: " +weight_Data);
+
                         }
-                        System.out.println("@@Data in weight: "+weight);
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -1258,7 +1231,7 @@ public class RationDetailsActivity extends AppCompatActivity {
                                 show_AlertDialog(
                                         "USB",
                                         data,
-                                       "",
+                                        "",
                                         0);
                             } catch (Exception ex) {
                                 Timber.tag("Ration-Myhandler2-").e(ex.getMessage(), "");
@@ -1278,26 +1251,26 @@ public class RationDetailsActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             try {
 
-            switch (Objects.requireNonNull(intent.getAction())) {
-                case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
-                    break;
-                case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
-                    break;
-                case UsbService.ACTION_NO_USB: // NO USB CONNECTED
-                    break;
-                case UsbService.ACTION_USB_DISCONNECTED: // USB DISCONNECTED
-                    device = null;
-                    break;
-                case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
-                    device = null;
-                    break;
-                case UsbService.ACTION_USB_DETACHED: // USB NOT SUPPORTED
-                    device = null;
-                    break;
-                case UsbService.ACTION_USB_ATTACHED: // USB NOT SUPPORTED
-                    usbService.findSerialPortDevice(context);
-                    break;
-            }
+                switch (Objects.requireNonNull(intent.getAction())) {
+                    case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
+                        break;
+                    case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
+                        break;
+                    case UsbService.ACTION_NO_USB: // NO USB CONNECTED
+                        break;
+                    case UsbService.ACTION_USB_DISCONNECTED: // USB DISCONNECTED
+                        device = null;
+                        break;
+                    case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
+                        device = null;
+                        break;
+                    case UsbService.ACTION_USB_DETACHED: // USB NOT SUPPORTED
+                        device = null;
+                        break;
+                    case UsbService.ACTION_USB_ATTACHED: // USB NOT SUPPORTED
+                        usbService.findSerialPortDevice(context);
+                        break;
+                }
             } catch (Exception ex) {
 
                 Timber.tag("Ration-onCreate-").e(ex.getMessage(), "");
@@ -1308,20 +1281,20 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
         try {
 
-        if (connection == null) {
-            Intent startService = new Intent(this, service);
-            if (extras != null && !extras.isEmpty()) {
-                Set<String> keys = extras.keySet();
-                for (String key : keys) {
-                    String extra = extras.getString(key);
-                    startService.putExtra(key, extra);
+            if (connection == null) {
+                Intent startService = new Intent(this, service);
+                if (extras != null && !extras.isEmpty()) {
+                    Set<String> keys = extras.keySet();
+                    for (String key : keys) {
+                        String extra = extras.getString(key);
+                        startService.putExtra(key, extra);
+                    }
                 }
-            }
-            startService(startService);
+                startService(startService);
 
-            Intent bindingIntent = new Intent(this, service);
-            bindService(bindingIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-        }
+                Intent bindingIntent = new Intent(this, service);
+                bindService(bindingIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+            }
         } catch (Exception ex) {
 
             Timber.tag("Ration-startservice-").e(ex.getMessage(), "");
@@ -1331,17 +1304,17 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void setFilters() {
         try {
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(UsbService.ACTION_USB_PERMISSION_GRANTED);
-        filter.addAction(UsbService.ACTION_NO_USB);
-        filter.addAction(UsbService.ACTION_USB_DISCONNECTED);
-        filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED);
-        filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED);
-        filter.addAction(UsbService.ACTION_USB_ATTACHED);
-        filter.addAction(UsbService.ACTION_USB_DETACHED);
-        filter.addAction(UsbService.ACTION_USB_READY);
-        filter.addAction(UsbService.ACTION_USB_READY);
-        registerReceiver(mUsbReceiver, filter);
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(UsbService.ACTION_USB_PERMISSION_GRANTED);
+            filter.addAction(UsbService.ACTION_NO_USB);
+            filter.addAction(UsbService.ACTION_USB_DISCONNECTED);
+            filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED);
+            filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED);
+            filter.addAction(UsbService.ACTION_USB_ATTACHED);
+            filter.addAction(UsbService.ACTION_USB_DETACHED);
+            filter.addAction(UsbService.ACTION_USB_READY);
+            filter.addAction(UsbService.ACTION_USB_READY);
+            registerReceiver(mUsbReceiver, filter);
         } catch (Exception ex) {
 
             Timber.tag("Ration-usbfilter-").e(ex.getMessage(), "");
@@ -1356,30 +1329,30 @@ public class RationDetailsActivity extends AppCompatActivity {
     private void toolbarInitilisation() {
         try {
 
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-        TextView toolbarCard = findViewById(R.id.toolbarCard);
-        toolbarCard.setText("RC : " + memberConstants.carddetails.rcId);
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
+            TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+            TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+            TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+            TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+            TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+            TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+            TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+            TextView toolbarCard = findViewById(R.id.toolbarCard);
+            toolbarCard.setText("RC : " + memberConstants.carddetails.rcId);
+            String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+            System.out.println(appversion);
+            toolbarVersion.setText("V" + appversion);
 
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
+            SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+            String date = dateformat.format(new Date()).substring(6, 16);
+            toolbarDateValue.setText(date);
+            System.out.println(date);
 
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText( context.getResources().getString(R.string.ISSUE_GOODS));
+            toolbarFpsid.setText("FPS ID");
+            toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+            toolbarActivity.setText( context.getResources().getString(R.string.ISSUE_GOODS));
 
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
+            toolbarLatitudeValue.setText(latitude);
+            toolbarLongitudeValue.setText(longitude);
         } catch (Exception ex) {
             Timber.tag("Ration-Toolbar-").e(ex.getMessage(), "");
         }
@@ -1490,4 +1463,6 @@ public class RationDetailsActivity extends AppCompatActivity {
     }
 
 }
+
+
 

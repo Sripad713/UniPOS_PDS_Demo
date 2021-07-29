@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +14,8 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -58,51 +62,52 @@ import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
-public class RC_MemberDetails extends AppCompatActivity {
+public class RC_MemberDetails extends BaseActivity {
     String certIdentifier, dataType, dc, dpId, hmac, mc, mId, rdId, rdVer, pId, skey;
     private int selectedIndex = -1;
     Boolean paramOK = false;
     public int k = 1;
     TableLayout tableLayout;
     TableRow tableRow;
-    Button scanFP;
-    ConnectivityReceiver connectivityReceiver;
-   // private SimpleLocation location;
+    Button scanFP,btn_back;
     String token;
-    private AlertDialog.Builder builder;
+
     private TextView txt1, txt2, home_state_name, text_fps_id, home_dist_name, text_scheme_id;
-    // ImpdsBean impdsBean;
-    ProgressDialog progressDialog;
+
     private String sale_state_code, sale_dist_code, home_dist_code, rc_id,  district_name, state_name, state_code, sale_fps_id,
             sessionId, memberId, memberName, android_id, id_type,alloc_month,alloc_year,
             delName, delUid, rc_uid, home_fps_id, scheme_id, scheme_name, fps_session_id;
     JSONObject jresponse = null;
     ArrayList<String> m_id_list, m_name_list;
     Context context;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_r_c__member_details);
+    ProgressDialog pd = null;
 
-        context=RC_MemberDetails.this;
+
+    @Override
+    public void initialize() {
+        try{
+            context=RC_MemberDetails.this;
+            LinearLayout llAboutUs = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_r_c__member_details, null);
+            llBody.addView(llAboutUs, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            llBody.setVisibility(View.VISIBLE);
+            initializeControls();
+
+
         if (!networkConnected(context)) {
-            builder.setTitle("Internet Connection");
-            builder.setMessage("Please Check Your Internet Connection").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            }).create().show();
+            show_AlertDialog(context.getResources().getString(R.string.Device),
+                    context.getResources().getString(R.string.Internet_Connection),
+                    context.getResources().getString(R.string.Internet_Connection_Msg),
+                    0);
         }
 
-        toolbarInitilisation();
+        pd = new ProgressDialog(context);
         rc_id = ImpdsBean.getInstance().getRc_id();
         id_type = ImpdsBean.getInstance().getIdType();
 
@@ -114,13 +119,6 @@ public class RC_MemberDetails extends AppCompatActivity {
         m_id_list = new ArrayList<>();
         m_name_list = new ArrayList<>();
 
-        connectivityReceiver = new ConnectivityReceiver();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.toolbar));//33A1C9
-        }
-        // location = new SimpleLocation(this);
         android_id = DEVICEID;
 
         token = TokenGenerator.nextToken();
@@ -132,6 +130,7 @@ public class RC_MemberDetails extends AppCompatActivity {
         final View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Integer index = (Integer) v.getTag();
                 if (index != null) {
                     selectRow(index);
@@ -154,7 +153,7 @@ public class RC_MemberDetails extends AppCompatActivity {
 
         JSONObject jsonObject = new JSONObject();
         SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        System.out.println("+++++++===="+dateformat.format(new Date()));
+
         String month = dateformat.format(new Date()).substring(9, 11);
         String year = dateformat.format(new Date()).substring(12, 16);
         try {
@@ -174,21 +173,25 @@ public class RC_MemberDetails extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        showBar();
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 //showLog(jsonObject.toString(),"RQ");
         System.out.println("request_queue===" + jsonObject.toString());
 
+        Show( context.getResources().getString(R.string.Please_wait),
+                context.getResources().getString(R.string.Processing));
+        System.out.println(dealerConstants.fpsURLInfo.impdsURL);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
-                "http://164.100.65.96/CTGMobileApplication/mobileimpdsApi/impdsMEService",
+                dealerConstants.fpsURLInfo.impdsURL+"impdsMEService",
+                /*"http://164.100.65.96/CTGMobileApplication/mobileimpdsApi/impdsMEService",*/
                 jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
 
                         try {
-                            progressDialog.dismiss();
+                            Dismiss();
                             System.out.println("response_queue===" + response.toString());
 
                             String respMessage = response.getString("resp_message");
@@ -293,46 +296,25 @@ public class RC_MemberDetails extends AppCompatActivity {
 
                                     }
                                 } else {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(RC_MemberDetails.this);
-                                    builder.setTitle("Alert");
+                                    show_AlertDialog(
+                                            context.getResources().getString(R.string.IMPDS),
+                                            context.getResources().getString(R.string.ResponseCode)+respCode,
+                                            context.getResources().getString(R.string.ResponseMsg)+respMessage,
+                                            1
+                                    );
 
-                                    builder.setMessage(respMessage)
-                                            .setCancelable(false)
-                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    Intent i = new Intent(getApplicationContext(), IMPDSActivity.class);
-                                                    startActivity(i);
-                                                    finish();
-                                                }
-                                            });
-
-                                    AlertDialog alert = builder.create();
-                                    alert.show();
                                 }
 
                             } else {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(RC_MemberDetails.this);
-                                builder.setTitle("Alert");
-
-                                builder.setMessage(respMessage + "(" + respCode + ")")
-                                        .setCancelable(false)
-                                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-
-                                                Intent i = new Intent(getApplicationContext(), IMPDSActivity.class);
-                                                startActivity(i);
-                                                finish();
-                                            }
-                                        });
-
-                                AlertDialog alert = builder.create();
-                                alert.show();
-
+                                show_AlertDialog(
+                                        context.getResources().getString(R.string.IMPDS),
+                                        context.getResources().getString(R.string.ResponseCode)+respCode,
+                                        context.getResources().getString(R.string.ResponseMsg)+respMessage,
+                                        1
+                                );
                             }
                         } catch (JSONException e) {
-                            if (progressDialog != null && progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                            }
+                            Dismiss();
                             e.printStackTrace();
                         }
                     }
@@ -341,12 +323,8 @@ public class RC_MemberDetails extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Dismiss();
 
-                        if (progressDialog != null && progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-                        showMessageDialogue("Network connection timed out.Please Try later(E)", "Alert ");
-                        // onBackPressed();
                     }
                 }
         );
@@ -362,103 +340,75 @@ public class RC_MemberDetails extends AppCompatActivity {
         scanFP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                preventTwoClick(v);
 
                 if (!(selectedIndex > 0)) {
-                    Toast.makeText(RC_MemberDetails.this, "Select user", Toast.LENGTH_SHORT).show();
+
+                    show_AlertDialog(
+                            context.getResources().getString(R.string.IMPDS),
+                            context.getResources().getString(R.string.Please_Select_Member_Name),
+                            "",
+                            0
+                    );
                 }
 
                 if (selectedIndex > 0) {
-                    System.out.println(selectedIndex + "--id--" + m_id_list.get(selectedIndex - 1) + "--name--" + m_name_list.get(selectedIndex - 1));
                     ImpdsBean impdsBean = ImpdsBean.getInstance();
                     impdsBean.setMemberName(m_name_list.get(selectedIndex - 1));
                     impdsBean.setMemberId(m_id_list.get(selectedIndex - 1));
-                   /* if (vendor != null && vendor.contains("Startek")) {
-                        try {
-                            String selectedPackage = "com.acpl.registersdk";
-                            Intent intent1 = new Intent("in.gov.uidai.rdservice.fp.CAPTURE", null);
-                            String pidOptXML = PIDUtil.getOthersXml();
 
-                            intent1.putExtra("PID_OPTIONS", pidOptXML);
-                            intent1.setPackage(selectedPackage);
-                            startActivityForResult(intent1, 13);
-                        } catch (Exception e) {
-                            showMessageDialogue("EXCEPTION- " + e.getMessage(), "EXCEPTION");
-                        }
-                    } else if (vendor != null && vendor.contains("NEXT")) {
-                        try {
-                            String selectedPackage = "com.nextbiometrics.rdservice";
-                            Intent intent1 = new Intent("in.gov.uidai.rdservice.fp.CAPTURE", null);
-                            String pidOptXML = PIDUtil.getOthersXml();
+                    try {
+                        String selectedPackage = "com.mantra.rdservice";
+                        Intent intent1 = new Intent("in.gov.uidai.rdservice.fp.CAPTURE", null);
+                        String pidOptXML = PIDUtil.getMantraPIDXml();
 
-                            intent1.putExtra("PID_OPTIONS", pidOptXML);
-                            intent1.setPackage(selectedPackage);
-                            startActivityForResult(intent1, 13);
-                        } catch (Exception e) {
-                            showMessageDialogue("EXCEPTION- " + e.getMessage(), "EXCEPTION");
-                        }
-                    } else if (vendor != null && vendor.equalsIgnoreCase("Mantra")) {*/
-                        try {
-                            String selectedPackage = "com.mantra.rdservice";
-                            Intent intent1 = new Intent("in.gov.uidai.rdservice.fp.CAPTURE", null);
-                            String pidOptXML = PIDUtil.getMantraPIDXml();
+                        intent1.putExtra("PID_OPTIONS", pidOptXML);
+                        intent1.setPackage(selectedPackage);
+                        startActivityForResult(intent1, 13);
+                    } catch (Exception e) {
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.IMPDS),
+                                context.getResources().getString(R.string.Exception)+e.getMessage(),
+                                "",
+                                1
+                        );
+                    }
 
-                            intent1.putExtra("PID_OPTIONS", pidOptXML);
-                            intent1.setPackage(selectedPackage);
-                            startActivityForResult(intent1, 13);
-                        } catch (Exception e) {
-                            showMessageDialogue("EXCEPTION- " + e.getMessage(), "EXCEPTION");
-                        }
-                   /* } else {
-                        //Toast.makeText(RC_MemberDetails.this, vendor + "  Please unplug and plugin the device", Toast.LENGTH_SHORT).show();
-                        showMessageDialogue("Session timed out" , "Alert");
-                    }*/
                 }
 
             }
         });
 
+        btn_back=findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                preventTwoClick(v);
+                finish();
+            }
+        });
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
     }
 
-    private void toolbarInitilisation() {
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+    @Override
+    public void initializeControls() {
 
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
-
-
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
-
-        toolbarFpsid.setText("DEVICE ID");
-        toolbarFpsidValue.setText(DEVICEID);
-        toolbarActivity.setText("IMPDS MEMBER");
-
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
+        toolbarActivity.setText(context.getResources().getString(R.string.IMPDS));
     }
 
-      private void displayToast_success() {
+    private void displayToast_success() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(RC_MemberDetails.this);
-        builder.setTitle("Beneficiary");
+        builder.setTitle(context.getResources().getString(R.string.BENEFICIARY));
         builder.setIcon(R.drawable.success);
-        builder.setMessage("Authentication Successful")
+        builder.setMessage(context.getResources().getString(R.string.Member_Authentication))
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent i = new Intent(getApplicationContext(), RC_CommodityDetails.class);
                         i.putExtra("transactionList", jresponse.toString());
                         startActivity(i);
-                        startActivity(i);
                         finish();
                     }
                 });
@@ -468,55 +418,6 @@ public class RC_MemberDetails extends AppCompatActivity {
 
     }
 
-    private void logout() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(RC_MemberDetails.this);
-        builder.setTitle("Alert");
-
-        builder.setMessage("Session expired.Kindly login again")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent i = new Intent(getApplicationContext(), StartActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
-                });
-
-        android.app.AlertDialog alert = builder.create();
-        alert.show();
-    }
-    private void showLog(String messageTxt, String argTitle) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(RC_MemberDetails.this);
-        builder.setTitle("Alert");
-
-        builder.setMessage(messageTxt)
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        android.app.AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    private void showMessageDialogue(String messageTxt, String argTitle) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(RC_MemberDetails.this);
-        builder.setTitle("Alert");
-
-        builder.setMessage(messageTxt)
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        onBackPressed();
-                        //dialog.cancel();
-                    }
-                });
-
-        android.app.AlertDialog alert = builder.create();
-        alert.show();
-    }
 
     private void selectRow(int index) {
         if (index != selectedIndex) {
@@ -537,35 +438,6 @@ public class RC_MemberDetails extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(connectivityReceiver, filter);
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(connectivityReceiver);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        location.beginUpdates();
-
-    }
-
-    @Override
-    protected void onPause() {
-        // location.endUpdates();
-        super.onPause();
-    }
-
     public String getToken() {
         return token;
     }
@@ -574,87 +446,20 @@ public class RC_MemberDetails extends AppCompatActivity {
         this.token = token;
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    private void displayToast() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(RC_MemberDetails.this);
-        builder.setTitle("Confirmation");
-
-        builder.setMessage("Are you sure to quit from this APP?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-                        homeIntent.addCategory(Intent.CATEGORY_HOME);
-                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(homeIntent);
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        Intent dashboard = new Intent(getBaseContext(), IMPDSActivity.class);
-        dashboard.addCategory(Intent.CATEGORY_HOME);
-        dashboard.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(dashboard);
-        RC_MemberDetails.this.finish();
-        super.onBackPressed();
-    }
-
-    public void showBar() {
-        builder = new AlertDialog.Builder(RC_MemberDetails.this);
-        progressDialog = new ProgressDialog(RC_MemberDetails.this);
-        progressDialog.setMessage("Processing Data...");
-        progressDialog.setCancelable(false);
-        progressDialog.setTitle("Please Wait");
-        progressDialog.show();
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
+        Dismiss();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //System.out.println(requestCode + "----" + requestCode);
+
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == 14) {
-
-                String rd_info = data.getStringExtra("RD_SERVICE_INFO");
-                if (rd_info != null) {
-                    showMessageDialogue(rd_info, "RD SERVICE INFO XML");
-                } else {
-                    showMessageDialogue("NULL STRING RETURNED", "RD SERVICE INFO XML");
-                }
-
-                String dev_info = data.getStringExtra("DEVICE_INFO");
-                if (dev_info != null) {
-                    showMessageDialogue(dev_info, "DEVICE INFO XML");
-                } else {
-                    showMessageDialogue("NULL STRING RETURNED", "DEVICE INFO XML");
-                }
-            } else if (requestCode == 13) {
+            if (requestCode == 13) {
 
                 String pidDataXML = data.getStringExtra("PID_DATA");
-                System.out.println("pidDataXML===" + pidDataXML);
                 if (pidDataXML != null) {
                     if (pidDataXML.equals("") || pidDataXML.isEmpty()) {
 
@@ -727,10 +532,12 @@ public class RC_MemberDetails extends AppCompatActivity {
                         }
                     }
                 }
+            }else if (requestCode==99){
+                return;
             }
         }
 
-        if (paramOK) {
+        if (paramOK && requestCode == 13) {
             JSONObject jsonObject = new JSONObject();
             try {
                 JSONObject object = new JSONObject();
@@ -761,24 +568,24 @@ public class RC_MemberDetails extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            System.out.println("jsonObject.toString()==="+jsonObject.toString());
-            showBar();
+
+            Show( context.getResources().getString(R.string.Please_wait),
+                    context.getResources().getString(R.string.Authenticating));
 
             RequestQueue requestQueue = Volley.newRequestQueue(RC_MemberDetails.this);
 
-            //showLog(""+jsonObject.toString(),"=REQ=");
-
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.POST,
-                    "http://164.100.65.96/CTGMobileApplication/mobileimpdsApi/impdsMEService",
+                    dealerConstants.fpsURLInfo.impdsURL+"impdsBenfAuthentication",
+                    /*  "http://164.100.65.96/CTGMobileApplication/mobileimpdsApi/impdsBenfAuthentication",*/
                     jsonObject,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
 
                             try {
-                                progressDialog.dismiss();
-                                // showLog(response.toString(),"error=");
+                                Dismiss();
+
                                 System.out.println("bio---" + response.toString());
                                 String respCode = response.getString("resp_code");
                                 String respMessage = response.getString("resp_message");
@@ -792,30 +599,19 @@ public class RC_MemberDetails extends AppCompatActivity {
 
                                 } else {
 
-                                    //  Toast.makeText(getApplicationContext(),respCode+"--"+respMessage+"--"+transactionFlow,Toast.LENGTH_SHORT).show();
-                                    android.app.AlertDialog.Builder builder = new
-                                            android.app.AlertDialog.Builder(RC_MemberDetails.this);
-                                    builder.setTitle("Alert");
+                                    show_AlertDialog(
+                                            context.getResources().getString(R.string.IMPDS),
+                                            context.getResources().getString(R.string.ResponseCode)+respCode,
+                                            context.getResources().getString(R.string.ResponseMsg)+respMessage,
+                                            0
 
-                                    builder.setMessage(respMessage + " - " + respCode)
-                                            .setCancelable(false)
-                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    // onBackPressed();
-                                                    dialog.cancel();
-                                                }
-                                            });
+                                    );
 
-                                    android.app.AlertDialog alert = builder.create();
-                                    alert.show();
                                 }
                             } catch (JSONException e) {
-                                if (progressDialog != null && progressDialog.isShowing()) {
-                                    progressDialog.dismiss();
-                                }
+                                Dismiss();
                                 e.printStackTrace();
                                 Toast.makeText(getApplicationContext(), "Biometric data did not match(300)", Toast.LENGTH_SHORT).show();
-
                             }
                         }
                     },
@@ -823,11 +619,14 @@ public class RC_MemberDetails extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             System.out.println("VolleyError---" + error.toString());
-                            if (progressDialog != null && progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                            }
-                            showMessageDialogue("Authentication failed.Please try again!", "Alert");
-                            // onBackPressed();
+
+                            Dismiss();
+                            show_AlertDialog(
+                                    context.getResources().getString(R.string.IMPDS),
+                                    context.getResources().getString(R.string.Authentication_Problem)+error.getMessage(),
+                                    "",
+                                    1
+                            );
                         }
                     }
             );
@@ -838,8 +637,60 @@ public class RC_MemberDetails extends AppCompatActivity {
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(jsonObjectRequest);
         } else {
-            Toast.makeText(getApplicationContext(), "Device not ready", Toast.LENGTH_SHORT).show();
+            show_AlertDialog(
+                    context.getResources().getString(R.string.IMPDS),
+                    context.getResources().getString(R.string.Device_Not_Ready),
+                    "",
+                    0
+            );
         }
 
+    }
+
+    private void show_AlertDialog(String headermsg, String bodymsg, String talemsg, int i) {
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.alertdialog);
+        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
+        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
+        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
+        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        head.setText(headermsg);
+        body.setText(bodymsg);
+        tale.setText(talemsg);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (i==1){
+                    finish();
+                }
+
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    public void Dismiss(){
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+    public void Show(String title,String msg){
+        SpannableString ss1=  new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2=  new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
     }
 }

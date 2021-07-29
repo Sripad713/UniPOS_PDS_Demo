@@ -35,7 +35,6 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.MyVi
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int listPosition) {
-        final StockListModel model = dataSet.get(listPosition);
 
         TextView textViewComm = holder.textComm;
         TextView textViewScheme = holder.textScheme;

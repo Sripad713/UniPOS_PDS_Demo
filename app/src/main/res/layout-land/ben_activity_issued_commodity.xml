@@ -6,389 +6,127 @@
     android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tool"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/black">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/black"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/black"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/image"
-                    android:layout_height="@dimen/image"
-                    android:background="@drawable/black"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/chhattisghar" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/black"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:id="@+id/toolbarVersion"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/black"
-                        android:gravity="left"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/TextsizeT"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="41dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/black"
-                        android:gravity="center"
-                        android:text="@string/CHHATISGARHPDS"
-                        android:textColor="@color/black"
-                        android:textSize="25dp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/toolbarRD"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/black"
-                        android:gravity="right"
-                        android:text="@string/RD"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/TextsizeT"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            tools:ignore="NestedWeights">
-
-                            <TextView
-                                android:id="@+id/toolbarDate"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:text="DATE"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/toolbarFpsid"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:text="FPS ID"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/toolbarDateValue"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH" />
-
-                            <TextView
-                                android:id="@+id/toolbarFpsidValue"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/toolbarActivity"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:textColor="@color/black"
-                            android:textSize="25dp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/black"
-                            android:gravity="center"
-                            android:text=""
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            tools:ignore="NestedWeights">
-
-                            <TextView
-                                android:id="@+id/toolbarLatitude"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:text="LATITUDE"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/toolbarLongitude"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:text="LONGITUDE"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/toolbarLatitudeValue"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH" />
-
-                            <TextView
-                                android:id="@+id/toolbarLongitudeValue"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/black"
-                                android:gravity="left"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/TextsizeH" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="vertical">
-
 
         <ScrollView
             android:id="@+id/ic_s2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="300dp"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
             android:scrollbars="horizontal|vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/rcid"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="40dp"
-                    android:padding="10dp"
-                    android:textColor="@color/Blue"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <HorizontalScrollView
-                    android:id="@+id/horizontalView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="horizontal|vertical">
-
 
                     <TableLayout
                         android:id="@+id/tablay2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="25dp"
                         android:background="@drawable/ben_table_cell_shape"
-                        android:padding="4dp">
+                        android:padding="4dp"
+                        android:weightSum="6">
 
                         <TableRow android:background="#0BB5FF">
 
                             <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
-                                android:layout_width="140dp"
+                                android:layout_width="150dp"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/ben_table_cell_shape"
-                                android:padding="10dp"
-                                android:text="@string/Commodity"
-                                android:textColor="@color/white"
-                                android:textSize="16sp" />
+                                android:layout_weight="1"
+                                android:text="@string/CName"
+                                android:textSize="30sp"
+                                android:background="@drawable/bblack"
+                                android:gravity="center"
+                                android:textStyle="bold"
+                                android:textColor="@color/white" />
 
                             <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
-                                android:layout_width="80dp"
+                                android:layout_width="150dp"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/ben_table_cell_shape"
-                                android:padding="10dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bblack"
+                                android:gravity="center"
                                 android:text="@string/Unit"
+                                android:textStyle="bold"
                                 android:textColor="@color/white"
-                                android:textSize="16sp" />
+                                android:textSize="30sp" />
 
-                            <com.visiontek.Mantra.Utils.MyCustomEditText
-                                android:layout_width="100dp"
+                            <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                                android:layout_width="150dp"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/ben_table_cell_shape"
-                                android:padding="10dp"
-                                android:text="@string/Balance"
+                                android:layout_weight="1"
+                                android:background="@drawable/bblack"
+                                android:gravity="center"
+                                android:textStyle="bold"
+                                android:text="@string/BalQty"
                                 android:textColor="@color/white"
-                                android:textSize="16sp" />
+                                android:textSize="30sp" />
 
-                            <com.visiontek.Mantra.Utils.MyCustomEditText
-                                android:layout_width="100dp"
+                            <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
+                                android:layout_width="150dp"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/ben_table_cell_shape"
-                                android:padding="10dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bblack"
+                                android:gravity="center"
+                                android:textStyle="bold"
                                 android:text="@string/issueQty"
                                 android:textColor="@color/white"
-                                android:textSize="16sp" />
+                                android:textSize="30sp" />
 
                             <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
-                                android:layout_width="100dp"
+                                android:layout_width="150dp"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/ben_table_cell_shape"
-                                android:padding="10dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bblack"
+                                android:gravity="center"
                                 android:text="@string/CB"
+                                android:textStyle="bold"
                                 android:textColor="@color/white"
-                                android:textSize="16sp" />
+                                android:textSize="30sp" />
 
                             <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
-                                android:layout_width="100dp"
+                                android:layout_width="150dp"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/ben_table_cell_shape"
-                                android:padding="10dp"
-                                android:text="@string/Unit_Price"
+                                android:layout_weight="1"
+                                android:background="@drawable/bblack"
+                                android:gravity="center"
+                                android:textStyle="bold"
+                                android:text="@string/Amount"
                                 android:textColor="@color/white"
-                                android:textSize="16sp" />
+                                android:textSize="30sp" />
                         </TableRow>
 
                         <ListView
                             android:id="@+id/lv_issuecomm"
-                            android:layout_width="match_parent"
-                            android:layout_height="fill_parent" />
-
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent" />
 
                     </TableLayout>
-
-
-                </HorizontalScrollView>
-
-
-                <Button
-                    android:id="@+id/proceed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/mybutton"
-                    android:text="@string/Submit"
-                    android:textColor="@color/white" />
-
-
             </LinearLayout>
-
         </ScrollView>
-
-
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_weight="1"
         android:gravity="bottom"
         android:orientation="vertical">
 
@@ -400,7 +138,43 @@
             android:layout_weight="1"
             android:gravity="bottom"
             android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="@dimen/margin_size_10dp"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="20dp"
+                android:weightSum="3">
 
+                <Button
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="25dp"
+                    android:background="@color/cancel"
+                    android:text="@string/Back"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/proceed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="25dp"
+                    android:background="@color/ok"
+                    android:text="@string/Submit"
+                    android:textColor="@color/white" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -432,5 +206,5 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
+    </LinearLayout>
 </LinearLayout>

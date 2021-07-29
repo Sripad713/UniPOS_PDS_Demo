@@ -40,7 +40,6 @@ public class DeviceInfoListAdapter extends RecyclerView.Adapter<DeviceInfoListAd
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int listPosition) {
-        final DeviceInfoListModel model = dataSet.get(listPosition);
 
         TextView textViewName = holder.textName;
         TextView textViewUid = holder.textUid;

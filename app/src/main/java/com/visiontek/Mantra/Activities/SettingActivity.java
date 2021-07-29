@@ -13,9 +13,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -34,104 +36,19 @@ import java.util.Date;
 import timber.log.Timber;
 
 import static android.bluetooth.BluetoothDevice.EXTRA_DEVICE;
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends BaseActivity {
     private ArrayList<BluetoothDevice> mDeviceList = new ArrayList<BluetoothDevice>();
     Button device, info, update, pairing, back;
     Context context;
     private BluetoothAdapter mBluetoothAdapter;
     private ProgressDialog mProgressDlg;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-
-        context = SettingActivity.this;
-
-        try {
-
-            TextView toolbarRD = findViewById(R.id.toolbarRD);
-            boolean rd_fps = RDservice(context);
-            if (rd_fps) {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-            } else {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_AlertDialog(context.getResources().getString(R.string.SETTINGS),
-                        context.getResources().getString(R.string.RD_Service),
-                        context.getResources().getString(R.string.RD_Service_Msg),0);
-                return;
-            }
-
-            initilisation();
-
-            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            device.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    preventTwoClick(view);
-                    Intent info = new Intent(context, DeviceActivity.class);
-                    startActivityForResult(info, 1);
-                }
-            });
-            info.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    preventTwoClick(view);
-                    Intent info = new Intent(context, DeviceInfoActivity.class);
-                    startActivity(info);
-                }
-            });
-            update.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    preventTwoClick(view);
-                    Intent update = new Intent(context, Device_Update.class);
-                    startActivity(update);
-                }
-            });
-            pairing.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    preventTwoClick(v);
-                    mProgressDlg = new ProgressDialog(context);
-                    mProgressDlg.setMessage("Scanning...");
-                    mProgressDlg.setCancelable(false);
-                    mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", ((dialog, which) -> {
-                        dialog.dismiss();
-                        if (mBluetoothAdapter != null)
-                            mBluetoothAdapter.cancelDiscovery();
-                    }));
-
-                    mBluetoothAdapter.startDiscovery();
-                }
-            });
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.addAction(BluetoothDevice.ACTION_FOUND);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-            filter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
-            registerReceiver(mReceiver, filter);
-            back = findViewById(R.id.back);
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    preventTwoClick(view);
-                    finish();
-                }
-            });
-        } catch (Exception ex) {
-
-            Timber.tag("Settings-onCreate-").e(ex.getMessage(), "");
-        }
-
-    }
 
     @Override
     protected void onResume() {
@@ -152,7 +69,6 @@ public class SettingActivity extends AppCompatActivity {
 
             }else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(EXTRA_DEVICE);
-                System.out.println("@@Found bluetooth adding Name: "+device.getName() +" ,Address: "+device.getAddress());
                 device.getAddress();
                 mDeviceList.add(device);
                 if(device!=null) {
@@ -243,16 +159,6 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
 
-
-
-    private void initilisation() {
-        device = findViewById(R.id.device);
-        info = findViewById(R.id.deviceinfo);
-        update = findViewById(R.id.update);
-        pairing = findViewById(R.id.pairdevice);
-        toolbarInitilisation();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -276,69 +182,86 @@ public class SettingActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void toolbarInitilisation() {
+    @Override
+    public void initialize() {
         try {
-
-            TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-            TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-            TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-            TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-            TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-            TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-            TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-
-            String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-            System.out.println(appversion);
-            toolbarVersion.setText("V" + appversion);
+            context = SettingActivity.this;
+            LinearLayout llAboutUs = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_settings, null);
+            llBody.addView(llAboutUs, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            llBody.setVisibility(View.VISIBLE);
+            initializeControls();
 
 
-            SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-            String date = dateformat.format(new Date()).substring(6, 16);
-            toolbarDateValue.setText(date);
-            System.out.println(date);
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            device.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    Intent info = new Intent(context, DeviceActivity.class);
+                    startActivityForResult(info, 1);
+                }
+            });
+            info.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    Intent info = new Intent(context, DeviceInfoActivity.class);
+                    startActivity(info);
+                }
+            });
+            update.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    Intent update = new Intent(context, Device_Update.class);
+                    startActivity(update);
+                }
+            });
+            pairing.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    preventTwoClick(v);
+                    mProgressDlg = new ProgressDialog(context);
+                    mProgressDlg.setMessage("Scanning...");
+                    mProgressDlg.setCancelable(false);
+                    mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", ((dialog, which) -> {
+                        dialog.dismiss();
+                        if (mBluetoothAdapter != null)
+                            mBluetoothAdapter.cancelDiscovery();
+                    }));
 
-            toolbarFpsid.setText("DEVICE ID");
-            toolbarFpsidValue.setText(DEVICEID);
-            toolbarActivity.setText(context.getResources().getString(R.string.SETTINGS));
-
-            toolbarLatitudeValue.setText(latitude);
-            toolbarLongitudeValue.setText(longitude);
+                    mBluetoothAdapter.startDiscovery();
+                }
+            });
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+            filter.addAction(BluetoothDevice.ACTION_FOUND);
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+            filter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
+            registerReceiver(mReceiver, filter);
+            back = findViewById(R.id.back);
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    finish();
+                }
+            });
         } catch (Exception ex) {
+
             Timber.tag("Settings-onCreate-").e(ex.getMessage(), "");
         }
     }
 
-    private void show_Dialogbox(String msg, String header) {
-
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.dialogbox);
-        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
-        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
-        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
-        head.setText(header);
-        status.setText(msg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
+    @Override
+    public void initializeControls() {
+        device = findViewById(R.id.device);
+        info = findViewById(R.id.deviceinfo);
+        update = findViewById(R.id.update);
+        pairing = findViewById(R.id.pairdevice);
+        toolbarActivity.setText(context.getResources().getString(R.string.SETTINGS));
     }
-
 
     @Override
     protected void onDestroy() {

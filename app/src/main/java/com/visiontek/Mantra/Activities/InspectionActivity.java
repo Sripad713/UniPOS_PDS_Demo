@@ -18,14 +18,17 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -45,6 +48,7 @@ import com.visiontek.Mantra.Models.InspectionModel.InspectionDetails;
 import com.visiontek.Mantra.Models.RDModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
+import com.visiontek.Mantra.Utils.DecimalDigitsInputFilter;
 import com.visiontek.Mantra.Utils.Json_Parsing;
 import com.visiontek.Mantra.Utils.TaskPrint;
 import com.visiontek.Mantra.Utils.Util;
@@ -72,9 +76,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import timber.log.Timber;
 
+import static com.visiontek.Mantra.Activities.BaseActivity.rd_fps;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
@@ -142,93 +147,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     RDModel rdModel = new RDModel();
     InspectionDetails inspectionDetails;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inspection);
-        try {
-
-            context = InspectionActivity.this;
-            mActivity = this;
-            ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
-            TextView toolbarRD = findViewById(R.id.toolbarRD);
-            boolean rd_fps = RDservice(context);
-            if (rd_fps) {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-            } else {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_AlertDialog(context.getResources().getString(R.string.Inspection),
-                        context.getResources().getString(R.string.RD_Service),
-                        context.getResources().getString(R.string.RD_Service_Msg),0);                return;
-            }
-            initilisation();
-            radioGroup = findViewById(R.id.groupradio);
-            recyclerView = findViewById(R.id.my_recycler_view);
-            recyclerView.setHasFixedSize(true);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-            inspectionDetails = (InspectionDetails) getIntent().getSerializableExtra("OBJ");
-
-            mTerminal100API = new MTerminal100API();
-            mTerminal100API.initPrinterAPI(this, this);
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                probe();
-            } else {
-                finish();
-            }
-            Display(1);
-
-            next.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    preventTwoClick(view);
-                    if (check()) {
-                        fCount = "1";
-                        Enter_UID();
-                    } else {
-                        show_AlertDialog(context.getResources().getString(R.string.INSPECTION),
-                                context.getResources().getString(R.string.Enter_Observation),
-                                "",0);
-                    }
-                }
-            });
-
-
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    preventTwoClick(view);
-                    finish();
-                }
-            });
-        } catch (Exception ex) {
-
-            Timber.tag("Inspection-onCreate-").e(ex.getMessage(), "");
-        }
-    }
-
-    private void Sessiontimeout(String msg, String title) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(title);
-        alertDialogBuilder.setTitle(msg);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-                        Intent i = new Intent(context, StartActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
     private boolean check() {
         try {
 
@@ -236,7 +154,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             float val;
             for (int i = 0; i < size; i++) {
                 val = Float.parseFloat(inspectionDetails.commDetails.get(i).entered);
-                System.out.println("===========" + val);
                 if (val > 0.0) {
                     System.out.println("=" + val);
                     return true;
@@ -246,14 +163,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             Timber.tag("Inspection-check-").e(ex.getMessage(), "");
         }
         return false;
-    }
-
-    private void initilisation() {
-        pd = new ProgressDialog(context);
-
-        next = findViewById(R.id.inspection_next);
-        back = findViewById(R.id.inspection_back);
-        toolbarInitilisation();
     }
 
 
@@ -269,11 +178,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
             Show(context.getResources().getString(R.string.INSPECTION),
                     context.getResources().getString(R.string.Authenticating) );
-/*
-            pd = ProgressDialog.show(context,
-             context.getResources().getString(R.string.COMMODITIES),
-              context.getResources().getString(R.string.Commodity_details_are_updating), true, false);
-*/
+
             Aadhaar_Parsing request = new Aadhaar_Parsing(context, inspectionAuth, 6);
             request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
@@ -323,7 +228,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                                     "</SOAP-ENV:Envelope>";
                             if (Util.networkConnected(context)) {
                                 hitpush(Inspectionpush);
-                                Util.generateNoteOnSD(context, "InspectionPushReq.txt", Inspectionpush);
+                                //Util.generateNoteOnSD(context, "InspectionPushReq.txt", Inspectionpush);
                             } else {
                                 show_AlertDialog(context.getResources().getString(R.string.Inspection),
                                         context.getResources().getString(R.string.Internet_Connection),
@@ -384,7 +289,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             dialog.show();
         } catch (Exception ex) {
-
             Timber.tag("Inspection-cnsntDlg-").e(ex.getMessage(), "");
         }
     }
@@ -393,9 +297,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         try {
             Show(context.getResources().getString(R.string.Inspection),
                     context.getResources().getString(R.string.Consent_Form));
-/*
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Inspection), context.getResources().getString(R.string.Consent_Form), true, false);
-*/
+
             Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
             request.setOnResultListener(new Json_Parsing.OnResultListener() {
 
@@ -484,10 +386,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
 
             Show( context.getResources().getString(R.string.COMMODITIES),
                     context.getResources().getString(R.string.Commodity_details_are_updating));
-/*
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.COMMODITIES),
-             context.getResources().getString(R.string.Commodity_details_are_updating), true, false);
-*/
+
             Aadhaar_Parsing request = new Aadhaar_Parsing(context, inspectionpush, 7);
             request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
@@ -644,7 +543,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 public void onClick(View v) {
                     dialog.dismiss();
                     Enter_UID = enter.getText().toString();
-                    // if (Enter_UID.length() < 11) {
                     if (Enter_UID.length() == 12 && validateVerhoeff(Enter_UID)) {
                         try {
                             Aadhaar = encrypt(Enter_UID, menuConstants.skey);
@@ -684,10 +582,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                                 context.getResources().getString(R.string.Please_Enter_a_Valid_Number_UID),
                                 0);
                     }
-               /* }else {
-                    show_error_box("Please Enter UID Number", "UID", 0);
-                }*/
-
                 }
             });
             back.setOnClickListener(new View.OnClickListener() {
@@ -712,7 +606,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     private void prep_consent() {
         try {
 
-            System.out.println("@@ In dealer details else case");
             String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
             //currentDateTimeString="26032021114610";
             String consentrequest = "{\n" +
@@ -729,7 +622,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     /*"   \"token\" : "+"\""+fpsURLInfo.token()+"\""+"\n" +*/
                     "   \"token\" : " + "\"9f943748d8c1ff6ded5145c59d0b2ae7\"" + "\n" +
                     "}";
-            Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
+            //Util.generateNoteOnSD(context, "ConsentFormReq.txt", consentrequest);
             ConsentformURL(consentrequest);
         } catch (Exception ex) {
 
@@ -825,7 +718,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     "</SOAP-ENV:Envelope>";
 
 
-            Util.generateNoteOnSD(context, "InspectionAuthReq.txt", InspectionAuth);
+            //Util.generateNoteOnSD(context, "InspectionAuthReq.txt", InspectionAuth);
             if (networkConnected(context)) {
 
                 hit_inspectioAuth(InspectionAuth);
@@ -848,6 +741,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             dialog.setCanceledOnTouchOutside(false);
             dialog.setContentView(R.layout.inspection);
             final EditText observation = dialog.findViewById(R.id.enter);
+            observation.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(3)});
             Button confirm = (Button) dialog.findViewById(R.id.confirm);
             Button back = (Button) dialog.findViewById(R.id.back);
 
@@ -924,8 +818,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-
-        System.out.println("OnActivityResult");
         if (requestCode == RD_SERVICE) {
             if (resultCode == Activity.RESULT_OK) {
                 String piddata = data.getStringExtra("PID_DATA");
@@ -1160,72 +1052,113 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             Timber.tag("Inspection-Probe-").e(ex.getMessage(), "");
         }
     }
+    private void initilisation() {
+        pd = new ProgressDialog(context);
 
+        next = findViewById(R.id.inspection_next);
+        back = findViewById(R.id.inspection_back);
+        toolbarInitilisation();
+    }
 
     private void toolbarInitilisation() {
         try {
 
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+            TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+            TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+            TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+            TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+            TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+            TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+            TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
+            TextView toolbarRD = findViewById(R.id.toolbarRD);
+            if (rd_fps == 3) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+            } else if (rd_fps == 2) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+            } else {
+                if (RDservice(context)) {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
+                } else {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+                }
+            }
+            String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+            System.out.println(appversion);
+            toolbarVersion.setText("V" + appversion);
 
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
 
+            SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+            String date = dateformat.format(new Date()).substring(6, 16);
+            toolbarDateValue.setText(date);
+            System.out.println(date);
 
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
+            toolbarFpsid.setText("FPS ID");
+            toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+            toolbarActivity.setText( context.getResources().getString(R.string.INSPECTION));
 
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText( context.getResources().getString(R.string.INSPECTION));
-
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
+            toolbarLatitudeValue.setText(latitude);
+            toolbarLongitudeValue.setText(longitude);
         } catch (Exception ex) {
             Timber.tag("Inspection-Toolbar-").e(ex.getMessage(), "");
         }
     }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_inspection);
+        try {
+            context = InspectionActivity.this;
 
-    private void show_Dialogbox(String msg,String header) {
 
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.dialogbox);
-        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
-        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
-        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
-        head.setText(header);
-        status.setText(msg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            mActivity = this;
+            ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
+            initilisation();
+            radioGroup = findViewById(R.id.groupradio);
+            recyclerView = findViewById(R.id.my_recycler_view);
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+            inspectionDetails = (InspectionDetails) getIntent().getSerializableExtra("OBJ");
+
+            mTerminal100API = new MTerminal100API();
+            mTerminal100API.initPrinterAPI(this, this);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                probe();
+            } else {
+                finish();
             }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+            Display(1);
 
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
+            next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    if (check()) {
+                        fCount = "1";
+                        Enter_UID();
+                    } else {
+                        show_AlertDialog(context.getResources().getString(R.string.INSPECTION),
+                                context.getResources().getString(R.string.Enter_Observation),
+                                "",0);
+                    }
+                }
+            });
+
+
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    finish();
+                }
+            });
+        } catch (Exception ex) {
+
+            Timber.tag("Inspection-onCreate-").e(ex.getMessage(), "");
+        }
     }
-
-
     private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
 
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
@@ -1253,30 +1186,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
-    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.alertdialog);
-        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
-        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
-        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
-        head.setText(headermsg);
-        body.setText(bodymsg);
-        tale.setText(talemsg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Intent i = new Intent(context, StartActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
 
-            }
-        });
-
-    }
     public void Dismiss(){
         if (pd.isShowing()) {
             pd.dismiss();

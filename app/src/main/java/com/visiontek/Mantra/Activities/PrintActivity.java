@@ -17,9 +17,11 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -47,30 +49,26 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import timber.log.Timber;
 
-import static com.visiontek.Mantra.Activities.RationDetailsActivity.TOTALAMOUNT;
-
-
+import static com.visiontek.Mantra.Activities.BaseActivity.rd_fps;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
-import static com.visiontek.Mantra.Activities.StartActivity.latitude;
-import static com.visiontek.Mantra.Activities.StartActivity.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
-
-
 import static com.visiontek.Mantra.Models.AppConstants.Dealername;
 import static com.visiontek.Mantra.Models.AppConstants.MemberName;
 import static com.visiontek.Mantra.Models.AppConstants.MemberUid;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Models.AppConstants.menuConstants;
+import static com.visiontek.Mantra.Models.AppConstants.TOTALAMOUNT;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 
-public class PrintActivity extends AppCompatActivity implements PrinterCallBack {
+public class PrintActivity extends AppCompatActivity  implements PrinterCallBack {
 
     private PrintActivity mActivity;
     private  String ACTION_USB_PERMISSION;
@@ -79,96 +77,9 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
     ProgressDialog pd = null;
     Button print;
     TextView total;
+    int flagprint;
     private final ExecutorService es = Executors.newScheduledThreadPool(30);
     private MTerminal100API mTerminal100API;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_print);
-        context = PrintActivity.this;
-        try {
-
-        mActivity = this;
-        ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
-
-        TextView toolbarRD = findViewById(R.id.toolbarRD);
-        boolean rd_fps = RDservice(context);
-        if (rd_fps) {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-        } else {
-            toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-            show_AlertDialog(context.getResources().getString(R.string.Print),
-                    context.getResources().getString(R.string.RD_Service),
-                    context.getResources().getString(R.string.RD_Service_Msg),0);
-            return;
-        }
-
-        initilisation();
-
-        Intent intent = getIntent();
-        final String ration = intent.getStringExtra("key");
-
-        Display();
-
-        print.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View view) {
-                preventTwoClick(view);
-                if (Util.networkConnected(context)) {
-                    Util.generateNoteOnSD(context, "RationReq.txt", ration);
-                    hitURL(ration);
-                } else {
-                    show_AlertDialog(context.getResources().getString(R.string.Print),
-                            context.getResources().getString(R.string.Internet_Connection),
-                            context.getResources().getString(R.string.Internet_Connection_Msg),
-                            0);
-                }
-
-            }
-        });
-
-
-        mTerminal100API = new MTerminal100API();
-        mTerminal100API.initPrinterAPI(this, this);
-        print.setEnabled(false);
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            probe();
-        } else {
-            finish();
-        }
- }catch (Exception ex){
-
-            Timber.tag("Print-onCreate-").e(ex.getMessage(),"");
-        }
-    }
-
-    private void Sessiontimeout(String msg, String title) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(title);
-        alertDialogBuilder.setTitle(msg);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-                        Intent i = new Intent(context, StartActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-    private void initilisation() {
-        pd = new ProgressDialog(context);
-        print = findViewById(R.id.print);
-        total = findViewById(R.id.totalamount);
-        toolbarInitilisation();
-    }
 
     private void hitURL(String ration) {
         try {
@@ -184,10 +95,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
 
         Show( context.getResources().getString(R.string.Confirm),
                 context.getResources().getString(R.string.Please_Wait) );
-/*
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Confirm),
-         context.getResources().getString(R.string.Please_Wait), true, false);
-*/
+
         XML_Parsing request = new XML_Parsing(PrintActivity.this, ration, 11);
         request.setOnResultListener(new XML_Parsing.OnResultListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -211,6 +119,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                             context.getResources().getString(R.string.ResponseMsg)+msg,
                             1);
                 } else {
+                    print.setEnabled(false);
                     printReceipt = (Print) object;
                     show_AlertDialog(
                             context.getResources().getString(R.string.Transaction_Successfull_Printing_Please_Wait),
@@ -264,38 +173,9 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         }
     }
 
-   /* private void printbox(String msg, String title, final String[] str, final int type) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(msg);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton(context.getResources().getString(R.string.Ok),
-                new DialogInterface.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        checkandprint(str,type);
-
-                    }
-                });
-        alertDialogBuilder.setNegativeButton(context.getResources().getString(R.string.Cancel),
-                new DialogInterface.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }*/
-
 
     private void probe() {
         try {
-
-
         final UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
         HashMap<String, UsbDevice> deviceList = mUsbManager.getDeviceList();
@@ -366,7 +246,8 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         String str1,str2,str3,str4,str5;
         String[] str = new String[4];
         if (L.equals("hi")) {
-            str1 = dealerConstants.stateBean.stateReceiptHeaderLl+"\n";
+            str1 = dealerConstants.stateBean.stateReceiptHeaderLl+"\n"+
+                    context.getResources().getString(R.string.ISSUE)+"\n";
 
             image(str1,"header.bmp",1);
             str2 =  context.getResources().getString(R.string.FPS_Owner_Name) + " : " + Dealername + "\n"
@@ -404,8 +285,8 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             str[3] = "1";
             checkandprint(str, 1);
         }else {
-            str1 = dealerConstants.stateBean.stateReceiptHeaderEn+"\n\n";
-
+            str1 = dealerConstants.stateBean.stateReceiptHeaderEn+"\n"+
+                    context.getResources().getString(R.string.ISSUE)+"\n\n";
             str2 =
                     context.getResources().getString(R.string.FPS_Owner_Name) + "  :" + Dealername + "\n"
                     + context.getResources().getString(R.string.FPS_No) + "          :" + dealerConstants.stateBean.statefpsId + "\n"
@@ -576,74 +457,119 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
             Timber.tag("Print-Display-").e(ex.getMessage(),"");
         }
     }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_print);
+        try {
+            context=PrintActivity.this;
+
+            mActivity = this;
+            ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
+            initilisation();
+
+            Intent intent = getIntent();
+            final String ration = intent.getStringExtra("key");
+
+            Display();
+            flagprint=0;
+            print.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public void onClick(View view) {
+                    preventTwoClick(view);
+                    if (flagprint!=2) {
+                        if (Util.networkConnected(context)) {
+
+                            //Util.generateNoteOnSD(context, "RationReq.txt", ration);
+                            hitURL(ration);
+                        } else {
+                            show_AlertDialog(context.getResources().getString(R.string.Print),
+                                    context.getResources().getString(R.string.Internet_Connection),
+                                    context.getResources().getString(R.string.Internet_Connection_Msg),
+                                    0);
+                        }
+                    }
+
+                }
+            });
+
+
+            mTerminal100API = new MTerminal100API();
+            mTerminal100API.initPrinterAPI(this, this);
+            print.setEnabled(false);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                probe();
+            } else {
+                finish();
+            }
+        }catch (Exception ex){
+
+            Timber.tag("Print-onCreate-").e(ex.getMessage(),"");
+        }
+    }
+
+
+    private void initilisation() {
+        pd = new ProgressDialog(context);
+        print = findViewById(R.id.print);
+        total = findViewById(R.id.totalamount);
+        toolbarInitilisation();
+    }
+
+
     private void toolbarInitilisation() {
         try {
 
-        TextView toolbarVersion = findViewById(R.id.toolbarVersion);
-        TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
-        TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
-        TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
-        TextView toolbarActivity = findViewById(R.id.toolbarActivity);
-        TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
-        TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
-        TextView memname=findViewById(R.id.memname);
-        TextView memnuid=findViewById(R.id.memuid);
-        memname.setText(MemberName);
-        memnuid.setText(MemberUid);
-        TextView toolbarCard = findViewById(R.id.toolbarCard);
-        toolbarCard.setText("RC : "+memberConstants.carddetails.rcId);
+            TextView toolbarVersion = findViewById(R.id.toolbarVersion);
+            TextView toolbarDateValue = findViewById(R.id.toolbarDateValue);
+            TextView toolbarFpsid = findViewById(R.id.toolbarFpsid);
+            TextView toolbarFpsidValue = findViewById(R.id.toolbarFpsidValue);
+            TextView toolbarActivity = findViewById(R.id.toolbarActivity);
+            TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
+            TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
 
-        String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
-        System.out.println(appversion);
-        toolbarVersion.setText("V" + appversion);
 
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-        String date = dateformat.format(new Date()).substring(6, 16);
-        toolbarDateValue.setText(date);
-        System.out.println(date);
+            TextView memname=findViewById(R.id.memname);
+            TextView memnuid=findViewById(R.id.memuid);
+            memname.setText(MemberName);
+            memnuid.setText(MemberUid);
+            TextView toolbarCard = findViewById(R.id.toolbarCard);
+            toolbarCard.setText("RC : "+memberConstants.carddetails.rcId);
+            TextView toolbarRD = findViewById(R.id.toolbarRD);
+            if (rd_fps == 3) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
+            } else if (rd_fps == 2) {
+                toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+            } else {
+                if (RDservice(context)) {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
+                } else {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+                }
+            }
 
-        toolbarFpsid.setText("FPS ID");
-        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
-        toolbarActivity.setText( context.getResources().getString(R.string.Print));
+            String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
+            System.out.println(appversion);
+            toolbarVersion.setText("V" + appversion);
 
-        toolbarLatitudeValue.setText(latitude);
-        toolbarLongitudeValue.setText(longitude);
+            SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+            String date = dateformat.format(new Date()).substring(6, 16);
+            toolbarDateValue.setText(date);
+            System.out.println(date);
+
+            toolbarFpsid.setText("FPS ID");
+            toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+            toolbarActivity.setText( context.getResources().getString(R.string.Print));
+
+            toolbarLatitudeValue.setText(latitude);
+            toolbarLongitudeValue.setText(longitude);
         }catch (Exception ex){
 
             Timber.tag("Print-Toolbar-").e(ex.getMessage(),"");
         }
     }
-    private void show_Dialogbox(String msg,String header) {
-
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.dialogbox);
-        Button back = (Button) dialog.findViewById(R.id.dialogcancel);
-        Button confirm = (Button) dialog.findViewById(R.id.dialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.dialoghead);
-        TextView status = (TextView) dialog.findViewById(R.id.dialogtext);
-        head.setText(header);
-        status.setText(msg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
-    }
-
 
     private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
 
@@ -669,6 +595,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
                     startActivity(home);
                     finish();
                 }else if (i==2){
+                    flagprint=2;
                     calPrint();
                 }
             }
@@ -678,31 +605,7 @@ public class PrintActivity extends AppCompatActivity implements PrinterCallBack 
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
-    private void SessionAlert(String headermsg, String bodymsg,String talemsg) {
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.alertdialog);
-        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
-        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
-        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
-        head.setText(headermsg);
-        body.setText(bodymsg);
-        tale.setText(talemsg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Intent i = new Intent(context, StartActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
 
-
-            }
-        });
-
-    }
     public void Dismiss(){
         if (pd.isShowing()) {
             pd.dismiss();
