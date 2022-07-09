@@ -463,7 +463,7 @@ public class StartActivity extends BaseActivity {
                    DEVICEID = Build.getSerial();//field
                   //DEVICEID = "MTR4361844";
                   //DEVICEID = "0110000106";//our device
-                  //DEVICEID = "MTR4361828";//present
+                   DEVICEID = "MTR4361828";//present
                  toolbarFpsidValue.setText(DEVICEID);
                  toolbarLatitudeValue.setText(latitude);
                  toolbarLongitudeValue.setText(longitude);
