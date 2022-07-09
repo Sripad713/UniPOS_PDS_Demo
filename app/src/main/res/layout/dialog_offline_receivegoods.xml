@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="500dp"
+    android:layout_height="400dp"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Offline Received Goods"
+            android:textSize="@dimen/TextsizeT"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="@color/blackblack"
+            android:gravity="center_horizontal"></TextView>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="1"
+            android:textSize="@dimen/TextsizeT"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blackblack"
+            android:text="Commodity">
+        </TextView>
+        <Spinner
+            android:id="@+id/spinnerCom"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            android:layout_weight="1"
+        </Spinner>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/TextsizeT"
+            android:textStyle="bold"
+            android:textColor="@color/blackblack"
+            android:text="Scheme">
+        </TextView>
+
+        <Spinner
+            android:id="@+id/spinnerSch"
+            android:layout_weight="1"
+            android:textSize="@dimen/TextsizeT"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </Spinner>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="1"
+            android:textSize="@dimen/TextsizeT"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:textColor="@color/blackblack"
+            android:text="@string/Enter_Quantity">
+        </TextView>
+
+        <EditText
+            android:id="@+id/etQty"
+            android:textSize="@dimen/TextsizeT"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </EditText>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        android:textColor="@color/blackblack"
+        android:weightSum="2"
+    >
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btn_Cancel"
+            android:background="@drawable/red"
+            android:text="@string/Cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp">
+
+        </Button>
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btn_confirm"
+            android:background="@drawable/bgreen"
+            android:text="@string/Submit"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp">
+        </Button>
+    </LinearLayout>
+</LinearLayout>

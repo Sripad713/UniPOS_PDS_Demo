@@ -119,11 +119,12 @@ public class UIDDetailsActivity extends BaseActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                preventTwoClick(v);
                 if (checkBox.isChecked()) {
                     dialog.dismiss();
                     AadhaarDialog();
                 }  else {
-                    show_error_box("Please Check the Consent Message",context.getResources().getString(R.string.Consent_Form), 2);
+                    show_error_box(context.getResources().getString(R.string.Please_check_Consent_Form),context.getResources().getString(R.string.Consent_Form), 2);
                 }
 
             }
@@ -142,17 +143,19 @@ public class UIDDetailsActivity extends BaseActivity {
     }
 
     private void ConsentformURL(String consentrequest) {
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.UID_DETAILS), context.getResources().getString(R.string.Consent_Form), true, false);
+        Show(context.getResources().getString(R.string.UID_DETAILS), context.getResources().getString(R.string.Consent_Form));
+        //pd = ProgressDialog.show(context, context.getResources().getString(R.string.UID_DETAILS), context.getResources().getString(R.string.Consent_Form), true, false);
         Json_Parsing request = new Json_Parsing(context, consentrequest, 3);
         request.setOnResultListener(new Json_Parsing.OnResultListener() {
 
             @Override
             public void onCompleted(String code, String msg, Object object) {
-                if (pd.isShowing()) {
+                /*if (pd.isShowing()) {
                     pd.dismiss();
-                }
+                }*/
+                Dismiss();
                 if (code == null || code.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    show_error_box(context.getResources().getString(R.string.Invalid_Response_Please_Try_Again), context.getResources().getString(R.string.No_Response), 0);
                     return;
                 }
                 if (code.equals("057") || code.equals("008") || code.equals("09D")) {
@@ -185,6 +188,7 @@ public class UIDDetailsActivity extends BaseActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                preventTwoClick(v);
                 dialog.dismiss();
                 uidModel.Enter_UID = enter.getText().toString();
                 if (validateVerhoeff(uidModel.Enter_UID)) {
@@ -231,18 +235,19 @@ public class UIDDetailsActivity extends BaseActivity {
     }
 
     private void hitURL1(String uidauth) {
-
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Members), context.getResources().getString(R.string.Fetching_Members), true, false);
+        Show(context.getResources().getString(R.string.Members), context.getResources().getString(R.string.Fetching_Members));
+        //pd = ProgressDialog.show(context, context.getResources().getString(R.string.Members), context.getResources().getString(R.string.Fetching_Members), true, false);
         Aadhaar_Parsing request = new Aadhaar_Parsing(context, uidauth, 2);
         request.setOnResultListener(new Aadhaar_Parsing.OnResultListener() {
 
             @Override
             public void onCompleted(String error, String msg, String ref, String flow, Object object) {
-                if (pd.isShowing()) {
+                /*if (pd.isShowing()) {
                     pd.dismiss();
-                }
+                }*/
+                Dismiss();
                 if (error == null || error.isEmpty()) {
-                    show_error_box("Invalid Response from Server", "No Response", 0);
+                    show_error_box(context.getResources().getString(R.string.Invalid_Response_Please_Try_Again), context.getResources().getString(R.string.No_Response), 0);
                     return;
                 }
                 if (error.equals("057") || error.equals("008") || error.equals("09D")) {
@@ -509,7 +514,11 @@ public class UIDDetailsActivity extends BaseActivity {
                         if (Util.networkConnected(context)) {
 
                             if (uidModel.bfd_1.equals("Y")) {
-                                ConsentDialog(ConsentForm(context, 1));
+                                if (L.equals("hi")){
+                                    ConsentDialog(ConsentForm(context,1));
+                                }else {
+                                    ConsentDialog(ConsentForm(context,0));
+                                }
                             } else {
                                 show_error_box(context.getResources().getString(R.string.Member_is_already_Verified), context.getResources().getString(R.string.Already_Verified),0);
                             }
@@ -582,7 +591,8 @@ public class UIDDetailsActivity extends BaseActivity {
 
         Ekyc = findViewById(R.id.UID_details_Ekyc);
         back = findViewById(R.id.UID_details_back);
-
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
     }
 
     public void Dismiss(){

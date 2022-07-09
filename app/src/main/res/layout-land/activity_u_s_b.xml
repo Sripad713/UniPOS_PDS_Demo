@@ -55,7 +55,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/black"
                         android:gravity="left"
-                        android:textColor="@color/black"
+                        android:textColor="@color/ik_orange"
                         android:textSize="@dimen/TextsizeT"
                         android:textStyle="bold" />
 

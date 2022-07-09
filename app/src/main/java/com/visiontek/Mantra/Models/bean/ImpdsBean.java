@@ -11,12 +11,17 @@ public class ImpdsBean {
     private String uidToken;
     private String uidRefNumber;
     private String total_amount;
+    private String fusionCount;
 
+
+
+    private String fusionStatus;
     private String homeStateCode;
     private String saleStateCode;
     private String homeFpsId;
     private String allocation_month;
     private String allocation_year;
+    private String aadharAuthType;
 
 
     private String saleFpsId;
@@ -130,7 +135,13 @@ public class ImpdsBean {
     public String getHomeStateCode() {
         return homeStateCode;
     }
+    public String getAadharAuthType() {
+        return aadharAuthType;
+    }
 
+    public void setAadharAuthType(String aadharAuthType) {
+        this.aadharAuthType = aadharAuthType;
+    }
     public void setHomeStateCode(String homeStateCode) {
         this.homeStateCode = homeStateCode;
     }
@@ -237,6 +248,21 @@ public class ImpdsBean {
 
     public void setMemberName(String memberName) {
         this.memberName = memberName;
+    }
+    public String getFusionStatus() {
+        return fusionStatus;
+    }
+
+    public void setFusionStatus(String fusionStatus) {
+        this.fusionStatus = fusionStatus;
+    }
+
+    public String getFusionCount() {
+        return fusionCount;
+    }
+
+    public void setFusionCount(String fusionCount) {
+        this.fusionCount = fusionCount;
     }
 
     public String getSaleDistCode() {

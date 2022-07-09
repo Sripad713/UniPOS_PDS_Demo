@@ -54,7 +54,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/black"
                         android:gravity="left"
-                        android:textColor="@color/black"
+                        android:textColor="@color/ik_green"
                         android:textSize="@dimen/TextsizeT"
                         android:textStyle="bold" />
 
@@ -78,6 +78,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/wblack" />
                     <TextView
+                        android:id="@+id/arrow"
                         android:background="@drawable/wblack"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -345,8 +346,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginVertical="5dp">
+            android:layout_height="240dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -360,7 +360,7 @@
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:layout_marginTop="20dp"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

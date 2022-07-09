@@ -8,6 +8,8 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -44,7 +46,6 @@ public class IMPDSActivity extends BaseActivity {
     TextView rc_label;
     Context context;
 
-
     @Override
     public void initialize() {
         try{
@@ -74,9 +75,18 @@ public class IMPDSActivity extends BaseActivity {
                     st_rd_type = "R";
                     rc_label.setText(context.getResources().getString(R.string.RC_No));
                     rc_label.setHint(context.getResources().getString(R.string.Please_Enter_RC_Number));
+                    InputFilter[] FilterArray = new InputFilter[1];
+                    FilterArray[0] = new InputFilter.LengthFilter(30);
+                    ed_rc_id.setFilters(FilterArray);
+                    ed_rc_id.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 }
                 if (arg1 == R.id.rd_type_uid) {
                     st_rd_type = "U";
+                    ed_rc_id.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD | InputType.TYPE_CLASS_NUMBER);
+
+                    InputFilter[] FilterArray1 = new InputFilter[1];
+                    FilterArray1[0] = new InputFilter.LengthFilter(12);
+                    ed_rc_id.setFilters(FilterArray1);
                     rc_label.setText(context.getResources().getString(R.string.Aadhaar_No));
                     rc_label.setHint(context.getResources().getString(R.string.Enter_UID));
                 }
@@ -123,7 +133,7 @@ public class IMPDSActivity extends BaseActivity {
                     dashboard.addCategory(Intent.CATEGORY_HOME);
                     dashboard.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(dashboard);
-                    IMPDSActivity.this.finish();
+                    ed_rc_id.setText("");
 
                 }
 
@@ -147,6 +157,9 @@ public class IMPDSActivity extends BaseActivity {
     @Override
     public void initializeControls() {
         toolbarActivity.setText(context.getResources().getString(R.string.IMPDS));
+
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
     }
 
     @Override
@@ -154,6 +167,7 @@ public class IMPDSActivity extends BaseActivity {
         super.onStart();
         IntentFilter filter=new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(connectivityReceiver,filter);
+
     }
 
 

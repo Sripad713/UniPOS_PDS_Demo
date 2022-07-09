@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,7 +8,9 @@
     android:background="@color/card_lt_yellow"
     android:layout_height="match_parent"
     tools:context=".Activities.SettingActivity">
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="275dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +21,7 @@
         <Button
             android:id="@+id/device"
             android:layout_gravity="center"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="150dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Device"
@@ -28,11 +31,10 @@
             android:background="@color/colorPrimary"
             android:textColor="@color/white"
             android:textStyle="bold"/>
-
         <Button
             android:id="@+id/update"
             android:layout_gravity="center"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
@@ -44,7 +46,7 @@
             android:textStyle="bold"/>
         <Button
             android:id="@+id/deviceinfo"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Device_Info"
@@ -55,8 +57,21 @@
             android:textColor="@color/white"
             android:textStyle="bold"/>
         <Button
+            android:id="@+id/deviceparameters"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Device_Parameters"
+            android:textAllCaps="false"
+            android:textSize="@dimen/TextsizeB"
+            android:foreground="@drawable/custom_ripple"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+        <Button
             android:id="@+id/pairdevice"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Pairing"
@@ -66,8 +81,32 @@
             android:background="@color/colorPrimary"
             android:textColor="@color/white"
             android:textStyle="bold"/>
-
+        <Button
+            android:id="@+id/dbdownloadtoftp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DB Downlod to FTP"
+            android:textAllCaps="false"
+            android:textSize="@dimen/TextsizeB"
+            android:foreground="@drawable/custom_ripple"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+        <Button
+            android:id="@+id/logfile"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Upload_log_to_FTP"
+            android:textAllCaps="false"
+            android:textSize="@dimen/TextsizeB"
+            android:foreground="@drawable/custom_ripple"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
     </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -76,9 +115,6 @@
         android:gravity="bottom"
         android:layout_gravity="bottom"
         android:orientation="vertical">
-
-
-
         <LinearLayout
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
@@ -89,7 +125,6 @@
             android:orientation="vertical">
 
             <LinearLayout
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -118,6 +153,7 @@
                         android:textSize="@dimen/TextsizeB"
                         android:textStyle="bold" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -151,3 +187,5 @@
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
+
+

@@ -33,6 +33,8 @@ public class FileLoggingTree extends Timber.Tree {
             // Create file
             File file  = generateFile(path, fileName);
 
+            Log.d("LogFile",file.getAbsolutePath());
+
             // If file created or exists save logs
             if (file != null) {
                 FileWriter writer = new FileWriter(file, true);

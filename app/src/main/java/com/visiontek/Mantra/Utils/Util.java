@@ -51,6 +51,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.crypto.BadPaddingException;
@@ -130,11 +131,15 @@ public class Util {
 
 
     public static boolean diableMenu( String val) {
-        for (int i = 0; i < menuConstants.mBean.size(); i++) {
-
-            if (menuConstants.mBean.get(i).service.equals(val)&&
-                    menuConstants.mBean.get(i).status.equals("N")){
-                return true;
+        if(menuConstants!=null) {
+            System.out.println("@@ctr1");
+            for (int i = 0; i < menuConstants.mBean.size(); i++) {
+                System.out.println("@@ctr2");
+                if (menuConstants.mBean.get(i).service!=null && menuConstants.mBean.get(i).status!= null && menuConstants.mBean.get(i).service.equals(val) &&
+                        menuConstants.mBean.get(i).status.equals("N")) {
+                    System.out.println("@@ctr3");
+                    return true;
+                }
             }
         }
         return false;
@@ -486,5 +491,16 @@ public class Util {
         }
 
         return result;
+    }
+
+
+
+    /**************************** OFFLINE *************************/
+    public static int compareDates(Date d1, Date d2) {
+        if (d1.getYear() != d2.getYear())
+            return d1.getYear() - d2.getYear();
+        if (d1.getMonth() != d2.getMonth())
+            return d1.getMonth() - d2.getMonth();
+        return d1.getDate() - d2.getDate();
     }
 }

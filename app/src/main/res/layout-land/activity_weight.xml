@@ -147,7 +147,8 @@
                     android:layout_height="wrap_content"
                     android:ems="15"
                     android:inputType="numberDecimal"
-                    android:textSize="@dimen/TextsizeB" />
+                    android:textSize="@dimen/TextsizeB"
+                    android:imeOptions="flagNoExtractUi"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

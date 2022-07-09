@@ -59,7 +59,10 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... param) {
-        String url = "http://epos.nic.in/ePosServiceJDN2_3/jdCommoneposServiceRes?wsdl";
+
+        String url="http://eposservice.cg.gov.in/ePosServiceCG2_4/cgCommoneposServiceRes?wsdl";
+         //String url="http://eposservice.cg.gov.in/ePosServiceCG2_3FMR/cgCommoneposServiceRes?wsdl";
+        //String url = "http://epos.nic.in/ePosServiceJDN2_3/jdCommoneposServiceRes?wsdl";
         //String url = "http://epos.nic.in/ePosServiceCTG/jdCommoneposServiceRes?wsdl";
         runRequest(url);
         return null;
@@ -89,6 +92,7 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
             outputStream.close();
             urlConnection.connect();
             Log.e(getClass().getName(), String.valueOf(urlConnection.getResponseCode()));
+            System.out.println("RESONSE %%%% CODE "+String.valueOf(urlConnection.getResponseCode()));
             String result = null;
             if (urlConnection.getResponseCode() == 200) {
                 BufferedInputStream bis = new BufferedInputStream(urlConnection.getInputStream());
@@ -101,6 +105,7 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
                 result = buf.toString();
             }
             if (result != null && result.length() > 0) {
+                System.out.println(">>>>>00000");
 
                 if (type == 1) {
                     //Util.generateNoteOnSD(context, "UIDSeedingRes.txt", result);
@@ -109,10 +114,14 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
                     //Util.generateNoteOnSD(context, "UIDAuthRes.txt", result);
                     object = parseXml_UIDAuth(result);
                 } else if (type == 3) {
-                    //Util.generateNoteOnSD(context, "BenVerificationRes.txt", result);
+                    Util.generateNoteOnSD(context, "BenVerificationRes.txt", result);
+                    System.out.println("BENFIRESPONSE>>>>>>>>"+result);
                     object = parseXml_BENVERIFICATION(result);
+
                 } else if (type == 4) {
-                    //Util.generateNoteOnSD(context, "BenVerificationAuthRes.txt", result);
+                    Util.generateNoteOnSD(context, "BenVerificationAuthRes.txt", result);
+                    System.out.println("BENFIRESPONe111111>>>>>>>>"+result);
+
                     object = parseXml_BENVERIFICATIONLOGIN(result);
                 } else if (type == 5) {
                     //Util.generateNoteOnSD(context, "InspectionDetailsRes.txt", result);
@@ -129,9 +138,11 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
                 } else if (type == 9) {
                     //Util.generateNoteOnSD(context, "StockUploadDetailsRes.txt", result);
                     parseXml_INSPECTION_PUSH(result);
+                    System.out.println("PUSHHh $$$$$$$$$$$ "+result);
                 } else if (type == 10) {
-                    //Util.generateNoteOnSD(context, "LogoutRes.txt", result);
+                    Util.generateNoteOnSD(context, "LogoutRes.txt", result);
                     parseXml_Logout(result);
+
                 } else {
                     //Util.generateNoteOnSD(context, "ERRORR.txt", result);
                 }
@@ -352,6 +363,7 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
     }
 
     private void parseXml_INSPECTION_PUSH(String result) {
+        System.out.println("$$$$ INSPECTION $$$$$$$");
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -377,6 +389,7 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
                             eventType = xpp.next();
                             if (eventType == XmlPullParser.TEXT) {
                                 code = (xpp.getText());
+                                System.out.println("$$$$ Code >>>>> "+code);
 
                             }
                         }
@@ -386,6 +399,8 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
                             eventType = xpp.next();
                             if (eventType == XmlPullParser.TEXT) {
                                 msg = (xpp.getText());
+                                System.out.println("$$$$ msg >>>>> "+msg);
+
 
                             }
                         }
@@ -396,12 +411,18 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
             }
         } catch (XmlPullParserException e) {
             e.printStackTrace();
+            System.out.println("CODE >>>>111");
             code = "1";
             msg = String.valueOf(e);
+            System.out.println("MSG111 >>>>"+msg);
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("CODE >>>>222");
+
             code = "2";
             msg = String.valueOf(e);
+            System.out.println("MSG222 >>>>"+msg);
+
         }
     }
 
@@ -788,6 +809,7 @@ public class Aadhaar_Parsing extends AsyncTask<String, Void, Void> {
     }
 
     private InspectionDetails parseXml_INSPECTION(String xmlString) {
+
         InspectionDetails inspectionDetails = new InspectionDetails();
         approvals approvals = null;
         InspectioncommDetails inspectioncommDetails = null;

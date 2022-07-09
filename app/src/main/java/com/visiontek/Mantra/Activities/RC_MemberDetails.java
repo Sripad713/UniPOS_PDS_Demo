@@ -62,6 +62,9 @@ import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import static com.visiontek.Mantra.Models.AppConstants.Dealername;
+import static com.visiontek.Mantra.Models.AppConstants.MemberName;
 import static com.visiontek.Mantra.Models.AppConstants.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
@@ -78,18 +81,28 @@ public class RC_MemberDetails extends BaseActivity {
     TableRow tableRow;
     Button scanFP,btn_back;
     String token;
+    //String impdsurlService = "http://eposservice.cg.gov.in/impdschgrTest/impdsApi/impdsMEService";
+    //String impdsBenfAuthentication = "http://eposservice.cg.gov.in/impdschgrTest/impdsApi/impdsBenfAuthentication";
+    String bioAuthType;
+    int count = 0;
+
+
 
     private TextView txt1, txt2, home_state_name, text_fps_id, home_dist_name, text_scheme_id;
 
     private String sale_state_code, sale_dist_code, home_dist_code, rc_id,  district_name, state_name, state_code, sale_fps_id,
-            sessionId, memberId, memberName, android_id, id_type,alloc_month,alloc_year,
+            sessionId, memberId, memberName, fusionStatus,android_id, id_type,alloc_month,alloc_year,
             delName, delUid, rc_uid, home_fps_id, scheme_id, scheme_name, fps_session_id;
     JSONObject jresponse = null;
-    ArrayList<String> m_id_list, m_name_list;
+    ArrayList<String> m_id_list, m_name_list,m_fusionStatus_list;
     Context context;
     ProgressDialog pd = null;
-
-
+    String mem_Fusionstatus;
+    int impdsFusionflag,impdsfusionflag;
+    String fCount = "1";
+    String fposh ="UNKNOWN";
+    String aadharAuthType;
+    int fusion_Count;
     @Override
     public void initialize() {
         try{
@@ -118,6 +131,7 @@ public class RC_MemberDetails extends BaseActivity {
 
         m_id_list = new ArrayList<>();
         m_name_list = new ArrayList<>();
+        m_fusionStatus_list = new ArrayList<>();
 
         android_id = DEVICEID;
 
@@ -130,23 +144,41 @@ public class RC_MemberDetails extends BaseActivity {
         final View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //impdsFusionflag=0;
+                //impdsfusionflag=0;
                 Integer index = (Integer) v.getTag();
+                System.out.println("INDEX1 ==="+index);
+                mem_Fusionstatus  = m_fusionStatus_list.get(index-1);
+                System.out.println("NAME ==="+mem_Fusionstatus);
                 if (index != null) {
                     selectRow(index);
-
                     TableRow tablerow = (TableRow) v;
                     TextView sample = (TextView) tablerow.getChildAt(1);
                     String del_uid = sample.getText().toString();
+                    System.out.println("del_uid ===="+del_uid);
 
                     TextView sample1 = (TextView) tablerow.getChildAt(0);
                     String dealer_name = sample1.getText().toString();
+                    System.out.println("dealer_name ===="+dealer_name);
+
+                   /* TextView sample2 =(TextView)tablerow.getChildAt(2);
+                    String fusion_status =sample2.getText().toString();
+                    System.out.println("fusion_status ===="+fusion_status);*/
+
+                    /* int msg =m_fusionStatus_list.indexOf(fusionStatus);
+                    String fusionflag = String.valueOf(msg);
+                    System.out.println("MSG ====="+fusionflag);*/
+
                     rc_uid = del_uid;
                     memberName = dealer_name;
+                    //mem_Fusionstatus=fusion_status;
+                    System.out.println("MemberFusionStatus======"+mem_Fusionstatus);
                     ImpdsBean impdsBean = ImpdsBean.getInstance();
                     impdsBean.setDealername(dealer_name);
                     impdsBean.setDealeruid(rc_uid);
                     impdsBean.setSessionId(sessionId);
+                    //impdsBean.setFusionStatus(fusion_status);
+
                 }
             }
         };
@@ -175,21 +207,21 @@ public class RC_MemberDetails extends BaseActivity {
 
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-//showLog(jsonObject.toString(),"RQ");
+        //showLog(jsonObject.toString(),"RQ");
         System.out.println("request_queue===" + jsonObject.toString());
-
-        Show( context.getResources().getString(R.string.Please_wait),
+            System.out.println("==========="+dealerConstants.fpsURLInfo.impdsURL+"impdsMEService");
+            Show( context.getResources().getString(R.string.Please_wait),
                 context.getResources().getString(R.string.Processing));
+
         System.out.println(dealerConstants.fpsURLInfo.impdsURL);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST,
-                dealerConstants.fpsURLInfo.impdsURL+"impdsMEService",
-                /*"http://164.100.65.96/CTGMobileApplication/mobileimpdsApi/impdsMEService",*/
+            //dealerConstants.fpsURLInfo.impdsURL+"impdsMEService",
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,dealerConstants.fpsURLInfo.impdsURL+"impdsMEService",
                 jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
                             Dismiss();
                             System.out.println("response_queue===" + response.toString());
@@ -210,7 +242,9 @@ public class RC_MemberDetails extends BaseActivity {
                                 scheme_name = response.getString("schemeName");
                                 alloc_month = response.getString("allocationmonth");
                                 alloc_year =  response.getString("allocationyear");
-
+                                fusion_Count = response.getInt("fusionCount");
+                                System.out.println("FusionCOUNT===="+fusion_Count);
+                                aadharAuthType = response.getString("aadharAuthType");
                                 ImpdsBean impdsBean = ImpdsBean.getInstance();
                                 impdsBean.setUsername("IMPDS");
                                 // impdsBean.setSaleDistCode(sale_dist_code);
@@ -234,6 +268,9 @@ public class RC_MemberDetails extends BaseActivity {
                                 impdsBean.setAllocation_month(alloc_month);
                                 impdsBean.setAllocation_year(alloc_year);
                                 impdsBean.setHomeStateName(state_name);
+                                impdsBean.setFusionCount(String.valueOf(fusion_Count));
+                                impdsBean.setAadharAuthType(aadharAuthType);
+
 
                                 JSONArray memberDetailsList = response.getJSONArray("memberDetailsList");
                                 // JSONArray transactionList = response.getJSONArray("transactionList");
@@ -245,10 +282,15 @@ public class RC_MemberDetails extends BaseActivity {
                                         delName = object.getString("memberName");
                                         delUid = object.getString("uid");
                                         memberId = object.getString("memberId");
+                                        System.out.println("memberId===="+memberId);
                                         memberName = object.getString("memberName");
+                                        System.out.println("memberName===="+memberName);
+                                        fusionStatus = object.getString("fusionStatus");
+                                        System.out.println("Fusionstatus===="+fusionStatus);
 
                                         m_id_list.add(memberId);
                                         m_name_list.add(memberName);
+                                        m_fusionStatus_list.add(fusionStatus);
 
                                         text_fps_id = findViewById(R.id.text_fps_id);
                                         text_scheme_id = findViewById(R.id.text_scheme_id);
@@ -262,6 +304,7 @@ public class RC_MemberDetails extends BaseActivity {
 
                                         txt1 = new TextView(RC_MemberDetails.this);
                                         txt2 = new TextView(RC_MemberDetails.this);
+                                        //TextView txt3 = new TextView(RC_MemberDetails.this);
 
                                         txt1.setText(delName);
                                         txt1.setPadding(8, 8, 8, 8);
@@ -277,6 +320,8 @@ public class RC_MemberDetails extends BaseActivity {
                                         txt2.setTextSize(18);
                                         txt2.setTextColor(Color.parseColor("#000000"));
 
+                                        //txt3.setText(fusionStatus);
+                                        //txt3.setVisibility(View.GONE);
 
                                         tableRow = new TableRow(RC_MemberDetails.this);
                                         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams
@@ -290,11 +335,14 @@ public class RC_MemberDetails extends BaseActivity {
 
                                         tableRow.addView(txt1);
                                         tableRow.addView(txt2);
-
+                                        //tableRow.addView(txt3);
                                         tableLayout.addView(tableRow, k);
+                                        //tableLayout.setColumnCollapsed(2,false);
                                         k++;
 
                                     }
+
+
                                 } else {
                                     show_AlertDialog(
                                             context.getResources().getString(R.string.IMPDS),
@@ -324,13 +372,17 @@ public class RC_MemberDetails extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Dismiss();
-
+                        show_AlertDialog(
+                                context.getResources().getString(R.string.IMPDS),"Unable to Fetch Data"
+                               ,error.getLocalizedMessage(),
+                                0
+                        );
                     }
                 }
         );
 
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                20 * 1000,
+                30 * 1000,
                 0,
                 0));
         requestQueue.add(jsonObjectRequest);
@@ -342,7 +394,7 @@ public class RC_MemberDetails extends BaseActivity {
             public void onClick(View v) {
                 preventTwoClick(v);
 
-                if (!(selectedIndex > 0)) {
+                 if (!(selectedIndex > 0)) {
 
                     show_AlertDialog(
                             context.getResources().getString(R.string.IMPDS),
@@ -356,18 +408,18 @@ public class RC_MemberDetails extends BaseActivity {
                     ImpdsBean impdsBean = ImpdsBean.getInstance();
                     impdsBean.setMemberName(m_name_list.get(selectedIndex - 1));
                     impdsBean.setMemberId(m_id_list.get(selectedIndex - 1));
+                    impdsBean.setFusionStatus(m_fusionStatus_list.get(selectedIndex-1));
 
                     try {
                         String selectedPackage = "com.mantra.rdservice";
                         Intent intent1 = new Intent("in.gov.uidai.rdservice.fp.CAPTURE", null);
-                        String pidOptXML = PIDUtil.getMantraPIDXml();
-
+                        String pidOptXML = PIDUtil.getMantraPIDXml(fCount,aadharAuthType,fposh);
                         intent1.putExtra("PID_OPTIONS", pidOptXML);
                         intent1.setPackage(selectedPackage);
                         startActivityForResult(intent1, 13);
                     } catch (Exception e) {
                         show_AlertDialog(
-                                context.getResources().getString(R.string.IMPDS),
+                                context.getResources().getString(R.string.IMPDS) ,
                                 context.getResources().getString(R.string.Exception)+e.getMessage(),
                                 "",
                                 1
@@ -396,6 +448,8 @@ public class RC_MemberDetails extends BaseActivity {
     public void initializeControls() {
 
         toolbarActivity.setText(context.getResources().getString(R.string.IMPDS));
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
     }
 
     private void displayToast_success() {
@@ -417,9 +471,8 @@ public class RC_MemberDetails extends BaseActivity {
         alert.show();
 
     }
-
-
     private void selectRow(int index) {
+
         if (index != selectedIndex) {
             if (selectedIndex >= 0) {
                 deselectRow(selectedIndex);
@@ -532,14 +585,25 @@ public class RC_MemberDetails extends BaseActivity {
                         }
                     }
                 }
-            }else if (requestCode==99){
+            }else if(requestCode ==2){
+                fposh = data.getStringExtra("FUSION_DATA");
+                System.out.println("FUSIONDATA====="+fposh);
+                fCount ="2";
+            }
+            else if (requestCode==99){
                 return;
             }
         }
 
         if (paramOK && requestCode == 13) {
+
             JSONObject jsonObject = new JSONObject();
-            try {
+             if(mem_Fusionstatus.equals("0")){
+                 bioAuthType = "FMR";
+             }else{
+                 bioAuthType = "FUSION";
+             }
+             try {
                 JSONObject object = new JSONObject();
                 object.put("certificateIdentifier", certIdentifier);
                 object.put("dataType", dataType);
@@ -554,8 +618,10 @@ public class RC_MemberDetails extends BaseActivity {
                 object.put("sessionKey", skey);
 
                 jsonObject.put("authRD", object);
-
-                jsonObject.put("auth_type", "FMR");
+                jsonObject.put("bioAuthType",bioAuthType);
+                //jsonObject.put("auth_type", "FMR");
+                 jsonObject.put("auth_type", "B");
+                 jsonObject.put("aadharAuthType",aadharAuthType);
                 jsonObject.put("consent", "Y");
                 jsonObject.put("token", "91f01a0a96c526d28e4d0c1189e80459");
                 jsonObject.put("home_state_id", state_code);
@@ -573,42 +639,68 @@ public class RC_MemberDetails extends BaseActivity {
                     context.getResources().getString(R.string.Authenticating));
 
             RequestQueue requestQueue = Volley.newRequestQueue(RC_MemberDetails.this);
-
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                   //dealerConstants.fpsURLInfo.impdsURL+"impdsBenfAuthentication",
+                   JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.POST,
-                    dealerConstants.fpsURLInfo.impdsURL+"impdsBenfAuthentication",
+                           dealerConstants.fpsURLInfo.impdsURL+"impdsBenfAuthentication",
                     /*  "http://164.100.65.96/CTGMobileApplication/mobileimpdsApi/impdsBenfAuthentication",*/
                     jsonObject,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-
                             try {
                                 Dismiss();
-
                                 System.out.println("bio---" + response.toString());
                                 String respCode = response.getString("resp_code");
                                 String respMessage = response.getString("resp_message");
-
-                                if (respCode != null && respCode.equalsIgnoreCase("001")) {
+                                if (respCode == null || respCode.isEmpty()) {
+                                    System.out.println("Bio===null Response====");
+                                    show_AlertDialog(
+                                            context.getResources().getString(R.string.Dealer) + memberName,
+                                            context.getResources().getString(R.string.Invalid_Response_from_Server_Please_try_again),
+                                            "",
+                                            0);
+                                    return;
+                                }
+                                if (respCode != null && respCode.equalsIgnoreCase("001"))
+                                {
                                     String uid_refer_no = response.getString("txn_id");
                                     ImpdsBean impdsBean = ImpdsBean.getInstance();
                                     impdsBean.setUidRefNumber(uid_refer_no);
                                     impdsBean.setUid(rc_uid);
                                     displayToast_success();
+                                    System.out.println("displayToast_success()==========");
 
-                                } else {
+                                }else if(mem_Fusionstatus.equals("0") && respCode.equals("300")){
+                                    System.out.println("mem_Fusionstatus=========00000");
+                                    //count = 2;
+                                    count++;
+                                    show_AlertDialog(
+                                            context.getResources().getString(R.string.IMPDS),
+                                            context.getResources().getString(R.string.Dealer_Fusion)+respCode,
+                                            context.getResources().getString(R.string.ResponseMsg)+respMessage,
+                                            2);
 
+                                    return;
+
+                                }else if(mem_Fusionstatus.equals("1"))
+                                {
+                                    count++;
+                                    System.out.println("mem_Fusionstatus=========11111");
+                                    Intent fingerslection = new Intent(context, FusionFingerSectionActivity.class);
+                                    startActivityForResult(fingerslection,2);
+
+                                }else{
+                                    System.out.println("IMPDS==TEJ====11");
                                     show_AlertDialog(
                                             context.getResources().getString(R.string.IMPDS),
                                             context.getResources().getString(R.string.ResponseCode)+respCode,
                                             context.getResources().getString(R.string.ResponseMsg)+respMessage,
-                                            0
-
-                                    );
+                                            0);
+                                    System.out.println("IMPDS==TEJ====22");
 
                                 }
-                            } catch (JSONException e) {
+                            }catch (JSONException e) {
                                 Dismiss();
                                 e.printStackTrace();
                                 Toast.makeText(getApplicationContext(), "Biometric data did not match(300)", Toast.LENGTH_SHORT).show();
@@ -663,9 +755,18 @@ public class RC_MemberDetails extends BaseActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                preventTwoClick(v);
                 dialog.dismiss();
                 if (i==1){
                     finish();
+                }else if(i==2){
+                    if(count==fusion_Count){
+                        Intent cash = new Intent(RC_MemberDetails.this, IMPDSActivity.class);
+                        startActivity(cash);
+                    }else{
+                        Intent fingerslection = new Intent(context, FusionFingerSectionActivity.class);
+                        startActivityForResult(fingerslection, 2);
+                    }
                 }
 
             }

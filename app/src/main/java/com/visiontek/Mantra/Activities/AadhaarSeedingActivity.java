@@ -11,6 +11,8 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -202,14 +204,17 @@ public class AadhaarSeedingActivity extends BaseActivity {
             mp = MediaPlayer.create(context, R.raw.c100075);
             mp.start();
         }
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Aadhaar_Seeding), context.getResources().getString(R.string.Fetching_Members), true, false);
+
+        Show(context.getResources().getString(R.string.Aadhaar_Seeding), context.getResources().getString(R.string.Fetching_Members));
+        //pd = ProgressDialog.show(context, context.getResources().getString(R.string.Aadhaar_Seeding), context.getResources().getString(R.string.Fetching_Members), true, false);
         Aadhaar_Parsing request = new Aadhaar_Parsing(context, uiddetails, 1);
         request.setOnResultListener((Aadhaar_Parsing.OnResultListener) (error, msg, ref, flow, object) -> {
-            if (pd.isShowing()) {
+            /*if (pd.isShowing()) {
                 pd.dismiss();
-            }
+            }*/
+            Dismiss();
             if (error == null || error.isEmpty()) {
-                show_error_box("Invalid Response from Server", "No Response");
+                show_error_box(context.getResources().getString(R.string.Invalid_Response_Please_Try_Again), "No Response");
                 return;
             }
             if (!error.equals("00")) {
@@ -223,6 +228,12 @@ public class AadhaarSeedingActivity extends BaseActivity {
             }
         });
         request.execute();
+    }
+
+    private void Dismiss() {
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
     }
 
 
@@ -316,5 +327,18 @@ public class AadhaarSeedingActivity extends BaseActivity {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
+    }
+
+    public void Show(String title, String msg) {
+        SpannableString ss1 = new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2 = new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
     }
 }

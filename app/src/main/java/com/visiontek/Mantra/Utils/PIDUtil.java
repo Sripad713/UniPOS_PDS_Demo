@@ -14,10 +14,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 public class PIDUtil {
-    public static String getMantraPIDXml() {
+    public static String getMantraPIDXml(String fCount,String fType,String poshvalue) {
+        System.out.println("AAdharr======"+fType);
         String tmpOptXml = "";
         try{
-            String fTypeStr = "0";
             String formatStr = "0";
             String timeOutStr = "20000";
             String envStr = "P";
@@ -40,11 +40,12 @@ public class PIDUtil {
             rootElement.appendChild(opts);
 
             Attr attr = doc.createAttribute("fCount");
-            attr.setValue(String.valueOf(1));
+            attr.setValue(fCount);
+
             opts.setAttributeNode(attr);
 
             attr = doc.createAttribute("fType");
-            attr.setValue(fTypeStr);
+            attr.setValue(fType);
             opts.setAttributeNode(attr);
 
             attr = doc.createAttribute("iCount");
@@ -88,7 +89,7 @@ public class PIDUtil {
             opts.setAttributeNode(attr);
 
             attr = doc.createAttribute("posh");
-            attr.setValue("UNKNOWN");
+            attr.setValue(poshvalue);
             opts.setAttributeNode(attr);
 
             Element demo = doc.createElement("Demo");

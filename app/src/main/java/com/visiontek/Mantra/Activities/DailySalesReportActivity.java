@@ -30,12 +30,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.visiontek.Mantra.Adapters.DailySalesListAdapter;
+import com.visiontek.Mantra.Database.DatabaseHelper;
 import com.visiontek.Mantra.Models.DATAModels.DailySalesListModel;
+import com.visiontek.Mantra.Models.PartialOnlineData;
 import com.visiontek.Mantra.Models.ReportsModel.DailySalesDetails.SaleDetails;
+import com.visiontek.Mantra.Models.ReportsModel.DailySalesDetails.drBean;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.TaskPrint;
 import com.visiontek.Mantra.Utils.Util;
 import com.visiontek.Mantra.Utils.XML_Parsing;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,12 +54,15 @@ import java.util.concurrent.Executors;
 import timber.log.Timber;
 
 import static com.visiontek.Mantra.Activities.BaseActivity.rd_fps;
+
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Models.AppConstants.Debug;
 import static com.visiontek.Mantra.Models.AppConstants.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Activities.StartActivity.mp;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
+import static com.visiontek.Mantra.Models.AppConstants.txnType;
+import static com.visiontek.Mantra.Models.AppConstants.Dealername;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
@@ -65,11 +73,15 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
     @SuppressLint("SimpleDateFormat")
     public SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm dd/MM/yyyy");
     public String ACTION_USB_PERMISSION;
+    public String selecteddate;
     public String date;
     public int flag_print;
+    DatabaseHelper databaseHelper;
+    String saleStateFpsId;
     Calendar myCalendar;
     Button back, home, print, view;
     Context context;
+    String type;
     TextView edittext;
     ProgressDialog pd = null;
     private DailySalesReportActivity mActivity;
@@ -78,7 +90,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
     private RecyclerView recyclerView;
     private ArrayList<DailySalesListModel> data;
     SaleDetails saleDetails;
-
+    private RecyclerView.Adapter adapter;
     private void checkandprint(String[] str, int i) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -126,8 +138,8 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
 
     private void hitURL(String sale) {
         try {
-
-        pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealers), context.getResources().getString(R.string.Fetching_Dealers), true, false);
+        Show(context.getResources().getString(R.string.Dealers), context.getResources().getString(R.string.Fetching_Dealers));
+        //pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealers), context.getResources().getString(R.string.Fetching_Dealers), true, false);
         XML_Parsing request = new XML_Parsing(context, sale, 5);
         request.setOnResultListener((code, msg, ref, flow, object) -> {
             Dismiss();
@@ -174,8 +186,8 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
         });
         request.execute();
         } catch (Exception ex) {
-
-            Timber.tag("DailySales-Date-").e(ex.getMessage(), "");
+            Timber.e("DailySalesReportActivity-hitURL Exception ==>"+ ex.getLocalizedMessage());
+            //Timber.tag("DailySales-Date-").e(ex.getMessage(), "");
         }
     }
 
@@ -279,11 +291,8 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
         setContentView(R.layout.activity_daily__sales__report);
         try {
             context = DailySalesReportActivity.this;
-
-
             mActivity = this;
             ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
-
             initilisation();
             flag_print = 0;
             recyclerView = findViewById(R.id.my_recycler_view);
@@ -295,58 +304,65 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                 preventTwoClick(view);
                 flag_print = 0;
                 date = edittext.getText().toString();
-
+                selecteddate = edittext.getText().toString();
                 if (!date.equals("dd/MM/yyyy") && date.length() > 0) {
-                    String sale = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
-                            "<SOAP-ENV:Envelope\n" +
-                            "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
-                            "    xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n" +
-                            "    xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
-                            "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                            "    xmlns:ns1=\"http://service.fetch.rationcard/\">\n" +
-                            "    <SOAP-ENV:Body>\n" +
-                            "        <ns1:getDailyReport>\n" +
-                            "            <shop_no>" + dealerConstants.stateBean.statefpsId + "</shop_no>\n" +
-                            "            <from_date>" + date + "</from_date>\n" +
-                            "            <token>" + dealerConstants.fpsURLInfo.token + "</token>\n" +
-                            "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
-                            "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
-                            "        </ns1:getDailyReport>\n" +
-                            "    </SOAP-ENV:Body>\n" +
-                            "</SOAP-ENV:Envelope>";
-                    if (networkConnected(context)) {
-                        if (mp != null) {
-                            releaseMediaPlayer(context, mp);
+                    PartialOnlineData partialOnlineData = databaseHelper.getPartialOnlineData();
+                    if ((!type.equalsIgnoreCase("offline")) && networkConnected(context)) {
+                        String sale = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
+                                "<SOAP-ENV:Envelope\n" +
+                                "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
+                                "    xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n" +
+                                "    xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
+                                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                                "    xmlns:ns1=\"http://service.fetch.rationcard/\">\n" +
+                                "    <SOAP-ENV:Body>\n" +
+                                "        <ns1:getDailyReport>\n" +
+                                "            <shop_no>" + dealerConstants.stateBean.statefpsId + "</shop_no>\n" +
+                                "            <from_date>" + date + "</from_date>\n" +
+                                "            <token>" + dealerConstants.fpsURLInfo.token + "</token>\n" +
+                                "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
+                                "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
+                                "        </ns1:getDailyReport>\n" +
+                                "    </SOAP-ENV:Body>\n" +
+                                "</SOAP-ENV:Envelope>";
+                        if (networkConnected(context)) {
+                            if (mp != null) {
+                                releaseMediaPlayer(context, mp);
+                            }
+                            if (L.equals("hi")) {
+                            } else {
+                                mp = MediaPlayer.create(context, R.raw.c100075);
+                                mp.start();
+                            }
+                            if (Debug) {
+                                Util.generateNoteOnSD(context, "DailySaleReq.txt", sale);
+                            }
+                            hitURL(sale);
+                            Timber.d("DailySaleReportActivity-DailySaleReq :"+sale);
                         }
-                        if (L.equals("hi")) {
+                    }else if (partialOnlineData.getOfflineLogin().equals("Y")) {
+                            System.out.println("@@Eligible for offline");
+                            saleStateFpsId = partialOnlineData.getOffPassword();
+                            getOfflineRecords(date);
                         } else {
-                            mp = MediaPlayer.create(context, R.raw.c100075);
-                            mp.start();
+                            show_AlertDialog(context.getResources().getString(R.string.Daily_Sales_Report),
+                                    context.getResources().getString(R.string.Internet_Connection),
+                                    context.getResources().getString(R.string.Internet_Connection_Msg),
+                                    0);
                         }
-                        if (Debug){
-                            Util.generateNoteOnSD(context, "DailySaleReq.txt", sale);
-                        }
-                        hitURL(sale);
-                    } else{
+                    } else {
                         show_AlertDialog(context.getResources().getString(R.string.Daily_Sales_Report),
-                                context.getResources().getString(R.string.Internet_Connection),
-                                context.getResources().getString(R.string.Internet_Connection_Msg),
+                                context.getResources().getString(R.string.Enter_Date),
+                                context.getResources().getString(R.string.Please_Enter_date_in_Edit_text_to_view_Stock),
                                 0);
                     }
-                } else {
-                    show_AlertDialog(context.getResources().getString(R.string.Daily_Sales_Report),
-                            context.getResources().getString(R.string.Enter_Date),
-                            context.getResources().getString(R.string.Please_Enter_date_in_Edit_text_to_view_Stock),
-                            0);
-                }
-
-            });
+                });
             mTerminal100API = new MTerminal100API();
             mTerminal100API.initPrinterAPI(this, this);
             print.setEnabled(false);
             probe();
             print.setOnClickListener(v -> {
-
+                preventTwoClick(v);
                 if (flag_print == 2) {
                     print.setEnabled(false);
                     preventTwoClick(view);
@@ -433,16 +449,110 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
 
                     }
 
+                }else if (flag_print == 1) {
+                    System.out.println("@@flag_print = 1");
+                    print.setEnabled(false);
+                    preventTwoClick(view);
+                    String app;
+                    StringBuilder add = new StringBuilder();
+                    String time = sdf1.format(new Date()).substring(0, 5);
+                    String date = sdf1.format(new Date()).substring(6, 16);
+                    System.out.println("@@Getting size of saledETAILS...");
+                    int drBeansize = saleDetails.drBean.size();
+                    System.out.println("@@Sie:" +drBeansize);
+                    for (int i = 0; i < drBeansize; i++) {
+                        if(L.equals("hi")){
+                            app = String.format("%-10s%-12s%-12s\n",
+                                    saleDetails.drBean.get(i).commNamell,
+                                    saleDetails.drBean.get(i).schemeName,
+                                    saleDetails.drBean.get(i).sale);
+                        }else {
+                            app = String.format("%-10s%-12s%-12s\n",
+                                    saleDetails.drBean.get(i).comm_name,
+                                    saleDetails.drBean.get(i).schemeName,
+                                    saleDetails.drBean.get(i).sale);
+                        }
+                        add.append(app);
+
+                    }
+                    String str1, str2, str3, str4, str5;
+                    String[] str = new String[4];
+                    if (L.equals("hi")) {
+
+                        str1 = databaseHelper.getStateDetails().get(5) + "\n" +
+                                context.getResources().getString(R.string.DAY_REPORT) + "\n";
+                        //str1 = dealerConstants.stateBean.stateReceiptHeaderLl + "\n" +context.getResources().getString(R.string.DAY_REPORT) + "\n";
+                        image(str1, "header.bmp", 1);
+
+                        str2 = context.getResources().getString(R.string.Date) + " : " + date + "\n" + context.getResources().getString(R.string.Time) + " :" + time + "\n"
+                                + context.getResources().getString(R.string.Day_Report_Date) + " : " + selecteddate + "\n"
+                                + context.getResources().getString(R.string.FPS_ID) + " : " + databaseHelper.getStateDetails().get(6) + "\n\n";
+
+                        str3 = String.format("%-13s%-13s%-13s\n",
+                                context.getResources().getString(R.string.commodity),
+                                context.getResources().getString(R.string.scheme),
+                                context.getResources().getString(R.string.sale))
+                                + "\n";
+
+                        str4 = String.valueOf(add);
+                        image(str2 + str3 + str4, "body.bmp", 0);
+
+                        str5 = context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
+                                + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n\n\n";
+
+                        image(str5, "tail.bmp", 1);
+                        str[0] = "1";
+                        str[1] = "1";
+                        str[2] = "1";
+                        str[3] = "1";
+                        System.out.println(str1+"\n"+
+                                str2+"\n"+
+                                str3+"\n"+
+                                str4+"\n"+
+                                str5+"");
+                        checkandprint(str, 1);
+                    } else {
+
+                        str1 = databaseHelper.getStateDetails().get(4) + "\n" +
+                                context.getResources().getString(R.string.DAY_REPORT) + "\n\n";
+                        str2 =  context.getResources().getString(R.string.Date) + "           : " + date + "\n" +
+                                context.getResources().getString(R.string.Time) + "           : " + time + "\n"
+                                +context.getResources().getString(R.string.Day_Report_Date) + ": " + selecteddate + "\n"
+                                +context.getResources().getString(R.string.FPS_ID) + "         : " + databaseHelper.getStateDetails().get(6) + "\n\n"
+                                +"\n";
+                        str3 = String.format("%-10s%-12s%-12s\n",
+                                context.getResources().getString(R.string.commodity),
+                                context.getResources().getString(R.string.scheme),
+                                context.getResources().getString(R.string.sale))
+                                +"\n";
+                        str4 = String.valueOf(add);
+
+                        str5 = "\n" + context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
+                                + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n\n\n";
+                        str[0] = "1";
+                        str[1] = str1;
+                        str[2] = str2 + str3 + str4;
+                        str[3] = str5;
+
+                        System.out.println(str1+"\n"+
+                                str2+"\n"+
+                                str3+"\n"+
+                                str4+"\n"+
+                                str5+"");
+                        checkandprint(str, 0);
+
+                    }
+
                 } else {
                     show_AlertDialog(context.getResources().getString(R.string.Daily_Sales_Report),
                             context.getResources().getString(R.string.Date),
                             context.getResources().getString(R.string.Enter_Date_to_view_sales),
                             0);
                 }
-            });
+        });
 
 
-            home.setOnClickListener(v -> {
+        home.setOnClickListener(v -> {
                 preventTwoClick(view);
                 Intent home = new Intent(context, HomeActivity.class);
                 startActivity(home);
@@ -470,9 +580,55 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
         }
     }
 
+    public void getOfflineRecords(final String enteredDate)
+    {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    saleDetails = new SaleDetails();
+                    SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date = parser.parse(enteredDate);
+                    String formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+
+                    saleDetails.drBean =
+                            (ArrayList<drBean>) databaseHelper.getofflineSaleRecords(formattedDate);
+                    Dealername = databaseHelper.getOfflineDealerName();
+                    DailySalesReportActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            parseAdapterData(saleDetails);
+                        }
+                    });
+
+                } catch (ParseException e) {
+                    System.out.println("@@Exception: " +e.toString());
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+    }
+
+    public void parseAdapterData(SaleDetails saleDetails)
+    {
+        data = new ArrayList<>();
+        int drBeansize = saleDetails.drBean.size();
+        for (int i = 0; i < drBeansize; i++) {
+            data.add(new DailySalesListModel(saleDetails.drBean.get(i).comm_name,saleDetails.drBean.get(i).schemeName,saleDetails.drBean.get(i).sale));
+
+        }
+        adapter = new DailySalesListAdapter(context, data);
+        recyclerView.setAdapter(adapter);
+        flag_print = 1;
+    }
+
 
     private void initilisation() {
         pd = new ProgressDialog(context);
+        databaseHelper = new DatabaseHelper(context);
         back = findViewById(R.id.sale_back);
         home = findViewById(R.id.sale_home);
         print = findViewById(R.id.sale_print);
@@ -480,6 +636,7 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
         edittext = findViewById(R.id.sale_date);
         String date = sdf1.format(new Date()).substring(6, 16);
         edittext.setText(date);
+        type = getIntent().getStringExtra("type");
         toolbarInitilisation();
     }
 
@@ -502,9 +659,10 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
             } else {
                 if (RDservice(context)) {
-                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
-                } else {
                     toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+                } else {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
+
                 }
             }
 
@@ -524,7 +682,6 @@ public class DailySalesReportActivity extends AppCompatActivity implements Print
             toolbarLatitudeValue.setText(latitude);
             toolbarLongitudeValue.setText(longitude);
         } catch (Exception ex) {
-
             Timber.tag("DailySales-Toolbar-").e(ex.getMessage(), "");
         }
     }

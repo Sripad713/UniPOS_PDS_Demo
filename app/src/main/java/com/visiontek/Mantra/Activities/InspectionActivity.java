@@ -43,6 +43,8 @@ import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.visiontek.Mantra.Adapters.InspectionListAdapter;
 import com.visiontek.Mantra.Models.DATAModels.InspectionListModel;
+import com.visiontek.Mantra.Models.DealerDetailsModel.GetURLDetails.fpsCommonInfoModel.fpsCommonInfo;
+import com.visiontek.Mantra.Models.DealerDetailsModel.GetUserDetails.DealerModel;
 import com.visiontek.Mantra.Models.InspectionModel.InspectionAuth;
 import com.visiontek.Mantra.Models.InspectionModel.InspectionDetails;
 import com.visiontek.Mantra.Models.RDModel;
@@ -50,6 +52,7 @@ import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
 import com.visiontek.Mantra.Utils.DecimalDigitsInputFilter;
 import com.visiontek.Mantra.Utils.Json_Parsing;
+import com.visiontek.Mantra.Utils.SharedPref;
 import com.visiontek.Mantra.Utils.TaskPrint;
 import com.visiontek.Mantra.Utils.Util;
 
@@ -77,6 +80,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import timber.log.Timber;
 
 import static com.visiontek.Mantra.Activities.BaseActivity.rd_fps;
+import static com.visiontek.Mantra.Activities.BaseActivity.rd_vr;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Models.AppConstants.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.latitude;
@@ -117,15 +121,22 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     String approval;
     String Iref;
     String Aadhaar;
-
-
     String Enter_UID;
+    SharedPref sharedPref;
+    String maadhaarAuthType;
+
 
     private InspectionActivity mActivity;
     private final ExecutorService es = Executors.newScheduledThreadPool(30);
     private MTerminal100API mTerminal100API;
+    DealerModel dealerModel = new DealerModel();
     private final String iCount = "0";
-    private final String fType = "0";
+    //private final String fType = "0";
+    //private final String fType = "2";
+    private final String fType = maadhaarAuthType;
+
+
+
     private final String iType = "0";
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
@@ -174,8 +185,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             } else {
                 app("OK");
             }
-
-
             Show(context.getResources().getString(R.string.INSPECTION),
                     context.getResources().getString(R.string.Authenticating) );
 
@@ -264,6 +273,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    preventTwoClick(v);
                     if (checkBox.isChecked()) {
                         dialog.dismiss();
                         connectRDservice();
@@ -541,6 +551,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    preventTwoClick(v);
                     dialog.dismiss();
                     Enter_UID = enter.getText().toString();
                     if (Enter_UID.length() == 12 && validateVerhoeff(Enter_UID)) {
@@ -548,7 +559,11 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                             Aadhaar = encrypt(Enter_UID, menuConstants.skey);
 
                             if (Util.networkConnected(context)) {
-                                ConsentDialog(ConsentForm(context, 1));
+                                if (L.equals("hi")){
+                                    ConsentDialog(ConsentForm(context,1));
+                                }else {
+                                    ConsentDialog(ConsentForm(context,0));
+                                }
                             } else {
                                 show_AlertDialog(context.getResources().getString(R.string.Inspection),
                                         context.getResources().getString(R.string.Internet_Connection),
@@ -645,10 +660,13 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                 mp.start();
 
             }
+            String fType = maadhaarAuthType;
+            System.out.println("fTYPE Inspector======"+fType);
             String xmplpid = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                     "<PidOptions ver =\"1.0\">\n" +
                     "    <Opts env=\"P\" fCount=\"" + fCount + "\" iCount=\"" + iCount + "\" iType=\"" + iType + "\" fType=\"" + fType + "\" pCount=\"0\" pType=\"0\" format=\"0\" pidVer=\"2.0\" timeout=\"10000\" otp=\"\" wadh=\"\" posh=\"UNKNOWN\"/>\n" +
                     "</PidOptions>";
+            System.out.println("INSPECT==="+xmplpid);
             Intent act = new Intent("in.gov.uidai.rdservice.fp.CAPTURE");
             PackageManager packageManager = getPackageManager();
             List<ResolveInfo> activities = packageManager.queryIntentActivities(act, PackageManager.MATCH_DEFAULT_ONLY);
@@ -680,6 +698,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     "    xmlns:ns2=\"http://service.fetch.rationcard/\">\n" +
                     "    <SOAP-ENV:Body>\n" +
                     "        <ns2:getAuthenticateNICAuaInspectionRD2>\n" +
+                    "            <aadhaarAuthType>"+maadhaarAuthType+"</aadhaarAuthType>\n"+
                     "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
                     "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
                     "            <Shop_no>" + dealerConstants.stateBean.statefpsId + "</Shop_no>\n" +
@@ -717,8 +736,8 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
                     "    </SOAP-ENV:Body>\n" +
                     "</SOAP-ENV:Envelope>";
 
-
-            //Util.generateNoteOnSD(context, "InspectionAuthReq.txt", InspectionAuth);
+            System.out.println("InspectionAuthReq =========="+InspectionAuth);
+            Util.generateNoteOnSD(context, "InspectionAuthReq.txt", InspectionAuth);
             if (networkConnected(context)) {
 
                 hit_inspectioAuth(InspectionAuth);
@@ -741,7 +760,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             dialog.setCanceledOnTouchOutside(false);
             dialog.setContentView(R.layout.inspection);
             final EditText observation = dialog.findViewById(R.id.enter);
-            observation.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(3)});
+            observation.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(6,3)});
             Button confirm = (Button) dialog.findViewById(R.id.confirm);
             Button back = (Button) dialog.findViewById(R.id.back);
 
@@ -760,6 +779,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    preventTwoClick(v);
                     dialog.dismiss();
                     String Check = observation.getText().toString();
                     if (!Check.isEmpty() && Check != null && Check.length() > 0) {
@@ -1054,7 +1074,6 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
     }
     private void initilisation() {
         pd = new ProgressDialog(context);
-
         next = findViewById(R.id.inspection_next);
         back = findViewById(R.id.inspection_back);
         toolbarInitilisation();
@@ -1071,15 +1090,20 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
             TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
             TextView toolbarRD = findViewById(R.id.toolbarRD);
+             if (rd_vr != null && rd_vr.length() > 1){
+                            toolbarRD.setText("RD" + rd_vr);
+                         }else {
+                            toolbarRD.setText("RD" );
+                        }
             if (rd_fps == 3) {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
             } else if (rd_fps == 2) {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
             } else {
                 if (RDservice(context)) {
-                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
-                } else {
                     toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+                } else {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
                 }
             }
             String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
@@ -1108,10 +1132,12 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         setContentView(R.layout.activity_inspection);
         try {
             context = InspectionActivity.this;
-
-
             mActivity = this;
             ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
+            inspectionDetails = (InspectionDetails) getIntent().getSerializableExtra("OBJ");
+            sharedPref = new SharedPref(context);
+            maadhaarAuthType = sharedPref.getData("aadhaarAuthType");
+
             initilisation();
             radioGroup = findViewById(R.id.groupradio);
             recyclerView = findViewById(R.id.my_recycler_view);
@@ -1120,7 +1146,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-            inspectionDetails = (InspectionDetails) getIntent().getSerializableExtra("OBJ");
+
 
             mTerminal100API = new MTerminal100API();
             mTerminal100API.initPrinterAPI(this, this);
@@ -1175,6 +1201,7 @@ public class InspectionActivity extends AppCompatActivity implements PrinterCall
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                preventTwoClick(v);
                 dialog.dismiss();
                 if (i == 2) {
                     prep_consent();

@@ -83,7 +83,7 @@ public class BeneficiaryVerificationListAdapter extends RecyclerView.Adapter<Ben
         return dataSet.size();
     }
 
-    static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder  {
 
         TextView textName;
         TextView textUid;

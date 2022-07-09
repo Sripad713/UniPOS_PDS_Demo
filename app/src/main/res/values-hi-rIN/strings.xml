@@ -2,23 +2,16 @@
 <resources>
     <string name="app_name">Mantra PDS</string>
 
-
-
-
-
     <string name="Exception">अपवाद </string>
     <string name="BENEFICIARY">लाभकारी</string>
     <string name="Device_Not_Ready">Device Not Ready</string>
-
-
-
     //impds
     <string name="Home_State">होम राज्य</string>
     <string name="Sale_State">बिक्री होम राज्य</string>
     <string name="Sale_State_FPSID">बिक्री होम राज्य एफपीएस आईडी</string>
-    <string name="Receipt_No">रसीद नंबर</string>
-    <string name="Shop_ID">दुकान नंबर</string>
-    <string name="Consumer_Name">ग्राहक नाम</string>
+    <string name="Receipt_No">रसीद संख्या</string>
+    <string name="Shop_ID">दुकान संख्या</string>
+    <string name="Consumer_Name">उपभोक्ता का नाम</string>
     <string name="UID_Ref_ID">यूआईडी रेफरी आईडी</string>
     <string name="ItemTot">वस्तु(कुल)</string>
     <string name="AvailQty">उपलब्ध मात्रा</string>
@@ -27,7 +20,7 @@
     <string name="printsuccess">प्रिंट सफलता</string>
     <string name="printfailed">प्रिंट विफल रहा</string>
 
-    <string name="Pairing">बाँधना</string>
+    <string name="Pairing">वजनी डिवाइस जोड़ी</string>
     <string name="ResponseCode">प्रतिक्रिया कोड  :</string>
     <string name="ResponseMsg">प्रतिक्रिया संदेश :</string>
     <string name="Dealer_Wadh">डीलर वधी :</string>
@@ -38,7 +31,7 @@
     <string name="Mem">सदस्य :</string>
     <string name="Man">गाइड :</string>
     <string name="Member_Wadh">सदस्य वधी :</string>
-    <string name="ekyc">ईकेवाईसी :</string>
+    <string name="ekyc">ई॰के॰वाई॰सी</string>
     <string name="Reasonreq"> कारण अनुरोध   </string>
     <string name="Weighing_machine">वजन मशीन </string>
     <string name="Do_you_want_to_Quit">क्या आप रद्द करना चाहते हैं</string>
@@ -54,7 +47,11 @@
     <string name="Login">लॉग इन</string>
     <string name="RD">RD</string>
     <string name="Iris">मैं</string>
+<!--
     <string name="Quit">निकास</string>
+-->
+    <string name="Exit">बाहर जायें</string>
+
     <string name="Settings">सेटिंग्स</string>
 
     //dealer_details
@@ -62,7 +59,7 @@
     <string name="NAME">नाम</string>
     <string name="TYPE">प्रकार</string>
     <string name="Consent_Form">सहमति पत्र</string>
-    <string name="Back">पीछे</string>
+    <string name="Back">वापस जायें</string>
     <string name="Scan_FP">स्कैन-उंगली</string>
     <string name="Agree">मैं सहमत हूं</string>
     <string name="Disagree">Disagree</string>
@@ -73,47 +70,53 @@
     <string name="Enter_Received">प्राप्त दर्ज करे</string>
 
     //cash_pds
-    <string name="CASH_PDS">नकद पीडीएस</string>
-    <string name="RC_No">आर सी नंबर</string>
+    <string name="CASH_PDS">छ.ग.राज्य-पीडीएस</string>
+    <string name="RC_No">राशन कार्ड संख्या</string>
     <string name="Aadhaar">आधार</string>
     <string name="Card_No">कार्ड नंबर</string>
-    <string name="Get_Details">सदस्य विवरण</string>
+    <string name="Mem_Details">सदस्य विवरण</string>
     <string name="Home">होम</string>
     <string name="Last_Reciept">पिछली रसीद</string>
     <string name="LOGOUT_SUCCESS">लॉग आउट सफलता</string>
 
     //home
     <string name="HOME">होम</string>
-    <string name="Issue">विक्रय प्राप्त</string>
+    <string name="Issue">सामाग्री जारी करें</string>
     <string name="Inspection">निरीक्षण</string>
     <string name="Aadhaar_Services">आधार सेवाएं</string>
-    <string name="Receive_Goods">स्टॉक प्राप्त</string>
+    <string name="Receive_Goods">सामाग्री प्राप्त करें</string>
     <string name="Reports">रिपोर्ट</string>
     <string name="Others">अन्य</string>
     <string name="Logout">बाहर</string>
 
     //issue
     <string name="ISSUE">विक्रय</string>
-    <string name="Cash_PDS">नकद पीडीएस</string>
-    <string name="Cashless_PDS">कैशलेस \nPDS</string>
+    <string name="Cash_PDS">छ.ग.राज्य-पीडीएस</string>
+    <string name="Cashless_PDS">कैशलेस पीडीएस</string>
     <string name="IMPDS">आई एम पी डी एस</string>
 
     //member_details
     <string name="MEMEBER_DETAILS">सदस्य विवरण</string>
     <string name="UID">यूआईडी</string>
     <string name="Iris1">आँख की पुतली</string>
+    //<string name="Otp">ओटीपी</string>
+
 
     //commodities
     <string name="COMMODITIES">वस्तु</string>
-    <string name="CName">वस्तु नाम</string>
+    <string name="CName">सामाग्री</string>
     <string name="BalQty">शेष</string>
     <string name="Rate">दर</string>
     <string name="issueQty">जारी</string>
-    <string name="ClBal">सीबी</string>
+    <string name="ClBal">उपलब्ध मात्रा</string>
     <string name="Get">मिलता</string>
     <string name="Confirm">पुष्टि करें</string>
     <string name="Get_Weight">वजन करे</string>
+<!--
     <string name="Please_Enter_Issue_Qty">कृपया अंक मात्रा दर्ज करें</string>
+-->
+    <string name="Please_Enter_Issue_Qty">कृपया जारी मात्रा दजज करें</string>
+
 
     //print
     <string name="CommTot">वस्तु</string>
@@ -135,7 +138,7 @@
     //daily sales report
     <string name="DAILY_SALES_REPORT">प्रतिदिन रिपोर्ट</string>
     <string name="ddmmyyyy">dd/mm/yyyy</string>
-    <string name="View">राय</string>
+    <string name="View">वापस जायें</string>
     <string name="Comm">कॉम</string>
     <string name="AAY">एएवाई</string>
     <string name="SFY">SFY</string>
@@ -147,9 +150,10 @@
     <string name="CURRENT_STOCK">वर्तमान स्टॉक</string>
     <string name="Scheme">योजना</string>
     <string name="Stock">स्टॉक</string>
-    <string name="CB">सीबी</string>
+    <string name="CB">सीबी (किलोग्राम में)</string>
     <string name="SCHEME">योजना</string>
     <string name="RO_Quantity">र ओ मात्रा</string>
+    <string name="RO">रओ</string>
 
 
     //reports
@@ -180,7 +184,7 @@
     <string name="UPDATE">अपडेट करें</string>
     <string name="USB">पेन ड्राइव</string>
     <string name="GPRS">जीपीआरएस</string>
-    <string name="TMS">टीएचएमएस</string>
+    <string name="TMS">टीएमएस</string>
 
     //beneficiary verification
     <string name="BENEFICIARY_VERIFY">लाभकारी वैरायटी</string>
@@ -200,13 +204,13 @@
 
     //start
 
-    <string name="Rd_Service">कोई आरडी सेवा नहीं</string>
+    <string name="Rd_Service">आरडी सेवा उपलब्ध नहीं हैं</string>
     <string name="RD_Service_Msg">फिंगरप्रिंट आरडी सर्विस एप्लीकेशन डिवाइस में उपलब्ध नहीं है</string>
     <string name="RD_Service_Not_Started">RD सेवा शुरू नहीं हुई</string>
     <string name="RD_service_discovery_Failed">RD सर्विस की जाँच असफल हुआ</string>
     <string name="Please_Check_Device_Internet_Connection">कृपया डिवाइस इंटरनेट कनेक्शन की जाँच करें</string>
-    <string name="Dealers">मालिक</string>
-    <string name="Fetching_Dealers">व्यापारियों को लाना ...</string>
+    <string name="Dealers">दुकान संचालक</string>
+    <string name="Fetching_Dealers">वदुकान संचालक का विवरण ...</string>
     <string name="DealerDetails">मालिक विवरण: </string>
     <string name="Application">आवेदन</string>
     <string name="Yes">हाँ</string>
@@ -217,54 +221,54 @@
     //Dealers Details
     <string name="Explain_here_why_the_app_needs_permissions">यहां बताइए कि ऐप को अनुमति की आवश्यकता क्यों है</string>
     <string name="Bio">जैव</string>
-    <string name="Please_check_Consent_Form">कृपया सहमति फॉर्म की जाँच करें</string>
-    <string name="Internet_Connection"> इंटरनेट कनेक्शन नहीं</string>
+    <string name="Please_check_Consent_Form">कृपया सहमति प्रपत्र में टिक करें</string>
+    <string name="Internet_Connection">इंटरनेट कनेक्शन नहीं हैं</string>
     <string name="Internet_Connection_Msg">कृपया डिवाइस इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें</string>
     <string name="Connection_Error">कनेक्शन त्रुटि</string>
-    <string name="Please_Select_Dealer_Name">कृपया मालिक का नाम चुनें</string>
+    <string name="Please_Select_Dealer_Name">कृपया दुकान संचालक या नामांकित का चयन करें</string>
     <string name="Dealer">डीलर</string>
     <string name="Please_Select_FP_Authentication_Dealer">कृपया एफपी प्रमाणीकरण डीलर का चयन करें</string>
-    <string name="Do_you_want_to_Cancel">क्या आप रद्द करना चाहते हैं</string>
+    <string name="Do_you_want_to_Cancel">क्या आप रद्द करना चाहते हैं ?</string>
     <string name="IRIS_login">IRIS लॉग इन करें</string>
     <string name="Biometric_login">बायोमेट्रिक लॉगिन</string>
     <string name="Biometric">बायोमेट्रिक</string>
     <string name="Password_login">पासवर्ड लॉगिन</string>
-    <string name="Password">कुंजिका</string>
-    <string name="Please_Enter_Dealer_Authentication_Password">कृपया मालिक प्रमाणीकरण पासवर्ड दर्ज करें</string>
+    <string name="Password">पासवर्ड</string>
+    <string name="Please_Enter_Dealer_Authentication_Password">कृपया दुकान संचालक का पासवर्ड दर्ज कर प्रमाणीकरण करें</string>
     <string name="Dealer_Password">मालिक पासवर्ड</string>
     <string name="Cancel">रद्द करना</string>
-    <string name="Authenticating">प्रमाणित कर रहा है...</string>
-    <string name="Dealer_Authentication">मालिक प्रमाणीकरण: </string>
+    <string name="Authenticating">प्रमाणीकरण कर रहा है...</string>
+    <string name="Dealer_Authentication">दुकान संचालक प्रमाणीकरण</string>
     <string name="RD_SERVICE_ERROR">आरडी सेवा त्रुटि</string>
-    <string name="PID_Exception">पीआईडी ​​अपवाद</string>
+    <string name="PID_Exception">पुनः प्रयास करे</string>
     <string name="Please_Select_Another_Dealer">कृपया दूसरे मालिक नाम का चयन करें</string>
 
     <string name="NA">UID मौजूद नहीं है </string>
-    <string name="NA_MSG">कृपया अन्य सदस्य का चयन करें</string>
+    <string name="NA_MSG">कृपया अन्य सदस्य का चयन करे</string>
     <string name="Battery">बैटरी</string>
-    <string name="Battery_Msg">कम बैटरी के कारण रसीद को प्रिंट करने में असमर्थ</string>
+    <string name="Battery_Msg">कम बैटरी के कारण रसीद को प्रिंट करने में असमर्थ है</string>
     <string name="Battery_plugin">Battery % is below 20, Please connect the Adapter to continue</string>
 
     //Issue
     <string name="Cashless_PDS_function_is_Not_Available">कैशलेस पीडीएस फ़ंक्शन उपलब्ध नहीं है</string>
     <string name="IMPDS_function_is_Not_Available">IMPDS फ़ंक्शन उपलब्ध नहीं है</string>
-    <string name="Members">सदस्य विवरण डाउनलोड करना</string>
-    <string name="Fetching_Members">लटके सदस्य ...</string>
-    <string name="Member_Details">सदस्य विवरण: </string>
+    <string name="Members">सदस्य विवरण डाउनलोड हो रहा है</string>
+    <string name="Fetching_Members">सदस्य विवरण ...</string>
+    <string name="Member_Details">सदस्य विवरण</string>
     <string name="COMMODITY_WEIGHT">कमोडिटी वेट</string>
     <string name="COMMODITY_WEIGHING">कमोडिटी वजनी</string>
-    <string name="Fetching_Details">विवरण प्राप्त करना</string>
+    <string name="Fetching_Details">वविवरण प्राप्त कर रहे...</string>
 
     //Cash pds
-    <string name="Please_Enter_a_Valid_Number_RC">कृपया एक सही RC संख्या डालिये</string>
-    <string name="Please_Enter_a_Valid_Number_UID">कृपया एक 12 संख्या UID डालिये</string>
-    <string name="Please_Enter_Valid_Number">कृपया एक सही UID संख्या डालिये</string>
-    <string name="Invalid_ID">अमान्य र ओ ID</string>
-    <string name="Invalid_UID">अमान्य UID</string>
+    <string name="Please_Enter_a_Valid_Number_RC">कृपया राशनकार्ड नंबर दर्ज करें </string>
+    <string name="Please_Enter_a_Valid_Number_UID">कृपया 12 अंक का आधार नंबर दर्ज करें </string>
+    <string name="Please_Enter_Valid_Number">कृपया 12 अंक का आधार नंबर दर्ज करें</string>
+    <string name="Invalid_ID">राशनकार्ड नंबर अमान्य  हैं</string>
+    <string name="Invalid_UID">आधार नंबर अमान्य </string>
     <string name="This_function_is_not_Enabled_yet">यह फ़ंक्शन अभी तक सक्षम नहीं है</string>
     <string name="Going_Back">पीछे जाना</string>
-    <string name="Please_Enter_Your_Ration_ID">कृपया अपना राशन आईडी दर्ज करें</string>
-    <string name="Please_Enter_Your_Aadhaar_ID">कृपया अपनी आधार आईडी दर्ज करें</string>
+    <string name="Please_Enter_Your_Ration_ID">कृपया राशनकार्ड नंबर दर्ज करें </string>
+    <string name="Please_Enter_Your_Aadhaar_ID">कृपया अपना आधार नंबर दर्ज करें</string>
 
     //MD
     <string name="Do_you_want_to_cancel_Session">क्या आप सत्र रद्द करना चाहते हैं</string>
@@ -277,12 +281,12 @@
     <string name="Please_Select_Member_Name">कृपया सदस्य का नाम चुनें</string>
     <string name="Member">सदस्य</string>
     <string name="Member_Authentication">सदस्य प्रमाणीकरण: </string>
-    <string name="No_RD_Service_Available">कोई आरडी सेवा उपलब्ध नहीं है</string>
+    <string name="No_RD_Service_Available">आरडी सेवा उपलब्ध नहीं है</string>
 
     //RD
     <string name="select_your_Commodities_and_give_weights">अपनी जिंसों का चयन करें और वजन दें</string>
     <string name="Please_Enter_the_required_Weight">कृपया आवश्यक वजन दर्ज करें</string>
-    <string name="Please_get_Weight_from_Weighing_Machine">कृपया वजन मशीन से प्राप्त करें</string>
+    <string name="Please_get_Weight_from_Weighing_Machine">कृपया तौल मशीन से वजन प्राप्त करें</string>
     <string name="There_are_no_required_commodity_weights">कोई आवश्यक वस्तु भार नहीं हैं</string>
     <string name="Enable_Bluetooth_and_pair_your_Device_Manually">ब्लूटूथ सक्षम करें और अपने डिवाइस को मैन्युअल रूप से पेयर करें</string>
     <string name="Please_Select_USB_or_Bluetooth">कृपया पेन ड्राइव या ब्लूटूथ का चयन करें</string>
@@ -299,110 +303,114 @@
     <string name="FTP">एफ़टीपी</string>
     <string name="Please_Try_Again">कृपया फिर से प्रयास करें..</string>
     <string name="No_Update_Found">कोई अपडेट नहीं मिला</string>
+    <string name="Update_Found">अपडेट मिला</string>
     //Print
     <string name="NOT_Supported">समर्थित नहीं</string>
     <string name="Disabled">विकलांग</string>
     <string name="Enabled">सक्रिय</string>
     <string name="Scanning">स्कैनिंग...</string>
-    <string name="Connecting">कनेक्ट...</string>
+    <string name="Connecting">कनेक्ट हो रहा है...</string>
     <string name="CONNECTED">जुड़े हुए</string>
-    <string name="Connection_Failed">कनेक्शन विफल</string>
+    <string name="Connection_Failed">कनेक्शन नहीं हो प रहा</string>
     <string name="No_Paired_Devices">कोई भी पेयर डिवाइस नहीं</string>
     <string name="Bluetooth">ब्लूटूथ</string>
     <string name="PLEASE_PAIR_THE_DEVICE">कृपया ध्यान दें</string>
     <string name="Printer_ERROR">प्रिंटर त्रुटि</string>
-    <string name="Please_check_your_bluetooth_connection">कृपया अपना ब्लूटूथ कनेक्शन जांचें</string>
+    <string name="Please_check_your_bluetooth_connection">कृपया डिवाइस ब्लूटूथ कनेक्शन जांचें</string>
     <string name="Printer_Error">प्रिंटर त्रुटि</string>
     <string name="Device_does_not_support_Bluetooth">डिवाइस ब्लूटूथ का समर्थन नहीं करता है</string>
 
     <string name="Chhattisgarh">छत्तीसगढ़</string>
     <string name="Department">विभाग</string>
     <string name="RECEIPT">रसीद</string>
-    <string name="FPS_Owner_Name">मालिक का नाम</string>
+    <string name="FPS_Owner_Name">दुकान संचालक का नाम</string>
     <string name="FPS_No">एफपीएस संख्या </string>
     <string name="Availed_FPS_No">लाभार्थी  एफपीएस आईडी</string>
     <string name="Name_of_Consumer">ग्राहक </string>
-    <string name="TransactionID">लेनदेन आईडी</string>
-    <string name="Transaction">लेनदेन सफल</string>
-    <string name="Printing">मुद्रण, कृपया प्रतीक्षा करें</string>
+    <string name="TransactionID">सौदे की आईडी</string>
+    <string name="Transaction">सौदा सफलतापूर्वक किया गया</string>
+    <string name="Printing">प्रिंटिंग, कृपया प्रतीक्षा करें</string>
     <string name="Date">तारीख</string>
-    <string name="AllotmentMonth">आवंटन माह</string>
+    <string name="AllotmentMonth">आबंटन माह</string>
     <string name="AllotmentYear">आबंटन वर्ष</string>
-    <string name="Commodity_Lifted_Rate_Price">कमोडिटी लिफ्टेड रेट प्राइस</string>
+    <string name="Commodity_Lifted_Rate_Price">कमोडिटी वस्तु  मात्रा की दर कीमत</string>
 
-    <string name="commodity">वस्तु</string>
-    <string name="lifted">मात्रा(Kg)</string>
-    <string name="rate">की दर</string>
+    <string name="commodity">सामाग्री</string>
+    <string name="lifted">उठाव</string>
+    <string name="rate">दर</string>
     <string name="price">कीमत</string>
     <string name="Public_Distribution_Dept">सार्वजनिक वितरण विभाग</string>
     <string name="Note_Qualitys_in_KgsLtrs">(नोट  : किग्रा / लीटर में मात्रा )</string>
+<!--
     <string name="Please_Issue_Commodity_upto_Bal_Qty_only">कृपया बाल मात्रा पर केवल कमोडिटी जारी करें</string>
+-->
+    <string name="Please_Issue_Commodity_upto_Bal_Qty_only">कृपया दिये गए शेष मात्रा अनुरूप जारी करें</string>
     <string name = "Aadhaar_Seeding">आधार सीडिंग</string>
     <string name="Error_Code">एरर कोड</string>
     <string name="Member_is_already_Verified">सदस्य पहले से ही सत्यापित है</string>
-    <string name="Already_Verified">UID पहले से ही वरीयता प्राप्त</string>
-    <string name="Processing">प्रसंस्करण ...</string>
-    <string name="Downloading_APK">डाउनलोड APK</string>
-    <string name="Downloading">डाउनलोड</string>
+    <string name="Already_Verified">UID पहले से सत्यापित है</string>
+    <string name="Processing">कार्य प्रगति पर है ...</string>
+    <string name="Downloading_APK">नया वर्जन डाउनलोड किया जा रहा है ...</string>
+    <string name="Downloading">डाउनलोडींग...</string>
     <string name="Please_wait">कृपया प्रतीक्षा करें</string>
     <string name="Downloading_Menus">डाउनलोडिंग मेनू</string>
-    <string name="Beneficiary_Verification">लाभार्थी का सत्यापन </string>
+    <string name="Beneficiary_Verification">हितग्राही का आधार सत्यापन</string>
     <string name="Government_of_Chattisgarh">छत्तीसगढ़ सरकार</string>
-    <string name="Permission_denied">अनुमति नहीं मिली</string>
-    <string name="ConnectUSB">जुडिये पेन ड्राइव</string>
+    <string name="Permission_denied">अनुमति नहीं हैी</string>
+    <string name="ConnectUSB">यूएसबी से कनेक्ट करें</string>
     <string name="MemberName">सदस्य नाम</string>
     <string name="DOB">DOB</string>
     <string name="PindCode">पिन कोड</string>
     <string name="Gender">लिंग</string>
-    <string name="Beneficiary_Details">लाभार्थी विवरण</string>
-    <string name="LAST_RECEIPT">अंतिम रसीद</string>
-    <string name="Please_Enter_date_in_Edit_text_to_view_Stock">स्टॉक देखने के लिए कृपया टेक्स्ट संपादित करें में तारीख दर्ज करें</string>
+    <string name="Beneficiary_Details">हितग्राही का विवरण</string>
+    <string name="LAST_RECEIPT">पिछली रसीद</string>
+    <string name="Please_Enter_date_in_Edit_text_to_view_Stock">स्टॉक देखने के लिए कृपया दिनांक दर्ज करें</string>
     <string name="Enter_Date">दिनांक दर्ज करें</string>
-    <string name="DAY_REPORT">डे रिपोर्ट</string>
+    <string name="DAY_REPORT">आज की रिपोर्ट</string>
     <string name="Time">समय</string>
-    <string name="Day_Report_Date">डे रिपोर्ट तारीख : </string>
-    <string name="FPS_ID">एफपीएस आईडी</string>
-    <string name="VERIFICATION_RECEIPT">सत्यापन रसीद</string>
-    <string name="Ration_Card_Number">राशन कार्ड नंबर</string>
+    <string name="Day_Report_Date">दिनांक अनुसार  दिन की रिपोर्ट </string>
+    <string name="FPS_ID">दुकान आई डी</string>
+    <string name="VERIFICATION_RECEIPT">सत्यापन की रसीद</string>
+    <string name="Ration_Card_Number">राशन कार्ड संख्या</string>
     <string name="Commodity_Scheme_Sale">वस्तु     योजना      बिक्री</string>
 
     <string name="scheme">योजना</string>
-    <string name="sale">बिक्री</string>
+    <string name="sale">बिक्री(किलो)</string>
     <string name="Note_Quantitys_In_KgsLtrsPackets">ध्यान दें:मात्रा / किलोग्राम / पैकेट में मात्रा</string>
     <string name="No_Data_to_Print">प्रिंट करने के लिए कोई डेटा नहीं</string>
 
-    <string name="Invalid_Password">अवैध पासवर्ड</string>
+    <string name="Invalid_Password">अमान्य पासवर्डड</string>
     <string name="MenuList">मेनू सूची: </string>
-    <string name="Uploading_Stock">स्टॉक अपलोड करना</string>
-    <string name="ERROR_IN_GETTING_FILE">विशिष्ट आकार देने में व्यावसायिक त्रुटि</string>
+    <string name="Uploading_Stock">स्टॉक अपलोड कर रहें...</string>
+    <string name="ERROR_IN_GETTING_FILE">वफ़ाइल प्राप्त करने में त्रुटि</string>
     <string name="APK">APK</string>
     <string name="Download_in_progress">डाउनलोड जारी है</string>
     <string name="Download_Cancelled">डाउनलोड रद्द किया गया</string>
-    <string name="Download_Failed">डाउनलोड विफल</string>
+    <string name="Download_Failed">डाउनलोड आसफल</string>
     <string name="Unable_to_Download">डाउनलोड करने में असमर्थ!</string>
-    <string name="Download_Completed">डाउनलोड सम्पन्न हुआ</string>
-    <string name="ERROR_IN_DOWNLOAD">डाउनलोड में व्यावसायिक त्रुटि</string>
+    <string name="Download_Completed">डाउनलोड पूर्ण</string>
+    <string name="ERROR_IN_DOWNLOAD">डाउनलोड करने में त्रुटि</string>
     <string name="Something_went_Wrong_Please_Try_Again">कुछ गलत हो गया, कृपया फिर से प्रयास करें..</string>
     <string name="No_Storage_Space_to_Download_this_File">कोई संग्रहण स्थान इस फ़ाइल को डाउनलोड करने के लिए नहीं</string>
     <string name="Connection_Problem_or_Server_Down">कनेक्शन समस्या या सर्वर डाउन</string>
     <string name="Server_Reply_code_is_Negetive_Please_try_again">सर्वर उत्तर कोड निगेटिव है। कृपया पुन: प्रयास करें..!</string>
-    <string name="Authentication_Problem">प्रमाणीकरण समस्या</string>
-    <string name="UNKNOWN_ERROR">अज्ञात त्रुटि</string>
+    <string name="Authentication_Problem">सत्यापन मे समस्या</string>
+    <string name="UNKNOWN_ERROR">पुनः प्रयास करे</string>
 
-    <string name="Commodity_details_are_updating">कमोडिटी विवरण अपडेट कर रहे हैं ...</string>
+    <string name="Commodity_details_are_updating">सामाग्री विवरण अपडेट कर रहे हैं ...</string>
     <string name="Commodities_Error">वस्तु त्रुटि: </string>
-    <string name="Invalid_Inputs">अमान्य इनपुट्स</string>
+    <string name="Invalid_Inputs">अमान्य एंट्री</string>
     <string name="Transaction_Success_Do_you_want_to_Print_Receipt">लेनदेन की सफलता। क्या आप रसीद प्रिंट करना चाहते हैं </string>
     <string name="Please_Enter_the_required_quantity">कृपया आवश्यक मात्रा दर्ज करें</string>
     <string name="Enter_Quantity">मात्रा दर्ज करें</string>
-    <string name="Please_enter_a_valid_Value">कृपया एक उचित मात्रा प्रविष्ट करें </string>
-    <string name="Invalid_Quantity">अमान्य मात्रा</string>
+    <string name="Please_enter_a_valid_Value">कृपया उचित मात्रा प्रविष्ट करें </string>
+    <string name="Invalid_Quantity">मात्रा अमान्य</string>
     <string name="Department_of_FoodCivil_Supplies">  Department of Food,Civil Supplies and   </string>
     <string name="Consumer_Affairs">Consumer Affairs</string>
 
     <string name="Receipt">Receipt</string>
-    <string name="Inspected_By">चेक करके</string>
-    <string name="Designation">स्थिति</string>
+    <string name="Inspected_By">निरीक्षणकर्ता</string>
+    <string name="Designation">पद</string>
     <string name="Status">स्थिति</string>
     <string name="Commidity_CB_Obsevn_Varitn">वस्तु  सीबी   पर्यवेक्षण   परिवर्तन</string>
     <string name="part1">मैं इस बात की पुष्टि करता हूँ  कि , स्वयं को आधार से  आधारित प्रमाणीकरण प्रणाली  में, प्रमाणित करने में मुझे कोई आपत्ति नहीं है तथा खाद्य और नागरिक आपूर्ति विभाग, "</string>
@@ -411,19 +419,19 @@
 <!--    <string name="part1">No Hindi Message</string>
     <string name="part2">No Hindi Message</string>
     <string name="part3">No Hindi Message</string>-->
-    <string name="Manual">गाइड</string>
-    <string name="Authentication_Type_Not_Specified">प्रमाणीकरण प्रकार निर्दिष्ट नहीं है</string>
-    <string name="Authentication_Type">प्रमाणिकता का प्रकार</string>
+    <string name="Manual">मैनुयल</string>
+    <string name="Authentication_Type_Not_Specified">प्रमाणीकरण का प्रकार स्पष्ट नहीं है</string>
+    <string name="Authentication_Type">प्रमाणीकरण का प्रकार</string>
     <string name="Member_EKYC">सदस्य EKYC: </string>
     <string name="Authenticating_EKYC">प्रमाणित कर रहा है EKYC...</string>
-    <string name="Please_Enter_Member_UID_Number">कृपया सदस्य दर्ज करें UID संख्या</string>
-    <string name="UID_Number">कृपया 12 अंक यूआईडी नंबर दर्ज करें.</string>
+    <string name="Please_Enter_Member_UID_Number">कृपया सदस्य का आधार संख्या दर्ज करें</string>
+    <string name="UID_Number">कृपया 12 अंक का आधार नंबर दर्ज करें</string>
     <string name="Your_GPS_seems_to_be_disabled_do_you_want_to_enable_it">आपका GPS अक्षम होने लगता है, क्या आप इसे सक्षम करना चाहते हैं?</string>
     <string name="Please_allow_these_permissions_in_order_to_use_application">आवेदन का उपयोग करने के लिए कृपया इन अनुमतियों को अनुमति दें</string>
     <string name="Permissions">अनुमतियां</string>
     <string name="current_stock">वर्तमान स्टॉक</string>
     <string name="report">रिपोर्ट</string>
-    <string name="Report_Type">रिपोर्ट प्रकार</string>
+    <string name="Report_Type">रिपोर्ट के प्रकार</string>
     <string name="Name_Sch_Stockkgs_Issued_CB">नाम    Sch   भण्डार(kgs)   जारी किए गए   CB</string>
     <string name="name">नाम</string>
     <string name="sch">योजना</string>
@@ -431,37 +439,37 @@
     <string name="issued">जारी किया</string>
     <string name="cb">सी.बी</string>
     <string name="Please_Select_a_Member">कृपया एक सदस्य का चयन करें</string>
-    <string name="UID_Seeding">आधार सीडिंग : </string>
+    <string name="UID_Seeding">आधार सीडिंग  </string>
     <string name="Not_a_Valid_Weight">मान्य वजन नहीं</string>
-    <string name="Enter_valid_weight">मान्य वजन दर्ज करें</string>
+    <string name="Enter_valid_weight">सही वजन दर्ज करेंं</string>
     <string name="Please_try_again">कृपया पुन: प्रयास करें</string>
-    <string name="Please_Enter_a_valid_Password">कृपया एक वैध पासवर्ड दर्ज करें</string>
-    <string name="Dealer_FIR_Authentication">मालिक FIR प्रमाणीकरण: </string>
+    <string name="Please_Enter_a_valid_Password">कृपया वैध पासवर्ड दर्ज करें</string>
+    <string name="Dealer_FIR_Authentication">दुकान संचालक का प्रमाणीकरण  </string>
     <string name="Dealer_Fusion_Authentication">मालिक फ्यूजन प्रमाणीकरण: </string>
-    <string name="Dealer_FP_Authentication">मालिक FP प्रमाणीकरण: </string>
+    <string name="Dealer_FP_Authentication">दुकान संचालक का उंगलियों के निशान का प्रमाणीकरण </string>
     <string name="Connect_your_device_to_the_usb_Port">अपने डिवाइस को पेन ड्राइव पोर्ट से कनेक्ट करें</string>
     <string name="USB_Connection">पेन ड्राइव संबंध</string>
     <string name="Not_Enabled">सक्षम नहीं</string>
-    <string name="Inspection_Details">निरीक्षण विवरण: </string>
-    <string name="Enter_UID">दर्ज UID</string>
-    <string name="Truck_No">ट्रक नंबर :</string>
+    <string name="Inspection_Details">नरसीद की जांच करें</string>
+    <string name="Enter_UID">आधार नंबर दर्ज करें</string>
+    <string name="Truck_No">ट्रक नंबर</string>
     <string name="Invalid_Aadhaar">अमान्य आधार</string>
 
     <string name="AADHAAR_SERVICES">आधार सेवाएं</string>
     <string name="UID_SEEDING"> आधार सीडिंग</string>
-    <string name="BENEficiary_VERIFICATION">लाभार्थी का सत्यापन</string>
+        <string name="BENEficiary_VERIFICATION">लाभार्थी के आधार का सत्यापन</string>
     <string name="BENEFICIARY_DETAILS">लाभार्थी विवरण</string>
-    <string name="EKYC">ईकेवाईसी</string>
-    <string name="Enter_Date_to_view_sales">बिक्री देखने के लिए दिनांक दर्ज करें</string>
+    <string name="EKYC">ई॰के॰वाई॰सी</string>
+    <string name="Enter_Date_to_view_sales">दिनांक वार बिक्री हेतु दिनांक दर्ज करें</string>
     <string name="DEALER_DETAILS">मालिक डेक्टर्स</string>
     <string name="DEALER_AUTHENTICATION">मालिक प्रमाणीकरण</string>
     <string name="INSPECTION">निरीक्षण</string>
     <string name="COMMODITY">वस्तु</string>
-    <string name="OBSERVATION">पर्यवेक्षण</string>
+    <string name="OBSERVATION">अवलोकन</string>
     <string name="VARIATION">परिवर्तन</string>
     <string name="Seized">जब्त</string>
-    <string name="RECEIVE_GOODS">रस्टॉक प्राप्ति</string>
-    <string name="Select_Truck_Chit">ट्रक चिटो का चयन करें</string>
+    <string name="RECEIVE_GOODS">सामग्री प्राप्त करें</string>
+    <string name="Select_Truck_Chit">ट्रक चालान का चयन करें</string>
     <string name="Allot">आवंटित</string>
     <string name="dispatch">भेजे</string>
     <string name="DISPATCH">भेजे</string>
@@ -469,7 +477,7 @@
     <string name="Weighing">वजन</string>
     <string name="Devices_LIST">उपकरण सूची</string>
     <string name="Commodity">वस्तु</string>
-    <string name="Issued">विक्रय</string>
+    <string name="Issued">जारी किया</string>
     <string name="Sno">क्रमिक संख्या</string>
     <string name="Unit">यूनिट</string>
     <string name="Balance">संतुलन</string>
@@ -479,30 +487,31 @@
 
 
 
-    <string name="Please_Put_Paper">कृपया कागज डालें.</string>
-    <string name="Please_Enter_RC_Number">कृपया कार्ड नंबर दर्ज करें.</string>
-    <string name="Please_enter_12_digit_uid_number">कृपया 12 अंक यूआईडी नंबर दर्ज करें.</string>
+    <string name="Please_Put_Paper">कृपया पेपर रोल डालें</string>
+    <string name="Please_Enter_RC_Number">कृपया कार्ड संख्या दर्ज करें.</string>
+    <string name="Please_enter_12_digit_uid_number">कृपया 12 अंक का आधार नंबर दर्ज करें </string>
     <string name="Offline_Data_Uploading_Failed_Please_Try_again">ऑफ़लाइन डेटा अपलोडिंग विफल हुई \ कृपया पुनः प्रयास करें ..</string>
-    <string name="Members_Details_Not_Found_For_The_Card">कार्ड के लिए सदस्यों का विवरण नहीं मिला</string>
-    <string name="UID_Already_Seeded">आधार कार्ड से पहले ही जोड़ा गया है.</string>
+    <string name="Members_Details_Not_Found_For_The_Card">सदस्य विवरण इस कार्ड के लिए उपलब्ध नहीं हैं</string>
+    <string name="UID_Already_Seeded">UID पहले से सत्यापित है</string>
     <string name="Please_accept_consent_form">कृपया सहमति प्रपत्र स्वीकार करें</string>
     <string name="Transaction_linked_to_dealer">Transaction linked to dealer</string>
     <string name="UID_is_Not_Present_Please_seed_the_UID_using_UID_seeding">UID मौजूद नहीं है ... \कृपया UID सीडिंग का उपयोग करके UID को सीड करें ...</string>
     <string name="UID_is_Not_Present_Please_Select_Other_Member">UID मौजूद नहीं है ... \कृपया अन्य सदस्य का चयन करें</string>
     <string name="Transaction_linked_to_Manual">Transaction linked to Manual</string>
     <string name="please_enter_numeric_value_only">कृपया केवल संख्यात्मक मूल्य दर्ज करें.</string>
-    <string name="please_enter_10_Digit_Mobile_Number_only">कृपया केवल 10 अंकों का\ मोबाइल नंबर दर्ज करें.</string>
+    <string name="please_enter_10_Digit_Mobile_Number_only">कृपया केवल 10 अंकों का\ मोबाइल संख्या दर्ज करें.</string>
     <string name="Manual_Transaction_not_allowd_for_this_Beneficiary">इस लाभार्थी के लिए मैनुअल लेनदेन की अनुमति नहीं है</string>
-    <string name="Please_Select_Any_Commodity_For_Issuance">वितरित किए जाने वाले \किसी भी उत्पाद का चयन करें.</string>
+    <string name="Please_Select_Any_Commodity_For_Issuance">वकृपया जारी करने के लिए सामाग्री का चयन करें</string>
     <string name="Please_Enter_required_Qty_less_than_or_equal_to">Please Enter required Qty less than or equal to</string>
-    <string name="Please_Select_Other_Mode_of_Communication">कृपया कम्युनिकेशन के अन्य मोड का चयन करें</string>
-    <string name="Invalid_Weight">कृपया वस्तु का चयन करे</string>
+    <string name="Please_Select_Other_Mode_of_Communication">कृपया अन्य माध्यम का चयन करें</string>
+    <string name="Invalid_Weight">अमान्य  वजन</string>
+    <string name="Invalid_Weight_or_Negative">अमान्य  या नकारात्मक वजन</string>
     <string name="USB_Port_Opening_Failed_Please_Select_Other_Mode_of_Communication">यूएसबी पोर्ट ओपनिंग विफल...\कृपया कम्युनिकेशन के अन्य मोड का चयन करें</string>
     <string name="Enter_the_Quantity_greater_than_zero">कृपया शून्य से बड़ा दर्ज करें.</string>
     <string name="Please_Issue_Commodity_upto_BalQty_only">कृपया केवल शेष राशि \तक कमोडिटी जारी करें</string>
-    <string name="Issue_quantity_should_more_than_or_equal_to_Minimum_quantity">इश्यू की मात्रा न्यूनतम मात्रा से अधिक या उसके बराबर होनी चाहिए</string>
+    <string name="Issue_quantity_should_more_than_or_equal_to_Minimum_quantity">जारी मात्रा न्यूनतम मात्रा से अधिक या उसके बराबर होनी चाहिए</string>
     <string name="please_take_all_quantity">please take all quantity</string>
-    <string name="Please_Issue_Commodity_upto_Closing_Balance_only_Closing_Balance">कृपया केवल समापन शेष तक अंक कमोडिटी जारी करें: \ शेष राशि: </string>
+    <string name="Please_Issue_Commodity_upto_Closing_Balance_only_Closing_Balance">कृपया केवल शेष मात्रा तक सामग्री जारी करें \ शेष मात्रा </string>
     <string name="Issue_Qty_Should_Be_Multiple_By_Minimum_Qty">कृपया शून्य से अधिक मात्रा दर्ज करें </string>
     <string name="Exceeded_Attempts_for_Iris_Authentication_Please_Opt_for_ScanFP">आईरिस प्रमाणीकरण के लिए अधिक प्रयास हुए\कृपया स्कैन-एफपी चुनें</string>
     <string name="Invalid_Dealer_type">अमान्य डीलर</string>
@@ -510,17 +519,17 @@
     <string name="Enter_Correct_Password">सही पासवर्ड दर्ज करें</string>
     <string name="Please_Select_Dealer_Nominee">कृपया डीलर/नॉमिनी  का चयन करें.</string>
     <string name="UID_is_Empty_Please_Select_Other_Member">UID रिक्त है ...\कृपया अन्य सदस्य का चयन करें</string>
-    <string name="Finger_Not_Placed_On_Scanner">फिंगर स्कैनर पर रखा नहीं</string>
+    <string name="Finger_Not_Placed_On_Scanner">फफिंगर स्कैनर पर प्लेस नहीं किया गया.</string>
     <string name="No_Response_From_Server_Please_Try_Again">सर्वर प्रतिसाद नहीं दे रहा है\कृपया पुन: प्रयास करें</string>v
     <string name="Server_is_Busy_Please_Try_Again">सर्वर व्यस्त है ...\कृपया पुनः प्रयास करें ..</string>
     <string name="String_index_out_of_range_Invalid_Response">String index out of range - Invalid Response</string>
     <string name="Server_is_Not_Active">Server is Not Active</string>
-    <string name="Server_error_Invalid_Response">Server error - Invalid Response</string>
+    <string name="Server_error_Invalid_Response">अमान्य प्रतिक्रिया... कृपया पुन: प्रयास करें...</string>
     <string name="Please_Call_PMU">Please Call PMU</string>
     <string name="UID_Status">UID Status</string>
     <string name="Incorrect_XML">Incorrect XML</string>
-    <string name="Finger_Not_Placed_on_Scanner">उंगली स्कैनर पर रखी नहीं</string>
-    <string name="Invalid_Response_Please_Try_Again">अमान्य प्रतिक्रिया\ कृपया पुन: प्रयास करें.</string>
+    <string name="Finger_Not_Placed_on_Scanner">उफिंगर स्कैनर पर प्लेस नहीं किया गया.</string>
+    <string name="Invalid_Response_Please_Try_Again">अमान्य प्रतिक्रिया \ कृपया पुन: प्रयास करें</string>
     <string name="Request_Timeout_Please_Try_again">समय में अनुरोध का कोई प्रतिक्रिया नहीं मिला\कृपया पुन: प्रयास करें</string>
     <string name="Server_Connection_Error_Please_Try_Again_After_SomeTime">नेटवर्क त्रुटि ... \कृपया कुछ समय के बाद पुन: प्रयास करें ...</string>
     <string name="Please_download_Bank_Master_Data_From_Settings">Please download Bank Master Data From Settings</string>
@@ -548,22 +557,23 @@
     <string name="Invalid_Response_Data_Recieved">अवैध प्रतिक्रिया डेटा प्राप्त.</string>
     <string name="Stock_Details_Insertion_Failed">स्टॉक विवरण प्रविष्टि विफल</string>
     <string name="Please_Wait_Uploading_Recieved_Stock_Data_to_Server">कृपया प्रतीक्षा करें..\ प्राप्त स्टॉक सर्वर पर अपलोड हो रहा है.</string>
-    <string name="Please_Receive_the_Qty_upto_Dispatched_Qty_only">Please Receive the Qty upto Dispatched Qty only</string>
+    <string name="Please_Receive_the_Qty_upto_Dispatched_Qty_only">कृपया केवल प्रेषित मात्रा तक ही प्राप्त करें</string>
     <string name="Entered_Qty_is_Very_Less_Kindly_Check">दर्ज की गई मात्रा बहुत कम है ... \ कोई जाँच करें।</string>
     <string name="File_Not_Downloaded">फ़ाइल डाउनलोड नहीं हुआ</string>
     <string name="Server_Error">सर्वर एरर </string>
-    <string name="Please_Select_Truck_Chit_No">कृपया ट्रक चित संख्या का चयन करें</string>
-    <string name="Please_Enter_Customer_Aadhaar_No">कृपया ग्राहक आधार संख्या दर्ज करें</string>
-    <string name="Please_Enter_Customer_Mobile_No">कृपया ग्राहक मोबाइल नंबर दर्ज करें</string>
+    <string name="Please_Select_Truck_Chit_No">कृपया ट्रक चालान नंबर चुनें</string>
+    <string name="Truck_Chit_No">ट्रक चालान नंबर</string>
+    <string name="Please_Enter_Customer_Aadhaar_No">कृपया हितग्राही का आधार संख्या दर्ज करें</string>
+    <string name="Please_Enter_Customer_Mobile_No">कृपया ग्राहक मोबाइल संख्या दर्ज करें</string>
     <string name="Please_Enter_OTP">ओटीपी दर्ज करें.</string>
     <string name="Mobile_Number_Updation_Request_Failed">Mobile Number Updation Request Failed</string>
     <string name="Mobile_Number_Updation_Request_Successfully_Posted">Mobile Number Updation Request Successfully Posted</string>
     <string name="Inspector_Details_is_not_registered_at_AePDS_server">Inspector Details is not registered at AePDS server...</string>
     <string name="Please_Receive_the_Qty_upto_ReleasedQty_only">Please Receive the Qty upto ReleasedQty only</string>
     <string name="Invalid_XML">Invalid XML</string>
-    <string name="Please_Scan_RC_Number">कृपया आर.सी. नंबर स्कैन करे .</string>
+    <string name="Please_Scan_RC_Number">कृपया आर.सी. संख्या स्कैन करे .</string>
     <string name="Please_login_in_online_mode">कृपया ऑनलाइन मोड में लॉगिन करें ..</string>
-    <string name="All_offline_txn_records_were_uploaded_to_server">सभी ऑफ़लाइन txn रिकॉर्ड सर्वर पर अपलोड किए गए थे</string>
+    <string name="All_offline_txn_records_were_uploaded_to_server">सभी ऑफलाइन सौदे सर्वर पर सफलतापूर्वक अपलोड किए जा चुके है</string>
     <string name="Acknowledgement_sending_Failed_Please_Try_again">Acknowledgement sending Failed\Please Try again ..</string>
     <string name="Pending_data_unavailable">लंबित डेटा अनुपलब्ध है</string>
     <string name="Offline_Data_Downloaded_Successfully">ऑफ़लाइन डेटा सफलतापूर्वक डाउनलोड किया गया</string>
@@ -576,21 +586,22 @@
     <string name="Scheme_Master_Data_not_found">Scheme Master Data not found</string>
     <string name="Invalid_Scheme_Master_Data_Please_try_again">अमान्य Scheme Master डेटा\कृपया पुन: प्रयास करें</string>
     <string name="Invalid_Recive_Goods_Master_Please_try_again">अमान्य Recive Goods Master डेटा\कृपया पुन: प्रयास करें</string>
-    <string name="Invalid_Response_Please_try_again">Invalid Response\Please try again</string>
-    <string name="Invalid_Response_from_Server_Please_try_again">Invalid Response from Server\Please try again</string>
+    <string name="Invalid_Response_Please_try_again">अमान्य प्रतिक्रिया \ कृपया पुन: प्रयास करें</string>
+    <string name="Invalid_Response_from_Server_Please_try_again">अमान्य प्रतिक्रिया \ कृपया पुन: प्रयास करें</string>
     <string name="Invalid_Response_From_Server_for_Txn_Upload">Invalid Response From Server for Txn Upload</string>
+    <string name="No_Connectivity_Going_for_Offline_txn">कनेक्टिविटी नहीं है\n ऑफ़लाइन लेनदेन प्रकार के लिए जा रहा है</string>
     <string name="UpdatedReceipts_Id_not_sent_From_Server_for_Txn_Upload">UpdatedReceipts Id not sent From Server for Txn Upload</string>
     <string name="Unable_To_Print_Recipt_due_to_Low_Battery_Please_charge_the_Battery">कम बैटरी के कारण रसीद प्रिंट करने में असमर्थ. \ कृपया बैटरी चार्ज करें</string>
-    <string name="Commodity_Balance_Qty_not_available_for_this_Entered_Card">इस दर्ज कार्ड के लिए कमोडिटी बैलेंस मात्रा उपलब्ध नहीं है</string>
-    <string name="Commodity_Closing_balance_not_available_for_this_shop">इस दुकान के लिए कमोडिटी समापन शेष उपलब्ध नहीं है</string>
+    <string name="Commodity_Balance_Qty_not_available_for_this_Entered_Card">दर्ज कार्ड के लिए शेष मात्रा उपलब्ध नहीं है</string>
+    <string name="Commodity_Closing_balance_not_available_for_this_shop">इस दुकान के लिए सामाग्री शेष मात्रा उपलब्ध नहीं है</string>
     <string name="Network_Avalible_Please_login_by_dealer_authentication">नेटवर्क उपलब्ध \डीलर प्रमाणीकरण द्वारा लॉगिन करें</string>
-    <string name="Offline_Data_Not_available">ऑफ़लाइन डेटा उपलब्ध नहीं है"</string>
+    <string name="Offline_Data_Not_available">ऑफ़लाइन डेटा उपलब्ध नहीं है</string>
     <string name="Invalid_Txns_Time">Invalid Txns Time</string>
     <string name="Txns_are_allowed_from">से लेन-देन की अनुमति है</string>
-    <string name="Month_Changed_Please_login_by_authentication">महीना बदल गया\कृपया प्रमाणीकरण द्वारा लॉगिन करें</string>
+    <string name="Month_Changed_Please_login_by_authentication">लेनदेन माह बदल गया, कृपया ऑनलाइन मोड में लॉगिन करे</string>
     <string name="Offline_time_duration_completed_Login_by_authentication">ऑफ़लाइन समय अवधि पूरी हुई\कृपया प्रमाणीकरण द्वारा लॉगिन करें</string>
-    <string name="No_Network_and_Offline_Login_data_not_Available">कोई नेटवर्क और ऑफ़लाइन लॉगिन डेटा उपलब्ध नहीं है</string>
-    <string name="No_Network_Please_select_CardNo_and_Enter_CardNo_for_doing_TXN_in_OFFLINE">कोई नेटवर्क \ कृपया न चुनें \कार्ड नंबर\" और ऑफ़लाइन होने के लिए TXN करने के लिए \"कार्ड नंबर\" दर्ज करें"</string>
+    <string name="No_Network_and_Offline_Login_data_not_Available">कोई नेटवर्क नहीं एवं ऑफ़लाइन लॉगिन डेटा उपलब्ध नहीं है</string>
+    <string name="No_Network_Please_select_CardNo_and_Enter_CardNo_for_doing_TXN_in_OFFLINE">कोई नेटवर्क \ कृपया न चुनें \कार्ड संख्या\" और ऑफ़लाइन होने के लिए TXN करने के लिए \"कार्ड संख्या\" दर्ज करें"</string>
     <string name="Invalid_Fps_Id">Invalid Fps Id</string>
     <string name="Invalid_Response_for_Receive_Goods_Upload">Invalid Response for Receive Goods Upload</string>
     <string name="TruckChitList_not_found_for_Receive_Goods_Upload">TruckChitList not found for Receive Goods Upload</string>
@@ -599,18 +610,18 @@
     <string name="Distribution_Stoped">Distribution Stoped</string>
     <string name="Upload_all_pending_Txns_and_Try_for_Patch_update">सभी लंबित Txn को अपलोड करें और पैच अपडेट के लिए प्रयास करें</string>
     <string name="Please_Wait_Uploading_Pending_CB">कृपया प्रतीक्षा करें.\लंबित अभिलेख अपलोड हो रहा है. .</string>
-    <string name="Please_Wait_Uploading_Pending_Records">कृपया प्रतीक्षा करें.\लंबित अभिलेख अपलोड हो रहा है. .</string>
+    <string name="Please_Wait_Uploading_Pending_Records">कृपया प्रतीक्षा करें, लंबित रिकॉर्ड अपलोड हो रहा है...</string>
     <string name="Going_for_Manual_Transaction">मैनुअल लेनदेन के लिए जा रहा है ...</string>
     <string name="Reciept_Bill_Amount_is">रसीद /विधेयक राशि..</string>
     <string name="Please_Wait_Commodity_Qty_Uploading_to_Server">सर्वर पर कमोडिटी विवरण भेज रहा है</string>
     <string name="Please_Wait_Authenticating_FingerPrint">कृपया प्रतीक्षा करें.\उंगली की छाप प्रमाणित हो रहा है.</string>
-    <string name="Please_Wait_Authenticating_Dealer">कृपया प्रतीक्षा करें..\ विक्रेता प्रमाणीकरण हो रहा है.</string>
-    <string name="Please_Wait_Downloading_Members_Details">कृपया प्रतीक्षा करें.\सदस्यों विवरण डाउनलोड हो रहा है. .</string>
+    <string name="Please_Wait_Authenticating_Dealer">कृपया प्रतीक्षा करें..\n डीलर प्रमाणीकरण हो रहा है.</string>
+    <string name="Please_Wait_Downloading_Members_Details">परिवार का सदस्य विवरण \n डाउनलोड हो रहा है. .</string>
     <string name="Please_Wait_Scanning_For_Devices">कृपया प्रतीक्षा करें\डिवाइसेज की खोज चल रही है</string>
     <string name="Please_Wait_Downloading_Details_From_Server">कृपया प्रतीक्षा करें..\ सर्वर से विवरण डाउनलोड हो रहा है</string>
     <string name="Please_Place_Customer_Finger_on_Scanner">कृपया ग्राहक अपनी उंगली स्कैनर पर लगाए//</string>
-    <string name="Transaction_Successfull_Printing_Please_Wait">लेनदेन सफल था ... \कृपया प्रतीक्षा करें,रसीद छपाई हो रही है</string>
-    <string name="Please_Wait_Pairing_with_Weighing_Machine">कृपया प्रतीक्षा करें ... वजन मशीन के साथ \ जोड़ा जा रहा है</string>
+    <string name="Transaction_Successfull_Printing_Please_Wait">लेनदेन सफल... \  प्रिंट हो रहा है, प्रतीक्षा करें...</string>
+    <string name="Please_Wait_Pairing_with_Weighing_Machine">Finger_Not_Placed_On_ScannerFinger_Not_Placed_On_Scannerोड़ा जा रहा है</string>
     <string name="Downloading_Hawker_Details">हॉकर विवरण डाउनलोड कर रहा है ...</string>
     <string name="Please_Wait_Printing">Pकृपया प्रतीक्षा करें ... मुद्रण...</string>
     <string name="Logout_Please_wait">Logout ... \ Please wait ...</string>
@@ -621,9 +632,105 @@
     <string name="Please_wait_Downloading_Menus">कृपया प्रतीक्षा करें.\ मेनू डाउनलोड हो रहा है.</string>
     <string name="Please_Wait_Initializing_Blueetooth">कृपया प्रतीक्षा करें ... \ ब्लूटूथ प्रारंभ कर रहा है ...</string>
     <string name="Session_Id_not_found_Please_try_again">Session Id not found Please try again</string>
-    <string name="Network_unavailable">Network unavailable</string>
+    <string name="Network_unavailable">नेटवर्क उपलब्ध नहीं हैं </string>
     <string name="Please_Wait_Downloading_School_Members_Details">कृपया प्रतीक्षा करें ...\n विद्यालय के सदस्यों का विवरण डाउनलोड करना</string>
     <string name="Please_Enter_School_Id">कृपया स्कूल आईडी दर्ज करें</string>
+
+
+    //offline
+    <string name="Internet_Not_Available">इंटरनेट उपलब्ध नहीं</string>
+    <string name="updateDownloadSts">डाउनलोड की स्थिति अपडेट करें</string>
+    <string name="Card_Not_Available">कार्ड उपलब्ध नहीं है</string>
+    <string name="TotQty">कुल मात्रा</string>
+    <string name="Card_Status">कार्ड की स्थिति</string>
+    <string name="Upload_Data">डेटा अपलोड करें</string>
+    <string name="Offline_Receive_Goods">ऑफ़लाइन माल प्राप्त करें</string>
+    <string name="Daily_Sales_Report_Offline">दैनिक बिक्री रिपोर्ट ऑफ़लाइन</string>
+    <string name="Stock_Report_Offline">स्टॉक रिपोर्ट ऑफलाइन</string>
+    <string name="Total_Amount">कुल राशि</string>
+    <string name="proceed_offline">ऑफ़लाइन में आगे बढ़ें</string>
+    <string name="Please_Enter_Password">कृपया पासवर्ड दर्ज करे</string>
+    <string name="Offline_Receipt">ऑफलाइन रसीद</string>
+    <string name="Offline_Login">ऑफलाइन लॉगिन</string>
+    <string name="No_Offline_txns">अपलोड करने के लिए कोई लंबित लेनदेन नहीं है ं</string>
+    <string name="Pending_Exists">लंबित टीएक्सएन रिकॉर्ड मौजूद हैं, कृपया पुनः प्रयास करें</string>
+
+    //extra PrintActiviy
+    <string name="Network_Available">मोबाइल नेटवर्क उपलब्ध</string>
+    <string  name = "Please_login_in_Online_mode">कृपया ऑनलाइन मोड में लॉगिन करें</string>
+    <string name="Network_Unavailable">नेटवर्क उपलब्ध नहीं हैं </string>
+    <string name="No_Network_go_to_Offline_Txns">मोबाइल नेटवर्क नहीं </string>
+    <string name="Device_Parameters">डिवाइस पैरामीटर्स</string>
+    //showTxnsdetails Alert
+    <string name="Transaction_Details">लेनदेन का विवरण</string>
+    <string name="Total_Txn_Records">कुल लेनदेन रिकॉर्ड</string>
+    <string name="Online_Txn_Records">ऑनलाइन लेनदेन रिकॉर्ड</string>
+    <string name="Offline_Txn_Records">ऑफलाइन लेनदेन रिकॉर्ड</string>
+    <string name="Uploaded_Offline_Records">अपलोड किए गए ऑफ़लाइन रिकॉर्ड</string>
+    <string name="Pending_Offline_Records">लंबित ऑफ़लाइन रिकॉर्ड</string>
+    <string name="Alloted_Month_Year">आवंटित माह और वर्ष</string>
+    <string name="Date_current">दिनांक</string>
+    <string name="Fps_Id">दुकान आई डी</string>
+    <string name="Please_press_the_tare_button">कृपया तौल मशीन पर TARE बटन दबाएं</string>
+
+    // Aadharr otp
+    <string name="Aadhaar_Otp">आधार ओटीपी</string>
+     <string name="Enter_Otp_Number">ओटीपी नंबर दर्ज करें</string>
+    <string name="Otp_Option_Not_Availble">ओटीपी विकल्प उपलब्ध नहीं है</string>
+
+    <string name="Invalid_login">अमान्य लॉगिन</string>
+    <string name="Invalid_Otp">अमान्य ओटीपी</string>
+    <string name="Please_Enter_valid_OTP">कृपया वैध ओटीपी दर्ज करें</string>
+    <string name="Otp_reuest_time_out">ओटीपी अनुरोध का समय समाप्त</string>
+    <string name="Please_try_in_other_mode">कृपया अन्य मोड में प्रयास करें</string>
+
+    <string name="Offline_RcMembers">ऑफलाइन राशनकार्ड सदस्य</string>
+    <string name="Rc_Numbers">राशन कार्ड नंबर</string>
+    <string name="Card_Number_does_not_exist">कार्ड नंबर मौजूद नहीं है</string>
+    <string name="Cumulative_Current_Report">संचयी उपलब्ध मात्रा रिपोर्ट</string>
+    <string name="Offline_Ration_Card_Status">ऑफलाइन राशन कार्ड की स्थिति</string>
+
+    <string name="Ftp_Passowrd">एफ़टीपी पासवर्ड</string>
+    <string name="Enter_Ftp_Password">पासवर्ड दर्ज करें </string>
+    <string name="file_is_uploaded_successfully">फ़ाइल सफलतापूर्वक अपलोड हो गई</string>
+    <string name="file_is_uploaded_failed">फ़ाइल अपलोड विफल है</string>
+    <string name="Database_Upload">डेटाबेस अपलोड</string>
+    <string name="Log_File_Upload">लॉग फ़ाइल अपलोड</string>
+    <string name="Upload_log_to_FTP">एफ़टीपी में लॉग अपलोड करें</string>
+    <string name="DEVICE_PARAMETERS">डिवाइस पैरामीटर्स</string>
+    <string name ="Cumulative_Current_Stock">संचयी चालू स्टॉक</string>
+    <string name="No_Response">कोई प्रतिक्रिया नहीं</string>
+
+    //only writing english messages in application level
+    <string name="Invlid_login">Invalid login</string>
+    <string name="Invalid_password">अमान्य पासवर्ड</string>
+    <string name="This_not_allowed_time_to_login">This not allowed time to login</string>
+    <string name ="Enter_valid_password">वैध पासवर्ड दर्ज करें</string>
+    <string name="Distribution_Response">वितरण प्रतिक्रिया</string>
+    <string name="Distribution_Failed_Please_try_again">वितरण विफल, कृपया पुनः प्रयास करें</string>
+    <string name="All_Offline_txn_records_were_Uploaded_to_server">सभी ऑफलाइन सौदे सर्वर पर सफलतापूर्वक अपलोड किए जा चुके है</string>
+    <string name="Pending_txn_records_are_exists_Please_try_again">लंबित सौदो की रिकॉर्ड मौजूद हैं, कृपया पुनः प्रयास करें</string>
+    <string name="Upload_Error">अपलोड विफल, कृपया पुनः प्रयास करें</string>
+    <string name="Invalid_card_type">अमान्य कार्ड प्रकार</string>
+
+    <string name="Entitlement_already_taken_for_this_RC">इस RC के लिए पात्रता पहले ही ली जा चुकी है</string>
+    <string name="Please_place_two_fingers_on_thescanner_one_after_the_other">कृपया एक के बाद एक दो उंगलियों को \n स्कैनर पर रखें</string>
+
+    //fusion fingers
+    <string name="Please_Select_Any_Two_Fingers">कृपया कोई दो उँगलियों का चयन करेंं</string>
+    <string name="Select_Any_Two_Fingers">कोई दो उँगलियों का चयन करेंं</string>
+   <!-- <string name="Left_thumb">बायां अंगूठा </string>
+    <string name="Left_index">बायां तर्जनी</string>
+    <string name="Left_middle">बायां मध्यमा</string>
+    <string name="Left_ring">बायां अनामिका</string>
+    <string name="Left_little">बायां कनिष्ठा</string>
+    <string name="right_thumb">दायां अंगूठा</string>
+    <string name="right_index">दायां तर्जनी</string>
+    <string name="right_middle">दायां मधयमा</string>
+    <string name="right_ring"> दायां अनामिका</string>
+    <string name="right_little">दायां कनिष्ठा</string>-->
+
+
 
 
 

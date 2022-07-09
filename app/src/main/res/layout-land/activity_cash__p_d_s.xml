@@ -56,7 +56,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/black"
                         android:gravity="left"
-                        android:textColor="@color/black"
+                        android:textColor="@color/ik_green"
                         android:textSize="@dimen/TextsizeT"
                         android:textStyle="bold" />
 
@@ -153,8 +153,6 @@
                                 android:textSize="@dimen/TextsizeH" />
                         </LinearLayout>
                     </LinearLayout>
-
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -285,6 +283,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:checked="true"
+                    android:inputType="number"
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/RC_No"
                     android:textSize="25dp" />
@@ -314,7 +313,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <TextView
                         android:id="@+id/cardno"
                         android:layout_width="wrap_content"
@@ -334,12 +332,11 @@
                         android:layout_height="match_parent"
                         android:layout_marginLeft="20dp"
                         android:inputType="number"
-                        android:text="" />
+                        android:text=""
+                        android:imeOptions="flagNoExtractUi"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
-
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -387,12 +384,34 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
-                android:text="@string/Get_Details"
+                android:text="@string/Mem_Details"
                 android:foreground="@drawable/custom_ripple"
                 android:textColor="@color/white"
                 android:textSize="@dimen/TextsizeB"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/LayoutMH"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/card_status"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:text="@string/Card_Status"
+                android:foreground="@drawable/custom_ripple"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TextsizeB"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"

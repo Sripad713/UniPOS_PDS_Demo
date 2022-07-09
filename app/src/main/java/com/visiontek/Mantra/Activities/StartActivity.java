@@ -1,71 +1,75 @@
 package com.visiontek.Mantra.Activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
-import android.telephony.TelephonyManager;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.visiontek.Mantra.Database.DatabaseHelper;
+import com.visiontek.Mantra.Models.DealerDetailsModel.GetURLDetails.fpsCommonInfoModel.fpsCommonInfo;
+import com.visiontek.Mantra.Models.DealerDetailsModel.GetUserDetails.DealerModel;
+import com.visiontek.Mantra.Models.RHMS;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.FileLoggingTree;
+import com.visiontek.Mantra.Utils.RhmsUtils;
 import com.visiontek.Mantra.Utils.SharedPref;
-import com.visiontek.Mantra.Utils.TelephonyInfo;
 import com.visiontek.Mantra.Utils.Util;
 import com.visiontek.Mantra.Utils.XML_Parsing;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import timber.log.Timber;
 
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
+import static com.visiontek.Mantra.Models.AppConstants.Dealername;
 import static com.visiontek.Mantra.Models.AppConstants.Debug;
 import static com.visiontek.Mantra.Models.AppConstants.VERSION_NO;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
-import static com.visiontek.Mantra.Models.AppConstants.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.latitude;
-import static com.visiontek.Mantra.Utils.Util.RDservice;
+import static com.visiontek.Mantra.Models.AppConstants.longitude;
+import static com.visiontek.Mantra.Models.AppConstants.offlineEligible;
+import static com.visiontek.Mantra.Models.AppConstants.txnType;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
-
 public class StartActivity extends BaseActivity {
-    int PSp, RS, NS, AC, WS,WC, AF;
-
+    int PSp, RS, NS, AC, WS, WC, AF;
     private static final int REQUEST_READ_PHONE_STATE = 1;
     private static final int REQUEST_ACCESS_COARSE_LOCATION = 2;
     private static final int REQUEST_STORAGE_WRITE_SDCARD = 3;
@@ -75,23 +79,23 @@ public class StartActivity extends BaseActivity {
     Context context;
     Button start, quit, settings;
     ProgressDialog pd = null;
-    LocationManager locationManager;
-    TelephonyInfo telephonyInfo;
-    String STATE, IMEI;
-    TelephonyManager telephonyManager;
-    SubscriptionManager subscriptionManager;
-    List<SubscriptionInfo> subscriptionInfoList;
+    SharedPref SharedPref;
 
-    com.visiontek.Mantra.Utils.SharedPref SharedPref;
+    /************* OFFLINE DECLARATIONS ***************/
+    DatabaseHelper db;
+    DealerModel dealerModel = new DealerModel();
 
-
+    /*************************************************/
     @Override
     public void initialize() {
 
         try {
-            context=StartActivity.this;
+            context = StartActivity.this;
+            SharedPref = com.visiontek.Mantra.Utils.SharedPref.getInstance(context);
+            db = new DatabaseHelper(context);
             checkLanguage();
             Timber.plant(new FileLoggingTree());
+            Timber.d("Kiran is a good boy");
             mp = MediaPlayer.create(context, R.raw.c100041);
             mp.start();
 
@@ -108,29 +112,27 @@ public class StartActivity extends BaseActivity {
             grantPermission();
             start.setOnClickListener(view -> {
                 preventTwoClick(view);
-
-                if (DEVICEID!=null && Startbutton() && DEVICEID.length() > 0   ) {
+                SharedPref.saveData("MODE",-1);
+                if (DEVICEID != null && Startbutton() && DEVICEID.length() > 0) {
                     if (Util.networkConnected(context)) {
-                        if (mp != null) {
-                            releaseMediaPlayer(context, mp);
-                        }
-                        if (L.equals("hi")) {
-                            mp = MediaPlayer.create(context, R.raw.c200175);
-                        } else {
-                            mp = MediaPlayer.create(context, R.raw.c100175);
-                        }
-                        mp.start();
-                        FramexmlforDealerDetails();
+                        hitit();
                     } else {
-                        show_AlertDialog(
-                                context.getResources().getString(R.string.Login),
-                                context.getResources().getString(R.string.Internet_Connection),
-                                context.getResources().getString(R.string.Internet_Connection_Msg),0);
+                        txnType = -1;
+                        System.out.println();
+                        int offLineCheckFlag = db.checkForOfflineDistribution();
+                        if (offLineCheckFlag == 0)  {
+                            offlineEligible = 1;
+                            System.out.println("@@offline eligible");
+                            show_AlertDialog(context.getResources().getString(R.string.Internet_Not_Available), context.getResources().getString(R.string.proceed_offline), "", 2);
+                        } else if (offLineCheckFlag < 0)
+                            show_AlertDialog(context.getResources().getString(R.string.Offline_Data_Not_available),  context.getResources().getString(R.string.Please_login_in_online_mode), "", 3);
+                        else
+                            show_AlertDialog(context.getResources().getString(R.string.Login),context.getResources().getString(R.string.Internet_Connection), context.getResources().getString(R.string.Internet_Connection_Msg), 3);
                     }
                 } else {
                     show_AlertDialog(
                             context.getResources().getString(R.string.Login),
-                            "Permissions","Please Grant All Permission", 0);
+                            "Permissions", "Please Grant All Permission", 0);
                 }
             });
 
@@ -140,9 +142,6 @@ public class StartActivity extends BaseActivity {
                         context.getResources().getString(R.string.Do_you_want_to_Cancel)
                 );
             });
-
-            grantPermission();
-
             settings.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -153,8 +152,9 @@ public class StartActivity extends BaseActivity {
             });
 
         } catch (Exception ex) {
-
+            System.out.println("@@Exception: " + ex.toString());
             Timber.tag("StartActivity-onCreate-").e(ex.getMessage(), "");
+
         }
     }
 
@@ -167,12 +167,8 @@ public class StartActivity extends BaseActivity {
         Startbutton();
         toolbarActivity.setText(context.getResources().getString(R.string.Login));
     }
-
-
-
     private void checkLanguage() {
         try {
-            SharedPref = com.visiontek.Mantra.Utils.SharedPref.getInstance(context);
             String value = SharedPref.getData("LANG");
             if (value != null) {
                 if (value.length() < 1) {
@@ -184,11 +180,10 @@ public class StartActivity extends BaseActivity {
             L = SharedPref.getData("LANG");
             setLocal(L);
         } catch (Exception ex) {
+            System.out.println("@@Exception111...." + ex.toString());
             Timber.tag("StartActivity-checklng-").e(ex.getMessage(), "");
         }
     }
-
-
     private void grantPermission() {
         PSp = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
         RS = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
@@ -209,7 +204,7 @@ public class StartActivity extends BaseActivity {
             askpermission();
         } else if (WC != PackageManager.PERMISSION_GRANTED) {
             askpermission();
-        }else if (AF != PackageManager.PERMISSION_GRANTED) {
+        } else if (AF != PackageManager.PERMISSION_GRANTED) {
             askpermission();
         }
     }
@@ -239,7 +234,6 @@ public class StartActivity extends BaseActivity {
 
     private void FramexmlforDealerDetails() {
         try {
-
             String dealers = "<?xml version='1.0' encoding='UTF-8' standalone='no' ?>\n" +
                     "<SOAP-ENV:Envelope\n" +
                     "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
@@ -249,7 +243,7 @@ public class StartActivity extends BaseActivity {
                     "    xmlns:ns1=\"http://service.fetch.rationcard/\">\n" +
                     "    <SOAP-ENV:Body>\n" +
                     "        <ns1:getPDSFpsNoDetails>\n" +
-                    "            <VersionNo>"+VERSION_NO+"</VersionNo>\n" +//static
+                    "            <VersionNo>" + VERSION_NO + "</VersionNo>\n" +//static
                     "            <deviceID>" + DEVICEID + "</deviceID>\n" +//dynamic
                     "            <token>7797602c3da57f23e57a259b60358622</token>\n" +//static
                     "            <key>111</key>\n" +//static
@@ -262,13 +256,15 @@ public class StartActivity extends BaseActivity {
                     "        </ns1:getPDSFpsNoDetails>\n" +
                     "    </SOAP-ENV:Body>\n" +
                     "</SOAP-ENV:Envelope>\n";
-            if(Debug) {
+            if (Debug) {
                 Util.generateNoteOnSD(context, "DealerDetailsReq.txt", dealers);
             }
             hitURLforDealer(dealers);
+            Timber.d("StartActivity-FramexmlforDealerDetails Req : "+dealers);
         } catch (Exception ex) {
-
-            Timber.tag("StartActivity-Format-").e(ex.getMessage(), "");
+            System.out.println("@@Exceptionnnnnn: " + ex.toString());
+            //Timber.tag("StartActivity-Format-").e(ex.getMessage(), "");
+            Timber.e("StartActivity-Format "+ex.getLocalizedMessage());
         }
     }
 
@@ -294,22 +290,108 @@ public class StartActivity extends BaseActivity {
                     if (!isError.equals("00")) {
                         show_AlertDialog(
                                 context.getResources().getString(R.string.Login),
-                                context.getResources().getString(R.string.ResponseCode)+isError,
-                                context.getResources().getString(R.string.ResponseCode)+msg,0);
+                                context.getResources().getString(R.string.ResponseCode) + isError,
+                                context.getResources().getString(R.string.ResponseCode) + msg, 0);
                     } else {
-                        Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
+                        /********************** OFFLINE CODE *******************/
+                        System.out.println("@@Inserting into DB:");
+                        int ret = db.insertStateDetails(dealerConstants.stateBean.stateCode, dealerConstants.stateBean.stateNameEn, dealerConstants.stateBean.stateNameLl, dealerConstants.stateBean.stateProfile, dealerConstants.stateBean.stateReceiptHeaderEn, dealerConstants.stateBean.stateReceiptHeaderLl, dealerConstants.stateBean.statefpsId, dealerConstants.stateBean.consentHeader, dealerConstants.stateBean.consentHeader);
+                        System.out.println("@@Value of ret: " + ret);
+                        System.out.println("@@Checking for partial online eligibility");
+                        fpsCommonInfo fpsCommonInfoData = dealerConstants.fpsCommonInfo;
+                        if (fpsCommonInfoData.partialOnlineOfflineStatus.equals("Y")) {
+                            System.out.println("@@Partial online offline status enabled... Downling offline data");
+                            if (Util.networkConnected(context)) {
 
+                                System.out.println("@@Going to DealerDetailsActivity");
+                                Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(i);
+                            } else {
+                                show_AlertDialog(context.getResources().getString(R.string.Internet_Connection_Msg), context.getResources().getString(R.string.Internet_Connection), "", 3);
+                            }
+                        } else {
+
+                            if(fpsCommonInfoData.partialOnlineOfflineStatus.equals("N")){
+
+                                System.out.println("@@Data not available in download");
+                                System.out.println("@@Data not available in download please go online");
+                                Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(i);
+
+                            }
+                            /*if (fpsCommonInfoData.partialOnlineOfflineStatus.equals("Y"))
+                            {
+                                System.out.println("@@OFFLINE PENDING UPLOADINS >>>>");
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        String errorMessage = "";
+                                        OfflineUploadNDownload offlineUploadNDownload = new OfflineUploadNDownload(context);
+                                        int pendingTxns = db.getPendingTxnCount();
+                                        if (pendingTxns > 0){
+                                            int ret = offlineUploadNDownload.ManualServerUploadPartialTxns(fpsCommonInfoData.fpsId, fpsCommonInfoData.fpsSessionId);
+                                            System.out.println("RET>>>>>>>   "+ret);
+                                            if (ret == -2) {
+                                                errorMessage = "Internet not available";
+                                            }
+                                            if(ret == 0){
+                                                //Delete Database
+                                                System.out.println("DELETEEEE");
+                                                db.forceDelteKeyRegNPosOb();
+                                            }
+                                        }
+
+                                        String finalErrorMessage = errorMessage;
+                                        StartActivity.this.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if(finalErrorMessage.isEmpty()){
+                                                    System.out.println("@@Data not available in download");
+                                                    System.out.println("@@Data not available in download please go online");
+                                                    Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
+                                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    startActivity(i);
+                                                }
+                                            }
+                                        });
+                                    }
+                                }).start();
+                            }*/
+                        }
                     }
                 }
             });
             request.execute();
         } catch (Exception ex) {
-
-            Timber.tag("StartActivity-Request-").e(ex.getMessage(), "");
+            System.out.println("@@Exceptiooooo: " + ex.toString());
+            Timber.e("StartActivity-hitURLforDealer Exception ==> :"+ex.getLocalizedMessage());
+            //Timber.tag("StartActivity-Request-").e(ex.getMessage(), "");
         }
     }
+
+    //Offline
+    public void Dismiss() {
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+
+    //Offline
+    public void Show(String title, String msg) {
+        SpannableString ss1 = new SpannableString(title);
+        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
+        SpannableString ss2 = new SpannableString(msg);
+        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
+
+
+        pd.setTitle(ss1);
+        pd.setMessage(ss2);
+        pd.setCancelable(false);
+        pd.show();
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -329,12 +411,10 @@ public class StartActivity extends BaseActivity {
                 getBaseContext().getResources().updateConfiguration(con, getBaseContext().getResources().getDisplayMetrics());
             }
         } catch (Exception ex) {
-
+            System.out.println("@@Exceptttttt: " + ex.toString());
             Timber.tag("StartActivity-SetLng-").e(ex.getMessage(), "");
         }
     }
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -374,32 +454,29 @@ public class StartActivity extends BaseActivity {
                 break;
         }
     }
-
-    private boolean Startbutton() {
+    private boolean Startbutton(){
         try {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //DEVICEID = Build.getSerial();
-            //DEVICEID = "MTR4361880";
-            DEVICEID = "0110000106";
-            toolbarFpsidValue.setText(DEVICEID);
-            toolbarLatitudeValue.setText(latitude);
-            toolbarLongitudeValue.setText(longitude);
-        }
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                   DEVICEID = Build.getSerial();//field
+                  //DEVICEID = "MTR4361844";
+                  //DEVICEID = "0110000106";//our device
+                  //DEVICEID = "MTR4361828";//present
+                 toolbarFpsidValue.setText(DEVICEID);
+                 toolbarLatitudeValue.setText(latitude);
+                 toolbarLongitudeValue.setText(longitude);
+            }
         } catch (Exception ex) {
+            System.out.println("@@Exceptiooonnnnn: " + ex.toString());
             Timber.tag("StartActivity-onCreate-").e(ex.getMessage(), "");
             return false;
         }
         return true;
     }
 
-
-
-    private void show_Dialogbox(String header,String msg ) {
+    private void show_Dialogbox(String header, String msg) {
 
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -415,7 +492,8 @@ public class StartActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                finish();
+                //finish();
+                finishAffinity();
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -431,7 +509,7 @@ public class StartActivity extends BaseActivity {
         dialog.show();
     }
 
-    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
+    private void show_AlertDialog(String headermsg,String bodymsg, String talemsg, int i) {
 
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -441,18 +519,24 @@ public class StartActivity extends BaseActivity {
         TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
         TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
         TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
+        //TextView title = (TextView) dialog.findViewById(R.id.alertdialogTitle);
         head.setText(headermsg);
         body.setText(bodymsg);
         tale.setText(talemsg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                if (i == 1) {
-                    Intent i = new Intent(StartActivity.this, DealerDetailsActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                }
+        //title.setText(titlemsg);
+        confirm.setOnClickListener(v -> {
+            preventTwoClick(v);
+            dialog.dismiss();
+            if (i == 1) {
+                Intent i1 = new Intent(StartActivity.this, DealerDetailsActivity.class);
+                i1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i1);
+            } else if (i == 2) {
+                System.out.println("@@Displaying password_dialog");
+                password_Dialog();
+            } else if (i == 10) {
+                startActivity(new Intent(context, Device_Update.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
             }
         });
         dialog.setCanceledOnTouchOutside(false);
@@ -462,25 +546,308 @@ public class StartActivity extends BaseActivity {
     }
 
 
-    public void Dismiss(){
-        if (pd.isShowing()) {
-            pd.dismiss();
+
+
+
+    //Offline
+    private void password_Dialog() {
+        if (mp != null) {
+            releaseMediaPlayer(context, mp);
+        }
+        if (L.equals("hi")) {
+        } else {
+            mp = mp.create(context, R.raw.c100074);
+            mp.start();
+        }
+
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.uid);
+        Button confirm = (Button) dialog.findViewById(R.id.confirm);
+        Button back = (Button) dialog.findViewById(R.id.back);
+        TextView tv = (TextView) dialog.findViewById(R.id.dialog);
+        TextView status = (TextView) dialog.findViewById(R.id.status);
+        final EditText enter = (EditText) dialog.findViewById(R.id.enter);
+        tv.setText(context.getResources().getString(R.string.Password));
+        status.setText(context.getResources().getString(R.string.Please_Enter_Password));
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                preventTwoClick(v);
+                System.out.println("@@Clicked on confirm");
+                dialog.dismiss();
+                dealerModel.EnterPassword = enter.getText().toString();
+                System.out.println("@@Password entered: " + dealerModel.EnterPassword);
+                if (!dealerModel.EnterPassword.isEmpty()) {
+                    System.out.println("@@Password matched");
+                    if (mp != null) {
+                        System.out.println("@@Medi player not null");
+                        releaseMediaPlayer(context, mp);
+                    }
+                    if (L.equals("hi")) {
+                        System.out.println("@@Hindi language");
+                    } else {
+
+                        System.out.println("@@Eng lang");
+                        mp = mp.create(context, R.raw.c100178);
+                        mp.start();
+                    }
+                    System.out.println("@@Going to proceedinOffline API");
+                    proceedinOffline(dealerModel.EnterPassword);
+                } else {
+                    System.out.println("@@Invalid password");
+                    show_AlertDialog(Dealername,
+                            context.getResources().getString(R.string.Invalid_Password),
+                            context.getResources().getString(R.string.Please_Enter_a_valid_Password),
+                            0);
+                }
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    //offline
+    public void proceedinOffline(String password) {
+        System.out.println("@@In proceedinOffline mode received txnType: " + txnType);
+        String errorMessage1 = db.loginByPassword(this, password);
+        System.out.println("@@Data in error message: " + errorMessage1);
+        if (errorMessage1.equalsIgnoreCase("Invalid password")) {
+            System.out.println("@@Received invalid password");
+            show_AlertDialog(context.getResources().getString(R.string.Invalid_login), context.getResources().getString(R.string.Invalid_password),
+                    context.getResources().getString(R.string.Enter_valid_password), 3);
+        } else if (errorMessage1.isEmpty()) {
+            System.out.println("@@Response empty going to HomeActivity.java class");
+            dealerConstants = null;
+            Intent home = new Intent(context, HomeActivity.class);
+            startActivity(home);
+        } else {
+            System.out.println("@@In else");
+            show_AlertDialog(context.getResources().getString(R.string.Login), errorMessage1, "", 3);
         }
     }
-    public void Show(String title,String msg){
-        SpannableString ss1=  new SpannableString(title);
-        ss1.setSpan(new RelativeSizeSpan(2f), 0, ss1.length(), 0);
-        SpannableString ss2=  new SpannableString(msg);
-        ss2.setSpan(new RelativeSizeSpan(3f), 0, ss2.length(), 0);
 
 
-        pd.setTitle(ss1);
-        pd.setMessage(ss2);
-        pd.setCancelable(false);
-        pd.show();
+    //================Checkfor update
+
+    public void hitit() {
+        try {
+
+            String url = "https://rhms2.visiontek.co.in/api/ApplicationStatus?serialNo=" + Build.SERIAL;
+
+            new makeservicecall().execute(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-}
 
+    String finalResponse, msg;
+
+    public class makeservicecall extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Show(context.getResources().getString(R.string.Downloading),
+                    context.getResources().getString(R.string.Please_wait));
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String reqURL = params[0];
+            String response = null;
+            try {
+                URL url = new URL(reqURL);
+                URLConnection urlConnection = url.openConnection();
+                HttpURLConnection httpConn = (HttpURLConnection) urlConnection;
+                httpConn.setRequestMethod("GET");
+                try {
+                    InputStream in = new BufferedInputStream(httpConn.getInputStream());
+                    response = convertStreamToString(in);
+                    finalResponse = response;
+
+
+                } catch (Exception e) {
+                    msg = "No Response for this Device";
+                    e.printStackTrace();
+                    return false;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("==1" + e.getMessage());
+                msg = e.getMessage();
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            Dismiss();
+            if (result) {
+                System.out.println("FINALREPONSE >>>>>>"+finalResponse);
+                parseXml_dealer(finalResponse);
+            } else {
+                if (mp != null) {
+                    releaseMediaPlayer(context, mp);
+                }
+                if (L.equals("hi")) {
+                    mp = MediaPlayer.create(context, R.raw.c200175);
+                } else {
+                    mp = MediaPlayer.create(context, R.raw.c100175);
+                }
+                mp.start();
+                txnType = 1;
+                FramexmlforDealerDetails();
+
+            }
+        }
+    }
+
+    public String convertStreamToString(InputStream stream) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            msg = e.getMessage();
+        }
+        return sb.toString();
+    }
+
+    public void parseXml_dealer(String xmlString) {
+        ArrayList<RHMS> Application = new ArrayList<>();
+        try {
+
+            System.out.println("=============" + xmlString);
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            factory.setNamespaceAware(true);
+            XmlPullParser xpp = factory.newPullParser();
+            xpp.setInput(new StringReader(xmlString));
+            int eventType = xpp.getEventType();
+            RHMS rhms = null;
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if (eventType == XmlPullParser.START_TAG) {
+                    if (xpp.getName().equals("ProjectName")) {
+                        eventType = xpp.next();
+                        if (eventType == XmlPullParser.TEXT) {
+                            rhms = new RHMS();
+                            rhms.ProjectName = (xpp.getText());
+                        }
+                    }
+                    if (eventType == XmlPullParser.START_TAG) {
+                        if (xpp.getName().equals("ApplicationType")) {
+                            eventType = xpp.next();
+                            if (eventType == XmlPullParser.TEXT) {
+                                rhms.ApplicationType = (xpp.getText());
+                            }
+                        }
+                    }
+                    if (eventType == XmlPullParser.START_TAG) {
+                        if (xpp.getName().equals("ApplicationName")) {
+                            eventType = xpp.next();
+                            if (eventType == XmlPullParser.TEXT) {
+                                rhms.ApplicationName = (xpp.getText());
+                            }
+                        }
+                    }
+                    if (eventType == XmlPullParser.START_TAG) {
+                        if (xpp.getName().equals("Version")) {
+                            eventType = xpp.next();
+                            if (eventType == XmlPullParser.TEXT) {
+                                rhms.Version = (xpp.getText());
+                            }
+                        }
+                    }
+                    if (eventType == XmlPullParser.START_TAG) {
+                        if (xpp.getName().equals("ApplicationURL")) {
+                            eventType = xpp.next();
+                            if (eventType == XmlPullParser.TEXT) {
+                                rhms.ApplicationURL = (xpp.getText());
+                                Application.add(rhms);
+                            }
+                        }
+                    }
+                }
+                eventType = xpp.next();
+            }
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+            msg = e.getMessage();
+
+        }
+        if (!check(Application)) {
+            if (mp != null) {
+                releaseMediaPlayer(context, mp);
+            }
+            if (L.equals("hi")) {
+                mp = MediaPlayer.create(context, R.raw.c200175);
+            } else {
+                mp = MediaPlayer.create(context, R.raw.c100175);
+            }
+            mp.start();
+            txnType = 1;
+            FramexmlforDealerDetails();
+        } else {
+            show_AlertDialog(context.getResources().getString(R.string.TMS),
+                    "",
+                    context.getResources().getString(R.string.Update_Found),
+                    10);
+        }
+    }
+
+    private boolean check(ArrayList<RHMS> Application) {
+        try {
+            if (Application.size() > 0) {
+                String appver;
+                float version, appversion;
+                for (int val = 0; val < Application.size(); val++) {
+                    if (Application.get(val).ApplicationName.equals("MantraPDS")) {
+                        version = Float.parseFloat(Application.get(val).Version);
+                        appver = getAppVersionFromPkgName(context, Application.get(val).ApplicationType);
+                        appversion = Float.parseFloat(appver);
+                        //change
+                        //Download(Application.get(val).ApplicationURL, Application.get(val).ApplicationName, Application.get(val).Version);
+                        return appversion < version;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg = e.getMessage();
+        }
+        return false;
+    }
+
+    public String getAppVersionFromPkgName(Context context, String Packagename) {
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+
+            return pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+
+}
 
 /*
  private boolean getLocation() {

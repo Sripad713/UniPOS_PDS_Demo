@@ -313,6 +313,8 @@ public class BeneficiaryVerificationActivity extends BaseActivity {
         FilterArray[0] = new InputFilter.LengthFilter(Integer.parseInt(dealerConstants.fpsURLInfo.cardEntryLength));
         id.setFilters(FilterArray);
         toolbarActivity.setText(context.getResources().getString(R.string.BENEFICIARY));
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
     }
 
     private void show_AlertDialog(String headermsg, String bodymsg, String talemsg, int i) {

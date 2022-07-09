@@ -72,7 +72,6 @@
                     android:text="@string/Consent_Form"
                     android:textColor="@color/blackblack"
                     android:textSize="20sp"
-
                     android:textStyle="bold" />
 
             <Button

@@ -306,7 +306,7 @@
                         android:layout_height="@dimen/ButtonH"
                         android:layout_margin="@dimen/ButtonM"
                         android:layout_weight="1"
-                        android:text="@string/Quit"
+                        android:text="@string/Exit"
                         android:shadowRadius="20"
                         android:background="@color/cancel"
                         android:textColor="@color/white"

@@ -12,5 +12,6 @@ public class rcMemberDetVerify implements Serializable {
             verification,
             verifyStatus_en,
             verifyStatus_ll,
-            w_uid_status;
+            w_uid_status,
+            DaadhaarAuthType;
 }

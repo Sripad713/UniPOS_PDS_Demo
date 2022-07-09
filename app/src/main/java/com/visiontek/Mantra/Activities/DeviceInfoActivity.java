@@ -69,7 +69,6 @@ public class DeviceInfoActivity extends BaseActivity {
         }
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void saveInfo(Context context) {
         try {

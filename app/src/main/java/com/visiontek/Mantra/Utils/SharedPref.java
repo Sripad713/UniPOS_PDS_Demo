@@ -16,7 +16,7 @@ public class SharedPref {
             return SharedPref;
         }
 
-        private SharedPref(Context context) {
+        public SharedPref(Context context) {
             sharedPreferences = context.getSharedPreferences("PDS", Context.MODE_PRIVATE);
         }
 
@@ -26,11 +26,24 @@ public class SharedPref {
             prefsEditor.apply();
         }
 
+    public void saveData(String key, int value) {
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        prefsEditor .putInt(key, value);
+        prefsEditor.apply();
+    }
+
         public String getData(String key) {
             if (sharedPreferences!= null) {
                 return sharedPreferences.getString(key, "");
             }
             return null;
         }
+
+    public int getIntegerData(String key) {
+        if (sharedPreferences!= null) {
+            return sharedPreferences.getInt(key, -1);
+        }
+        return -1;
+    }
 
 }

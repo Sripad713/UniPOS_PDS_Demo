@@ -25,7 +25,8 @@ public class fpsCommonInfo implements Serializable {
             wadhValue,
             weighAccuracyValueInGms,
             weighingStatus,
-            eKYCPrompt;
+            eKYCPrompt,
+            aadhaarAuthType;
 
 //================================fpsDetails===========================
 

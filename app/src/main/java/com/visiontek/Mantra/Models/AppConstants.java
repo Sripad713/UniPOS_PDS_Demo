@@ -7,8 +7,8 @@ import com.visiontek.Mantra.Models.MenuDetailsModel.Menus;
 public class AppConstants {
     /*public static String DEVICEID = "0110000106";*/
     public static String DEVICEID = "";
-    public static boolean Debug = false;
-    public static String VERSION_NO = "2.3";
+    public static boolean Debug = true;
+    public static String VERSION_NO = "1.7";
 
     public static Dealer dealerConstants;
     public static Member memberConstants;
@@ -23,7 +23,11 @@ public class AppConstants {
     public static String longitude;
     public static String latitude;
 
-
+    /**************** OFFLINE FLAGS *****************/
+    public static int txnType = 0;
+    public static int offlineEligible = 0;
+    public static String OFFLINE_TOKEN = "9f943748d8c1ff6ded5145c59d0b2ae7";
+    /***********************************************/
     /**
      * subclass 6 means that the usb mass storage device implements the SCSI
      * transparent command set

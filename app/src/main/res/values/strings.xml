@@ -38,7 +38,7 @@
     <string name="Sale_State_FPSID">Sale State FPSID</string>
     <string name="Receipt_No">Receipt No</string>
     <string name="Shop_ID">Shop ID</string>
-    <string name="Consumer_Name">Consumer Name</string>
+    <string name="Consumer_Name">Name of Consumer</string>
     <string name="UID_Ref_ID">UID Ref ID</string>
     <string name="ItemTot">Item(Tot)</string>
     <string name="AvailQty">AvailQty</string>
@@ -52,7 +52,7 @@
 
 
     <string name="Exception">Exception </string>
-    <string name="BENEFICIARY">Beneficiary</string>
+    <string name="BENEFICIARY">BENEFICIARY</string>
 
 
     //start
@@ -65,7 +65,9 @@
     <string name="COMMODITY_WEIGHT">COMMODITY WEIGHT</string>
     <string name="COMMODITY_WEIGHING">COMMODITY WEIGHING</string>
     <string name="Iris">I</string>
-    <string name="Quit">Quit</string>
+    <!--<string name="Quit">Quit</string>-->
+    <string name="Exit">Exit</string>
+
     <string name="Settings">Settings</string>
     <string name="ResponseCode">ResponseCode :</string>
     <string name="Reasonreq">Reason Request</string>
@@ -102,10 +104,10 @@
 
     //cash_pds
     <string name="CASH_PDS">CASH PDS</string>
-    <string name="RC_No">RC No</string>
+    <string name="RC_No">RATION CARD NO.</string>
     <string name="Aadhaar">Aadhaar </string>
     <string name="Card_No">RC No.</string>
-    <string name="Get_Details">Get Details</string>
+    <string name="Mem_Details">MEMBERS DETAILS</string>
     <string name="Home">Home</string>
     <string name="Last_Reciept">Last Reciept</string>
     <string name="Home_State_Name">Home State Name</string>
@@ -125,7 +127,7 @@
 
     //issue
     <string name="ISSUE">ISSUE</string>
-    <string name="Cash_PDS">Cash PDS </string>
+    <string name="Cash_PDS">CHHATISGARH PDS</string>
     <string name="Cashless_PDS">Cashless PDS</string>
     <string name="IMPDS">IMPDS</string>
 
@@ -133,10 +135,11 @@
     <string name="MEMEBER_DETAILS">MEMEBER DETAILS</string>
     <string name="UID">UID</string>
     <string name="Iris1">Iris</string>
+    <string name="Otp">OTP</string>
 
     //commodities
     <string name="COMMODITIES">COMMODITIES</string>
-    <string name="CName">CName</string>
+    <string name="CName">Commodity</string>
     <string name="BalQty">BalQty</string>
     <string name="Rate">Rate</string>
     <string name="issueQty">IssueQty</string>
@@ -169,14 +172,14 @@
     <string name="AAY">AAY</string>
     <string name="SFY">SFY</string>
     <string name="PHH">PHH</string>
-    <string name="TOTAL">TOTAL</string>
+    <string name="TOTAL">TOTAL SALE (in Kgs)</string>
     <string name="TOTAL_AMOUNT">TOTAL AMOUNT</string>
 
     //stock_report
     <string name="CURRENT_STOCK">CURRENT STOCK</string>
     <string name="Scheme">Scheme</string>
     <string name="Stock">Stock</string>
-    <string name="CB">CB</string>
+    <string name="CB">CB(in Kgs)</string>
 
 
     //reports
@@ -191,7 +194,8 @@
     <string name="Update">Update</string>
 
     <string name="Device_Info">Device Info</string>
-    <string name="Pairing">Pairing</string>
+    <string name="Pairing">Weighing Device Pairing</string>
+    <string name="Device_Parameters">Device Parameters</string>
 
     //device
     <string name="DEVICE">DEVICE</string>
@@ -243,7 +247,7 @@
     <string name="Start_Ok">OK</string>
 
     <string name="No_Update_Found">No Update Found</string>
-
+    <string name="Update_Found">Update Found</string>
     <string name="FTP">FTP</string>
     <string name="Please_Try_Again">Please Try Again..</string>
     //Dealers Details
@@ -292,7 +296,7 @@
     //Cash pds
     <string name="Please_Enter_a_Valid_Number_RC">Please Enter RC Number</string>
     <string name="Please_Enter_a_Valid_Number_UID">Please Enter 12 digit UID Number</string>
-    <string name="Please_Enter_Valid_Number">Please Enter valid UID Number</string>
+    <string name="Please_Enter_Valid_Number">Please Enter UID</string>
     <string name="Invalid_ID">Invalid RC ID</string>
     <string name="Invalid_UID">Invalid UID</string>
     <string name="This_function_is_not_Enabled_yet">This function is not Enabled yet</string>
@@ -344,7 +348,7 @@
     <string name="Bluetooth">Bluetooth</string>
     <string name="PLEASE_PAIR_THE_DEVICE">PLEASE PAIR THE DEVICE</string>
     <string name="Printer_ERROR">Printer ERROR</string>
-    <string name="Please_check_your_bluetooth_connection">Please check your bluetooth connection</string>
+    <string name="Please_check_your_bluetooth_connection">Please check device bluetooth connection</string>
     <string name="Printer_Error">Printer Error</string>
     <string name="Device_does_not_support_Bluetooth">Device does not support Bluetooth</string>
     <string name="Chhattisgarh">Chhattisgarh</string>
@@ -353,8 +357,8 @@
     <string name="FPS_Owner_Name">FPS Owner Name</string>
     <string name="FPS_No">FPS No</string>
     <string name="Availed_FPS_No">Availed FPS No</string>
-    <string name="Name_of_Consumer">Name of Consumer</string>
-    <string name="TransactionID">TransactionID</string>
+    <string name="Name_of_Consumer">Consumer Name</string>
+    <string name="TransactionID">Transaction ID</string>
     <string name="Transaction">Transaction Successful</string>
     <string name="Printing">Printing, Please Wait</string>
     <string name="Date">Date</string>
@@ -372,7 +376,7 @@
     <string name="Aadhaar_Seeding">Aadhaar Seeding</string>
     <string name="Error_Code">Error Code</string>
     <string name="Member_is_already_Verified">Member is already Verified</string>
-    <string name="Already_Verified">UID Already Seeded</string>
+    <string name="Already_Verified">UID is Already Verified</string>
     <string name="Processing">Processing ...</string>
     <string name="Downloading_APK">Downloading APK</string>
     <string name="Downloading">Downloading </string>
@@ -397,7 +401,7 @@
     <string name="Ration_Card_Number">Ration Card No</string>
     <string name="Commodity_Scheme_Sale">Commodity     Scheme      Sale</string>
     <string name="scheme">SCHEME</string>
-    <string name="sale">Sale</string>
+    <string name="sale">Sale(kgs)</string>
     <string name="Note_Quantitys_In_KgsLtrsPackets">Note:Quantitys In Kgs/Ltrs/Packets</string>
     <string name="No_Data_to_Print">No Data to Print</string>
     <string name="Invalid_Password">Invalid Password</string>
@@ -431,7 +435,7 @@
     <string name="Inspected_By">Inspected By</string>
     <string name="Designation">Designation</string>
     <string name="Status">STATUS</string>
-    <string name="Commidity_CB_Obsevn_Varitn">Commidity  CB    Obsevn   Varitn</string>
+    <string name="Commidity_CB_Obsevn_Varitn">Commidity  CB    Observation  Variation</string>
 
     <string name="part1">I hereby state that I have no objection in authenticating myself with
 Aadhaar based authentication system and consent to providing my Aadhaar number
@@ -468,6 +472,7 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="Not_a_Valid_Weight">Not a Valid Weight</string>
     <string name="Enter_valid_weight">Enter valid weight</string>
     <string name="Please_try_again">Please try again</string>
+    <string name="Please_press_the_tare_button">Please Press the TARE Button on the Weighing Scale</string>
     <string name="Please_Enter_a_valid_Password">Please Enter a valid Password</string>
     <string name="Dealer_FIR_Authentication">Dealer FIR Authentication</string>
     <string name="Dealer_Fusion_Authentication">Dealer Fusion Authentication :</string>
@@ -476,7 +481,7 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="Connect_your_device_to_the_usb_Port">Connect your device to the usb Port</string>
     <string name="USB_Connection">USB Connection</string>
     <string name="Not_Enabled">Not Enabled</string>
-    <string name="Inspection_Details">Inspection Details</string>
+    <string name="Inspection_Details">Inspection Receipt</string>
     <string name="Enter_UID">Enter UID</string>
     <string name="Truck_No">Truck No</string>
     <string name="Invalid_Aadhaar">Invalid Aadhaar</string>
@@ -512,7 +517,7 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="Please_enter_12_digit_uid_number">Please enter 12 digit uid number</string>
     <string name="Offline_Data_Uploading_Failed_Please_Try_again">Offline Data Uploading Failed\Please Try again ..</string>
     <string name="Members_Details_Not_Found_For_The_Card">Members Details Not Found For The Card</string>
-    <string name="UID_Already_Seeded">UID Already Seeded</string>
+    <string name="UID_Already_Seeded">UID is Already Verified</string>
     <string name="Please_accept_consent_form">Please accept consent form</string>
     <string name="Transaction_linked_to_dealer">Transaction linked to dealer</string>
     <string name="UID_is_Not_Present_Please_seed_the_UID_using_UID_seeding">UID is Not Present...\Please seed the UID using UID seeding...</string>
@@ -526,13 +531,14 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="Unable_To_Print_Recipt_due_to_Low_Battery_Please_charge_the_Battery">Unable To Print Recipt due to Low Battery  \Please charge the Battery</string>
     <string name="Please_Select_Other_Mode_of_Communication">Please Select Other Mode of Communication </string>
     <string name="Invalid_Weight">Invalid Weight...</string>
+    <string name="Invalid_Weight_or_Negative">Invalid Weight or Negative</string>
     <string name="USB_Port_Opening_Failed_Please_Select_Other_Mode_of_Communication">USB Port Opening Failed...\Please Select Other Mode of Communication...</string>
     <string name="Enter_the_Quantity_greater_than_zero">Enter the Quantity greater than zero </string>
     <string name="Please_Issue_Commodity_upto_BalQty_only">Please Issue Commodity upto Bal Qty only </string>
     <string name="Issue_quantity_should_more_than_or_equal_to_Minimum_quantity">Issue quantity should more than or equal to Minimum quantity </string>
     <string name="please_take_all_quantity">please take all quantity</string>
     <string name="Please_Issue_Commodity_upto_Closing_Balance_only_Closing_Balance">Please Issue Commodity upto Closing Balance only\Closing Balance </string>
-    <string name="Issue_Qty_Should_Be_Multiple_By_Minimum_Qty">Issue Qty Should Be Multiple By Minimum Qty </string>
+    <string name="Issue_Qty_Should_Be_Multiple_By_Minimum_Qty">Issue Qty Should Be Multiples By Minimum Qty </string>
     <string name="Exceeded_Attempts_for_Iris_Authentication_Please_Opt_for_ScanFP">Exceeded Attempts for Iris Authentication...\Please Opt for Scan-FP</string>
     <string name="Invalid_Dealer_type">Invalid Dealer type...</string>
     <string name="Entered_Wrong_Password">Entered Wrong Password...</string>
@@ -541,11 +547,11 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="UID_is_Empty_Please_Select_Other_Member">UID is Empty...\Please Select Other Member</string>
     <string name="Finger_Not_Placed_On_Scanner">Finger Not Placed On Scanner...</string>
     <string name="No_Response_From_Server_Please_Try_Again">No Response From Server...\Please Try Again</string>
-    v
+
     <string name="Server_is_Busy_Please_Try_Again">Server is Busy...\Please Try Again...</string>
     <string name="String_index_out_of_range_Invalid_Response">String index out of range - Invalid Response</string>
     <string name="Server_is_Not_Active">Server is Not Active</string>
-    <string name="Server_error_Invalid_Response">Server error - Invalid Response</string>
+    <string name="Server_error_Invalid_Response">Invalid Response...\Please try again</string>
     <string name="Please_Call_PMU">Please Call PMU</string>
     <string name="UID_Status">UID Status</string>
     <string name="Incorrect_XML">Incorrect XML</string>
@@ -583,6 +589,8 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="File_Not_Downloaded">File Not Downloaded</string>
     <string name="Server_Error">Server Error</string>
     <string name="Please_Select_Truck_Chit_No">Please Select Truck Chit No</string>
+    <string name="Truck_Chit_No">Truck Chit No</string>
+    <string name="RO">RO</string>
     <string name="Please_Enter_Customer_Aadhaar_No">Please Enter Customer Aadhaar No</string>
     <string name="Please_Enter_Customer_Mobile_No">Please Enter Customer Mobile No</string>
     <string name="Please_Enter_OTP">Please Enter OTP</string>
@@ -593,7 +601,7 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="Invalid_XML">Invalid XML</string>
     <string name="Please_Scan_RC_Number">Please Scan RC Number</string>
     <string name="Please_login_in_online_mode">Please login in online mode</string>
-    <string name="All_offline_txn_records_were_uploaded_to_server">All offline txn records were uploaded to server</string>
+    <string name="All_offline_txn_records_were_uploaded_to_server">All Offline txn records Uploaded to server</string>
     <string name="Acknowledgement_sending_Failed_Please_Try_again">Acknowledgement sending Failed\Please Try again ..</string>
     <string name="Pending_data_unavailable">Pending data unavailable</string>
     <string name="Offline_Data_Downloaded_Successfully">Offline Data Downloaded Successfully</string>
@@ -609,6 +617,7 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="Invalid_Response_Please_try_again">Invalid Response\Please try again</string>
     <string name="Invalid_Response_from_Server_Please_try_again">Invalid Response from Server\Please try again</string>
     <string name="Invalid_Response_From_Server_for_Txn_Upload">Invalid Response From Server for Txn Upload</string>
+    <string name="No_Connectivity_Going_for_Offline_txn">No Connectivity\Going for Offline txn</string>
     <string name="UpdatedReceipts_Id_not_sent_From_Server_for_Txn_Upload">UpdatedReceipts Id not sent From Server for Txn Upload</string>
     <string name="Commodity_Balance_Qty_not_available_for_this_Entered_Card">Commodity Balance Qty not available for this Entered Card</string>
     <string name="Commodity_Closing_balance_not_available_for_this_shop">Commodity Closing balance not available for this shop</string>
@@ -653,5 +662,94 @@ Biometrics and/or One Time Pin (OTP) data for Aadhaar based authentication
     <string name="Network_unavailable">Network unavailable</string>
     <string name="Please_Wait_Downloading_School_Members_Details">Please Wait...\nDownloading School Members Details</string>
     <string name="Please_Enter_School_Id">Please Enter School Id</string>
+    <string name="Internet_Not_Available">Internet not available</string>
+    <string name="updateDownloadSts">Update Download Status</string>
+    <string name="Card_Not_Available">Card Not Available</string>
+    <string name="TotQty">Total Qty</string>
+    <string name="Card_Status">Card status</string>
+    <string name="Upload_Data">Upload data</string>
+    <string name="Offline_Receive_Goods">OFFLINE RECEIVE GOODS</string>
+    <string name="Daily_Sales_Report_Offline">Daily Sale Report Offline</string>
+    <string name="Stock_Report_Offline">Stock Report Offline</string>
+    <string name="Total_Amount">Total Amount</string>
+    <string name="proceed_offline">Proceed In Offline</string>
+    <string name="Please_Enter_Password">Please Enter Password</string>
+    <string name="Offline_Receipt">Offline Receipt</string>
+    <string name="Offline_Login">Offline Login</string>
+    <string name="No_Offline_txns">No pending transactions to upload</string>
+    <string name="Pending_Exists">Pending txn records are exists,Please try again</string>
 
+    //extra PrintActivity
+    <string name="Network_Available">NETWORK AVAILABLE</string>
+    <string name="Please_login_in_Online_mode">Please login in Online mode</string>
+    <string name="Network_Unavailable">Network Unavailable</string>
+    <string name="No_Network_go_to_Offline_Txns">No Network go to Offline Txns</string>
+
+    //showTxnsdetails Alert
+    <string name="Transaction_Details">Transaction Details</string>
+    <string name="Total_Txn_Records">Total Transaction Records</string>
+    <string name="Online_Txn_Records">Online Transaction Records</string>
+    <string name="Offline_Txn_Records">Offline Transaction Records </string>
+    <string name="Uploaded_Offline_Records">Uploaded Offline Records</string>
+    <string name="Pending_Offline_Records">Pending Offline Records</string>
+    <string name="Alloted_Month_Year">Alloted Month And Year</string>
+    <string name="Date_current">Date</string>
+    <string name="Fps_Id">Fps Id</string>
+
+    //aadhaar OTP
+    <string name="Aadhaar_Otp">Aadhaar OTP</string>
+    <string name="Enter_Otp_Number">Enter OTP Number</string>
+    <string name="Otp_Option_Not_Availble">OTP Option is not availble</string>
+    <string name="Invalid_login">Invalid login</string>
+    <string name="Invalid_Otp">Invalid OTP</string>
+    <string name="Please_Enter_valid_OTP">Please Enter a valid OTP</string>
+    <string name="Otp_reuest_time_out">OTP Request Time Out</string>
+    <string name="Please_try_in_other_mode">Please try in Other Mode</string>
+    <string name="Offline_RcMembers">Offline RC Members</string>
+    <string name="Rc_Numbers">RC NUMBERS</string>
+    <string name="Card_Number_does_not_exist">Card Number does not exist</string>
+    <string name="Cumulative_Current_Report">Cumulative Current Stock Report</string>
+    <string name="Offline_Ration_Card_Status">Offline Ration Card Status</string>
+    <string name="Ftp_Passowrd">FTP PASSWORD</string>
+    <string name="Enter_Ftp_Password">Enter FTP PASSWORD</string>
+    <string name="file_is_uploaded_successfully">Uploaded File Successfully</string>
+    <string name="file_is_uploaded_failed">File is Upload Failed</string>
+    <string name="Database_Upload">Database Uplaod</string>
+    <string name="Log_File_Upload">Log File Upload</string>
+    <string name="Upload_log_to_FTP">Upload LOG To FTP</string>
+    <string name="DEVICE_PARAMETERS">DEVICE PARAMETERS</string>
+    <string name="Cumulative_Current_Stock">Cumulative Current Stock</string>
+    <string name="No_Response">NO Response</string>
+
+    //only writing english messages
+
+    <string name="Invlid_login">Invalid login</string>
+    <string name="Invalid_password">Invalid password</string>
+    <string name="This_not_allowed_time_to_login">This not allowed time to login</string>
+    <string name="Enter_valid_password">Enter valid Password</string>
+    <string name="Distribution_Response">Distribution Response</string>
+    <string name="Distribution_Failed_Please_try_again">Distribution Failed,Please try again</string>
+    <string name="All_Offline_txn_records_were_Uploaded_to_server">All Offline txn records Uploaded to server</string>
+    <string name="Pending_txn_records_are_exists_Please_try_again">Pending txn records are exists,Please try again</string>
+    <string name="Upload_Error">Upload Error</string>
+    <string name="Invalid_card_type">Invalid card type</string>
+    <string name="Entitlement_already_taken_for_this_RC">Entitlement already taken for this RC</string>
+    <string name="Please_place_two_fingers_on_thescanner_one_after_the_other">Please place two fingers on the \n scanner one after the other</string>
+
+    //fusion fingers
+    <string name="Please_Select_Any_Two_Fingers">Please Select Any Two Fingers</string>
+    <string name="Select_Any_Two_Fingers">Select Any Two Fingers</string>
+    <string name="Left_thumb">LEFT_THUMB</string>
+    <string name="Left_index">LEFT_INDEX</string>
+    <string name="Left_middle">LEFT_MIDDLE</string>
+    <string name="Left_ring">LEFT_RING</string>
+    <string name="Left_little">LEFT_LITTLE</string>
+    <string name="right_thumb">RIGHT_THUMB</string>
+    <string name="right_index">RIGHT_INDEX</string>
+    <string name="right_middle">RIGHT_MIDDLE</string>
+    <string name="right_ring">RIGHT_RING</string>
+    <string name="right_little">RIGHT_LITTLE</string>
 </resources>
+
+
+

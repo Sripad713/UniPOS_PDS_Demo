@@ -68,6 +68,7 @@ import static com.visiontek.Mantra.Models.AppConstants.memberConstants;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.image;
 import static com.visiontek.Mantra.Utils.Util.networkConnected;
+import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 import static com.visiontek.Mantra.Utils.Util.releaseMediaPlayer;
 
 public class SuccessActivity extends AppCompatActivity implements PrinterCallBack {
@@ -114,7 +115,7 @@ public class SuccessActivity extends AppCompatActivity implements PrinterCallBac
                         mp.start();
                     }
                     es.submit(new TaskPrint(mTerminal100API,str,mActivity,context,i));
-                    Intent home = new Intent(context, CashPDSActivity.class);
+                    Intent home = new Intent(context, IMPDSActivity.class);
                     home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(home);
                     finish();
@@ -375,6 +376,7 @@ public class SuccessActivity extends AppCompatActivity implements PrinterCallBac
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
+                preventTwoClick(v);
                 if (flag_print != 2) {
                     flag_print=2;
                     String str1, str2, str3, str4, str5;
@@ -384,7 +386,7 @@ public class SuccessActivity extends AppCompatActivity implements PrinterCallBac
                                 + context.getResources().getString(R.string.IMPDS) + "\n";
                         image(str1, "header.bmp", 1);
                         str2 = context.getResources().getString(R.string.Home_State) + " : " + home_state_name + "\n"
-                                + context.getResources().getString(R.string.Sale_State) + " : " + sale_state_name + "\n"
+                                /*+ context.getResources().getString(R.string.Sale_State) + " : " + sale_state_name + "\n"*/
                                 + context.getResources().getString(R.string.Sale_State_FPSID) + " : " + sale_fps_id + "\n"
                                 + context.getResources().getString(R.string.Receipt_No) + " : " + receiptId + "\n"
                                 + context.getResources().getString(R.string.Shop_ID) + " : " + dealerConstants.stateBean.statefpsId + "\n"
@@ -418,7 +420,7 @@ public class SuccessActivity extends AppCompatActivity implements PrinterCallBac
                                 + context.getResources().getString(R.string.IMPDS) + "\n\n";
 
                         str2 = context.getResources().getString(R.string.Home_State) + "  :" + home_state_name + "\n"
-                                + context.getResources().getString(R.string.Sale_State) + "    :" + sale_state_name + "\n"
+                                /*+ context.getResources().getString(R.string.Sale_State) + "    :" + sale_state_name + "\n"*/
                                 + context.getResources().getString(R.string.Sale_State_FPSID) + ":" + sale_fps_id + "\n"
                                 + context.getResources().getString(R.string.Receipt_No) + "   :" + receiptId + "\n"
                                 + context.getResources().getString(R.string.Shop_ID) + ":" + dealerConstants.stateBean.statefpsId + "\n"
@@ -472,9 +474,9 @@ public class SuccessActivity extends AppCompatActivity implements PrinterCallBac
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
             } else {
                 if (RDservice(context)) {
-                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
-                } else {
                     toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+                } else {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
                 }
             }
 
@@ -652,6 +654,7 @@ public class SuccessActivity extends AppCompatActivity implements PrinterCallBac
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
+                preventTwoClick(v);
                 dialog.dismiss();
                 checkandprint(str,type);
             }
@@ -659,6 +662,7 @@ public class SuccessActivity extends AppCompatActivity implements PrinterCallBac
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                preventTwoClick(v);
                 dialog.dismiss();
                 flag_print=0;
             }

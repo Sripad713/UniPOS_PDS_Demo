@@ -23,7 +23,7 @@ public class MyFTPClientFunctions {
     public FTPClient mFTPClient = new FTPClient();
 
     public boolean ftpConnect(String host, String username, String password, int port) {
-        boolean status=false;
+        boolean status = false;
         try {
             mFTPClient = new FTPClient();
             mFTPClient.setConnectTimeout(30000);
@@ -45,7 +45,7 @@ public class MyFTPClientFunctions {
         return status;
     }
 
-    public String Ffinding(String hname, String uname, String pword, String dir_path) {
+    public String Ffinding(String hname, String uname, String pword, String dir_path, int type) {
         String name = "NOFILE";
         boolean state = ftpConnect(hname, uname, pword, 21);
         if (state) {
@@ -54,9 +54,42 @@ public class MyFTPClientFunctions {
                 mFTPClient.setSoTimeout(45000);
                 FTPFile[] ftpFiles = mFTPClient.listFiles(dir_path);
                 for (FTPFile ftpFile : ftpFiles) {
-                    name = ftpFile.getName();
+
+                    if (ftpFile.isFile()) {
+
+                        switch (type) {
+                            case 1:
+
+                                if (ftpFile.getName().contains("MantraPDS_")) {
+                                    name = ftpFile.getName();
+                                    return name;
+                                }
+                                break;
+                            case 2:
+
+                                if ( ftpFile.getName().contains("RDService_")) {
+                                    name = ftpFile.getName();
+                                    return name;
+                                }
+                                break;
+
+                            case 3:
+
+                                name = ftpFile.getName();
+                                return name;
+                            case 4:
+
+                                if ( ftpFile.getName().contains("RD_Versions")) {
+                                    name = ftpFile.getName();
+                                    return name;
+                                }
+                                break;
+
+                        }
+                    }
+
                 }
-            } catch (Exception e) {
+            } catch(Exception e){
                 return "EXCEPTION";
             }
         }
@@ -88,6 +121,41 @@ public class MyFTPClientFunctions {
             } catch (Exception e) {
             }
         }
+    }
+
+    public String Ffinding1(String hname, String uname, String pword, String dir_path) {
+        String name = "NOFILE";
+        boolean state = ftpConnect(hname, uname, pword, 21);
+        System.out.println("BOOLEAN ==="+state);
+        if (state) {
+            try {
+                mFTPClient.setDataTimeout(45000);
+                mFTPClient.setSoTimeout(45000);
+                System.out.println("PATH>>>>>"+dir_path);
+                FTPFile[] ftpFiles = mFTPClient.listFiles(dir_path);
+                System.out.println("NAME>>>>oooooooooooooo"+ftpFiles.length);
+
+                for (int i=0;i<ftpFiles.length;i++)
+                {
+                    System.out.println("NAME>>>>"+ftpFiles[i].getName());
+
+                    if (ftpFiles[i].isFile()) {
+                        if(ftpFiles[i].getName().contains("Password")){
+                            name = ftpFiles[i].getName();
+                            System.out.println("NAME>>>>"+name);
+                            return name;
+
+                        }
+
+
+                    }
+                }
+            } catch(Exception e){
+                System.out.println("TEJ EXCEPTIO");
+                return "EXCEPTION";
+            }
+        }
+        return name;
     }
 
 

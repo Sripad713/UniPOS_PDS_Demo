@@ -33,6 +33,7 @@ public class fpsURLInfo implements Serializable {
             wsdlURLAuth,
             wsdlURLPDS,
             wsdlURLReceive,
+            aadhaarOTPURL,
             dTransURL;
 
 }

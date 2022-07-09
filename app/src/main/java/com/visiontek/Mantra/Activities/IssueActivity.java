@@ -20,10 +20,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.visiontek.Mantra.Database.DatabaseHelper;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Util;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import timber.log.Timber;
@@ -32,6 +34,7 @@ import static com.visiontek.Mantra.Models.AppConstants.longitude;
 import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
+import static com.visiontek.Mantra.Models.AppConstants.txnType;
 import static com.visiontek.Mantra.Utils.Util.RDservice;
 import static com.visiontek.Mantra.Utils.Util.diableMenu;
 import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
@@ -39,28 +42,26 @@ import static com.visiontek.Mantra.Utils.Util.preventTwoClick;
 public class IssueActivity extends BaseActivity {
     Button cash, impds, back;
     Context context;
-
+    DatabaseHelper databaseHelper;
     ProgressDialog pd = null;
 
     @Override
     public void initialize() {
         try {
+            System.out.println("@@In initialize");
             context = IssueActivity.this;
+            databaseHelper = new DatabaseHelper(context);
             LinearLayout llAboutUs = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_issue, null);
             llBody.addView(llAboutUs, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             llBody.setVisibility(View.VISIBLE);
             initializeControls();
 
-
-
-
-
-      /*  if (diableMenu("getCommodityTransaction")) {
+        if (diableMenu("getCommodityTransaction")) {
             cash.setEnabled(false);
         }
         if (diableMenu("impdsMEService")) {
             impds.setEnabled(false);
-        }*/
+        }
 
             cash.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -92,18 +93,38 @@ public class IssueActivity extends BaseActivity {
                 }
             });
         }catch (Exception ex){
-
+            System.out.println("@@Exception(initializze): " +ex.toString());
             Timber.tag("Issue-onCreate-").e(ex.getMessage(),"");
         }
     }
 
     @Override
     public void initializeControls() {
+        System.out.println("@@In initializeControls of IssueActivity");
         pd = new ProgressDialog(context);
         cash = findViewById(R.id.btn_cash_pds);
         impds = findViewById(R.id.btn_impds);
         back = findViewById(R.id.btn_back);
         toolbarActivity.setText(context.getResources().getString(R.string.ISSUE));
+        toolbarFpsid.setText("FPS ID");
+        //toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        if(dealerConstants == null || dealerConstants.stateBean == null || dealerConstants.stateBean.statefpsId==null)
+        {
+            System.out.println("@@NULL");
+            ArrayList<String> statefpsiD = databaseHelper.getStateDetails();
+            toolbarFpsidValue.setText(statefpsiD.get(6));
+        }else {
+            System.out.println("@@Setting val");
+            toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+        }
+
+        if(txnType == -1){
+            System.out.println("@@Offline transaction making IMPDS disable");
+            impds.setVisibility(View.INVISIBLE);
+        }else{
+            System.out.println("@@Online transaction");
+            impds.setVisibility(View.VISIBLE);
+        }
     }
 
 

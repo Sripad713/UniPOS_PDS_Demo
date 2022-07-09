@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mantra.mTerminal100.MTerminal100API;
 import com.mantra.mTerminal100.printer.PrinterCallBack;
 import com.visiontek.Mantra.Adapters.DealerListAdapter;
+import com.visiontek.Mantra.Database.DatabaseHelper;
 import com.visiontek.Mantra.Models.DATAModels.DealerListModel;
 import com.visiontek.Mantra.Models.DealerDetailsModel.GetUserDetails.DealerModel;
 import com.visiontek.Mantra.Models.ReceiveGoodsModel.ReceiveGoodsModel;
@@ -40,6 +41,8 @@ import com.visiontek.Mantra.Utils.Json_Parsing;
 import com.visiontek.Mantra.Utils.TaskPrint;
 import com.visiontek.Mantra.Utils.Util;
 import com.visiontek.Mantra.Utils.XML_Parsing;
+
+import org.json.JSONException;
 import org.w3c.dom.Document;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -56,6 +59,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import timber.log.Timber;
 
 import static com.visiontek.Mantra.Activities.BaseActivity.rd_fps;
+import static com.visiontek.Mantra.Activities.BaseActivity.rd_vr;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Models.AppConstants.Debug;
 import static com.visiontek.Mantra.Models.AppConstants.longitude;
@@ -82,7 +86,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
     String refno;
     int flagprint;
     ReceiveGoodsModel receiveGoodsModel;
-
+    DatabaseHelper databaseHelper;
 
     public interface OnClickDealerAUTH {
         void onClick(int p);
@@ -127,10 +131,13 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
     private void hitURL1(String dealerlogin) {
         try {
-
-            pd = ProgressDialog.show(context, context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating), true, false);
+            Show(context.getResources().getString(R.string.Dealer), context.getResources().getString(R.string.Authenticating));
             XML_Parsing request = new XML_Parsing(DealerAuthenticationActivity.this, dealerlogin, 15);
             request.setOnResultListener((code, msg, ref, flow, object) -> {
+                System.out.println("FMR+FIR===");
+                System.out.println("MASGG ===="+msg);
+                System.out.println("CODEE ===="+code);
+
                 Dismiss();
 
                 if (code == null || code.isEmpty()) {
@@ -165,6 +172,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                             context.getResources().getString(R.string.Dealer_FP_Authentication) + code,
                             context.getResources().getString(R.string.ResponseMsg) + msg,
                             0);
+
+
 
                 } else {
                     refno = ref;
@@ -209,7 +218,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                         "    </SOAP-ENV:Body>\n" +
                         "</SOAP-ENV:Envelope>";
                 System.out.println(stockupdate);
-                //Util.generateNoteOnSD(context, "StockUploadDetailsReq.txt", stockupdate);
+                System.out.println("STOCK_UPDATE ++++++++++++++++"+stockupdate);
+                Util.generateNoteOnSD(context, "StockUploadDetailsReq.txt", stockupdate);
                 hitUploading(stockupdate);
 
             }
@@ -227,6 +237,8 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
             Aadhaar_Parsing request = new Aadhaar_Parsing(DealerAuthenticationActivity.this, stockupdate, 9);
             request.setOnResultListener((code, msg, ref, flow, object) -> {
+                System.out.println("STOCK $$$$$$$$$$$$$$"+code);
+                System.out.println("STOCK $$$$$$$$$$$$$$"+msg);
                 Dismiss();
                 if (code == null || code.isEmpty()) {
                     show_AlertDialog(
@@ -245,11 +257,26 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                             2);
 
                 } else {
+
+                    for (int i = 0; i < receiveGoodsModel.tcCommDetails.size(); i++) {
+                        try {
+                            parse_OfflineStockReceive(receiveGoodsModel.tcCommDetails.get(i).releasedQuantity, receiveGoodsModel.tcCommDetails.get(i).commCode);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            show_AlertDialog(
+                                    context.getResources().getString(R.string.Receive_Goods),
+                                    "DataBase Update Failed","",0
+                                    );
+                        }
+                    }
                     show_AlertDialog(
                             context.getResources().getString(R.string.Uploading_Stock),
                             context.getResources().getString(R.string.ResponseCode) + code,
                             context.getResources().getString(R.string.ResponseCode) + msg,
                             3);
+
+                    //Add received data into database
+
                 }
             });
             request.execute();
@@ -257,6 +284,21 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
             Timber.tag("RC_DealerAuth-UplodRsp-").e(ex.getMessage(), "");
         }
+    }
+
+    //  Offline Recv goods
+    public void parse_OfflineStockReceive(String RecvdQty,String CommCode) throws JSONException {
+        System.out.println(">>>>>>>>>>In parseOfflineStockReceive");
+
+        try {
+            System.out.println("<<<<<<<OFFLINE RECEIVE GOODS>>>>>>");
+            databaseHelper.updatePosOB(context,RecvdQty,CommCode);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
     }
 
     private String addComm() {
@@ -304,6 +346,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             tv.setText(concent);
             final CheckBox checkBox = (CheckBox) dialog.findViewById(R.id.check);
             confirm.setOnClickListener(v -> {
+                preventTwoClick(v);
                 if (checkBox.isChecked()) {
                     dialog.dismiss();
                     callScanFP();
@@ -379,35 +422,41 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             String[] str = new String[4];
             if (L.equals("hi")) {
 
-                str1 = context.getResources().getString(R.string.DAY_REPORT);
+                str1 = dealerConstants.stateBean.stateReceiptHeaderLl + "\n" +
+                        context.getResources().getString(R.string.Receive_Goods) + "\n";
                 image(str1, "header.bmp", 1);
-                str2 = context.getResources().getString(R.string.Date) + " : " + date + "\n" + context.getResources().getString(R.string.Time) + " :" + time + "\n"
-                        + context.getResources().getString(R.string.Day_Report_Date) + " : " + date + "\n"
-                        + context.getResources().getString(R.string.FPS_ID) + " : " + dealerConstants.stateBean.statefpsId + "\n";
-
-                str3 = context.getResources().getString(R.string.commodity) + "      " + context.getResources().getString(R.string.scheme) + "       " + context.getResources().getString(R.string.sale);
-
+                str2 = context.getResources().getString(R.string.Date) + " : " + date + "\n" +
+                        context.getResources().getString(R.string.Time) + " : " + time + "\n" +
+                        context.getResources().getString(R.string.Truck_Chit_No)+ " : " + receiveGoodsModel.chit + "\n" +
+                        context.getResources().getString(R.string.RO)+" : " + time + "\n" +
+                        context.getResources().getString(R.string.Truck_No)+" : " + receiveGoodsModel.truckno + "\n" +
+                        "\n";
+                str3 = String.format("%-10s%-8s%-8s%-8s\n",
+                        "ItemName",
+                        "Sch",
+                        "Dispt",
+                        "Recv")
+                        + "\n";
                 str4 = String.valueOf(add);
                 image(str2 + str3 + str4, "body.bmp", 0);
-
-                str5 = context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
+                str5 = "\n" + context.getResources().getString(R.string.Public_Distribution_Dept) + "\n"
                         + context.getResources().getString(R.string.Note_Qualitys_in_KgsLtrs) + "\n\n";
-
                 image(str5, "tail.bmp", 1);
                 str[0] = "1";
                 str[1] = "1";
                 str[2] = "1";
                 str[3] = "1";
                 checkandprint(str, 1);
+
             } else {
 
                 str1 = dealerConstants.stateBean.stateReceiptHeaderEn + "\n" +
                         context.getResources().getString(R.string.Receive_Goods) + "\n\n";
-                str2 = context.getResources().getString(R.string.Date) + "          : " + date + "\n" +
+                str2 =  context.getResources().getString(R.string.Date) + "          : " + date + "\n" +
                         context.getResources().getString(R.string.Time) + "          :" + time + "\n" +
-                        "Truck Chit No   : " + receiveGoodsModel.chit + "\n" +
-                        "RO              : " + time + "\n" +
-                        "Truck No        : " + receiveGoodsModel.truckno + "\n" +
+                        context.getResources().getString(R.string.Truck_Chit_No) + " : " + receiveGoodsModel.chit + "\n" +
+                        context.getResources().getString(R.string.RO) + "            : " + time + "\n" +
+                        context.getResources().getString(R.string.Truck_No) + "      : " + receiveGoodsModel.truckno + "\n" +
                         "\n";
                 str3 = String.format("%-10s%-8s%-8s%-8s\n",
                         "ItemName",
@@ -476,11 +525,11 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
     private void callScanFP() {
         try {
 
-            if ("F".equals(dealerModel.DAtype)) {
+            //if ("F".equals(dealerModel.DAtype)) {
                 MEMBER_AUTH_TYPE = "Bio";
                 // wadhverify = false;
                 connectRDservice();
-            }
+            //}
         } catch (Exception ex) {
 
             Timber.tag("RC_DealerAuth-ScanFP-").e(ex.getMessage(), "");
@@ -498,6 +547,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                 mp = MediaPlayer.create(context, R.raw.c100187);
                 mp.start();
             }
+            dealerModel.fType = dealerModel.DaadhaarAuthType;
 
             String dealerlogin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<SOAP-ENV:Envelope\n" +
@@ -506,6 +556,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                     "    xmlns:ns2=\"http://service.fetch.rationcard/\">\n" +
                     "    <SOAP-ENV:Body>\n" +
                     "        <ns2:getAuthenticateNICAuaAuthRD2>\n" +
+                    "             <aadhaarAuthType>"+dealerModel.DaadhaarAuthType+"</aadhaarAuthType>\n"+
                     "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
                     "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
                     "            <Shop_no>" + dealerConstants.stateBean.statefpsId + "</Shop_no>\n" +
@@ -538,9 +589,9 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                     "                <errInfo>y</errInfo>\n" +
                     "                <nmPoints>" + dealerModel.rdModel.nmpoint + "</nmPoints>\n" +
                     "                <fCount>" + dealerModel.rdModel.fcount + "</fCount>\n" +
-                    "                <fType>" + dealerModel.rdModel.ftype + "</fType>\n" +
-                    "                <iCount>" + dealerModel.rdModel.icount + "</iCount>\n" +
-                    "                <iType>" + dealerModel.rdModel.itype + "</iType>\n" +
+                    "                <fType>" + dealerModel.rdModel.ftype+ "</fType>\n" +
+                    "                <iCount>0</iCount>\n" +
+                    "                <iType>0</iType>\n" +
                     "                <pCount>0</pCount>\n" +
                     "                <pType>0</pType>\n" +
                     "                <qScore>0</qScore>\n" +
@@ -551,6 +602,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
             //Util.generateNoteOnSD(context, "RGDealerAuthReq.txt", dealerlogin);
             hitURL1(dealerlogin);
+            Timber.d("RC_DealerAuthenticationActivity-Dealerlogin :"+dealerlogin);
         } catch (Exception ex) {
 
             Timber.tag("RC_DealerAuth-AuthFmt-").e(ex.getMessage(), "");
@@ -571,11 +623,15 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             }
             mp.start();
 
-            dealerModel.rdModel.ftype = "0";
+            //dealerModel.rdModel.ftype = "0"; //******CHANGEfType*****/
+            dealerModel.fType = dealerModel.DaadhaarAuthType; //******CHANGEfType*****/
+
             String xmplpid = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                     "<PidOptions ver =\"1.0\">\n" +
                     "    <Opts env=\"P\" fCount=\"" + dealerModel.fCount + "\" iCount=\"" + dealerModel.iCount + "\" iType=\"" + dealerModel.iType + "\" fType=\"" + dealerModel.fType + "\" pCount=\"0\" pType=\"0\" format=\"0\" pidVer=\"2.0\" timeout=\"10000\" otp=\"\" wadh=\"\" posh=\"UNKNOWN\"/>\n" +
                     "</PidOptions>";
+            System.out.println("DealerAuthenticationXMLPD====="+xmplpid);
+
 
             Intent act = new Intent("in.gov.uidai.rdservice.fp.CAPTURE");
             act.putExtra("PID_OPTIONS", xmplpid);
@@ -772,6 +828,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
         body.setText(bodymsg);
         tale.setText(talemsg);
         confirm.setOnClickListener(v -> {
+            preventTwoClick(v);
             dialog.dismiss();
             if (i == 1) {
                 callScanFP();
@@ -839,7 +896,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
         pd = new ProgressDialog(context);
         scanfp = findViewById(R.id.dealer_scanFP);
         back = findViewById(R.id.dealer_back);
-
+        databaseHelper = new DatabaseHelper(context);
         toolbarInitilisation();
     }
 
@@ -856,15 +913,20 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
             TextView toolbarLatitudeValue = findViewById(R.id.toolbarLatitudeValue);
             TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
             TextView toolbarRD = findViewById(R.id.toolbarRD);
+             if (rd_vr != null && rd_vr.length() > 1){
+                            toolbarRD.setText("RD" + rd_vr);
+                         }else {
+                            toolbarRD.setText("RD" );
+                        }
             if (rd_fps == 3) {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
             } else if (rd_fps == 2) {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
             } else {
                 if (RDservice(context)) {
-                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
-                } else {
                     toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+                } else {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
                 }
             }
             String appversion = Util.getAppVersionFromPkgName(getApplicationContext());
@@ -895,26 +957,10 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
         setContentView(R.layout.activity_dealer_authentication);
         try {
             context = DealerAuthenticationActivity.this;
-
-
-
             mActivity = this;
             ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
             receiveGoodsModel = (ReceiveGoodsModel) getIntent().getSerializableExtra("OBJ");
             initilisation();
-            TextView toolbarRD = findViewById(R.id.toolbarRD);
-            boolean rd_fps = RDservice(context);
-            if (rd_fps) {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-            } else {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_AlertDialog(context.getResources().getString(R.string.Dealer),
-                        context.getResources().getString(R.string.RD_Service),
-                        context.getResources().getString(R.string.RD_Service_Msg), 0);
-                return;
-            }
-
-
             flagprint=0;
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
@@ -928,7 +974,11 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                 if (flagprint!=2) {
                     if (dealerModel.click) {
                         if (Util.networkConnected(context)) {
-                            ConsentDialog(ConsentForm(context, 1));
+                            if (L.equals("hi")){
+                                ConsentDialog(ConsentForm(context,1));
+                            }else {
+                                ConsentDialog(ConsentForm(context,0));
+                            }
                         } else {
                             show_AlertDialog(context.getResources().getString(R.string.Dealer),
                                     context.getResources().getString(R.string.Internet_Connection),
@@ -946,7 +996,7 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
 
                         }
                         show_AlertDialog(context.getResources().getString(R.string.Dealer),
-                                context.getResources().getString(R.string.Please_Select_FP_Authentication_Dealer),
+                                context.getResources().getString(R.string.Please_Select_Dealer_Name),
                                 ""
                                 , 0);
                     }
@@ -983,17 +1033,18 @@ public class DealerAuthenticationActivity extends AppCompatActivity implements P
                 dealerModel.Dfusion = dealerConstants.fpsCommonInfo.fpsDetails.get(p).dealerFusion;
                 dealerModel.Dnamell = dealerConstants.fpsCommonInfo.fpsDetails.get(p).delNamell;
                 dealerModel.Dwadh = dealerConstants.fpsCommonInfo.fpsDetails.get(p).wadhStatus;
+                dealerModel.DaadhaarAuthType= dealerConstants.fpsCommonInfo.fpsDetails.get(p).aadhaarAuthType;
 
-                if ("F".equals(dealerModel.DAtype)) {
+               // if ("F".equals(dealerModel.DAtype)) {
                     dealerModel.click = true;
                     if (dealerModel.Dfusion.equals("1")) {
                         dealerModel.fCount = "2";
                     } else {
                         dealerModel.fCount = "1";
                     }
-                } else {
+               /* } else {
                     dealerModel.click = false;
-                }
+                }*/
             }, 1);
             recyclerView.setAdapter(adapter);
 

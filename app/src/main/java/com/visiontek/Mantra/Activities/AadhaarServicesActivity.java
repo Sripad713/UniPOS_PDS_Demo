@@ -34,33 +34,6 @@ public class AadhaarServicesActivity extends BaseActivity {
             beneficiary;
     Context context;
 
-
-
-    private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {
-
-        final Dialog dialog = new Dialog(context, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.alertdialog);
-        Button confirm = (Button) dialog.findViewById(R.id.alertdialogok);
-        TextView head = (TextView) dialog.findViewById(R.id.alertdialoghead);
-        TextView body = (TextView) dialog.findViewById(R.id.alertdialogbody);
-        TextView tale = (TextView) dialog.findViewById(R.id.alertdialogtale);
-        head.setText(headermsg);
-        body.setText(bodymsg);
-        tale.setText(talemsg);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.setCanceledOnTouchOutside(false);
-        Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
-    }
-
     @Override
     public void initialize() {
         try {
@@ -80,13 +53,6 @@ public class AadhaarServicesActivity extends BaseActivity {
             if (diableMenu("beneficiaryVerificationDetails")) {
                 beneficiary.setEnabled(false);
             }
-        /*uid.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent uid = new Intent(context, AadhaarSeedingActivity.class);
-                startActivity(uid);
-            }
-        });*/
 
             beneficiary.setOnClickListener(view -> {
                 preventTwoClick(view);

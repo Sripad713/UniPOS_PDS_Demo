@@ -13,13 +13,14 @@ public class DealerModel implements Serializable {
             Dfusion,
             Dnamell,
             Dwadh,
+            DaadhaarAuthType,
     //-----------------------
             DEALER_AUTH_TYPE,
     //-----------------------
              err_code = "1",
     //-----------------------
             fCount = "0",
-            fType = "0",
+            fType = "0",  //******CHANGEfType=2******//
             iCount = "0",
             iType = "0",
     //-----------------------

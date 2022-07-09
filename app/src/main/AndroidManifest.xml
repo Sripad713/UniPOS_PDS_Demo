@@ -8,7 +8,6 @@
         android:configChanges="locale"
         android:required="true" />
 
-
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -87,10 +86,20 @@
         android:roundIcon="@drawable/clogo1"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.USBActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".Activities.BaseActivity"
-            android:screenOrientation="landscape"/>
+        <activity android:name=".Activities.FusionFingerSectionActivity"></activity>
+        <!--         <activity android:name=".Activities.CumulativeStockReportActivity"></activity> -->
+        <activity
+            android:name=".Activities.FTPActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.RHMSActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.USBActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.BaseActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".Activities.SuccessActivity"
             android:screenOrientation="landscape" />
@@ -102,8 +111,7 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".Activities.IMPDSActivity"
-            android:screenOrientation="landscape">
-        </activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".Activities.DealerAuthenticationActivity"
             android:screenOrientation="landscape" />
@@ -111,7 +119,19 @@
             android:name=".Activities.BeneficiaryDetailsActivity"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".Activities.Get_Card_Status"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.offlineRecvGoods"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.offlineRecvNew"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".Activities.StockReportActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.CumulativeStockReportActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".Activities.DailySalesReportActivity"
@@ -150,7 +170,16 @@
             android:name=".Activities.Device_Update"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".Activities.DeviceParametersActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.OfflineRationCardStatusActivity"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".Activities.SettingActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.OfflineRcNumbers"
             android:screenOrientation="landscape" />
         <activity
             android:name=".Activities.PrintActivity"
@@ -197,22 +226,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-        <receiver
-            android:name=".Receiver.MyReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
-            <intent-filter android:priority="1000">
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.ACTION_BOOT_COMPLETED" />
-                <action android:name="android.intent.action.REBOOT" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

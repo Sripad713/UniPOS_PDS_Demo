@@ -55,8 +55,8 @@ public class RhmsUtils {
     String rhmsClientVerion;
     List<SubscriptionInfo> subscriptionInfoList = new ArrayList<>();
     TelephonyInfo telephonyInfo;
-
     public static boolean boot;
+    SharedPref sharedPref;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public RhmsUtils(Context context) {
@@ -71,6 +71,7 @@ public class RhmsUtils {
         }
 
 
+        sharedPref= SharedPref.getInstance(context);
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         LocationListener locationListener = new MyLocationListener();
 
@@ -83,8 +84,6 @@ public class RhmsUtils {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 6000, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 6000, 0, locationListener);
 
-        SubscriptionManager subscriptionManager;
-        subscriptionManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
             return;
@@ -109,18 +108,20 @@ public class RhmsUtils {
             public void run() {
                 details();
             }
-        }, 20000);
+        }, 15000);
     }
 
 
 
-    private static class MyLocationListener implements LocationListener {
+    private class MyLocationListener implements LocationListener {
 
         @Override
         public void onLocationChanged(Location loc) {
             latitude = String.valueOf(loc.getLatitude());
             longitude = String.valueOf(loc.getLongitude());
             System.out.println(latitude + "___________"+longitude);
+            sharedPref.saveData("LATITUDE",latitude);
+            sharedPref.saveData("LONGITUDE",longitude);
 
         }
 
@@ -286,6 +287,11 @@ public class RhmsUtils {
         @Override
         protected void onPostExecute(Boolean result) {
             try {
+                SharedPref sharedPref=SharedPref.getInstance(context);
+                String fps=sharedPref.getData("RD");
+                if(fps.length()<1){
+                    fps="NotFound";
+                }
                 String requestboot = "<BootStatus>\n" +
                         "<SerialNo>" + sSerNo + "</SerialNo>\n" +
                         "<Date_Time>" + updateTimeDate() + "</Date_Time>\n" +
@@ -295,6 +301,7 @@ public class RhmsUtils {
                         "<Camera>" + checkCameraHardware(context) + "</Camera>\n" +
                         "<Audio>" + audiostatus(context) + "</Audio>\n" +
                         "<ExternalMemExists>" + externalmem() + "</ExternalMemExists>\n" +
+                        "<FPSRDSDKVer>" + fps+ "</FPSRDSDKVer>\n" +
                         "<UsbdeviceExists>" + usb(context) + "</UsbdeviceExists>\n" +
                         "<SIM1CCIDnumberExists>" + get_state(1, telephonyInfo) + "</SIM1CCIDnumberExists>\n" +
                         "<SIM1Operator>" + get_Operator(1, subscriptionInfoList) + "</SIM1Operator>\n" +

@@ -6,29 +6,30 @@ import java.io.Serializable;
 
 public class MemberModel implements Serializable {
     public String
-            memberNamell,
-            memberName,
-            member_fusion,
-            uid,
-            w_uid_status,
-            xfinger,
-            zmanual,
-            zmemberId,
-            zwgenWadhAuth,
-    //-----------------------
-            MEMBER_AUTH_TYPE,
-    //-----------------------
-            err_code = "1",
-    //-----------------------
-            fCount = "0",
-            fType = "0",
-            iCount = "0",
-            iType = "0",
-    //-----------------------
-            Aadhaar,
-    //----------------------
-            Enter_UID,
-            trans_type;
+            memberNamell;
+    public String memberName;
+    public String member_fusion;
+    public String uid;
+    public String w_uid_status;
+    public String xfinger;
+    public String zmanual;
+    public String zmemberId;
+    public String zwgenWadhAuth;
+    public String zotp;
+    public String//-----------------------
+            MEMBER_AUTH_TYPE;
+    public String//-----------------------
+            err_code = "1";
+    public String//-----------------------
+            fCount = "0";
+    public String fType = "0";
+    public String iCount = "0";
+    public String iType = "0";
+    public String//-----------------------
+            Aadhaar;
+    public String//----------------------
+            Enter_UID;
+    public String trans_type;
 
     public int RD_SERVICE = 0;
 

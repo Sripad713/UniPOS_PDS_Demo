@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/black">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,9 +30,7 @@
                     android:background="@drawable/black"
                     android:contentDescription="TODO"
                     android:src="@drawable/chhattisghar" />
-
             </LinearLayout>
-
             <LinearLayout
                 android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
@@ -55,7 +52,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/black"
                         android:gravity="left"
-                        android:textColor="@color/black"
+                        android:textColor="@color/ik_green"
                         android:textSize="@dimen/TextsizeT"
                         android:textStyle="bold" />
 
@@ -152,8 +149,6 @@
                                 android:textSize="@dimen/TextsizeH" />
                         </LinearLayout>
                     </LinearLayout>
-
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -178,9 +173,7 @@
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
-
                     </LinearLayout>
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

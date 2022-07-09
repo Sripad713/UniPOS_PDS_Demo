@@ -55,7 +55,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/black"
                         android:gravity="left"
-                        android:textColor="@color/black"
+                        android:textColor="@color/ik_green"
                         android:textSize="@dimen/TextsizeT"
                         android:textStyle="bold" />
 
@@ -159,7 +159,6 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
-
                         <TextView
                             android:id="@+id/toolbarActivity"
                             android:layout_width="match_parent"
@@ -167,9 +166,10 @@
                             android:background="@drawable/black"
                             android:gravity="center"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/TextsizeH"
+                            android:textSize="25dp"
                             android:textStyle="bold" />
                         <TextView
+                            android:id="@+id/toolbarCard"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/black"
@@ -178,7 +178,6 @@
                             android:textColor="@color/black"
                             android:textSize="@dimen/TextsizeH"
                             android:textStyle="bold" />
-
 
                     </LinearLayout>
 

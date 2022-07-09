@@ -17,7 +17,8 @@ public class BeneficiaryModel implements Serializable {
             verification,
             verifyStatus_en,
             verifyStatus_ll,
-            w_uid_status;
+            w_uid_status,
+            DaadhaarAuthType;
     public String
 
     err_code = "1",

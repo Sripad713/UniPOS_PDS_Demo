@@ -6,8 +6,6 @@
     android:orientation="vertical"
     android:background="@color/card_lt_yellow"
     tools:context=".Activities.HomeActivity">
-
-
     <LinearLayout
         android:id="@+id/innerlayout"
         android:layout_width="match_parent"
@@ -16,7 +14,6 @@
         android:weightSum="5">
 
         <LinearLayout
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -127,33 +124,66 @@
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <Button
+                    android:id="@+id/uploaddata"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/ButtonM"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:text="@string/Upload_Data"
+                    android:textSize="@dimen/TextsizeB"/>
+                <Button
+                    android:id="@+id/offline_rcnumbers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/ButtonM"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:textStyle="bold"
+                    android:text="@string/Offline_RcMembers"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:foreground="@drawable/custom_ripple"
-                android:id="@+id/logout"
-                android:layout_width="150dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center"
-                android:background="@color/cancel"
-                android:text="@string/Logout"
                 android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TextsizeB"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:orientation="horizontal">
+
+                <Button
+                    android:foreground="@drawable/custom_ripple"
+                    android:id="@+id/logout"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/cancel"
+                    android:text="@string/Logout"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextsizeB"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -203,6 +233,6 @@
                         android:src="@drawable/nic3" />
                 </LinearLayout>
             </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 </LinearLayout>

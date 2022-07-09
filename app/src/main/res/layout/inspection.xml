@@ -150,7 +150,8 @@
                     android:ems="15"
                     android:hint="@string/Enter_Observation"
                     android:inputType="numberDecimal"
-                    android:textSize="@dimen/TextsizeB" />
+                    android:textSize="@dimen/TextsizeB"
+                    android:imeOptions="flagNoExtractUi"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

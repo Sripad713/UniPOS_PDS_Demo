@@ -38,6 +38,7 @@ import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.
 import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetURLDetails.BeneficiaryDetails;
 import com.visiontek.Mantra.Models.AadhaarServicesModel.BeneficiaryVerification.GetUserDetails.BeneficiaryModel;
 import com.visiontek.Mantra.Models.DATAModels.BeneficiaryVerificationListModel;
+import com.visiontek.Mantra.Models.DealerDetailsModel.GetUserDetails.DealerModel;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.Aadhaar_Parsing;
 import com.visiontek.Mantra.Utils.Json_Parsing;
@@ -64,6 +65,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import timber.log.Timber;
 
 import static com.visiontek.Mantra.Activities.BaseActivity.rd_fps;
+import static com.visiontek.Mantra.Activities.BaseActivity.rd_vr;
 import static com.visiontek.Mantra.Activities.StartActivity.L;
 import static com.visiontek.Mantra.Models.AppConstants.Debug;
 import static com.visiontek.Mantra.Models.AppConstants.longitude;
@@ -94,8 +96,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
     private BeneficiaryDetailsActivity mActivity;
     private final ExecutorService es = Executors.newScheduledThreadPool(30);
     private MTerminal100API mTerminal100API;
-
     int flagprint;
+    DealerModel dealerModel = new DealerModel();
 
     private void Display() {
         try {
@@ -132,6 +134,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
                 beneficiaryModel.verifyStatus_en = beneficiaryDetails.rcMemberDetVerify.get(p).verifyStatus_en;
                 beneficiaryModel.verifyStatus_ll = beneficiaryDetails.rcMemberDetVerify.get(p).verifyStatus_ll;
                 beneficiaryModel.w_uid_status = beneficiaryDetails.rcMemberDetVerify.get(p).w_uid_status;
+                dealerModel.DaadhaarAuthType = dealerConstants.fpsCommonInfo.fpsDetails.get(p).aadhaarAuthType;
+                System.out.println("beneficiaryModel==DaadhaarAuthType==="+dealerModel.DaadhaarAuthType);
             });
             recyclerView.setAdapter(adapter);
         } catch (Exception ex) {
@@ -186,6 +190,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
             dialogbox.setText(context.getResources().getString(R.string.EKYC));
             tv.setText(context.getResources().getString(R.string.Please_Enter_Customer_Aadhaar_No));
             confirm.setOnClickListener(v -> {
+                preventTwoClick(v);
                 dialog.dismiss();
                 beneficiaryModel.Enter_UID = enter.getText().toString();
 
@@ -260,6 +265,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
             tv.setText(concent);
             final CheckBox checkBox = (CheckBox) dialog.findViewById(R.id.check);
             confirm.setOnClickListener(v -> {
+                preventTwoClick(v);
                 if (checkBox.isChecked()) {
                     dialog.dismiss();
                     connectRDserviceEKYC(beneficiaryDetails.wadh);
@@ -348,12 +354,14 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
                     mp.start();
                 }
 
-                beneficiaryModel.fCount = "2";
-                String xmplpid = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                  beneficiaryModel.fCount = "2";
+                  beneficiaryModel.fType = dealerModel.DaadhaarAuthType;
+                 System.out.println("beneficiaryModel_fType========"+beneficiaryModel.fType);
+                 String xmplpid = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                         "<PidOptions ver =\"1.0\">\n" +
                         "    <Opts env=\"P\" fCount=\"" + beneficiaryModel.fCount + "\" iCount=\"" + beneficiaryModel.iCount + "\" iType=\"" + beneficiaryModel.iType + "\" fType=\"" + beneficiaryModel.fType + "\" pCount=\"0\" pType=\"0\" format=\"0\" pidVer=\"2.0\" timeout=\"10000\" otp=\"\" wadh=\"" + wadhvalue + "\" posh=\"UNKNOWN\"/>\n" +
                         "</PidOptions>";
-
+                System.out.println("beneficiaryModel_fType======"+xmplpid);
                 Intent act = new Intent("in.gov.uidai.rdservice.fp.CAPTURE");
                 act.putExtra("PID_OPTIONS", xmplpid);
                 startActivityForResult(act, beneficiaryModel.RD_SERVICE);
@@ -395,16 +403,16 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
             Timber.tag("Beneficiary-PID-").e(ex.getMessage(), "");
         }
     }
-
+    //beneficiaryModel.rdModel.icount ="0";
     private void prep_Mlogin() {
         try {
-
             String BenAuth = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<SOAP-ENV:Envelope\n" +
                     "    xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n" +
                     "    xmlns:ns1=\"http://service.fetch.rationcard/\">\n" +
                     "    <SOAP-ENV:Body>\n" +
                     "        <ns1:getEKYCAuthenticateRD>\n" +
+                    "          <aadhaarAuthType>"+dealerModel.DaadhaarAuthType+"</aadhaarAuthType>\n"+
                     "            <fpsSessionId>" + dealerConstants.fpsCommonInfo.fpsSessionId + "</fpsSessionId>\n" +
                     "            <stateCode>" + dealerConstants.stateBean.stateCode + "</stateCode>\n" +
                     "            <Shop_no>" + dealerConstants.stateBean.statefpsId + "</Shop_no>\n" +
@@ -436,8 +444,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
                     "                <nmPoints>" + beneficiaryModel.rdModel.nmpoint + "</nmPoints>\n" +
                     "                <fCount>" + beneficiaryModel.rdModel.fcount + "</fCount>\n" +
                     "                <fType>" + beneficiaryModel.rdModel.ftype + "</fType>\n" +
-                    "                <iCount>" + beneficiaryModel.rdModel.icount + "</iCount>\n" +
-                    "                <iType>" + beneficiaryModel.rdModel.itype + "</iType>\n" +
+                    "                <iCount>0</iCount>\n" +
+                    "                <iType>0</iType>\n" +
                     "                <pCount>0</pCount>\n" +
                     "                <pType>0</pType>\n" +
                     "                <qScore>0</qScore>\n" +
@@ -457,6 +465,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
                 if (Debug) {
                     Util.generateNoteOnSD(context, "BenVerificationAuthReq.txt", BenAuth);
                 }
+                System.out.println("BenVerificationAuthReq========="+BenAuth);
                 hitURL1(BenAuth);
             } else {
                 show_AlertDialog(
@@ -713,6 +722,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
         head.setText(context.getResources().getString(R.string.Battery));
         status.setText( context.getResources().getString(R.string.Battery_Msg));
         confirm.setOnClickListener(v -> {
+            preventTwoClick(v);
             dialog.dismiss();
             checkandprint(str,type);
         });
@@ -731,8 +741,8 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
 
             mActivity = this;
             ACTION_USB_PERMISSION = mActivity.getApplicationInfo().packageName;
-
             beneficiaryDetails = (BeneficiaryDetails) getIntent().getSerializableExtra("OBJ");
+            initilisation();
 
 
 
@@ -780,6 +790,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
         pd = new ProgressDialog(context);
         back = findViewById(R.id.Ben_details_back);
         Ekyc = findViewById(R.id.Ben_details_Ekyc);
+
         toolbarInitilisation();
     }
 
@@ -796,15 +807,21 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
             TextView toolbarLongitudeValue = findViewById(R.id.toolbarLongitudeValue);
             TextView toolbarCard = findViewById(R.id.toolbarCard);
             TextView toolbarRD = findViewById(R.id.toolbarRD);
+             if (rd_vr != null && rd_vr.length() > 1){
+                            toolbarRD.setText("RD" + rd_vr);
+                         }else {
+                            toolbarRD.setText("RD" );
+                        }
             if (rd_fps == 3) {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
             } else if (rd_fps == 2) {
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
             } else {
                 if (RDservice(context)) {
-                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
-                } else {
                     toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+                } else {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
+
                 }
             }
             toolbarCard.setText("RC : " + beneficiaryDetails.rationCardId);
@@ -843,6 +860,7 @@ public class BeneficiaryDetailsActivity extends AppCompatActivity  implements Pr
         body.setText(bodymsg);
         tale.setText(talemsg);
         confirm.setOnClickListener(v -> {
+            preventTwoClick(v);
             dialog.dismiss();
 
             if (i == 1) {

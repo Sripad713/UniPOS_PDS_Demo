@@ -45,6 +45,7 @@ import timber.log.Timber;
 
 import static android.hardware.usb.UsbManager.ACTION_USB_DEVICE_ATTACHED;
 import static com.visiontek.Mantra.Activities.BaseActivity.rd_fps;
+import static com.visiontek.Mantra.Models.AppConstants.DEVICEID;
 import static com.visiontek.Mantra.Models.AppConstants.dealerConstants;
 import static com.visiontek.Mantra.Models.AppConstants.latitude;
 import static com.visiontek.Mantra.Models.AppConstants.longitude;
@@ -98,9 +99,9 @@ public class USBActivity extends AppCompatActivity{
                 toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
             } else {
                 if (RDservice(context)) {
-                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
-                } else {
                     toolbarRD.setTextColor(context.getResources().getColor(R.color.yellow));
+                } else {
+                    toolbarRD.setTextColor(context.getResources().getColor(R.color.opaque_red));
                 }
             }
 
@@ -113,8 +114,8 @@ public class USBActivity extends AppCompatActivity{
             toolbarDateValue.setText(date);
             System.out.println(date);
 
-            toolbarFpsid.setText("FPS ID");
-            toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
+            toolbarFpsid.setText("DEVICE ID");
+            toolbarFpsidValue.setText(DEVICEID);
             toolbarActivity.setText( context.getResources().getString(R.string.USB));
 
             toolbarLatitudeValue.setText(latitude);
@@ -161,9 +162,10 @@ public class USBActivity extends AppCompatActivity{
                                     for (UsbFile usbFile : rooti) {
                                         Name = usbFile.getName();
                                         System.out.println("==========2=" + usbFile.getName());
-                                        if (Name.contains("CGPDS")) {
+                                        if (Name.equalsIgnoreCase("CGPDS")) {
                                             if (usbFile.isDirectory()){
                                                 sub=usbFile.listFiles();
+                                                System.out.println("SUB>>>>"+sub);
                                                 for (UsbFile usbFile1 : sub) {
                                                     Name = usbFile1.getName();
                                                     if (Name.contains("MantraPDS_")) {

@@ -7,6 +7,9 @@ public class Member implements Serializable {
     //==========================carddetails==================================
     public carddetails carddetails = new carddetails();
 
+    // ==============================memberdetails1=========================
+    public memberdetails memberdetails1 = new memberdetails();
+
     //==========================commDetails==================================
     public ArrayList<commDetails> commDetails = new ArrayList<>();
 

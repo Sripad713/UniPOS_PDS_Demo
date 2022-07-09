@@ -37,6 +37,7 @@
                 android:layout_marginVertical="@dimen/LayoutMV"
                 android:layout_weight="1"
                 android:text=""
+                android:textStyle="bold"
                 android:textSize="@dimen/TextsizeB" />
         </LinearLayout>
 

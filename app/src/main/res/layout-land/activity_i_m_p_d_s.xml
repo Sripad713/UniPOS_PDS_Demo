@@ -91,7 +91,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:orientation="horizontal">
 
                         <com.visiontek.Mantra.Utils.MyCustomTextView_Bold
@@ -105,7 +104,7 @@
                             android:textSize="25sp"
                             android:textStyle="bold" />
 
-                        <com.visiontek.Mantra.Utils.MyCustomEditText
+                        <EditText
                             android:id="@+id/ed_rc_id"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -113,11 +112,11 @@
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
                             android:layout_weight="1"
-                            android:hint="Enter Ration Card No."
                             android:inputType="number"
-                            android:text="066000000000"
-                            android:maxLength="12"
+                            android:hint="Enter Card No."
+                            android:text=""
                             android:textSize="25sp"
+                            android:imeOptions="flagNoExtractUi"
                             />
 
                     </LinearLayout>

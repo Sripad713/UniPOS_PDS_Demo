@@ -59,7 +59,8 @@
                     android:ems="15"
                     android:maxLength="12"
                     android:inputType="numberPassword"
-                    android:textSize="@dimen/TextsizeB" />
+                    android:textSize="@dimen/TextsizeB"
+                    android:imeOptions="flagNoExtractUi"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

@@ -373,6 +373,8 @@ public class RC_CommodityDetails extends BaseActivity {
     @Override
     public void initializeControls() {
         toolbarActivity.setText(context.getResources().getString(R.string.IMPDS));
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
     }
 
     public class Myadapter extends BaseAdapter {
@@ -713,6 +715,7 @@ public class RC_CommodityDetails extends BaseActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                preventTwoClick(v);
                 dialog.dismiss();
                 if (i == 1) {
                     Intent i = new Intent(getApplicationContext(), IMPDSActivity.class);

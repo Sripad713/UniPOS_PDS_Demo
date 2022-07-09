@@ -6,6 +6,7 @@ public class fpsDetails implements Serializable {
 
     public String
             authType,
+            aadhaarAuthType,
             dealerFusion,
             dealer_type,
             delBfd1,
@@ -14,5 +15,6 @@ public class fpsDetails implements Serializable {
             delName,
             delNamell,
             delUid,
-            wadhStatus;
+            wadhStatus,
+            impdsfusionStatus;
 }

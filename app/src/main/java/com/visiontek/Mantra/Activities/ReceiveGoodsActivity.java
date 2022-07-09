@@ -3,6 +3,7 @@ package com.visiontek.Mantra.Activities;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,12 +24,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.visiontek.Mantra.Adapters.ReceiveGoodsListAdapter;
+import com.visiontek.Mantra.Database.DatabaseHelper;
 import com.visiontek.Mantra.Models.DATAModels.ReceiveGoodsListModel;
 import com.visiontek.Mantra.Models.ReceiveGoodsModel.ReceiveGoodsDetails;
 import com.visiontek.Mantra.Models.ReceiveGoodsModel.ReceiveGoodsModel;
@@ -36,6 +38,12 @@ import com.visiontek.Mantra.Models.ReceiveGoodsModel.tcCommDetails;
 import com.visiontek.Mantra.R;
 import com.visiontek.Mantra.Utils.DecimalDigitsInputFilter;
 import com.visiontek.Mantra.Utils.Util;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +65,7 @@ public class ReceiveGoodsActivity extends BaseActivity {
     Spinner options;
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
-
+    DatabaseHelper databaseHelper;
     TextView trucknumber;
     ReceiveGoodsDetails receiveGoodsDetails;
     ReceiveGoodsModel receiveGoodsModel=new ReceiveGoodsModel();
@@ -160,7 +168,7 @@ public class ReceiveGoodsActivity extends BaseActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.setContentView(R.layout.receivegoods);
         final EditText received = dialog.findViewById(R.id.enter);
-        received.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(3)});
+        received.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(6,3)});
         Button confirm = (Button) dialog.findViewById(R.id.confirm);
         Button back = (Button) dialog.findViewById(R.id.back);
 
@@ -182,6 +190,7 @@ public class ReceiveGoodsActivity extends BaseActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                preventTwoClick(v);
                 dialog.dismiss();
                 String res;
                  res= received.getText().toString();
@@ -235,24 +244,12 @@ public class ReceiveGoodsActivity extends BaseActivity {
     public void initialize() {
         try {
             context = ReceiveGoodsActivity.this;
-            LinearLayout llAboutUs = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_ration_details, null);
+            databaseHelper = new DatabaseHelper(context);
+            LinearLayout llAboutUs = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_receive__goods, null);
             llBody.addView(llAboutUs, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             llBody.setVisibility(View.VISIBLE);
-            initializeControls();
-
             receiveGoodsDetails = (ReceiveGoodsDetails) getIntent().getSerializableExtra("OBJ");
-
-            TextView toolbarRD = findViewById(R.id.toolbarRD);
-            boolean rd_fps = RDservice(context);
-            if (rd_fps) {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.green));
-            } else {
-                toolbarRD.setTextColor(context.getResources().getColor(R.color.black));
-                show_AlertDialog(context.getResources().getString(R.string.RECEIVE_GOODS),
-                        context.getResources().getString(R.string.RD_Service),
-                        context.getResources().getString(R.string.RD_Service_Msg),0);
-                return;
-            }
+            initializeControls();
             receiveGoodsModel=new ReceiveGoodsModel();
 
 
@@ -308,6 +305,7 @@ public class ReceiveGoodsActivity extends BaseActivity {
                         if (check()) {
                             if (Util.networkConnected(context)) {
                                 addCommDetails();
+                                System.out.println("RECEIVE GOODS >>>SCanFPPP");
                                 Intent i = new Intent(ReceiveGoodsActivity.this, DealerAuthenticationActivity.class);
                                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 i.putExtra("OBJ", receiveGoodsModel);
@@ -355,6 +353,8 @@ public class ReceiveGoodsActivity extends BaseActivity {
         back = findViewById(R.id.back);
         options = findViewById(R.id.truckchit);
         toolbarActivity.setText(context.getResources().getString(R.string.RECEIVE_GOODS));
+        toolbarFpsid.setText("FPS ID");
+        toolbarFpsidValue.setText(dealerConstants.stateBean.statefpsId);
     }
 
     private void show_AlertDialog(String headermsg,String bodymsg,String talemsg,int i) {

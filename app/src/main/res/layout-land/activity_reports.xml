@@ -4,11 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/card_lt_yellow"
     android:orientation="vertical"
+    android:background="@color/card_lt_yellow"
     tools:context=".Activities.ReportsActivity">
-
-
     <LinearLayout
         android:id="@+id/innerlayout"
         android:layout_width="match_parent"
@@ -17,22 +15,21 @@
         android:gravity="center"
         android:orientation="vertical"
         android:weightSum="2">
-
         <LinearLayout
-            android:layout_width="400dp"
+            android:layout_width="800dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:weightSum="2"
             android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:weightSum="2"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal">
                 <Button
+                    android:layout_weight="1"
                     android:id="@+id/btn_dailysales_report"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -43,27 +40,83 @@
                     android:foreground="@drawable/custom_ripple"
                     android:textSize="@dimen/TextsizeB"/>
 
+                <Button
+                    android:layout_marginLeft="50dp"
+                    android:layout_weight="1"
+                    android:id="@+id/btn_dailysales_report_offline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/button"
+                    android:text="@string/Daily_Sales_Report_Offline"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:foreground="@drawable/custom_ripple"
+                    android:textSize="@dimen/TextsizeB"/>
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginTop="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:weightSum="2"
                 android:gravity="center"
                 android:orientation="horizontal">
                 <Button
                     android:id="@+id/btn_stock_report"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@color/button"
                     android:text="@string/Stock_Report"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:foreground="@drawable/custom_ripple"
                     android:textSize="@dimen/TextsizeB"/>
+                <Button
+                    android:layout_marginLeft="50dp"
+                    android:layout_weight="1"
+                    android:id="@+id/btn_stock_report_offline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/button"
+                    android:text="@string/Stock_Report_Offline"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:foreground="@drawable/custom_ripple"
+                    android:textSize="@dimen/TextsizeB"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btn_cumulative_current_stock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:text="@string/Cumulative_Current_Report"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:foreground="@drawable/custom_ripple"
+                    android:textSize="@dimen/TextsizeB"/>
+                <Button
+                    android:layout_marginLeft="50dp"
+                    android:layout_weight="1"
+                    android:id="@+id/btn_offline_ration_card_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/button"
+                    android:text="@string/Offline_Ration_Card_Status"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:foreground="@drawable/custom_ripple"
+                    android:textSize="@dimen/TextsizeB"/>
             </LinearLayout>
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
